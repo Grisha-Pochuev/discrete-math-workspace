@@ -34,31 +34,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  validate:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - name: compile
-        run: g++ -O3 -DNDEBUG -std=c++20 -march=native -o search search.cpp
-      - name: smoke
-        run: |
-          set -euo pipefail
-          ./search --orbit 0 --limit 12 --split-size 12 \
-            --time-limit 120 --max-seen 100000 \
-            --output smoke.txt
-          grep -q "status complete" smoke.txt
-          python batch.py --stage frontier2 --job-count 20 --dry-run
-          rm -rf smoke-out
-          python batch.py --stage frontier2 --job-id 0 --job-count 20 --workers 2 \
-            --runtime-seconds 15 --task-seconds 5 --max-seen 100000 --output smoke-out
-          test -s smoke-out/manifest.json
-          test -s smoke-out/records.jsonl
-
   compute:
-    needs: validate
     name: task-${{ matrix.id }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     timeout-minutes: 360
     strategy:
       fail-fast: false
@@ -67,10 +45,9 @@ jobs:
         id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     steps:
       - uses: actions/checkout@v4
-      - name: compile
-        run: g++ -O3 -DNDEBUG -std=c++20 -march=native -o search search.cpp
       - name: system
         run: |
+          set -euo pipefail
           mkdir -p out
           {
             uname -a
@@ -82,6 +59,20 @@ jobs:
             ulimit -a
             grep -E "MemTotal|MemAvailable|SwapTotal|SwapFree" /proc/meminfo
           } > out/system.txt
+      - name: compile
+        run: g++ -O3 -DNDEBUG -std=c++20 -march=native -o search search.cpp
+      - name: preflight
+        env:
+          STAGE: ${{ inputs.stage || 'frontier2' }}
+        run: |
+          set -euo pipefail
+          ./search --orbit 0 --limit 12 --split-size 12 \
+            --time-limit 60 --max-seen 100000 \
+            --output out/smoke.txt \
+            2>&1 | tee out/preflight.log
+          grep -q "status complete" out/smoke.txt
+          python batch.py --stage "$STAGE" --job-count 20 --dry-run \
+            | tee -a out/preflight.log
       - name: execute
         env:
           STAGE: ${{ inputs.stage || 'frontier2' }}
