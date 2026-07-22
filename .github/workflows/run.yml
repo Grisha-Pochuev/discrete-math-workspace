@@ -1,0 +1,50 @@
+name: run
+
+on:
+  workflow_dispatch:
+    inputs:
+      starts:
+        description: starts per job
+        required: true
+        default: "3"
+      max_nfev:
+        description: iteration limit
+        required: true
+        default: "1500"
+
+permissions:
+  contents: read
+
+jobs:
+  compute:
+    name: task-${{ matrix.id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: execute
+        run: |
+          mkdir -p out
+          cd out
+          python ../core.py \
+            --starts "${{ inputs.starts }}" \
+            --max-nfev "${{ inputs.max_nfev }}" \
+            --seed "$((2026072200 + ${{ matrix.id }}))" \
+            > run.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: data-${{ matrix.id }}
+          path: out/
+          retention-days: 7
+          compression-level: 9
