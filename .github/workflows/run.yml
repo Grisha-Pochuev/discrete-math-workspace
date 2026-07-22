@@ -1,24 +1,58 @@
-name: run
+name: batch
 
 on:
   workflow_dispatch:
     inputs:
-      starts:
-        description: starts per job
+      stage:
+        description: batch stage
         required: true
-        default: "3"
-      max_nfev:
-        description: iteration limit
+        default: frontier
+        type: choice
+        options:
+          - frontier
+          - layer26
+          - layer27
+      runtime_seconds:
+        description: useful runtime per task host
         required: true
-        default: "1500"
+        default: "20400"
+      max_seen:
+        description: state-table cap per worker
+        required: true
+        default: "8000000"
+  push:
+    branches: [main]
+    paths:
+      - ".runs/**"
 
 permissions:
   contents: read
 
+concurrency:
+  group: batch-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: compile
+        run: g++ -O3 -DNDEBUG -std=c++20 -march=native -o search search.cpp
+      - name: smoke
+        run: |
+          set -euo pipefail
+          ./search --orbit 0 --limit 12 --split-size 12 \
+            --time-limit 120 --max-seen 100000 \
+            --output smoke.txt
+          grep -q "status complete" smoke.txt
+          python batch.py --stage frontier --job-count 20 --dry-run
+
   compute:
+    needs: validate
     name: task-${{ matrix.id }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 350
     strategy:
       fail-fast: false
@@ -27,24 +61,36 @@ jobs:
         id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-      - run: pip install -r requirements.txt
-      - name: execute
+      - name: compile
+        run: g++ -O3 -DNDEBUG -std=c++20 -march=native -o search search.cpp
+      - name: system
         run: |
           mkdir -p out
-          cd out
-          python ../core.py \
-            --starts "${{ inputs.starts }}" \
-            --max-nfev "${{ inputs.max_nfev }}" \
-            --seed "$((2026072200 + ${{ matrix.id }}))" \
-            > run.log 2>&1
+          {
+            uname -a
+            lscpu
+            free -h
+            df -h .
+            grep -E "MemTotal|MemAvailable|SwapTotal|SwapFree" /proc/meminfo
+          } > out/system.txt
+      - name: execute
+        env:
+          STAGE: ${{ inputs.stage || 'frontier' }}
+          RUNTIME_SECONDS: ${{ inputs.runtime_seconds || '20400' }}
+          MAX_SEEN: ${{ inputs.max_seen || '8000000' }}
+        run: |
+          set -euo pipefail
+          ulimit -c 0
+          python batch.py \
+            --job-id "${{ matrix.id }}" --job-count 20 --workers 4 \
+            --stage "$STAGE" --runtime-seconds "$RUNTIME_SECONDS" \
+            --task-seconds 3600 --max-seen "$MAX_SEEN" --output out \
+            2>&1 | tee out/driver.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: data-${{ matrix.id }}
           path: out/
-          retention-days: 7
-          compression-level: 9
+          if-no-files-found: error
+          retention-days: 3
+          compression-level: 6
