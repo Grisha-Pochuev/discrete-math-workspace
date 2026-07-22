@@ -3,15 +3,16 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import signal
 import subprocess
 import time
+import zipfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
 
 GIB = 1024 ** 3
+FRONTIER_ARCHIVES = Path(__file__).parent / "runs" / "2026-07-22-a" / "raw"
 
 
 @dataclass(frozen=True)
@@ -22,14 +23,62 @@ class Task:
     shard: int
     shards: int
     split: int = 15
+    max_seen: int = 0
 
     @property
     def name(self) -> str:
-        return f"{self.stage}-o{self.orbit}-l{self.limit}-s{self.shard:03d}-of-{self.shards}"
+        return f"{self.stage}-o{self.orbit}-l{self.limit}-s{self.shard:05d}-of-{self.shards}"
+
+
+def frontier2_tasks() -> list[Task]:
+    parents: list[dict[str, object]] = []
+    archives = sorted(FRONTIER_ARCHIVES.glob("data-*.zip"))
+    if len(archives) != 20:
+        raise RuntimeError(f"expected 20 source artifacts, found {len(archives)}")
+    for archive in archives:
+        with zipfile.ZipFile(archive) as handle:
+            manifest_name = next(
+                (name for name in handle.namelist() if name.endswith("manifest.json")), None
+            )
+            if manifest_name is None:
+                raise RuntimeError(f"manifest missing in {archive}")
+            document = json.loads(handle.read(manifest_name))
+        parents.extend(record for record in document["records"] if record["status"] == "capacity")
+    parents.sort(key=lambda row: (int(row["limit"]), int(row["orbit"]), int(row["shard"])))
+    if len(parents) != 785:
+        raise RuntimeError(f"expected 785 capacity parents, found {len(parents)}")
+
+    factor = 16
+    refined_max_seen = 8_000_000
+    tasks: list[Task] = []
+
+    # Preserve the old split boundary. A child q refines parent p exactly when
+    # q mod old_shards == p, so completed parts of the old run are never repeated.
+    for child in range(factor):
+        for parent in parents:
+            old_shards = int(parent["shards"])
+            tasks.append(Task(
+                "r", int(parent["orbit"]), int(parent["limit"]),
+                int(parent["shard"]) + old_shards * child,
+                old_shards * factor, int(parent["split"]), refined_max_seen,
+            ))
+
+    # Advance in increasing support size. Limit 29 is a reserve queue so all
+    # 80 virtual cores remain occupied if limit 28 completes unexpectedly early.
+    for label, limit, shards, split in (
+        ("c", 28, 1024, 16),
+        ("d", 29, 2048, 17),
+    ):
+        for shard in range(shards):
+            for orbit in range(8):
+                tasks.append(Task(label, orbit, limit, shard, shards, split))
+    return tasks
 
 
 def all_tasks(stage: str) -> list[Task]:
     tasks: list[Task] = []
+    if stage == "frontier2":
+        return frontier2_tasks()
     if stage in {"frontier", "layer26"}:
         for orbit in (1, 2, 4, 5, 6, 7):
             tasks.extend(Task("a", orbit, 26, shard, 256) for shard in range(256))
@@ -59,12 +108,20 @@ def rss(pid: int) -> int:
     return 0
 
 
-def parse_status(path: Path) -> str:
+def read_result(path: Path) -> tuple[str, dict[str, object], list[str]]:
     try:
-        first = path.read_text(encoding="utf-8").splitlines()[0].split()
-        return first[first.index("status") + 1]
+        lines = path.read_text(encoding="utf-8").splitlines()
+        words = lines[0].split()
+        value = lambda key: words[words.index(key) + 1]
+        details: dict[str, object] = {
+            "nodes": int(value("nodes")),
+            "seen": int(value("seen")),
+            "seconds": float(value("seconds")),
+            "effective_max_seen": int(value("max_seen")),
+        }
+        return value("status"), details, lines[1:]
     except (FileNotFoundError, IndexError, ValueError):
-        return "missing"
+        return "missing", {}, []
 
 
 def stop_process(process: subprocess.Popen[str], hard: bool = False) -> None:
@@ -81,10 +138,13 @@ def main() -> int:
     parser.add_argument("--job-id", type=int, default=0)
     parser.add_argument("--job-count", type=int, default=20)
     parser.add_argument("--workers", type=int, default=4)
-    parser.add_argument("--runtime-seconds", type=int, default=20_400)
+    parser.add_argument("--runtime-seconds", type=int, default=21_000)
     parser.add_argument("--task-seconds", type=int, default=3_600)
-    parser.add_argument("--max-seen", type=int, default=8_000_000)
-    parser.add_argument("--stage", choices=("frontier", "layer26", "layer27"), default="frontier")
+    parser.add_argument("--max-seen", type=int, default=32_000_000)
+    parser.add_argument(
+        "--stage", choices=("frontier", "layer26", "layer27", "frontier2"),
+        default="frontier2",
+    )
     parser.add_argument("--output", default="out")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
@@ -96,7 +156,12 @@ def main() -> int:
     if args.dry_run:
         counts = [sum(1 for index in range(len(tasks0)) if index % args.job_count == job)
                   for job in range(args.job_count)]
-        print(json.dumps({"total": len(tasks0), "per_job": counts}, sort_keys=True))
+        by_limit = {
+            str(limit): sum(1 for task in tasks0 if task.limit == limit)
+            for limit in sorted({task.limit for task in tasks0})
+        }
+        print(json.dumps({"total": len(tasks0), "per_job": counts, "by_limit": by_limit},
+                         sort_keys=True))
         assert max(counts) - min(counts) <= 1
         return 0
 
@@ -104,14 +169,17 @@ def main() -> int:
     output.mkdir(parents=True, exist_ok=True)
     start = time.monotonic()
     deadline = start + args.runtime_seconds
+    launch_margin = min(240, max(5, args.runtime_seconds // 16))
+    shutdown_margin = min(180, max(3, args.runtime_seconds // 20))
+    shutdown_grace = min(90, max(2, args.runtime_seconds // 50))
     pending = list(tasks)
     active: dict[int, tuple[Task, subprocess.Popen[str], object, Path, Path]] = {}
     records: list[dict[str, object]] = []
     technical_failure = False
     low_memory_strikes = 0
-    resource_path = output / "resources.tsv"
-    resource_file = resource_path.open("w", encoding="utf-8", buffering=1)
+    resource_file = (output / "resources.tsv").open("w", encoding="utf-8", buffering=1)
     resource_file.write("elapsed_s\trss_bytes\tmem_available_bytes\tswap_used_bytes\tactive\tpending\n")
+    record_file = (output / "records.jsonl").open("w", encoding="utf-8", buffering=1)
 
     def launch(task: Task) -> None:
         remaining = max(60, int(deadline - time.monotonic() - 180))
@@ -119,20 +187,44 @@ def main() -> int:
         result_path = output / f"{task.name}.txt"
         log_path = output / f"{task.name}.log"
         log_handle = log_path.open("w", encoding="utf-8")
+        effective_max_seen = task.max_seen or args.max_seen
         command = [
             "./search", "--orbit", str(task.orbit), "--limit", str(task.limit),
             "--shard-count", str(task.shards), "--shard-index", str(task.shard),
             "--split-size", str(task.split), "--time-limit", str(task_seconds),
-            "--max-seen", str(args.max_seen), "--report-every", "0",
+            "--max-seen", str(effective_max_seen), "--report-every", "0",
             "--output", str(result_path),
         ]
         process = subprocess.Popen(command, stdout=log_handle, stderr=subprocess.STDOUT, text=True)
         active[process.pid] = (task, process, log_handle, result_path, log_path)
 
+    def finish(pid: int, expected_stop: bool = False) -> None:
+        nonlocal technical_failure
+        task, process, log_handle, result_path, log_path = active.pop(pid)
+        if process.poll() is None:
+            process.wait(timeout=10)
+        log_handle.close()
+        status, details, solutions = read_result(result_path)
+        if expected_stop and status == "missing":
+            status = "deadline_kill"
+        record = asdict(task) | details | {
+            "name": task.name,
+            "returncode": process.returncode,
+            "status": status,
+            "solutions": solutions,
+        }
+        records.append(record)
+        record_file.write(json.dumps(record, sort_keys=True) + "\n")
+        failure = not expected_stop and (process.returncode != 0 or status == "missing")
+        technical_failure = technical_failure or failure
+        if not failure:
+            result_path.unlink(missing_ok=True)
+            log_path.unlink(missing_ok=True)
+
     try:
         while pending or active:
             now = time.monotonic()
-            while pending and len(active) < args.workers and now < deadline - 240:
+            while pending and len(active) < args.workers and now < deadline - launch_margin:
                 launch(pending.pop(0))
 
             time.sleep(5)
@@ -153,44 +245,37 @@ def main() -> int:
             finished = [pid for pid, (_, process, _, _, _) in active.items()
                         if process.poll() is not None]
             for pid in finished:
-                task, process, log_handle, result_path, log_path = active.pop(pid)
-                log_handle.close()
-                status = parse_status(result_path)
-                record = asdict(task) | {
-                    "name": task.name,
-                    "returncode": process.returncode,
-                    "status": status,
-                    "result": result_path.name,
-                    "log": log_path.name,
-                }
-                records.append(record)
-                if process.returncode != 0 or status == "missing":
-                    technical_failure = True
+                finish(pid)
 
-            if time.monotonic() >= deadline - 180:
+            if time.monotonic() >= deadline - shutdown_margin:
                 for _, process, _, _, _ in active.values():
                     stop_process(process)
-                limit = time.monotonic() + 90
-                while active and time.monotonic() < limit:
+                grace = time.monotonic() + shutdown_grace
+                while active and time.monotonic() < grace:
                     time.sleep(2)
                     finished = [pid for pid, (_, process, _, _, _) in active.items()
                                 if process.poll() is not None]
                     for pid in finished:
-                        task, process, log_handle, result_path, log_path = active.pop(pid)
-                        log_handle.close()
-                        status = parse_status(result_path)
-                        records.append(asdict(task) | {
-                            "name": task.name, "returncode": process.returncode,
-                            "status": status, "result": result_path.name, "log": log_path.name,
-                        })
-                for _, process, _, _, _ in active.values():
-                    stop_process(process, hard=True)
+                        finish(pid, expected_stop=True)
+                for pid in list(active):
+                    stop_process(active[pid][1], hard=True)
+                for pid in list(active):
+                    try:
+                        active[pid][1].wait(timeout=10)
+                    except subprocess.TimeoutExpired:
+                        pass
+                    finish(pid, expected_stop=True)
                 break
     finally:
-        for _, process, log_handle, _, _ in active.values():
-            stop_process(process, hard=True)
-            log_handle.close()
+        for pid in list(active):
+            stop_process(active[pid][1], hard=True)
+            try:
+                active[pid][1].wait(timeout=10)
+            except subprocess.TimeoutExpired:
+                pass
+            finish(pid, expected_stop=True)
         resource_file.close()
+        record_file.close()
 
     completed_names = {str(record["name"]) for record in records}
     unstarted = [task.name for task in tasks if task.name not in completed_names]
@@ -200,11 +285,15 @@ def main() -> int:
         "stage": args.stage,
         "elapsed_seconds": time.monotonic() - start,
         "assigned": len(tasks),
-        "records": records,
+        "recorded": len(records),
         "unstarted": unstarted,
         "counts": {
             status: sum(1 for record in records if record["status"] == status)
             for status in sorted({str(record["status"]) for record in records})
+        },
+        "limits": {
+            str(limit): sum(1 for record in records if record["limit"] == limit)
+            for limit in sorted({int(record["limit"]) for record in records})
         },
     }
     (output / "manifest.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n",
