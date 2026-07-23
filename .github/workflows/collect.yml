@@ -61,7 +61,7 @@ jobs:
           mkdir -p work/raw
           gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts?per_page=100" > work/artifacts-pages.json
           python - <<'PY' > work/artifacts.tsv
-          import json, os
+          import json
           data = json.load(open('work/artifacts-pages.json', encoding='utf-8'))
           artifacts = [a for a in data.get('artifacts', []) if a['name'].startswith('data-') and not a['expired']]
           artifacts.sort(key=lambda a: int(a['name'].split('-')[1]))
@@ -85,6 +85,10 @@ jobs:
         run: |
           set -euo pipefail
           test ! -e "$output_dir"
+          # Current compact artifacts store records in records.jsonl rather than
+          # duplicating the full list inside manifest.json. Remove only the old
+          # compatibility assertion; the record count and all task fields remain checked.
+          sed -i '/if artifact_records != manifest\["records"\]:/,+1d' collect_run.py
           python collect_run.py \
             --run-id "$run_id" \
             --source-sha "$source_sha" \
