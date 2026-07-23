@@ -1,0 +1,7 @@
+run_id=29960969740
+source_sha=309f47a0be5ac0038f900feeceb447eac4d8ff23
+source_stage=frontier2
+output_dir=runs/2026-07-23-b
+retry_of=29978540008
+retry_attempt=1
+reason=compact manifest stores task records only in records.jsonl
