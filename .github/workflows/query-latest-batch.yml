@@ -1,44 +1,139 @@
-name: query latest batch run
+name: prepare verified batch archive
 
 on:
   push:
     branches: [main]
     paths:
-      - ".query/**"
+      - ".archive/**"
 
 permissions:
   contents: write
   actions: read
 
+concurrency:
+  group: prepare-batch-archive
+  cancel-in-progress: false
+
 jobs:
-  query:
+  prepare:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 60
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
-      - name: Query run and publish status
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Read explicit archive request
         shell: bash
         run: |
           set -euo pipefail
-          marker="$(find .query -maxdepth 1 -type f -name '*.txt' -printf '%T@ %p\n' | sort -nr | head -1 | cut -d' ' -f2-)"
-          head_sha="$(sed -n 's/^head_sha=//p' "$marker" | tail -1)"
-          test -n "$head_sha"
-          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${head_sha}&per_page=20" > all-runs.json
-          python - <<'PY' > latest-run.json
-          import json
-          data=json.load(open('all-runs.json',encoding='utf-8'))
-          runs=[r for r in data.get('workflow_runs',[]) if r.get('name')=='batch']
-          if not runs:
-              raise SystemExit('no batch run found')
-          r=max(runs,key=lambda x:x['id'])
-          keep={k:r.get(k) for k in ('id','name','status','conclusion','html_url','head_sha','path','created_at','updated_at')}
-          print(json.dumps(keep,indent=2,sort_keys=True))
+          marker="$(find .archive -maxdepth 1 -type f -name '*.txt' -printf '%T@ %p\n' | sort -nr | head -1 | cut -d' ' -f2-)"
+          test -n "$marker"
+          python - "$marker" <<'PY' > request.env
+          import pathlib, sys
+          values = {}
+          for line in pathlib.Path(sys.argv[1]).read_text(encoding='utf-8').splitlines():
+              if not line.strip() or line.lstrip().startswith('#'):
+                  continue
+              key, value = line.split('=', 1)
+              values[key.strip()] = value.strip()
+          required = {
+              'run_id', 'source_sha', 'source_tasks', 'source_lane',
+              'manifest_stage', 'output_dir', 'reserve_limit',
+              'reserve_shards', 'reserve_split'
+          }
+          assert required <= values.keys(), required - values.keys()
+          for key in sorted(values):
+              print(f'{key}={values[key]}')
           PY
-          encoded="$(base64 -w0 latest-run.json)"
-          path="diagnostics/latest-batch-run.json"
-          current_sha="$(gh api "repos/${GITHUB_REPOSITORY}/contents/${path}?ref=main" --jq .sha 2>/dev/null || true)"
-          args=(--method PUT "repos/${GITHUB_REPOSITORY}/contents/${path}" -f message="record latest batch run" -f content="$encoded" -f branch=main)
-          if [ -n "$current_sha" ]; then args+=(-f sha="$current_sha"); fi
-          gh api "${args[@]}"
+          cat request.env
+          cat request.env >> "$GITHUB_ENV"
+
+      - name: Install exact verification dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Download all original artifact ZIP files
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf work
+          mkdir -p work/raw
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts?per_page=100" > work/artifacts-pages.json
+          python - <<'PY' > work/artifacts.tsv
+          import json
+          data = json.load(open('work/artifacts-pages.json', encoding='utf-8'))
+          artifacts = [
+              artifact for artifact in data.get('artifacts', [])
+              if artifact['name'].startswith('data-') and not artifact['expired']
+          ]
+          artifacts.sort(key=lambda artifact: int(artifact['name'].split('-')[1]))
+          expected = [f'data-{index}' for index in range(20)]
+          assert [artifact['name'] for artifact in artifacts] == expected
+          for artifact in artifacts:
+              print(f"{artifact['id']}\t{artifact['name']}\t{artifact.get('digest', '')}")
+          PY
+          while IFS=$'\t' read -r artifact_id artifact_name artifact_digest; do
+            curl --fail --location --retry 4 --retry-all-errors \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              -o "work/raw/${artifact_name}.zip"
+            unzip -t "work/raw/${artifact_name}.zip" >/dev/null
+          done < work/artifacts.tsv
+          test "$(find work/raw -maxdepth 1 -name 'data-*.zip' | wc -l)" -eq 20
+
+      - name: Aggregate against the exact source task list
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e "$output_dir"
+          test -f "$source_tasks"
+          python collect_run.py \
+            --run-id "$run_id" \
+            --source-sha "$source_sha" \
+            --source-tasks "$source_tasks" \
+            --source-lane "$source_lane" \
+            --manifest-stage "$manifest_stage" \
+            --raw-dir work/raw \
+            --output "$output_dir" \
+            --reserve-limit "$reserve_limit" \
+            --reserve-shards "$reserve_shards" \
+            --reserve-split "$reserve_split" \
+            | tee work/collection-summary.log
+          python "$output_dir/verify.py" | tee work/verifier.log
+
+      - name: Commit candidate archive to an isolated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="agent/archive-${run_id}"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "archive branch already exists: $branch" >&2
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git checkout -b "$branch"
+          git add "$output_dir"
+          git diff --cached --quiet && { echo 'no archive files staged' >&2; exit 1; }
+          git commit -m "prepare batch run ${run_id} archive"
+          git push origin "HEAD:${branch}"
+          printf 'branch=%s\ncommit=%s\n' "$branch" "$(git rev-parse HEAD)" | tee work/archive-branch.env
+
+      - name: Upload preparation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: archive-preparation-${{ github.run_id }}
+          path: |
+            request.env
+            work/artifacts.tsv
+            work/collection-summary.log
+            work/verifier.log
+            work/archive-branch.env
+          if-no-files-found: warn
+          retention-days: 7
