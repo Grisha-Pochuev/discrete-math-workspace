@@ -1,0 +1,88 @@
+name: batch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".runs3/**"
+  workflow_dispatch:
+    inputs:
+      runtime_seconds:
+        description: useful runtime per task host
+        required: true
+        default: "21000"
+      max_seen:
+        description: state-table cap for tasks without an explicit cap
+        required: true
+        default: "32000000"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: batch-frontier3-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  compute:
+    name: task-${{ matrix.id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: system
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          {
+            uname -a
+            nproc
+            lscpu
+            free -h
+            swapon --show
+            df -h .
+            ulimit -a
+            grep -E "MemTotal|MemAvailable|SwapTotal|SwapFree" /proc/meminfo
+          } > out/system.txt
+
+      - name: compile
+        run: g++ -O3 -DNDEBUG -std=c++20 -march=native -o search search.cpp
+
+      - name: preflight
+        run: |
+          set -euo pipefail
+          ./search --orbit 0 --limit 12 --split-size 12 \
+            --time-limit 60 --max-seen 100000 \
+            --output out/smoke.txt \
+            2>&1 | tee out/preflight.log
+          grep -q "status complete" out/smoke.txt
+          python frontier3.py --stage frontier2 --job-count 20 --dry-run \
+            | tee -a out/preflight.log
+
+      - name: execute
+        env:
+          RUNTIME_SECONDS: ${{ inputs.runtime_seconds || '21000' }}
+          MAX_SEEN: ${{ inputs.max_seen || '32000000' }}
+        run: |
+          set -euo pipefail
+          ulimit -c 0
+          python frontier3.py \
+            --job-id "${{ matrix.id }}" --job-count 20 --workers 4 \
+            --stage frontier2 --runtime-seconds "$RUNTIME_SECONDS" \
+            --task-seconds 3600 --max-seen "$MAX_SEEN" --output out \
+            2>&1 | tee out/driver.log
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: data-${{ matrix.id }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
