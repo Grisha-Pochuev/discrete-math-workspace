@@ -1,0 +1,146 @@
+name: collect completed batch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".collect/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: collect-batch-results
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Read collection marker
+        id: marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker="$(find .collect -maxdepth 1 -type f -name '*.txt' -printf '%T@ %p\n' | sort -nr | head -1 | cut -d' ' -f2-)"
+          test -n "$marker"
+          python - "$marker" <<'PY' > marker.env
+          import pathlib, sys
+          values = {}
+          for line in pathlib.Path(sys.argv[1]).read_text(encoding='utf-8').splitlines():
+              if not line.strip() or line.lstrip().startswith('#'):
+                  continue
+              key, value = line.split('=', 1)
+              values[key.strip()] = value.strip()
+          required = {'run_id','source_sha','source_stage','output_dir'}
+          assert required <= values.keys(), required - values.keys()
+          for key in sorted(values):
+              print(f'{key}={values[key]}')
+          PY
+          cat marker.env
+          cat marker.env >> "$GITHUB_ENV"
+
+      - name: Install exact verification dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Download original artifact archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf work
+          mkdir -p work/raw
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts?per_page=100" > work/artifacts-pages.json
+          python - <<'PY' > work/artifacts.tsv
+          import json, os
+          data = json.load(open('work/artifacts-pages.json', encoding='utf-8'))
+          artifacts = [a for a in data.get('artifacts', []) if a['name'].startswith('data-') and not a['expired']]
+          artifacts.sort(key=lambda a: int(a['name'].split('-')[1]))
+          assert [a['name'] for a in artifacts] == [f'data-{i}' for i in range(20)]
+          for a in artifacts:
+              print(f"{a['id']}\t{a['name']}")
+          PY
+          while IFS=$'\t' read -r artifact_id artifact_name; do
+            curl --fail --location --retry 4 --retry-all-errors \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              -o "work/raw/${artifact_name}.zip"
+            unzip -t "work/raw/${artifact_name}.zip" >/dev/null
+          done < work/artifacts.tsv
+          test "$(find work/raw -maxdepth 1 -name 'data-*.zip' | wc -l)" -eq 20
+
+      - name: Aggregate, exactly verify, and prepare successor
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e "$output_dir"
+          python collect_run.py \
+            --run-id "$run_id" \
+            --source-sha "$source_sha" \
+            --source-stage "$source_stage" \
+            --raw-dir work/raw \
+            --output "$output_dir" \
+            | tee work/collection-summary.log
+          python "$output_dir/verify.py"
+
+      - name: Create one successor marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .runs
+          successor=".runs/$(date -u +%Y-%m-%d)-frontier3-after-${run_id}.txt"
+          test ! -e "$successor"
+          python - <<'PY' > "$successor"
+          import json, os
+          summary = json.load(open(os.path.join(os.environ['output_dir'], 'summary.json'), encoding='utf-8'))
+          nxt = summary['next_frontier']
+          print(f"parent_run={os.environ['run_id']}")
+          print("stage=frontier3")
+          print("runtime_seconds=21000")
+          print("max_seen=32000000")
+          print("jobs=20")
+          print("workers_per_job=4")
+          print(f"tasks={nxt['tasks']}")
+          print(f"frontier=refine {nxt['refined']} incomplete tasks; carry {nxt['carried']} unstarted tasks; reserve {nxt['reserve']} layer-30 tasks")
+          PY
+          cat "$successor"
+
+      - name: Commit verified archive and launch successor
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add collect_run.py batch.py .github/workflows/run.yml "$output_dir" .runs
+          git commit -m "save batch run ${run_id} and launch exact successor"
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            sleep $((attempt * 5))
+          done
+          exit 1
+
+      - name: Upload collector diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collector-${{ github.run_id }}
+          path: |
+            marker.env
+            work/artifacts.tsv
+            work/collection-summary.log
+          if-no-files-found: warn
+          retention-days: 7
