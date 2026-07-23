@@ -109,7 +109,19 @@ If the schema changes:
 - keep backward compatibility where practical;
 - never patch the collector at runtime with `sed`, ad-hoc deletion, or other mutation.
 
-### 3.5 Do not modify tracked source code inside a collection run
+### 3.5 The source task list must be explicit
+
+A collector must receive the exact source task list used by the completed run, normally the parent archive's `next_tasks.json`.
+
+It must verify for each job that:
+
+- recorded task names plus unstarted task names equal the exact assigned slice of the source list;
+- task metadata agrees with the source list;
+- no source task is missing, duplicated, or replaced by a task reconstructed from an older helper function.
+
+Never infer the current generation from `batch.frontier2_tasks()`, the newest directory name, a hard-coded layer, or a function name left over from an earlier run.
+
+### 3.6 Do not modify tracked source code inside a collection run
 
 A workflow must execute committed code exactly as reviewed.
 
@@ -124,7 +136,7 @@ modify a workflow file during the job
 
 If a parser or collector needs correction, update it in a normal commit, test it, then run it.
 
-### 3.6 GitHub Actions must not publish workflow-file changes
+### 3.7 GitHub Actions must not publish workflow-file changes
 
 The normal `GITHUB_TOKEN` is intentionally restricted. A workflow that attempts to push `.github/workflows/*.yml` may be rejected even when result aggregation and exact verification succeeded.
 
@@ -135,7 +147,7 @@ Therefore:
 - prepare workflow changes in a normal reviewed commit through the connected GitHub tool or another authorized publisher;
 - treat a workflow permission failure as a publication failure, not a mathematical failure.
 
-### 3.7 Separate verification, publication, and launch
+### 3.8 Separate verification, publication, and launch
 
 These are three distinct phases:
 
@@ -147,14 +159,16 @@ Do not couple all three phases inside an untested workflow.
 
 Preferred sequence:
 
-1. verify against downloaded artifacts without changing the repository;
+1. verify against downloaded artifacts without changing `main`;
 2. commit the dated `runs/` archive;
 3. re-read `main` and confirm the archive commit exists;
 4. check that no successor is queued, running, or already recorded;
 5. create one unique successor marker in a separate single-purpose commit;
 6. confirm exactly one intended workflow was created.
 
-### 3.8 One publisher only
+A verification workflow may prepare a candidate archive on a uniquely named temporary branch only when the external environment cannot process binary artifacts. It must not update `main`. The external controller must verify the branch commit, confirm that it descends from the current `main`, and perform the final fast-forward publication. If `main` moved, abort rather than overwrite newer work.
+
+### 3.9 One publisher only
 
 Only one actor may publish a given completed run.
 
@@ -167,7 +181,7 @@ Before publishing, check:
 
 Do not let a GitHub Actions workflow, an hourly automation, and a manual agent all push the same result concurrently.
 
-### 3.9 Safe commit discipline
+### 3.10 Safe commit discipline
 
 Before every write to `main`:
 
@@ -188,7 +202,7 @@ Use clear commit roles:
 
 Do not generate status-query commits. Query GitHub Actions through the API instead.
 
-### 3.10 Safe compute baseline
+### 3.11 Safe compute baseline
 
 For standard public Linux runners use this safe baseline unless measured evidence justifies a change:
 
@@ -204,7 +218,7 @@ For standard public Linux runners use this safe baseline unless measured evidenc
 
 A controlled `capacity`, `timeout`, `stopped`, or memory-guard result is not automatically a workflow failure.
 
-### 3.11 Failure classification
+### 3.12 Failure classification
 
 #### Runner was not acquired
 
@@ -233,6 +247,7 @@ Examples:
 - malformed input;
 - missing mandatory file;
 - parser/schema mismatch;
+- source-task-list mismatch;
 - corrupt artifact;
 - assertion failure;
 - segmentation fault;
@@ -242,14 +257,14 @@ Examples:
 
 Fix the confirmed cause, test the corrected path, then retry once.
 
-### 3.12 Notification hygiene
+### 3.13 Notification hygiene
 
 Every red workflow can generate email. Avoid creating noise by architecture, not by disabling security mail.
 
 Rules:
 
 - keep only necessary active workflows;
-- delete obsolete collector workflows after their purpose is complete;
+- delete obsolete collector, query, and inspector workflows after their purpose is complete;
 - do not leave workflows that trigger on every push but skip all jobs through an internal `if`;
 - do not create a new workflow for each retry;
 - reserve red status for genuine technical failures;
@@ -263,14 +278,16 @@ After a technically completed computation:
 1. download all expected artifacts;
 2. verify artifact names, count, ZIP integrity, and checksums;
 3. read `manifest.json` and `records.jsonl` according to the committed schema;
-4. identify missing, duplicate, corrupt, and unstarted tasks;
-5. classify all records as `complete`, `capacity`, `timeout`, `stopped`, memory guard, or technical failure;
-6. aggregate nodes, states, engine seconds, supports, CPU models, peak RSS, minimum available memory, and swap;
-7. exactly verify every new support;
-8. write a dated archive containing raw artifacts, checksums, summary, verifier, and next-frontier description;
-9. execute the verifier from the finished archive;
-10. publish the archive in one result commit;
-11. only after publication, create one successor marker in a separate commit.
+4. load the exact source task list used by the run;
+5. prove that every source task is represented exactly once as recorded or unstarted;
+6. identify missing, duplicate, corrupt, and unstarted tasks;
+7. classify all records as `complete`, `capacity`, `timeout`, `stopped`, memory guard, or technical failure;
+8. aggregate nodes, states, engine seconds, supports, CPU models, peak RSS, minimum available memory, and swap;
+9. exactly verify every new support;
+10. write a dated archive containing raw artifacts, checksums, summary, verifier, and next-frontier description;
+11. execute the verifier from the finished archive;
+12. publish the archive in one result commit;
+13. only after publication, create one successor marker in a separate commit.
 
 Never claim a layer is closed while any shard is missing, capacity-limited, timed out, corrupt, unverified, or never started.
 
@@ -367,6 +384,26 @@ Never claim a layer is closed while any shard is missing, capacity-limited, time
 **Permanent fix:** this file is now the canonical failure memory. The hourly automation must read it first and keep only a short portable control loop in its own prompt.
 
 **Forbidden repetition:** do not duplicate incident-specific rules across chat context, automation text, and workflow code. Store durable lessons here and let automation reference them.
+
+### 2026-07-23 — pre-publication audit of run 29984144124: collector was tied to the previous generation
+
+**Intended goal:** aggregate the completed 20-job frontier run and construct its exact successor.
+
+**What actually happened:** before running the collector, a static audit found three independent defects. The collector still accessed `manifest["records"]` although the producer writes records only to `records.jsonl`; it reconstructed the source queue by calling `batch.frontier2_tasks()` instead of loading the exact `next_tasks.json` used by run 29984144124; and it attempted to mutate `batch.py` and workflow files while saving the archive.
+
+**Evidence:** `batch.py` writes only counts and `unstarted` to `manifest.json`; the committed collector compared `records.jsonl` with `manifest["records"]`; its `next_frontier()` began from `batch.frontier2_tasks()` and added layer 30 again; `install_frontier3_wiring()` edited tracked source and `.github/workflows/run.yml`.
+
+**Classification:** latent collector design failure caught before execution. The mathematical run itself completed successfully and produced all 20 artifacts.
+
+**Root cause:** the collector encoded assumptions about one historical generation rather than accepting an explicit source-task contract and explicit reserve-layer parameters.
+
+**Consequences:** collection was paused before a wrong archive or duplicate frontier could be published. No mathematical result was lost and no speculative retry was launched.
+
+**Permanent fix:** use a data-only collector that receives the exact source `next_tasks.json`, verifies each job's assigned slice, reads records only from `records.jsonl`, accepts the next reserve layer explicitly, and never edits tracked source or workflows.
+
+**Forbidden repetition:** never derive a completed run's source queue from an old task-generator function; never silently reuse the previous reserve layer; never let archive generation rewrite executable or workflow files.
+
+**Validated replacement:** pending one end-to-end verification against the 20 real artifacts from run 29984144124. Do not launch a successor until that verification passes.
 
 ## 6. Mandatory startup checklist for any future agent or automation
 
