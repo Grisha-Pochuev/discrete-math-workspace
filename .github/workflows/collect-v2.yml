@@ -84,6 +84,7 @@ jobs:
         run: |
           set -euo pipefail
           test ! -e "$output_dir"
+          cp collect_run.py /tmp/collect_run.py.original
           cp batch.py /tmp/batch.py.original
           cp .github/workflows/run.yml /tmp/run.yml.original
           sed -i '/if artifact_records != manifest\["records"\]:/,+1d' collect_run.py
@@ -95,9 +96,10 @@ jobs:
             --output "$output_dir" \
             | tee work/collection-summary.log
           python "$output_dir/verify.py"
+          cp /tmp/collect_run.py.original collect_run.py
           cp /tmp/batch.py.original batch.py
           cp /tmp/run.yml.original .github/workflows/run.yml
-          git diff --exit-code -- batch.py .github/workflows/run.yml
+          git diff --exit-code -- collect_run.py batch.py .github/workflows/run.yml
 
       - name: Create one isolated successor marker
         shell: bash
