@@ -1,0 +1,44 @@
+name: query latest batch run
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".query/**"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  query:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Query run and publish status
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker="$(find .query -maxdepth 1 -type f -name '*.txt' -printf '%T@ %p\n' | sort -nr | head -1 | cut -d' ' -f2-)"
+          head_sha="$(sed -n 's/^head_sha=//p' "$marker" | tail -1)"
+          test -n "$head_sha"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${head_sha}&per_page=20" > all-runs.json
+          python - <<'PY' > latest-run.json
+          import json
+          data=json.load(open('all-runs.json',encoding='utf-8'))
+          runs=[r for r in data.get('workflow_runs',[]) if r.get('name')=='batch']
+          if not runs:
+              raise SystemExit('no batch run found')
+          r=max(runs,key=lambda x:x['id'])
+          keep={k:r.get(k) for k in ('id','name','status','conclusion','html_url','head_sha','path','created_at','updated_at')}
+          print(json.dumps(keep,indent=2,sort_keys=True))
+          PY
+          encoded="$(base64 -w0 latest-run.json)"
+          path="diagnostics/latest-batch-run.json"
+          current_sha="$(gh api "repos/${GITHUB_REPOSITORY}/contents/${path}?ref=main" --jq .sha 2>/dev/null || true)"
+          args=(--method PUT "repos/${GITHUB_REPOSITORY}/contents/${path}" -f message="record latest batch run" -f content="$encoded" -f branch=main)
+          if [ -n "$current_sha" ]; then args+=(-f sha="$current_sha"); fi
+          gh api "${args[@]}"
