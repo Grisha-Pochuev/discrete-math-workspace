@@ -30,8 +30,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          marker="$(find .archive -maxdepth 1 -type f -name '*.txt' -printf '%T@ %p\n' | sort -nr | head -1 | cut -d' ' -f2-)"
-          test -n "$marker"
+          mkdir -p work
+          marker="$(python - <<'PY'
+          from pathlib import Path
+          markers = list(Path('.archive').glob('*.txt'))
+          if not markers:
+              raise SystemExit('no archive request marker')
+          print(max(markers, key=lambda path: path.stat().st_mtime_ns))
+          PY
+          )"
           python - "$marker" <<'PY' > request.env
           import pathlib, sys
           values = {}
@@ -56,7 +63,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p work
           gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${source_sha}&event=push&per_page=100" > work/source-runs.json
           python - <<'PY' > work/run.env
           import json
@@ -124,16 +130,21 @@ jobs:
           done < work/artifacts.tsv
           test "$(find work/raw -maxdepth 1 -name 'data-*.zip' | wc -l)" -eq 20
 
-      - name: Aggregate against the exact source task list
+      - name: Aggregate, compact, and verify final archive
         shell: bash
         run: |
           set -euo pipefail
           test ! -e "$output_dir"
           test -f "$source_tasks"
+          materialized_source="$source_tasks"
+          if [[ "$source_tasks" == *.gz ]]; then
+            materialized_source="work/source_tasks.json"
+            gzip -cd -- "$source_tasks" > "$materialized_source"
+          fi
           python collect_run.py \
             --run-id "$run_id" \
             --source-sha "$source_sha" \
-            --source-tasks "$source_tasks" \
+            --source-tasks "$materialized_source" \
             --source-lane "$source_lane" \
             --manifest-stage "$manifest_stage" \
             --raw-dir work/raw \
@@ -142,6 +153,7 @@ jobs:
             --reserve-shards "$reserve_shards" \
             --reserve-split "$reserve_split" \
             | tee work/collection-summary.log
+          python compact_archive.py "$output_dir" | tee work/compaction.log
           python "$output_dir/verify.py" | tee work/verifier.log
 
       - name: Preserve complete verified candidate archive
@@ -163,6 +175,17 @@ jobs:
             du -sh "$output_dir"
             find "$output_dir" -type f -printf '%s %p\n' | sort -nr > work/largest-files.txt
             sed -n '1,20p' work/largest-files.txt
+            python - "$output_dir" <<'PY'
+          from pathlib import Path
+          import sys
+          root = Path(sys.argv[1])
+          unsafe = [
+              (path.stat().st_size, path.as_posix())
+              for path in root.rglob('*')
+              if path.is_file() and path.stat().st_size >= 95 * 1024 * 1024
+          ]
+          assert not unsafe, f'GitHub-unsafe archive blobs: {unsafe}'
+          PY
             if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
               echo "archive branch already exists: $branch" >&2
               exit 1
@@ -188,6 +211,7 @@ jobs:
             work/run.env
             work/artifacts.tsv
             work/collection-summary.log
+            work/compaction.log
             work/verifier.log
             work/largest-files.txt
             work/publication.log

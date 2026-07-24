@@ -1,26 +1,228 @@
-# Failure Memory and Anti-Regression Guide
+# Failure Memory, Good-Run Template, and Anti-Regression Guide
 
-This file is the persistent memory of failed, fragile, misleading, or unnecessarily noisy attempts in this repository.
+This file is the mandatory persistent operating memory for this repository.
 
-Its primary purpose is **not** to describe the current run. Its purpose is to prevent the same mistakes from being repeated by a later agent, chat, automation, or maintainer.
+It has two equal purposes:
 
-Read this file before:
+1. preserve failed, fragile, misleading, or noisy attempts so they are not repeated;
+2. preserve a positive reference architecture for preparing, running, collecting, and publishing a large computation correctly.
 
-- creating or editing a GitHub Actions workflow;
-- retrying a failed run;
-- collecting or publishing results;
-- choosing a successor frontier;
-- changing the artifact format;
-- creating a new marker or automatic continuation mechanism;
-- committing generated results to `main`.
+Read this file completely before changing a workflow, retrying a run, collecting results, publishing an archive, creating a marker, or launching a successor.
 
-Do not store rapidly changing operational state here. Current run ids, frontier status, completed shards, and exact next tasks belong in the newest directory under `runs/`, the current marker, and GitHub Actions itself.
+Do not store rapidly changing state here. Current run ids, current frontier contents, completed shards, and exact next tasks belong in the newest `runs/` archive, the current marker, and GitHub Actions.
 
-## 1. How to record a failed attempt
+## 1. Scientific purpose
 
-Every meaningful failure must be appended to the incident log. Do not erase old incidents after fixing them.
+The computation is not required to produce pleasant numbers. It must produce objective, exact, reproducible evidence.
 
-Use this structure:
+A result that weakens a hoped-for pattern is still useful and must be preserved without cherry-picking. Continue from what the evidence actually says.
+
+The computational programme should provide GPT-5.6 Thinking or another strong reasoning system with trustworthy material for solving the Krenn–Gu problem:
+
+- exact task definitions and exact coverage;
+- complete, incomplete, timed-out, stopped, and unstarted classifications;
+- exact closed supports found by the search;
+- exact algebraic obstruction classifications;
+- representative raw artifacts and checksums;
+- resource and performance measurements;
+- a verifier that can independently reproduce all important claims.
+
+The AI should reason from these objective records. Do not alter the experiment to obtain more attractive-looking statistics.
+
+## 2. Sources of truth
+
+Inspect these in order before any write action:
+
+1. this file;
+2. the newest dated directory under `runs/`;
+3. its `summary.json`, task payload, checksums, verifier, records, and raw artifacts;
+4. the newest run marker and its `parent_run` / `retry_of` relation;
+5. every active file under `.github/workflows/` and the paths that trigger it;
+6. the public Actions API and the newest relevant run, jobs, steps, logs, annotations, and artifacts;
+7. `frontier3.py`, `batch.py`, `search.cpp`, `collect_run.py`, and archive-packaging code.
+
+Never infer the current frontier from an old chat description when repository data is available.
+
+## 3. Positive template: how to prepare a good large run
+
+This section describes technical success. It does not prescribe desired mathematical outcomes.
+
+### 3.1 Resolve the exact input
+
+- Load the exact task file from the immediately preceding verified archive.
+- Accept both plain JSON and deterministic gzip JSON.
+- Record `parent_run`, source commit, stage, task count, and task-file checksum.
+- Prove task names are unique.
+- Prove the 20 job slices are balanced and cover the exact queue once.
+- Never regenerate an old queue from a historical helper function when an explicit saved queue exists.
+
+### 3.2 Static validation before a large launch
+
+Before triggering 20 long jobs:
+
+- parse all YAML, Python, and shell syntax;
+- compile the exact committed C++ source;
+- verify all referenced files and paths exist;
+- confirm exactly one workflow matches the marker path;
+- confirm no matching run or successor already exists;
+- run the exact task loader in `--dry-run` mode;
+- verify output directories and artifact names;
+- calculate expected artifact and generated-file sizes;
+- reject any future Git blob at or above 95 MiB before attempting a push;
+- test changed collector or archive code against a real saved artifact set.
+
+A long run must not be the first test of new orchestration code.
+
+### 3.3 Independent per-job preflight
+
+Do not create one central validation job on which all compute jobs depend.
+
+Each of the 20 matrix jobs must independently:
+
+1. check out the reviewed commit;
+2. record OS, CPU, memory, swap, disk, and limits;
+3. compile;
+4. execute a short exact smoke test through the real wrapper;
+5. validate its assigned queue slice;
+6. start its computation only after those checks pass;
+7. upload its artifact with `if: always()`.
+
+Failure to acquire or initialize one runner must not cancel the other 19 jobs.
+
+### 3.4 Safe full-run baseline
+
+Unless measured evidence justifies a change:
+
+- 20 independent GitHub-hosted jobs;
+- 4 workers per job;
+- `runtime_seconds = 21000`;
+- job timeout of 360 minutes;
+- preferred combined RSS at most 10–11 GiB;
+- warning near 11.5 GiB;
+- keep `MemAvailable` above about 2.5 GiB;
+- no sustained swap;
+- preserve controlled `capacity`, `timeout`, `stopped`, `deadline_kill`, and memory-guard outcomes as valid bounded-search results.
+
+Record the actual CPU model and full process-tree resource use for every job.
+
+### 3.5 Good compute reference
+
+Run `30069271698` is a reference for the compute architecture, not for desired mathematics:
+
+- all 20 independent jobs completed technically;
+- per-job compile and preflight succeeded;
+- all 20 artifacts were present and readable;
+- exact aggregation against the saved source queue succeeded;
+- the generated verifier passed;
+- peak memory stayed safe and swap remained zero.
+
+Future large runs should match this technical discipline even when their mathematical statistics are disappointing.
+
+## 4. Positive template: collection, archive, publication, and successor
+
+### 4.1 Collection
+
+After a technically completed compute run:
+
+1. download exactly the expected 20 artifacts;
+2. verify names, count, ZIP integrity, and recorded artifact digests;
+3. read `manifest.json` and `records.jsonl` according to the committed schema;
+4. load the exact source task file used by the run;
+5. prove every source task appears exactly once as recorded or unstarted;
+6. reject duplicates, missing tasks, unexpected tasks, corrupt files, and schema mismatches;
+7. classify every record objectively;
+8. aggregate nodes, states, seconds, supports, CPU models, memory, and swap;
+9. exactly verify every newly found closed support;
+10. construct the successor only from incomplete and unstarted work, plus an explicit reserve layer.
+
+Never claim a layer is closed while any exact part is missing, unstarted, capacity-limited, timed out, corrupt, or unverified.
+
+### 4.2 Scalable archive contract
+
+Large queues are expected to grow. The archive format must scale before publication.
+
+- `source_tasks.json.gz` stores the exact source queue.
+- `next_tasks.json.gz` stores the exact successor queue.
+- `records.jsonl.gz` may store the record stream when compacted.
+- `summary.json` contains counts and compact aggregates, not millions of duplicated task names.
+- raw job ZIPs, `checksums.sha256`, `archive-checksums.sha256`, `README.md`, and `verify.py` remain in the archive.
+- gzip output must be deterministic so repeated packaging is reproducible.
+- the final verifier must read the compressed payloads, verify their checksums, and prove the exact next-task count and uniqueness.
+- before `git add`, enumerate file sizes and abort if any blob is at or above 95 MiB.
+
+Do not use Git LFS for a task queue that compresses from hundreds of megabytes to a few megabytes.
+
+### 4.3 Separate phases
+
+Verification, publication, and launch are separate phases:
+
+1. **Verification:** build the final archive and run its verifier without changing `main`.
+2. **Transport:** preserve the complete verified archive as an Actions artifact; when necessary, publish it to one deterministic isolated branch.
+3. **Publication:** an authorized external controller verifies the branch descends from current `main` and fast-forwards or otherwise publishes the archive.
+4. **Launch:** only after the archive is confirmed on `main`, create one unique successor marker in a separate commit.
+5. **Confirmation:** use the public Actions API to confirm exactly one intended compute run appeared.
+
+GitHub Actions must not edit `.github/workflows/` or directly update `main`. It may prepare an isolated candidate branch when the external controller needs binary transport.
+
+### 4.4 Safe commit discipline
+
+Before every write to `main`:
+
+- re-read the latest `main`;
+- confirm the target archive and marker do not already exist;
+- ensure there is only one publisher;
+- keep each commit single-purpose;
+- do not force-push;
+- verify the resulting commit after writing;
+- query Actions through the API, never through a status-only commit.
+
+Recommended commit roles:
+
+- `save batch run <run_id>` — verified result archive only;
+- `launch successor after <run_id>` — one marker only;
+- `fix <confirmed failure>` — code or workflow correction only;
+- `record incident <run_id>` — this file only when practical.
+
+## 5. Failure classification
+
+A red status is not automatically a mathematical failure.
+
+### 5.1 Hosted runner not acquired
+
+Indicators include zero executed steps, no runner name, zero billable compute, no artifacts, or an annotation equivalent to `The job was not acquired by Runner of type hosted even after multiple attempts`.
+
+Action:
+
+- classify as GitHub infrastructure failure;
+- do not record a mathematical result;
+- do not advance the frontier;
+- preserve successful matrix parts;
+- retry only missing work, at most once after confirming no retry already exists.
+
+### 5.2 Valid bounded-search outcomes
+
+`complete`, `capacity`, `timeout`, `stopped`, `deadline_kill`, and a controlled memory guard can all be technically valid outcomes. Preserve and analyze them.
+
+### 5.3 Real technical failures
+
+Examples:
+
+- compile or syntax error;
+- invalid option or missing source file;
+- parser/schema/source-task mismatch;
+- missing or corrupt artifact;
+- assertion failure or segmentation fault;
+- OOM, sustained swap, or disk exhaustion;
+- publication or transport failure after successful verification;
+- a Git blob that exceeds the publication-size guard.
+
+Diagnose from evidence, test the correction on saved data, and make one corrected attempt. Do not recompute a successful mathematical run to repair publication.
+
+## 6. Failure recording format
+
+Every meaningful new failure must be appended. Preserve old incidents after fixing them.
+
+Record:
 
 ```text
 Date and run id:
@@ -35,429 +237,83 @@ Forbidden repetition:
 Validated replacement:
 ```
 
-If the exact low-level cause is not confirmed, say so explicitly. Record confirmed facts separately from inference.
+Separate confirmed facts from inference. When the exact low-level cause is unknown, say so.
 
-A failed service workflow is still important even when the mathematical computation succeeded. Publication failures, duplicate retries, notification storms, corrupted artifacts, stale assumptions, and unsafe commit patterns must all be recorded.
+## 7. Incident history
 
-## 2. Sources of truth
+### 2026-07-23 — run 29959775981: central validation blocked the matrix
 
-Before doing new work, inspect these in order:
+- **Observed:** one `validate` job acquired no runner and executed no steps; all compute jobs were skipped through dependency.
+- **Root cause:** a single infrastructure allocation was a global point of failure.
+- **Fix:** independent preflight inside every matrix job.
+- **Do not repeat:** no central `validate` / `prepare` dependency for all 20 compute jobs.
+- **Validated by:** successful run `29960969740`.
 
-1. this file;
-2. the newest dated directory under `runs/`;
-3. its `summary.json`, checksums, verification script, and raw artifacts;
-4. the newest run marker;
-5. all currently active files under `.github/workflows/`;
-6. the newest relevant GitHub Actions run and its job steps;
-7. `batch.py`, the search engine, and the collector code.
+### 2026-07-23 — run 29978540008: collector assumed an old artifact schema
 
-Never infer the current frontier from an old chat description when repository data is available.
+- **Observed:** collector expected records in `manifest.json`; producer stored them in `records.jsonl`.
+- **Root cause:** collector was not tested against real current artifacts.
+- **Fix:** explicit versioned contract and real-artifact test.
+- **Do not repeat:** never infer the schema from an older script.
 
-## 3. Non-negotiable anti-regression rules
+### 2026-07-23 — run 29978849985: verification coupled to unauthorized publication
 
-### 3.1 No central validation bottleneck
+- **Observed:** download, aggregation, exact verification, and successor preparation succeeded; final push failed.
+- **Root cause:** one workflow coupled verified results to repository/workflow mutation requiring unavailable permissions.
+- **Fix:** separate verification, external publication, and launch.
+- **Do not repeat:** do not ask an Actions collector to edit workflow files or treat a publication failure as a reason to recompute.
 
-Do not create one `validate` or `prepare` job on which the entire 20-job matrix depends.
+### 2026-07-23 — run 29983731567: `collect-v2` repeated the same architecture
 
-Each matrix job must perform its own short preflight:
+- **Observed:** exact verification again succeeded and final publication again failed.
+- **Root cause:** a second collector copied the same fragile publication design.
+- **Fix:** delete replacement collectors and keep one publishing path.
+- **Do not repeat:** no `collect-v2`, `collect-v3`, or concurrent publishers.
 
-1. checkout;
-2. record machine information;
-3. compile;
-4. run a small exact smoke test;
-5. validate its task assignment;
-6. run its computation;
-7. upload its artifact with `if: always()`.
+### 2026-07-23 — pre-publication audit of run 29984144124
 
-Failure to acquire one runner must not cancel all other jobs.
+- **Observed:** static audit found old-schema access, reconstruction from `batch.frontier2_tasks()`, silent reserve-layer reuse, and attempts to rewrite tracked code/workflows.
+- **Fix:** data-only collector with explicit source queue and explicit reserve parameters.
+- **Do not repeat:** never derive the current generation from a historical generator when an exact saved queue exists.
 
-### 3.2 One intended workflow per marker
+### 2026-07-24 — run 30098487026: verified archive was not recoverable before branch push
 
-Before committing a marker, enumerate every workflow whose `push.paths` can match that marker.
+- **Observed:** all 20 artifacts, aggregation, and verifier succeeded; branch-publication step failed.
+- **Design weakness:** the complete verified archive existed only in the ephemeral workspace before the push.
+- **Fix:** upload the complete verified candidate before transport and capture the full publication transcript.
+- **Do not repeat:** never discard or recompute a verified archive because transport failed.
 
-Exactly one intended computational workflow should match. Do not leave broad `on: push` workflows or several generations of collectors active at the same time.
+### 2026-07-24 — run 30099623792: diagnostic pipeline aborted publication
 
-Do not create `collect-v2`, `collect-v3`, or similar replacement workflows as a reflex. Fix and validate one implementation outside GitHub Actions first.
+- **Observed:** verified archive was preserved; isolated-branch step stopped before Git commands.
+- **Root cause:** `find | sort | head` under `set -euo pipefail` allowed SIGPIPE from `head` to abort the gate.
+- **Fix:** write the complete sorted listing to a file and display it with `sed -n`.
+- **Do not repeat:** no truncating `head` pipeline inside a strict publication gate.
 
-### 3.3 Do not retry before diagnosis
+### 2026-07-24 — run 30100288436: GitHub rejected an oversized exact queue
 
-A red run is not permission to create another run immediately.
+- **Observed:** all 20 compute artifacts downloaded; exact aggregation and verifier passed; the archive was preserved; `git commit` succeeded locally; `git push` was rejected.
+- **Evidence:** `next_tasks.json` was 159,107,694 bytes (151.74 MiB), above GitHub's 100 MiB hard file limit. `source_tasks.json` was 78,340,818 bytes and `summary.json` was 15,420,690 bytes because it duplicated long name lists.
+- **Classification:** publication-format failure after successful mathematical verification.
+- **Consequences:** no result loss and no need to rerun compute run `30069271698`; archive publication and successor launch remain pending.
+- **Permanent fix:** deterministic gzip task queues, compact summary without duplicated name lists, final compressed-payload verifier, and a 95 MiB pre-push guard.
+- **Forbidden repetition:** do not retry the same uncompressed archive; do not use Git LFS as a substitute for compact machine-readable queues; do not launch a successor before the verified archive reaches `main`.
+- **Validated replacement:** the saved archive was compacted offline; the largest resulting payload was about 3 MiB and the final verifier passed. A corrected end-to-end publication run is still required.
 
-Before retrying:
+## 8. Mandatory startup checklist
 
-1. identify the failing job and step;
-2. read the log or check-run annotation;
-3. determine whether computation started;
-4. inspect runner assignment, billable duration, and artifacts;
-5. reproduce the failing parser, collector, or publisher against already downloaded artifacts;
-6. run one short end-to-end validation of the corrected path;
-7. create at most one retry.
+Before any write action:
 
-Never create multiple retry markers while another retry is queued or running.
+1. read this file completely and treat the incidents as examples to avoid;
+2. inspect the newest verified archive and its exact `run_id`;
+3. inspect the newest marker and parent/retry chain;
+4. enumerate active workflows and trigger paths;
+5. query the public Actions API dynamically;
+6. determine whether the newest relevant run is active, failed, complete, or already processed;
+7. check existing archive branches, published archives, successors, and retries;
+8. ensure one publisher and one intended workflow;
+9. perform static and saved-data tests for changed orchestration code;
+10. re-read `main` immediately before committing;
+11. after committing, verify the commit and exactly one resulting run through the API.
 
-### 3.4 Keep the artifact contract explicit and versioned
-
-The compact artifact format stores task records in `records.jsonl`. `manifest.json` contains metadata and counts and is not required to duplicate the full records list.
-
-Collectors must validate the actual committed schema. They must not assume an older schema because a previous script did.
-
-If the schema changes:
-
-- update the producer and consumer together;
-- record a format version;
-- test the collector on a real saved artifact set before activating a workflow;
-- keep backward compatibility where practical;
-- never patch the collector at runtime with `sed`, ad-hoc deletion, or other mutation.
-
-### 3.5 The source task list must be explicit
-
-A collector must receive the exact source task list used by the completed run, normally the parent archive's `next_tasks.json`.
-
-It must verify for each job that:
-
-- recorded task names plus unstarted task names equal the exact assigned slice of the source list;
-- task metadata agrees with the source list;
-- no source task is missing, duplicated, or replaced by a task reconstructed from an older helper function.
-
-Never infer the current generation from `batch.frontier2_tasks()`, the newest directory name, a hard-coded layer, or a function name left over from an earlier run.
-
-### 3.6 Do not modify tracked source code inside a collection run
-
-A workflow must execute committed code exactly as reviewed.
-
-Forbidden patterns include:
-
-```bash
-sed -i ... collect_run.py
-cp temporary-version over tracked source
-modify batch.py during the job
-modify a workflow file during the job
-```
-
-If a parser or collector needs correction, update it in a normal commit, test it, then run it.
-
-### 3.7 GitHub Actions must not publish workflow-file changes
-
-The normal `GITHUB_TOKEN` is intentionally restricted. A workflow that attempts to push `.github/workflows/*.yml` may be rejected even when result aggregation and exact verification succeeded.
-
-Therefore:
-
-- do not ask a collector workflow to create, edit, delete, or publish workflow files;
-- do not bundle result publication with workflow creation;
-- prepare workflow changes in a normal reviewed commit through the connected GitHub tool or another authorized publisher;
-- treat a workflow permission failure as a publication failure, not a mathematical failure.
-
-### 3.8 Separate verification, publication, and launch
-
-These are three distinct phases:
-
-1. **Verification** — download artifacts, check integrity, aggregate records, verify supports and summaries.
-2. **Publication** — commit the verified archive to `main`.
-3. **Launch** — after confirming publication, create one successor marker.
-
-Do not couple all three phases inside an untested workflow.
-
-Preferred sequence:
-
-1. verify against downloaded artifacts without changing `main`;
-2. commit the dated `runs/` archive;
-3. re-read `main` and confirm the archive commit exists;
-4. check that no successor is queued, running, or already recorded;
-5. create one unique successor marker in a separate single-purpose commit;
-6. confirm exactly one intended workflow was created.
-
-A verification workflow may prepare a candidate archive on a uniquely named temporary branch only when the external environment cannot process binary artifacts. It must not update `main`. The external controller must verify the branch commit, confirm that it descends from the current `main`, and perform the final fast-forward publication. If `main` moved, abort rather than overwrite newer work.
-
-### 3.9 One publisher only
-
-Only one actor may publish a given completed run.
-
-Before publishing, check:
-
-- whether `runs/` already contains that `run_id`;
-- whether a commit message already records that `run_id`;
-- whether a marker already has `parent_run=<run_id>`;
-- whether another collector, automation, or branch is currently publishing it.
-
-Do not let a GitHub Actions workflow, an hourly automation, and a manual agent all push the same result concurrently.
-
-### 3.10 Safe commit discipline
-
-Before every write to `main`:
-
-1. fetch or re-read the latest `main` state;
-2. verify that the target path has not already been created or changed;
-3. keep the commit single-purpose;
-4. avoid unrelated workflow changes in result commits;
-5. after the write, fetch the resulting commit and verify the intended files;
-6. do not force-push;
-7. do not create a second commit merely to query run status.
-
-Use clear commit roles:
-
-- `save batch run <run_id>` — verified result archive only;
-- `launch successor after <run_id>` — one marker only;
-- `fix <confirmed failure>` — source or workflow correction only;
-- `record incident <run_id>` — this file only when possible.
-
-Do not generate status-query commits. Query GitHub Actions through the API instead.
-
-### 3.11 Safe compute baseline
-
-For standard public Linux runners use this safe baseline unless measured evidence justifies a change:
-
-- 20 independent jobs;
-- 4 workers per job;
-- `runtime_seconds = 21000`;
-- job timeout of 360 minutes;
-- preferred combined RSS at most 10–11 GiB;
-- warning around 11.5 GiB;
-- keep `MemAvailable` above about 2.5 GiB;
-- no sustained swap;
-- always record CPU, memory, disk, and process-tree data.
-
-A controlled `capacity`, `timeout`, `stopped`, or memory-guard result is not automatically a workflow failure.
-
-### 3.12 Failure classification
-
-#### Runner was not acquired
-
-Indicators:
-
-- zero executed steps;
-- empty runner name or runner id zero;
-- zero billable compute time;
-- no artifacts;
-- annotation equivalent to `The job was not acquired by Runner of type hosted even after multiple attempts`.
-
-Action:
-
-- classify as GitHub infrastructure failure;
-- do not record it as a mathematical result;
-- do not advance the frontier;
-- retry the same frontier once;
-- if only some matrix jobs were affected, preserve successful artifacts and repeat only missing work.
-
-#### Real technical failure
-
-Examples:
-
-- compile error;
-- invalid option;
-- malformed input;
-- missing mandatory file;
-- parser/schema mismatch;
-- source-task-list mismatch;
-- corrupt artifact;
-- assertion failure;
-- segmentation fault;
-- OOM or sustained swap;
-- disk exhaustion;
-- failed publication after successful verification.
-
-Fix the confirmed cause, test the corrected path, then retry once.
-
-### 3.13 Notification hygiene
-
-Every red workflow can generate email. Avoid creating noise by architecture, not by disabling security mail.
-
-Rules:
-
-- keep only necessary active workflows;
-- delete obsolete collector, query, and inspector workflows after their purpose is complete;
-- do not leave workflows that trigger on every push but skip all jobs through an internal `if`;
-- do not create a new workflow for each retry;
-- reserve red status for genuine technical failures;
-- do not make repeated marker commits while a run is active;
-- after a noisy incident, inspect all active workflows, not only the one named in the email.
-
-## 4. Required result-collection protocol
-
-After a technically completed computation:
-
-1. download all expected artifacts;
-2. verify artifact names, count, ZIP integrity, and checksums;
-3. read `manifest.json` and `records.jsonl` according to the committed schema;
-4. load the exact source task list used by the run;
-5. prove that every source task is represented exactly once as recorded or unstarted;
-6. identify missing, duplicate, corrupt, and unstarted tasks;
-7. classify all records as `complete`, `capacity`, `timeout`, `stopped`, memory guard, or technical failure;
-8. aggregate nodes, states, engine seconds, supports, CPU models, peak RSS, minimum available memory, and swap;
-9. exactly verify every new support;
-10. write a dated archive containing raw artifacts, checksums, summary, verifier, and next-frontier description;
-11. execute the verifier from the finished archive;
-12. publish the archive in one result commit;
-13. only after publication, create one successor marker in a separate commit.
-
-Never claim a layer is closed while any shard is missing, capacity-limited, timed out, corrupt, unverified, or never started.
-
-## 5. Incident log
-
-### 2026-07-23 — run 29959775981: central validation blocked the whole matrix
-
-**Intended goal:** launch the full `frontier2` matrix.
-
-**What actually happened:** the single `validate` job waited for a hosted runner, never received one, executed no steps, and the entire compute matrix was skipped because it depended on that job.
-
-**Evidence:** zero executed steps, zero billable compute, no artifacts, and the annotation `The job was not acquired by Runner of type hosted even after multiple attempts`.
-
-**Classification:** GitHub infrastructure allocation failure; no mathematical computation occurred.
-
-**Root cause:** one central job was a single point of failure for all 20 machines.
-
-**Consequences:** the full run produced no result and required a retry.
-
-**Permanent fix:** remove the central dependency; each matrix job performs its own preflight and then computes independently.
-
-**Forbidden repetition:** never reintroduce one `validate`/`prepare` job required by the full matrix.
-
-**Validated replacement:** run 29960969740 used independent per-job preflight and completed successfully.
-
-### 2026-07-23 — run 29978540008: collector assumed the old artifact schema
-
-**Intended goal:** aggregate and publish completed run 29960969740.
-
-**What actually happened:** all artifacts were downloaded, but the collector expected the full task record list inside `manifest.json`. The current compact format stores records in `records.jsonl`.
-
-**Evidence:** the failure occurred in `Aggregate, exactly verify, and prepare successor`; the retry marker recorded `compact manifest stores task records only in records.jsonl`.
-
-**Classification:** collector compatibility failure; the underlying mathematical run was successful.
-
-**Root cause:** the collector was not tested against the exact artifact format produced by the completed run.
-
-**Consequences:** one failed workflow and one email; no result loss.
-
-**Permanent fix:** make the artifact contract explicit, validate `records.jsonl`, and test collectors against saved real artifacts before activation.
-
-**Forbidden repetition:** do not assume duplicated records in `manifest.json`; do not activate an untested collector.
-
-**Validated replacement:** the result was later aggregated and exactly verified from all 20 artifacts.
-
-### 2026-07-23 — run 29978849985: successful verification was coupled to an unauthorized workflow-file publication
-
-**Intended goal:** retry collection, publish the verified archive, and launch the successor.
-
-**What actually happened:** artifact download, aggregation, exact verification, and successor preparation succeeded. The final commit/push step failed.
-
-**Evidence:** steps through `Create one successor marker` succeeded; `Commit verified archive and launch successor` failed.
-
-**Classification:** publication failure after successful verification.
-
-**Root cause:** the workflow attempted to publish changes that included tracked workflow-related files or otherwise required permissions unavailable to the normal `GITHUB_TOKEN`; verification and repository mutation were coupled in one job.
-
-**Consequences:** a second failed service workflow and a second email, despite successful mathematical verification.
-
-**Permanent fix:** workflows may verify and upload diagnostics, but workflow-file changes and publication must be performed by an authorized external publisher. Separate result commit from launch marker.
-
-**Forbidden repetition:** never ask an Actions collector to change `.github/workflows/`; never treat successful verification plus failed publication as a need to recompute.
-
-**Validated replacement:** the archive was ultimately published through an authorized repository write path.
-
-### 2026-07-23 — run 29983731567: a second collector duplicated the same publication architecture
-
-**Intended goal:** use an isolated `collect-v2` workflow to publish the already verified result.
-
-**What actually happened:** download, aggregation, exact verification, and marker creation again succeeded; the final publication step again failed.
-
-**Evidence:** all steps before `Commit verified archive and launch successor` succeeded; that step failed.
-
-**Classification:** repeated publication architecture failure, not a mathematical failure.
-
-**Root cause:** instead of validating one corrected publishing path outside Actions, a second collector workflow was created. Multiple actors and branches were also touching `main`, making publication more fragile.
-
-**Consequences:** a third failed service workflow, a third email, extra branches, diagnostic commits, and unnecessary repository noise.
-
-**Permanent fix:** delete both collector workflows, keep one external publisher, and use a two-commit sequence: verified archive first, successor marker second.
-
-**Forbidden repetition:** do not create `collect-v2`/`collect-v3`; do not retry publication by cloning the same workflow pattern; do not run concurrent publishers.
-
-**Validated replacement:** results were saved in `runs/2026-07-23-b/`; obsolete `collect.yml` and `collect-v2.yml` were removed.
-
-### 2026-07-23 — operational lesson from the three collector emails
-
-**Intended goal:** continue the computational chain automatically with minimal intervention.
-
-**What actually happened:** three separate service workflows failed after the main mathematical run had already succeeded, creating three emails.
-
-**Root cause:** too much failure-handling detail lived in a transient automation prompt while the repository did not yet contain a complete, tested anti-regression record. Each attempted repair introduced another active workflow.
-
-**Permanent fix:** this file is now the canonical failure memory. The hourly automation must read it first and keep only a short portable control loop in its own prompt.
-
-**Forbidden repetition:** do not duplicate incident-specific rules across chat context, automation text, and workflow code. Store durable lessons here and let automation reference them.
-
-### 2026-07-23 — pre-publication audit of run 29984144124: collector was tied to the previous generation
-
-**Intended goal:** aggregate the completed 20-job frontier run and construct its exact successor.
-
-**What actually happened:** before running the collector, a static audit found three independent defects. The collector still accessed `manifest["records"]` although the producer writes records only to `records.jsonl`; it reconstructed the source queue by calling `batch.frontier2_tasks()` instead of loading the exact `next_tasks.json` used by run 29984144124; and it attempted to mutate `batch.py` and workflow files while saving the archive.
-
-**Evidence:** `batch.py` writes only counts and `unstarted` to `manifest.json`; the committed collector compared `records.jsonl` with `manifest["records"]`; its `next_frontier()` began from `batch.frontier2_tasks()` and added layer 30 again; `install_frontier3_wiring()` edited tracked source and `.github/workflows/run.yml`.
-
-**Classification:** latent collector design failure caught before execution. The mathematical run itself completed successfully and produced all 20 artifacts.
-
-**Root cause:** the collector encoded assumptions about one historical generation rather than accepting an explicit source-task contract and explicit reserve-layer parameters.
-
-**Consequences:** collection was paused before a wrong archive or duplicate frontier could be published. No mathematical result was lost and no speculative retry was launched.
-
-**Permanent fix:** use a data-only collector that receives the exact source `next_tasks.json`, verifies each job's assigned slice, reads records only from `records.jsonl`, accepts the next reserve layer explicitly, and never edits tracked source or workflows.
-
-**Forbidden repetition:** never derive a completed run's source queue from an old task-generator function; never silently reuse the previous reserve layer; never let archive generation rewrite executable or workflow files.
-
-**Validated replacement:** pending one end-to-end verification against the 20 real artifacts from run 29984144124. Do not launch a successor until that verification passes.
-
-### 2026-07-24 — run 30098487026: verified archive was not published from the isolated preparation job
-
-**Intended goal:** prepare a verified archive for the unique completed frontier run associated with launch commit `f1a518671b1116647c8be9b04f38148dd8b593fc` without allowing GitHub Actions to update `main`.
-
-**What actually happened:** source-run resolution, download of all twenty original artifact ZIP files, aggregation against the exact source task list, and execution of the generated verifier all succeeded. The final step that was supposed to commit and push the candidate archive to a deterministic isolated branch failed. Diagnostic artifacts were uploaded.
-
-**Evidence:** in workflow run `30098487026`, steps 1 through 7 succeeded; only `Commit candidate archive to deterministic isolated branch` failed; `Upload preparation diagnostics` then succeeded.
-
-**Classification:** archive-publication transport failure after successful exact verification. This is not a mathematical-computation failure and does not justify recomputing the source frontier.
-
-**Root cause:** the exact low-level Git error is not yet confirmed from the available log tail. A confirmed design weakness is that the complete verified candidate archive existed only in the ephemeral runner workspace and was not uploaded before the branch-publication step.
-
-**Consequences:** no verified archive was published to `main`, no successor marker was created, and no next compute run was launched. The original twenty compute artifacts and the successful verification evidence remain available.
-
-**Permanent fix:** before any Git branch publication, upload the complete verified candidate archive as a recoverable Actions artifact and capture the full commit/push transcript in a diagnostic log. Then retry the same publication path at most once; never recompute the completed source run.
-
-**Forbidden repetition:** do not rerun the unchanged branch-publication step; do not discard a verified candidate when the transport step fails; do not launch a successor before the archive reaches `main`.
-
-**Validated replacement:** pending one corrected end-to-end retry against the same twenty source artifacts.
-
-### 2026-07-24 — run 30099623792: diagnostic listing aborted the corrected publication step
-
-**Intended goal:** retry publication after first preserving the complete verified archive as an Actions artifact and recording a publication transcript.
-
-**What actually happened:** the unique source compute run `30069271698` was again resolved as successful; all twenty artifacts were downloaded; exact aggregation and the generated verifier succeeded; the complete candidate archive was successfully preserved as artifact `verified-batch-archive-30069271698`. The subsequent isolated-branch step failed before any candidate branch appeared.
-
-**Evidence:** workflow run `30099623792` succeeded through `Preserve complete verified candidate archive` and failed only at `Commit candidate archive to isolated branch`. The preserved archive artifact is 9,383,357 bytes with digest `sha256:4b44ec462edeff1cb94e980232241550a825fe6c1dc34cc85db20f45f9d65bdc`. The corrected shell block runs `set -o pipefail` and then executes `find ... | sort -nr | head -20` before the Git branch commands; no `agent/archive-30069271698` branch was created.
-
-**Classification:** confirmed service-script defect introduced during diagnostics; the verified mathematical archive itself is intact.
-
-**Root cause:** under `pipefail`, `head -20` can close the pipe after twenty lines, causing the upstream `sort` process to exit on SIGPIPE and the shell to abort before reaching `git checkout`, `git commit`, or `git push`. The exact numeric exit status was not recovered, but the committed command sequence contains a defect sufficient to explain the observed pre-branch failure.
-
-**Consequences:** publication to `main` and successor launch remain pending, but unlike the previous attempt the complete verified candidate archive is now safely recoverable without rerunning the mathematical computation.
-
-**Permanent fix:** never combine `head` with an upstream producer inside a `set -euo pipefail` publication gate. Write the complete sorted listing to a file first, then display the first lines with `sed -n`, or explicitly neutralize the diagnostic pipeline without masking Git failures.
-
-**Forbidden repetition:** do not rerun workflow commit `773452789809df21aa2323d43fcd048768032cb4`; do not regenerate the completed compute frontier; do not launch the successor before publishing the preserved archive.
-
-**Validated replacement:** pending one minimal correction of the diagnostic command and publication of the already verified archive.
-
-## 6. Mandatory startup checklist for any future agent or automation
-
-Before taking any write action:
-
-1. read `AGENTS.md` completely;
-2. inspect the newest `runs/` archive and verify its recorded `run_id`;
-3. inspect the newest marker and its `parent_run`/`retry_of` relationship;
-4. list active workflows and determine which paths trigger each one;
-5. find the newest relevant Actions run dynamically;
-6. check whether it is queued, running, failed, completed, or already processed;
-7. check for existing successor or retry markers;
-8. ensure only one publisher and one intended workflow will act;
-9. re-read `main` immediately before committing;
-10. after committing, verify the resulting commit and created run through the API.
-
-If any of these checks cannot be completed, do not create multiple speculative retries. Preserve the current state, record the uncertainty, and make the smallest reversible correction.
+If a check cannot be completed, do not make multiple speculative retries. Preserve the current state, record the uncertainty, and make the smallest reversible correction.

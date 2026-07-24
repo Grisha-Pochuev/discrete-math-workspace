@@ -1,19 +1,35 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import gzip
 import json
 from pathlib import Path
 
 import batch
 
 
+def load_json(path: Path) -> dict[str, object]:
+    if path.suffix == ".gz":
+        with gzip.open(path, "rt", encoding="utf-8") as source:
+            document = json.load(source)
+    else:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(document, dict):
+        raise RuntimeError(f"expected JSON object in {path}")
+    return document
+
+
 def load_frontier3_tasks() -> list[batch.Task]:
-    candidates = sorted((Path(__file__).parent / "runs").glob("*/next_tasks.json"))
+    runs = Path(__file__).parent / "runs"
+    candidates = sorted([*runs.glob("*/next_tasks.json"), *runs.glob("*/next_tasks.json.gz")])
     if not candidates:
-        raise RuntimeError("no saved next_tasks.json")
-    document = json.loads(candidates[-1].read_text(encoding="utf-8"))
+        raise RuntimeError("no saved next_tasks.json or next_tasks.json.gz")
+    document = load_json(candidates[-1])
     if document.get("stage") != "frontier3":
         raise RuntimeError(f"unexpected next frontier stage: {document.get('stage')}")
+    raw_tasks = document.get("tasks")
+    if not isinstance(raw_tasks, list):
+        raise RuntimeError(f"task list missing in {candidates[-1]}")
     tasks = [
         batch.Task(
             str(item["stage"]),
@@ -24,7 +40,7 @@ def load_frontier3_tasks() -> list[batch.Task]:
             int(item.get("split", 15)),
             int(item.get("max_seen", 0)),
         )
-        for item in document["tasks"]
+        for item in raw_tasks
     ]
     names = [task.name for task in tasks]
     if len(names) != len(set(names)):
