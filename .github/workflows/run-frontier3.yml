@@ -62,6 +62,12 @@ jobs:
             --output out/smoke.txt \
             2>&1 | tee out/preflight.log
           grep -q "status complete" out/smoke.txt
+          ./search --orbit 0 --limit 12 --split-size 12 \
+            --shard-count 4294967296 --shard-index 4294967295 \
+            --time-limit 60 --max-seen 100000 \
+            --output out/smoke-u64-shard.txt \
+            2>&1 | tee -a out/preflight.log
+          grep -q "status complete" out/smoke-u64-shard.txt
           python frontier3.py --stage frontier2 --job-count 20 --dry-run \
             | tee -a out/preflight.log
 
