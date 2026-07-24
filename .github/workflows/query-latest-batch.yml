@@ -157,12 +157,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          set -o pipefail
           branch="agent/archive-${run_id}"
           {
             echo "branch=$branch"
             du -sh "$output_dir"
-            find "$output_dir" -type f -printf '%s %p\n' | sort -nr | head -20
+            find "$output_dir" -type f -printf '%s %p\n' | sort -nr > work/largest-files.txt
+            sed -n '1,20p' work/largest-files.txt
             if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
               echo "archive branch already exists: $branch" >&2
               exit 1
@@ -174,7 +174,7 @@ jobs:
             git diff --cached --stat
             git diff --cached --quiet && { echo 'no archive files staged' >&2; exit 1; }
             git commit -m "prepare batch run ${run_id} archive"
-            git push origin "HEAD:${branch}"
+            git push --verbose origin "HEAD:${branch}"
             printf 'branch=%s\ncommit=%s\n' "$branch" "$(git rev-parse HEAD)" | tee work/archive-branch.env
           } 2>&1 | tee work/publication.log
 
@@ -189,6 +189,7 @@ jobs:
             work/artifacts.tsv
             work/collection-summary.log
             work/verifier.log
+            work/largest-files.txt
             work/publication.log
             work/archive-branch.env
           if-no-files-found: warn
