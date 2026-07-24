@@ -425,6 +425,26 @@ Never claim a layer is closed while any shard is missing, capacity-limited, time
 
 **Validated replacement:** pending one corrected end-to-end retry against the same twenty source artifacts.
 
+### 2026-07-24 — run 30099623792: diagnostic listing aborted the corrected publication step
+
+**Intended goal:** retry publication after first preserving the complete verified archive as an Actions artifact and recording a publication transcript.
+
+**What actually happened:** the unique source compute run `30069271698` was again resolved as successful; all twenty artifacts were downloaded; exact aggregation and the generated verifier succeeded; the complete candidate archive was successfully preserved as artifact `verified-batch-archive-30069271698`. The subsequent isolated-branch step failed before any candidate branch appeared.
+
+**Evidence:** workflow run `30099623792` succeeded through `Preserve complete verified candidate archive` and failed only at `Commit candidate archive to isolated branch`. The preserved archive artifact is 9,383,357 bytes with digest `sha256:4b44ec462edeff1cb94e980232241550a825fe6c1dc34cc85db20f45f9d65bdc`. The corrected shell block runs `set -o pipefail` and then executes `find ... | sort -nr | head -20` before the Git branch commands; no `agent/archive-30069271698` branch was created.
+
+**Classification:** confirmed service-script defect introduced during diagnostics; the verified mathematical archive itself is intact.
+
+**Root cause:** under `pipefail`, `head -20` can close the pipe after twenty lines, causing the upstream `sort` process to exit on SIGPIPE and the shell to abort before reaching `git checkout`, `git commit`, or `git push`. The exact numeric exit status was not recovered, but the committed command sequence contains a defect sufficient to explain the observed pre-branch failure.
+
+**Consequences:** publication to `main` and successor launch remain pending, but unlike the previous attempt the complete verified candidate archive is now safely recoverable without rerunning the mathematical computation.
+
+**Permanent fix:** never combine `head` with an upstream producer inside a `set -euo pipefail` publication gate. Write the complete sorted listing to a file first, then display the first lines with `sed -n`, or explicitly neutralize the diagnostic pipeline without masking Git failures.
+
+**Forbidden repetition:** do not rerun workflow commit `773452789809df21aa2323d43fcd048768032cb4`; do not regenerate the completed compute frontier; do not launch the successor before publishing the preserved archive.
+
+**Validated replacement:** pending one minimal correction of the diagnostic command and publication of the already verified archive.
+
 ## 6. Mandatory startup checklist for any future agent or automation
 
 Before taking any write action:
