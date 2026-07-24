@@ -17,7 +17,9 @@ import batch
 
 ROOT = Path(__file__).resolve().parent
 PREVIOUS_VERIFY = ROOT / "runs" / "2026-07-22-a" / "verify.py"
-INCOMPLETE_STATUSES = {"capacity", "timeout", "stopped", "deadline_kill", "memory"}
+REFINEMENT_STATUSES = {"capacity", "timeout", "stopped", "deadline_kill", "memory"}
+RETRY_STATUSES = {"technical_failure", "missing"}
+INCOMPLETE_STATUSES = REFINEMENT_STATUSES | RETRY_STATUSES
 ALLOWED_STATUSES = {"complete"} | INCOMPLETE_STATUSES
 
 
@@ -254,11 +256,17 @@ def analyse(
             f"{len(unresolved_supports)} supports lack an exact obstruction"
         )
 
-    incomplete_records = [
+    bounded_incomplete_records = [
         record
         for record in records
-        if str(record["status"]) in INCOMPLETE_STATUSES
+        if str(record["status"]) in REFINEMENT_STATUSES
     ]
+    retry_records = [
+        record
+        for record in records
+        if str(record["status"]) in RETRY_STATUSES
+    ]
+    incomplete_records = bounded_incomplete_records + retry_records
     summary: dict[str, object] = {
         "run_id": None,
         "source_commit": None,
@@ -272,6 +280,8 @@ def analyse(
             "recorded": len(records),
             "complete": status_counts.get("complete", 0),
             "incomplete": len(incomplete_records),
+            "bounded_incomplete": len(bounded_incomplete_records),
+            "technical_failures": len(retry_records),
             "unstarted": len(unstarted_names),
             "status_counts": dict(status_counts),
         },
@@ -315,16 +325,20 @@ def next_frontier(
         raise RuntimeError("duplicate record names")
 
     refined: list[batch.Task] = []
-    carried: list[batch.Task] = []
+    retry_carried: list[batch.Task] = []
+    unstarted_carried: list[batch.Task] = []
     for task in source_tasks:
         record = record_by_name.get(task.name)
         if record is None:
-            carried.append(task)
+            unstarted_carried.append(task)
             continue
         status = str(record["status"])
         if status == "complete":
             continue
-        if status not in INCOMPLETE_STATUSES:
+        if status in RETRY_STATUSES:
+            retry_carried.append(task)
+            continue
+        if status not in REFINEMENT_STATUSES:
             raise RuntimeError(f"cannot continue status {status} for {task.name}")
         effective_max_seen = int(record.get("effective_max_seen", 0)) or task.max_seen
         for child in range(refinement_factor):
@@ -345,7 +359,7 @@ def next_frontier(
         for shard in range(reserve_shards)
         for orbit in range(8)
     ]
-    tasks = refined + carried + reserve
+    tasks = refined + retry_carried + unstarted_carried + reserve
     names = [task.name for task in tasks]
     if len(names) != len(set(names)):
         raise RuntimeError("duplicate next-frontier task")
@@ -354,7 +368,9 @@ def next_frontier(
         raise RuntimeError("unbalanced next frontier")
     return tasks, {
         "refined": len(refined),
-        "carried": len(carried),
+        "retry_carried": len(retry_carried),
+        "unstarted_carried": len(unstarted_carried),
+        "carried": len(retry_carried) + len(unstarted_carried),
         "reserve": len(reserve),
     }
 
@@ -375,7 +391,8 @@ The archive was rebuilt from all twenty original GitHub artifact ZIP files. Ever
 - source tasks: {summary['source_tasks']}
 - recorded tasks: {tasks['recorded']}
 - complete tasks: {tasks['complete']}
-- incomplete bounded tasks: {tasks['incomplete']}
+- incomplete bounded tasks: {tasks['bounded_incomplete']}
+- technical-failure tasks preserved for exact retry: {tasks['technical_failures']}
 - unstarted tasks: {tasks['unstarted']}
 - nodes: {summary['search']['nodes']:,}
 - states: {summary['search']['states']:,}
@@ -398,9 +415,10 @@ The archive was rebuilt from all twenty original GitHub artifact ZIP files. Ever
 
 `next_tasks.json` contains {nxt['tasks']:,} exact tasks:
 
-1. {nxt['refined']:,} refined children of recorded incomplete tasks;
-2. {nxt['carried']:,} exact source tasks that were never started;
-3. {nxt['reserve']:,} reserve tasks from support-size layer {nxt['reserve_limit']}.
+1. {nxt['refined']:,} refined children of bounded incomplete tasks;
+2. {nxt['retry_carried']:,} exact source tasks preserved after technical failure;
+3. {nxt['unstarted_carried']:,} exact source tasks that were never started;
+4. {nxt['reserve']:,} reserve tasks from support-size layer {nxt['reserve_limit']}.
 
 Completed tasks are not repeated. Refined child indices satisfy `child mod parent_shards = parent_shard`, so each refinement is an exact partition of only its unresolved parent.
 """
@@ -537,6 +555,8 @@ def save_run(args: argparse.Namespace) -> dict[str, object]:
         "tasks": len(next_tasks),
         "by_limit": dict(Counter(task.limit for task in next_tasks)),
         "refined": counts["refined"],
+        "retry_carried": counts["retry_carried"],
+        "unstarted_carried": counts["unstarted_carried"],
         "carried": counts["carried"],
         "reserve": counts["reserve"],
         "reserve_limit": args.reserve_limit,

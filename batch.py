@@ -207,6 +207,11 @@ def main() -> int:
         status, details, solutions = read_result(result_path)
         if expected_stop and status == "missing":
             status = "deadline_kill"
+        elif status == "missing":
+            status = "technical_failure"
+            details["failure_log_tail"] = log_path.read_text(
+                encoding="utf-8", errors="replace"
+            )[-2000:]
         record = asdict(task) | details | {
             "name": task.name,
             "returncode": process.returncode,
@@ -215,7 +220,9 @@ def main() -> int:
         }
         records.append(record)
         record_file.write(json.dumps(record, sort_keys=True) + "\n")
-        failure = not expected_stop and (process.returncode != 0 or status == "missing")
+        failure = not expected_stop and (
+            process.returncode != 0 or status == "technical_failure"
+        )
         technical_failure = technical_failure or failure
         if not failure:
             result_path.unlink(missing_ok=True)

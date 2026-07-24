@@ -297,6 +297,18 @@ Separate confirmed facts from inference.
 - Forbidden repetition: do not rely on `commits[].added/modified` being present; do not fall back to directory-wide scanning.
 - No compute result or verified archive was damaged.
 
+### 2026-07-24 — run 30104322098: 32-bit shard parsing rejected exact 2^32 refinements
+
+- Intended goal: process the verified 1,034,753-task frontier for five hours fifty minutes on 20 independent runners.
+- What actually happened: all 20 runners compiled, passed the old smoke test, worked for about 20,821 seconds, and uploaded readable artifacts, but each runner ended red because some exact layer-27 tasks crashed.
+- Evidence: all 2,032 failed records have `returncode=-6`, `status=missing`, shard count `4294967296`, and the retained logs say `std::out_of_range: stoi`. The remaining records are 26,756 complete, 1,213 capacity, 59 timeout, and 1 stopped; 1,004,692 tasks were unstarted. All 20 ZIP digests matched and swap remained zero.
+- Classification: partial technical failure with substantial valid bounded-search output; not a failed mathematical computation as a whole.
+- Root cause: `search.cpp` stored and parsed `shard_count` and `shard_index` as signed 32-bit `int` using `std::stoi`, while exact refinement reached `2^32` shards.
+- Consequences: completed and bounded outcomes remain valid and must be archived; only the 2,032 crashed tasks and exact unstarted work are retried. No completed task may be repeated merely because the matrix was red.
+- Permanent fix: use `std::uint64_t` plus `std::stoull`, test `--shard-count 4294967296 --shard-index 4294967295` in every compute-job preflight, classify missing solver output as `technical_failure`, and carry technical failures unchanged rather than refining them.
+- Forbidden repetition: never use a smoke test whose numeric range is smaller than the largest shard identifiers present in the loaded frontier; never reject a complete 20-artifact run solely from its overall red status.
+- Validated replacement: compile and execute the exact `2^32` boundary command, archive all 20 artifacts, verify exact source coverage, and derive the successor as bounded refinements plus exact technical retries plus exact unstarted tasks plus explicit reserve.
+
 ## 8. Mandatory startup checklist
 
 Before any write action:

@@ -119,8 +119,8 @@ struct Solver {
     std::uint64_t report_every = 0;
     std::uint64_t max_seen = 8'000'000;
     std::string output_path;
-    int shard_count = 1;
-    int shard_index = 0;
+    std::uint64_t shard_count = 1;
+    std::uint64_t shard_index = 0;
     int split_size = 15;
 
     std::vector<Edge> edges;
@@ -384,7 +384,7 @@ struct Solver {
 
         Mask key = canonical();
         if (shard_count > 1 && !shard_assigned && popcount(mask) >= split_size) {
-            if (static_cast<int>(MaskHash{}(key) % shard_count) != shard_index) return;
+            if (MaskHash{}(key) % shard_count != shard_index) return;
             shard_assigned = true;
         }
         if (!seen.insert(key).second) return;
@@ -490,8 +490,8 @@ int main(int argc, char** argv) {
         else if (argument == "--report-every") solver.report_every = std::stoull(value());
         else if (argument == "--max-seen") solver.max_seen = std::stoull(value());
         else if (argument == "--output") solver.output_path = value();
-        else if (argument == "--shard-count") solver.shard_count = std::stoi(value());
-        else if (argument == "--shard-index") solver.shard_index = std::stoi(value());
+        else if (argument == "--shard-count") solver.shard_count = std::stoull(value());
+        else if (argument == "--shard-index") solver.shard_index = std::stoull(value());
         else if (argument == "--split-size") solver.split_size = std::stoi(value());
         else throw std::runtime_error("unknown argument: " + argument);
     }
