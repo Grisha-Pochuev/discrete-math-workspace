@@ -60,10 +60,11 @@ This section describes technical success. It does not prescribe desired mathemat
 
 - Every launch or archive request uses one new, unique marker file.
 - Before committing a marker, prove exactly one workflow trigger matches its path.
-- A push-triggered workflow must identify its marker from the triggering push event (`GITHUB_EVENT_PATH`), not from filesystem modification time, lexical ordering, or “newest-looking” repository files.
-- Require exactly one added or modified marker in the triggering push; zero or multiple markers are a technical error.
-- Record the selected marker path in diagnostics.
-- Never infer the current request by scanning all historical markers after checkout.
+- A push-triggered workflow must read `before` and `after` from `GITHUB_EVENT_PATH`, then derive the changed marker through `git diff --name-status before after -- <marker-directory>`.
+- Require exactly one added or modified marker in that triggering commit range; zero or multiple markers are a technical error.
+- Record the push range, diff, and selected marker path in diagnostics.
+- Do not assume `commits[].added` or `commits[].modified` is present: pushes created through repository APIs can contain minimal commit objects.
+- Never choose a marker by filesystem `mtime`, lexical order, directory name, or scanning all historical markers.
 
 ### 3.3 Static validation before a large launch
 
@@ -278,14 +279,23 @@ Separate confirmed facts from inference.
 
 ### 2026-07-24 — run 30103121289: workflow selected a historical marker
 
-- **Intended goal:** publish the already verified archive for source commit `f1a518671b1116647c8be9b04f38148dd8b593fc` into `runs/2026-07-24-b` using compact payloads.
-- **What happened:** the workflow selected an old marker for source commit `5f12071830128bc3a8e5a403ae04f8464d935656` and `output_dir=runs/2026-07-24-a`, then stopped because that directory already existed.
-- **Evidence:** the diagnostic `request.env` from run `30103121289` records the old source and old output directory; the new triggering commit was `06abf7111ce0c86f1239974c9e86a63191de8ca7`.
-- **Classification:** request-resolution failure before aggregation; no mathematical computation or verified archive was damaged.
-- **Root cause:** after checkout, the workflow chose a marker by filesystem `mtime`. Git checkout does not preserve repository creation order as a reliable request-order signal.
-- **Permanent fix:** derive the unique `.archive/*.txt` path from `GITHUB_EVENT_PATH`, require exactly one marker in the triggering push, verify the file exists, and save the event and selected path in diagnostics.
-- **Forbidden repetition:** never select an operational marker by `mtime`, lexicographic filename order, or scanning the whole historical marker directory.
-- **Validated replacement:** event-selection logic passed a local simulated push-event test; corrected end-to-end publication remains to be run once.
+- Intended archive: source `f1a518671b1116647c8be9b04f38148dd8b593fc`, output `runs/2026-07-24-b`.
+- Actual request: old source `5f12071830128bc3a8e5a403ae04f8464d935656`, output `runs/2026-07-24-a`.
+- Evidence: diagnostic `request.env` from the run.
+- Root cause: selection by filesystem `mtime` after checkout.
+- Fix: bind marker selection to the triggering commit range.
+- No mathematical data was changed.
+
+### 2026-07-24 — run 30103838995: push event contained minimal commit objects
+
+- Intended goal: select the marker from `commits[].added/modified` in `GITHUB_EVENT_PATH`.
+- What happened: the push event contained `before`, `after`, and minimal commit metadata, but no `added`, `modified`, or `removed` arrays. The protective step found zero markers and stopped immediately.
+- Evidence: saved `work/push-event.json` from run `30103838995`; it records `before=fe710face5bc84ec9bdd9283588c488abf8b2373` and `after=a4a3233e3c64d13ea10d646cade0a231eee38191` but no changed-file arrays.
+- Classification: request-resolution failure before source resolution, downloads, aggregation, or publication.
+- Root cause: an unsupported assumption about push-event richness for commits created through repository APIs.
+- Permanent fix: derive changed paths with `git diff --name-status before after -- .archive/`, require exactly one added/modified marker, and save the range and diff in diagnostics.
+- Forbidden repetition: do not rely on `commits[].added/modified` being present; do not fall back to directory-wide scanning.
+- No compute result or verified archive was damaged.
 
 ## 8. Mandatory startup checklist
 
@@ -299,7 +309,7 @@ Before any write action:
 6. determine whether the relevant run is active, failed, complete, or processed;
 7. check archive branches, published archives, successors, and retries;
 8. ensure one publisher and one intended workflow;
-9. test changed orchestration on saved data and simulate event-selection logic when changed;
+9. test changed orchestration on saved data and simulate or inspect actual event structures;
 10. re-read `main` immediately before committing;
 11. after committing, verify the commit and exactly one resulting run through the API.
 
