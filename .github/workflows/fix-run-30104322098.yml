@@ -1,0 +1,218 @@
+name: prepare fix for run 30104322098
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".fix/30104322098.txt"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fix-run-30104322098
+  cancel-in-progress: false
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Apply exact regression fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path: str, old: str, new: str) -> None:
+              target = Path(path)
+              text = target.read_text(encoding="utf-8")
+              count = text.count(old)
+              if count != 1:
+                  raise RuntimeError(f"{path}: expected one replacement, found {count}")
+              target.write_text(text.replace(old, new, 1), encoding="utf-8")
+
+          replace_once(
+              "search.cpp",
+              "    int shard_count = 1;\n    int shard_index = 0;\n",
+              "    std::uint64_t shard_count = 1;\n    std::uint64_t shard_index = 0;\n",
+          )
+          replace_once(
+              "search.cpp",
+              "            if (static_cast<int>(MaskHash{}(key) % shard_count) != shard_index) return;\n",
+              "            if (MaskHash{}(key) % shard_count != shard_index) return;\n",
+          )
+          replace_once(
+              "search.cpp",
+              "        else if (argument == \"--shard-count\") solver.shard_count = std::stoi(value());\n        else if (argument == \"--shard-index\") solver.shard_index = std::stoi(value());\n",
+              "        else if (argument == \"--shard-count\") solver.shard_count = std::stoull(value());\n        else if (argument == \"--shard-index\") solver.shard_index = std::stoull(value());\n",
+          )
+
+          replace_once(
+              "batch.py",
+              "        status, details, solutions = read_result(result_path)\n        if expected_stop and status == \"missing\":\n            status = \"deadline_kill\"\n        record = asdict(task) | details | {\n",
+              "        status, details, solutions = read_result(result_path)\n        if expected_stop and status == \"missing\":\n            status = \"deadline_kill\"\n        elif status == \"missing\":\n            status = \"technical_failure\"\n            details[\"failure_log_tail\"] = log_path.read_text(\n                encoding=\"utf-8\", errors=\"replace\"\n            )[-2000:]\n        record = asdict(task) | details | {\n",
+          )
+          replace_once(
+              "batch.py",
+              "        failure = not expected_stop and (process.returncode != 0 or status == \"missing\")\n",
+              "        failure = not expected_stop and (\n            process.returncode != 0 or status == \"technical_failure\"\n        )\n",
+          )
+
+          replace_once(
+              "collect_run.py",
+              "INCOMPLETE_STATUSES = {\"capacity\", \"timeout\", \"stopped\", \"deadline_kill\", \"memory\"}\nALLOWED_STATUSES = {\"complete\"} | INCOMPLETE_STATUSES\n",
+              "REFINEMENT_STATUSES = {\"capacity\", \"timeout\", \"stopped\", \"deadline_kill\", \"memory\"}\nRETRY_STATUSES = {\"technical_failure\", \"missing\"}\nINCOMPLETE_STATUSES = REFINEMENT_STATUSES | RETRY_STATUSES\nALLOWED_STATUSES = {\"complete\"} | INCOMPLETE_STATUSES\n",
+          )
+          replace_once(
+              "collect_run.py",
+              "    incomplete_records = [\n        record\n        for record in records\n        if str(record[\"status\"]) in INCOMPLETE_STATUSES\n    ]\n",
+              "    bounded_incomplete_records = [\n        record\n        for record in records\n        if str(record[\"status\"]) in REFINEMENT_STATUSES\n    ]\n    retry_records = [\n        record\n        for record in records\n        if str(record[\"status\"]) in RETRY_STATUSES\n    ]\n    incomplete_records = bounded_incomplete_records + retry_records\n",
+          )
+          replace_once(
+              "collect_run.py",
+              "            \"complete\": status_counts.get(\"complete\", 0),\n            \"incomplete\": len(incomplete_records),\n            \"unstarted\": len(unstarted_names),\n",
+              "            \"complete\": status_counts.get(\"complete\", 0),\n            \"incomplete\": len(incomplete_records),\n            \"bounded_incomplete\": len(bounded_incomplete_records),\n            \"technical_failures\": len(retry_records),\n            \"unstarted\": len(unstarted_names),\n",
+          )
+          replace_once(
+              "collect_run.py",
+              "    refined: list[batch.Task] = []\n    carried: list[batch.Task] = []\n",
+              "    refined: list[batch.Task] = []\n    retry_carried: list[batch.Task] = []\n    unstarted_carried: list[batch.Task] = []\n",
+          )
+          replace_once(
+              "collect_run.py",
+              "        if record is None:\n            carried.append(task)\n            continue\n        status = str(record[\"status\"])\n        if status == \"complete\":\n            continue\n        if status not in INCOMPLETE_STATUSES:\n            raise RuntimeError(f\"cannot continue status {status} for {task.name}\")\n        effective_max_seen = int(record.get(\"effective_max_seen\", 0)) or task.max_seen\n",
+              "        if record is None:\n            unstarted_carried.append(task)\n            continue\n        status = str(record[\"status\"])\n        if status == \"complete\":\n            continue\n        if status in RETRY_STATUSES:\n            retry_carried.append(task)\n            continue\n        if status not in REFINEMENT_STATUSES:\n            raise RuntimeError(f\"cannot continue status {status} for {task.name}\")\n        effective_max_seen = int(record.get(\"effective_max_seen\", 0)) or task.max_seen\n",
+          )
+          replace_once(
+              "collect_run.py",
+              "    tasks = refined + carried + reserve\n",
+              "    tasks = refined + retry_carried + unstarted_carried + reserve\n",
+          )
+          replace_once(
+              "collect_run.py",
+              "        \"refined\": len(refined),\n        \"carried\": len(carried),\n        \"reserve\": len(reserve),\n",
+              "        \"refined\": len(refined),\n        \"retry_carried\": len(retry_carried),\n        \"unstarted_carried\": len(unstarted_carried),\n        \"carried\": len(retry_carried) + len(unstarted_carried),\n        \"reserve\": len(reserve),\n",
+          )
+          replace_once(
+              "collect_run.py",
+              "- incomplete bounded tasks: {tasks['incomplete']}\n- unstarted tasks: {tasks['unstarted']}\n",
+              "- incomplete bounded tasks: {tasks['bounded_incomplete']}\n- technical-failure tasks preserved for exact retry: {tasks['technical_failures']}\n- unstarted tasks: {tasks['unstarted']}\n",
+          )
+          replace_once(
+              "collect_run.py",
+              "1. {nxt['refined']:,} refined children of recorded incomplete tasks;\n2. {nxt['carried']:,} exact source tasks that were never started;\n3. {nxt['reserve']:,} reserve tasks from support-size layer {nxt['reserve_limit']}.\n",
+              "1. {nxt['refined']:,} refined children of bounded incomplete tasks;\n2. {nxt['retry_carried']:,} exact source tasks preserved after technical failure;\n3. {nxt['unstarted_carried']:,} exact source tasks that were never started;\n4. {nxt['reserve']:,} reserve tasks from support-size layer {nxt['reserve_limit']}.\n",
+          )
+          replace_once(
+              "collect_run.py",
+              "        \"refined\": counts[\"refined\"],\n        \"carried\": counts[\"carried\"],\n        \"reserve\": counts[\"reserve\"],\n",
+              "        \"refined\": counts[\"refined\"],\n        \"retry_carried\": counts[\"retry_carried\"],\n        \"unstarted_carried\": counts[\"unstarted_carried\"],\n        \"carried\": counts[\"carried\"],\n        \"reserve\": counts[\"reserve\"],\n",
+          )
+
+          replace_once(
+              ".github/workflows/run-frontier3.yml",
+              "          grep -q \"status complete\" out/smoke.txt\n          python frontier3.py --stage frontier2 --job-count 20 --dry-run \\\n            | tee -a out/preflight.log\n",
+              "          grep -q \"status complete\" out/smoke.txt\n          ./search --orbit 0 --limit 12 --split-size 12 \\\n            --shard-count 4294967296 --shard-index 4294967295 \\\n            --time-limit 60 --max-seen 100000 \\\n            --output out/smoke-u64-shard.txt \\\n            2>&1 | tee -a out/preflight.log\n          grep -q \"status complete\" out/smoke-u64-shard.txt\n          python frontier3.py --stage frontier2 --job-count 20 --dry-run \\\n            | tee -a out/preflight.log\n",
+          )
+
+          replace_once(
+              ".github/workflows/query-latest-batch.yml",
+              "          assert run.get('status') == 'completed', (run.get('id'), run.get('status'))\n          assert run.get('conclusion') == 'success', (run.get('id'), run.get('conclusion'))\n          resolved = str(run['id'])\n          if explicit:\n              assert explicit == resolved, (explicit, resolved)\n",
+              "          assert run.get('status') == 'completed', (run.get('id'), run.get('status'))\n          resolved = str(run['id'])\n          if explicit:\n              assert explicit == resolved, (explicit, resolved)\n          conclusion = str(run.get('conclusion'))\n          allow_failed = os.environ.get('allow_failed', '').strip().lower() == 'true'\n          if conclusion != 'success':\n              assert explicit == resolved, ('failed archive requests require explicit run_id', explicit, resolved)\n              assert allow_failed, ('failed run requires allow_failed=true', conclusion)\n              assert conclusion == 'failure', conclusion\n",
+          )
+
+          agents = Path("AGENTS.md")
+          text = agents.read_text(encoding="utf-8")
+          heading = "### 2026-07-24 — run 30104322098: 32-bit shard parsing rejected exact 2^32 refinements"
+          if heading not in text:
+              incident = "\n".join([
+                  "",
+                  heading,
+                  "",
+                  "- Intended goal: process the verified 1,034,753-task frontier for five hours fifty minutes on 20 independent runners.",
+                  "- What actually happened: all 20 runners compiled, passed the old smoke test, worked for about 20,821 seconds, and uploaded readable artifacts, but each runner ended red because some exact layer-27 tasks crashed.",
+                  "- Evidence: all 2,032 failed records have `returncode=-6`, `status=missing`, shard count `4294967296`, and the retained logs say `std::out_of_range: stoi`. The remaining records are 26,756 complete, 1,213 capacity, 59 timeout, and 1 stopped; 1,004,692 tasks were unstarted. All 20 ZIP digests matched and swap remained zero.",
+                  "- Classification: partial technical failure with substantial valid bounded-search output; not a failed mathematical computation as a whole.",
+                  "- Root cause: `search.cpp` stored and parsed `shard_count` and `shard_index` as signed 32-bit `int` using `std::stoi`, while exact refinement reached `2^32` shards.",
+                  "- Consequences: completed and bounded outcomes remain valid and must be archived; only the 2,032 crashed tasks and exact unstarted work are retried. No completed task may be repeated merely because the matrix was red.",
+                  "- Permanent fix: use `std::uint64_t` plus `std::stoull`, test `--shard-count 4294967296 --shard-index 4294967295` in every compute-job preflight, classify missing solver output as `technical_failure`, and carry technical failures unchanged rather than refining them.",
+                  "- Forbidden repetition: never use a smoke test whose numeric range is smaller than the largest shard identifiers present in the loaded frontier; never reject a complete 20-artifact run solely from its overall red status.",
+                  "- Validated replacement: compile and execute the exact `2^32` boundary command, archive all 20 artifacts, verify exact source coverage, and derive the successor as bounded refinements plus exact technical retries plus exact unstarted tasks plus explicit reserve.",
+                  "",
+                  "## 8. Mandatory startup checklist",
+                  "",
+              ])
+              text = text.replace("\n## 8. Mandatory startup checklist\n", incident, 1)
+              agents.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Validate correction
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -r requirements.txt
+          python -m py_compile batch.py collect_run.py compact_archive.py frontier3.py
+          g++ -O3 -DNDEBUG -std=c++20 -march=native -o /tmp/search-fixed search.cpp
+          /tmp/search-fixed --orbit 0 --limit 12 --split-size 12 \
+            --shard-count 4294967296 --shard-index 4294967295 \
+            --time-limit 10 --max-seen 100000 --output /tmp/u64.txt
+          grep -q "status complete" /tmp/u64.txt
+          python - <<'PY'
+          import batch
+          import collect_run
+
+          failed = batch.Task("h", 2, 27, 190238965, 4294967296, 15, 8000000)
+          unstarted = batch.Task("i", 0, 31, 0, 8192, 19, 0)
+          records = [{"name": failed.name, "status": "technical_failure"}]
+          tasks, counts = collect_run.next_frontier(
+              [failed, unstarted], records,
+              reserve_limit=35, reserve_shards=2, reserve_split=21, refinement_factor=16,
+          )
+          assert tasks[0] == failed
+          assert tasks[1] == unstarted
+          assert counts == {
+              "refined": 0,
+              "retry_carried": 1,
+              "unstarted_carried": 1,
+              "carried": 2,
+              "reserve": 16,
+          }
+          print("PASS: uint64 shard boundary and exact technical-retry semantics")
+          PY
+
+      - name: Publish isolated fix branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="agent/fix-30104322098"
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "branch already exists: $branch" >&2
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm -- .github/workflows/fix-run-30104322098.yml .fix/30104322098.txt
+          git checkout -b "$branch"
+          git add search.cpp batch.py collect_run.py AGENTS.md \
+            .github/workflows/run-frontier3.yml .github/workflows/query-latest-batch.yml
+          git diff --cached --check
+          git diff --cached --stat
+          git commit -m "fix 64-bit shard frontier after 30104322098"
+          git push origin "HEAD:$branch"
+          printf 'branch=%s\ncommit=%s\n' "$branch" "$(git rev-parse HEAD)" | tee fix-branch.env
+
+      - name: Upload validation record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fix-30104322098-${{ github.run_id }}
+          path: fix-branch.env
+          if-no-files-found: warn
+          retention-days: 7
