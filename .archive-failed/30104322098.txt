@@ -1,0 +1,5 @@
+run_id=30104322098
+source_sha=0c238c4bf4070cfb13d80deeab67f5ed11289fca
+source_tasks=runs/2026-07-24-b/next_tasks.json.gz
+output_dir=runs/2026-07-25-a
+classification=verified partial technical failure
