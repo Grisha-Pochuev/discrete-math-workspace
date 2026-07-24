@@ -26,30 +26,51 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Read explicit archive request from triggering push
+      - name: Read explicit archive request from triggering diff
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p work
           cp "$GITHUB_EVENT_PATH" work/push-event.json
-          marker="$(python - work/push-event.json <<'PY'
+          python - work/push-event.json <<'PY' > work/push-range.env
           import json
-          import pathlib
           import sys
 
           with open(sys.argv[1], encoding='utf-8') as source:
               event = json.load(source)
+          before = str(event.get('before', '')).strip()
+          after = str(event.get('after', '')).strip()
+          if len(before) != 40 or len(after) != 40:
+              raise SystemExit(f'invalid push range: before={before!r} after={after!r}')
+          if set(before) == {'0'}:
+              raise SystemExit('branch-creation push is not a valid archive request')
+          print(f'before_sha={before}')
+          print(f'after_sha={after}')
+          PY
+          cat work/push-range.env
+          cat work/push-range.env >> "$GITHUB_ENV"
+          source work/push-range.env
+          git diff --name-status "$before_sha" "$after_sha" -- .archive/ > work/marker-diff.tsv
+          cat work/marker-diff.tsv
+          marker="$(python - work/marker-diff.tsv <<'PY'
+          import pathlib
+          import sys
+
           markers = []
-          for commit in event.get('commits', []):
-              for key in ('added', 'modified'):
-                  for name in commit.get(key, []):
-                      path = pathlib.PurePosixPath(name)
-                      if len(path.parts) == 2 and path.parts[0] == '.archive' and path.suffix == '.txt':
-                          markers.append(path.as_posix())
+          for line in pathlib.Path(sys.argv[1]).read_text(encoding='utf-8').splitlines():
+              if not line.strip():
+                  continue
+              fields = line.split('\t')
+              status = fields[0]
+              if status not in {'A', 'M'} or len(fields) != 2:
+                  continue
+              path = pathlib.PurePosixPath(fields[1])
+              if len(path.parts) == 2 and path.parts[0] == '.archive' and path.suffix == '.txt':
+                  markers.append(path.as_posix())
           markers = sorted(set(markers))
           if len(markers) != 1:
               raise SystemExit(
-                  f'expected exactly one archive marker in triggering push, found {markers}'
+                  f'expected exactly one added/modified archive marker in triggering diff, found {markers}'
               )
           print(markers[0])
           PY
@@ -229,6 +250,8 @@ jobs:
           path: |
             request.env
             work/push-event.json
+            work/push-range.env
+            work/marker-diff.tsv
             work/run.env
             work/artifacts.tsv
             work/collection-summary.log
