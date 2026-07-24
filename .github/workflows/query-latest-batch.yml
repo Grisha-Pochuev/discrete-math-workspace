@@ -26,23 +26,42 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Read explicit archive request
+      - name: Read explicit archive request from triggering push
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p work
-          marker="$(python - <<'PY'
-          from pathlib import Path
-          markers = list(Path('.archive').glob('*.txt'))
-          if not markers:
-              raise SystemExit('no archive request marker')
-          print(max(markers, key=lambda path: path.stat().st_mtime_ns))
+          cp "$GITHUB_EVENT_PATH" work/push-event.json
+          marker="$(python - work/push-event.json <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          with open(sys.argv[1], encoding='utf-8') as source:
+              event = json.load(source)
+          markers = []
+          for commit in event.get('commits', []):
+              for key in ('added', 'modified'):
+                  for name in commit.get(key, []):
+                      path = pathlib.PurePosixPath(name)
+                      if len(path.parts) == 2 and path.parts[0] == '.archive' and path.suffix == '.txt':
+                          markers.append(path.as_posix())
+          markers = sorted(set(markers))
+          if len(markers) != 1:
+              raise SystemExit(
+                  f'expected exactly one archive marker in triggering push, found {markers}'
+              )
+          print(markers[0])
           PY
           )"
+          test -f "$marker"
           python - "$marker" <<'PY' > request.env
-          import pathlib, sys
+          import pathlib
+          import sys
+
+          marker = pathlib.Path(sys.argv[1])
           values = {}
-          for line in pathlib.Path(sys.argv[1]).read_text(encoding='utf-8').splitlines():
+          for line in marker.read_text(encoding='utf-8').splitlines():
               if not line.strip() or line.lstrip().startswith('#'):
                   continue
               key, value = line.split('=', 1)
@@ -53,6 +72,7 @@ jobs:
               'reserve_shards', 'reserve_split'
           }
           assert required <= values.keys(), required - values.keys()
+          print(f'request_marker={marker.as_posix()}')
           for key in sorted(values):
               print(f'{key}={values[key]}')
           PY
@@ -208,6 +228,7 @@ jobs:
           name: archive-preparation-${{ github.run_id }}
           path: |
             request.env
+            work/push-event.json
             work/run.env
             work/artifacts.tsv
             work/collection-summary.log
