@@ -41,7 +41,7 @@ jobs:
               key, value = line.split('=', 1)
               values[key.strip()] = value.strip()
           required = {
-              'run_id', 'source_sha', 'source_tasks', 'source_lane',
+              'source_sha', 'source_tasks', 'source_lane',
               'manifest_stage', 'output_dir', 'reserve_limit',
               'reserve_shards', 'reserve_split'
           }
@@ -52,6 +52,44 @@ jobs:
           cat request.env
           cat request.env >> "$GITHUB_ENV"
 
+      - name: Resolve and validate the source workflow run
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p work
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${source_sha}&event=push&per_page=100" > work/source-runs.json
+          python - <<'PY' > work/run.env
+          import json
+          import os
+
+          data = json.load(open('work/source-runs.json', encoding='utf-8'))
+          source_sha = os.environ['source_sha']
+          explicit = os.environ.get('run_id', '').strip()
+          runs = [
+              run for run in data.get('workflow_runs', [])
+              if run.get('head_sha') == source_sha
+              and run.get('name') == 'batch'
+              and run.get('path') == '.github/workflows/run-frontier3.yml'
+              and run.get('event') == 'push'
+          ]
+          assert len(runs) == 1, [
+              (run.get('id'), run.get('name'), run.get('path'), run.get('status'), run.get('conclusion'))
+              for run in runs
+          ]
+          run = runs[0]
+          assert run.get('status') == 'completed', (run.get('id'), run.get('status'))
+          assert run.get('conclusion') == 'success', (run.get('id'), run.get('conclusion'))
+          resolved = str(run['id'])
+          if explicit:
+              assert explicit == resolved, (explicit, resolved)
+          print(f'run_id={resolved}')
+          print(f'run_url={run["html_url"]}')
+          print(f'run_status={run["status"]}')
+          print(f'run_conclusion={run["conclusion"]}')
+          PY
+          cat work/run.env
+          cat work/run.env >> "$GITHUB_ENV"
+
       - name: Install exact verification dependencies
         run: python -m pip install -r requirements.txt
 
@@ -59,9 +97,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          rm -rf work
+          rm -rf work/raw
           mkdir -p work/raw
-          gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts?per_page=100" > work/artifacts-pages.json
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts?per_page=100" > work/artifacts-pages.json
           python - <<'PY' > work/artifacts.tsv
           import json
           data = json.load(open('work/artifacts-pages.json', encoding='utf-8'))
@@ -131,6 +169,7 @@ jobs:
           name: archive-preparation-${{ github.run_id }}
           path: |
             request.env
+            work/run.env
             work/artifacts.tsv
             work/collection-summary.log
             work/verifier.log
