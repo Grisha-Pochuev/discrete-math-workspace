@@ -405,6 +405,26 @@ Never claim a layer is closed while any shard is missing, capacity-limited, time
 
 **Validated replacement:** pending one end-to-end verification against the 20 real artifacts from run 29984144124. Do not launch a successor until that verification passes.
 
+### 2026-07-24 — run 30098487026: verified archive was not published from the isolated preparation job
+
+**Intended goal:** prepare a verified archive for the unique completed frontier run associated with launch commit `f1a518671b1116647c8be9b04f38148dd8b593fc` without allowing GitHub Actions to update `main`.
+
+**What actually happened:** source-run resolution, download of all twenty original artifact ZIP files, aggregation against the exact source task list, and execution of the generated verifier all succeeded. The final step that was supposed to commit and push the candidate archive to a deterministic isolated branch failed. Diagnostic artifacts were uploaded.
+
+**Evidence:** in workflow run `30098487026`, steps 1 through 7 succeeded; only `Commit candidate archive to deterministic isolated branch` failed; `Upload preparation diagnostics` then succeeded.
+
+**Classification:** archive-publication transport failure after successful exact verification. This is not a mathematical-computation failure and does not justify recomputing the source frontier.
+
+**Root cause:** the exact low-level Git error is not yet confirmed from the available log tail. A confirmed design weakness is that the complete verified candidate archive existed only in the ephemeral runner workspace and was not uploaded before the branch-publication step.
+
+**Consequences:** no verified archive was published to `main`, no successor marker was created, and no next compute run was launched. The original twenty compute artifacts and the successful verification evidence remain available.
+
+**Permanent fix:** before any Git branch publication, upload the complete verified candidate archive as a recoverable Actions artifact and capture the full commit/push transcript in a diagnostic log. Then retry the same publication path at most once; never recompute the completed source run.
+
+**Forbidden repetition:** do not rerun the unchanged branch-publication step; do not discard a verified candidate when the transport step fails; do not launch a successor before the archive reaches `main`.
+
+**Validated replacement:** pending one corrected end-to-end retry against the same twenty source artifacts.
+
 ## 6. Mandatory startup checklist for any future agent or automation
 
 Before taking any write action:
