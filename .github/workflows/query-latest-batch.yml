@@ -144,11 +144,11 @@ jobs:
             | tee work/collection-summary.log
           python "$output_dir/verify.py" | tee work/verifier.log
 
-      - name: Commit candidate archive to an isolated branch
+      - name: Commit candidate archive to deterministic isolated branch
         shell: bash
         run: |
           set -euo pipefail
-          branch="agent/archive-${run_id}"
+          branch="agent/archive-source-${source_sha:0:16}"
           if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
             echo "archive branch already exists: $branch" >&2
             exit 1
