@@ -1,0 +1,2 @@
+run_id=30104322098
+purpose=apply confirmed uint64 shard parsing fix and archive-safe retry semantics
