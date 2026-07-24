@@ -1,0 +1,121 @@
+{
+  "archive_format_version": 2,
+  "artifacts": 20,
+  "jobs": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "layers": {
+    "27": {
+      "capacity": 127,
+      "complete": 1905
+    },
+    "29": {
+      "complete": 80
+    },
+    "30": {
+      "capacity": 1537,
+      "complete": 23329,
+      "stopped": 1,
+      "timeout": 56
+    }
+  },
+  "manifest_stage": "frontier2",
+  "next_frontier": {
+    "by_limit": {
+      "27": 2032,
+      "30": 49681,
+      "31": 65536,
+      "32": 131072,
+      "33": 262144,
+      "34": 524288
+    },
+    "carried": 482929,
+    "refined": 27536,
+    "refinement_factor": 16,
+    "reserve": 524288,
+    "reserve_limit": 34,
+    "reserve_shards": 65536,
+    "reserve_split": 20,
+    "stage": "frontier3",
+    "tasks": 1034753
+  },
+  "omitted_redundant_name_lists": {
+    "incomplete_task_names": 1721,
+    "unstarted_task_names": 482929
+  },
+  "payload_encoding": {
+    "next_tasks": "next_tasks.json.gz",
+    "records": "records.jsonl.gz",
+    "source_tasks": "source_tasks.json.gz"
+  },
+  "resources": {
+    "cpu_models": {
+      "AMD EPYC 7763 64-Core Processor": 9,
+      "AMD EPYC 9V74 80-Core Processor": 7,
+      "INTEL(R) XEON(R) PLATINUM 8573C": 4
+    },
+    "max_combined_rss_bytes": 7245660160,
+    "max_observed_elapsed_seconds": 20821.8,
+    "max_swap_used_bytes": 0,
+    "min_mem_available_bytes": 8204972032
+  },
+  "run_id": 30069271698,
+  "search": {
+    "engine_seconds": 1551384.85481048,
+    "nodes": 163719562469,
+    "states": 156390011145
+  },
+  "source_commit": "f1a518671b1116647c8be9b04f38148dd8b593fc",
+  "source_lane": "frontier3",
+  "source_task_parent_run": 30041615382,
+  "source_tasks": 509964,
+  "supports": {
+    "exact_obstructions": {
+      "inconsistent_signs": 34,
+      "mixed_monomial": 85,
+      "target_zero": 99
+    },
+    "occurrences": 485,
+    "unique": 218,
+    "unique_by_size": {
+      "23": 2,
+      "25": 4,
+      "26": 8,
+      "27": 8,
+      "28": 21,
+      "29": 51,
+      "30": 124
+    }
+  },
+  "tasks": {
+    "complete": 25314,
+    "incomplete": 1721,
+    "recorded": 27035,
+    "status_counts": {
+      "capacity": 1664,
+      "complete": 25314,
+      "stopped": 1,
+      "timeout": 56
+    },
+    "unstarted": 482929
+  }
+}
