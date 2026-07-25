@@ -210,7 +210,7 @@ jobs:
           retention-days: 7
           compression-level: 6
 
-      - name: Commit candidate archive to isolated branch
+      - name: Commit or validate candidate archive on isolated branch
         shell: bash
         run: |
           set -euo pipefail
@@ -232,8 +232,22 @@ jobs:
           assert not unsafe, f'GitHub-unsafe archive blobs: {unsafe}'
           PY
             if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
-              echo "archive branch already exists: $branch" >&2
-              exit 1
+              echo "archive branch already exists; validating exact reuse: $branch"
+              git fetch --no-tags origin \
+                "refs/heads/${branch}:refs/remotes/origin/${branch}"
+              existing_commit="$(git rev-parse "refs/remotes/origin/${branch}")"
+              rm -rf work/existing-archive
+              git worktree add --detach work/existing-archive "$existing_commit"
+              test -d "work/existing-archive/$output_dir"
+              diff --recursive --brief --no-dereference \
+                "$output_dir" "work/existing-archive/$output_dir"
+              (
+                cd work/existing-archive
+                python "$output_dir/verify.py"
+              ) | tee work/existing-verifier.log
+              printf 'branch=%s\ncommit=%s\nreused_existing=true\n' \
+                "$branch" "$existing_commit" | tee work/archive-branch.env
+              exit 0
             fi
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -243,7 +257,8 @@ jobs:
             git diff --cached --quiet && { echo 'no archive files staged' >&2; exit 1; }
             git commit -m "prepare batch run ${run_id} archive"
             git push --verbose origin "HEAD:${branch}"
-            printf 'branch=%s\ncommit=%s\n' "$branch" "$(git rev-parse HEAD)" | tee work/archive-branch.env
+            printf 'branch=%s\ncommit=%s\nreused_existing=false\n' \
+              "$branch" "$(git rev-parse HEAD)" | tee work/archive-branch.env
           } 2>&1 | tee work/publication.log
 
       - name: Upload preparation diagnostics
@@ -261,6 +276,7 @@ jobs:
             work/collection-summary.log
             work/compaction.log
             work/verifier.log
+            work/existing-verifier.log
             work/largest-files.txt
             work/publication.log
             work/archive-branch.env
