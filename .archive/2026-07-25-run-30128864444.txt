@@ -1,0 +1,10 @@
+source_sha=440e614e401e8a577774ce5658ac82a1a07359ad
+run_id=30128864444
+source_tasks=runs/2026-07-25-a/next_tasks.json.gz
+source_lane=frontier3
+manifest_stage=frontier2
+output_dir=runs/2026-07-25-b
+reserve_limit=36
+reserve_shards=262144
+reserve_split=22
+reason=archive successful corrected frontier; refine only bounded incomplete work, carry exact unstarted work, and add layer-36 reserve
