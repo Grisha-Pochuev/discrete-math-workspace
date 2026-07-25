@@ -1,0 +1,12 @@
+parent_run=30128864444
+archive_commit=9704ba5900d462d701f3ad5a4517182633330f3a
+workflow_fix_commit=41588f91849ec5a8293f43234a76c6efaf8fc5af
+stage=frontier3
+runtime_seconds=21000
+max_seen=32000000
+jobs=20
+workers_per_job=4
+tasks=4177182
+frontier=refine 1898 bounded incomplete outcomes into 30368 exact children; carry 2049662 exact unstarted tasks; add 2097152 layer-36 reserve tasks; exclude 24108 completed tasks; no technical failures to retry
+source_tasks=runs/2026-07-25-b/next_tasks.json.gz
+preflight=derive actual maximum shards and shard from the loaded queue, test that exact numeric boundary in the compiled search engine, then validate unique balanced 20-job coverage
