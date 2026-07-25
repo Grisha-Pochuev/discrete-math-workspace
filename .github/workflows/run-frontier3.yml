@@ -62,14 +62,51 @@ jobs:
             --output out/smoke.txt \
             2>&1 | tee out/preflight.log
           grep -q "status complete" out/smoke.txt
+
+          python - <<'PY' | tee out/frontier-preflight.json
+          import json
+          import frontier3
+
+          tasks = frontier3.load_frontier3_tasks()
+          counts = [
+              sum(1 for index in range(len(tasks)) if index % 20 == job)
+              for job in range(20)
+          ]
+          assert max(counts) - min(counts) <= 1
+          names = [task.name for task in tasks]
+          assert len(names) == len(set(names))
+          boundary = max(tasks, key=lambda task: (task.shards, task.shard))
+          assert 0 <= boundary.shard < boundary.shards
+          by_limit = {
+              str(limit): sum(1 for task in tasks if task.limit == limit)
+              for limit in sorted({task.limit for task in tasks})
+          }
+          print(json.dumps({
+              "total": len(tasks),
+              "per_job": counts,
+              "by_limit": by_limit,
+              "max_shards": boundary.shards,
+              "max_shard": boundary.shard,
+              "boundary_task": boundary.name,
+          }, sort_keys=True))
+          PY
+
+          read -r BOUNDARY_SHARDS BOUNDARY_SHARD < <(
+            python - <<'PY'
+          import json
+          with open('out/frontier-preflight.json', encoding='utf-8') as source:
+              data = json.load(source)
+          print(data['max_shards'], data['max_shard'])
+          PY
+          )
+          printf 'testing actual frontier boundary: shards=%s shard=%s\n' \
+            "$BOUNDARY_SHARDS" "$BOUNDARY_SHARD" | tee -a out/preflight.log
           ./search --orbit 0 --limit 12 --split-size 12 \
-            --shard-count 4294967296 --shard-index 4294967295 \
+            --shard-count "$BOUNDARY_SHARDS" --shard-index "$BOUNDARY_SHARD" \
             --time-limit 60 --max-seen 100000 \
-            --output out/smoke-u64-shard.txt \
+            --output out/smoke-frontier-boundary.txt \
             2>&1 | tee -a out/preflight.log
-          grep -q "status complete" out/smoke-u64-shard.txt
-          python frontier3.py --stage frontier2 --job-count 20 --dry-run \
-            | tee -a out/preflight.log
+          grep -q "status complete" out/smoke-frontier-boundary.txt
 
       - name: execute
         env:
