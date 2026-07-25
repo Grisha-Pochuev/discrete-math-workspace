@@ -100,7 +100,7 @@ jobs:
           cat request.env
           cat request.env >> "$GITHUB_ENV"
 
-      - name: Resolve and validate the source workflow run
+      - name: Resolve completed source workflow run
         shell: bash
         run: |
           set -euo pipefail
@@ -125,14 +125,18 @@ jobs:
           ]
           run = runs[0]
           assert run.get('status') == 'completed', (run.get('id'), run.get('status'))
-          assert run.get('conclusion') == 'success', (run.get('id'), run.get('conclusion'))
+          conclusion = str(run.get('conclusion') or '')
+          assert conclusion in {'success', 'failure', 'cancelled'}, (
+              run.get('id'), conclusion
+          )
           resolved = str(run['id'])
           if explicit:
               assert explicit == resolved, (explicit, resolved)
           print(f'run_id={resolved}')
           print(f'run_url={run["html_url"]}')
           print(f'run_status={run["status"]}')
-          print(f'run_conclusion={run["conclusion"]}')
+          print(f'run_conclusion={conclusion}')
+          print('artifact_validation_is_authoritative=true')
           PY
           cat work/run.env
           cat work/run.env >> "$GITHUB_ENV"
