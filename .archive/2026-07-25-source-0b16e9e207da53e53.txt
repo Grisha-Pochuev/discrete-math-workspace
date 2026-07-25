@@ -1,0 +1,9 @@
+source_sha=0b16e9e207da53e53ec04430fa13e72420a57cbc
+source_tasks=runs/2026-07-25-b/next_tasks.json.gz
+source_lane=frontier3
+manifest_stage=frontier2
+output_dir=runs/2026-07-25-c
+reserve_limit=37
+reserve_shards=524288
+reserve_split=23
+reason=resolve the unique completed batch from the successor marker, verify all twenty artifacts and exact source coverage, exclude completed tasks, refine only bounded incomplete work, carry exact technical failures and unstarted tasks, and add the explicit layer-37 reserve
