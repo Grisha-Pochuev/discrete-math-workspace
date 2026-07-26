@@ -7,13 +7,14 @@
   "last_run_accepted": true,
   "last_run_id": 30205157525,
   "last_run_index": 4,
-  "max_attempts_per_worker": 1500,
+  "max_attempts_per_worker": 0,
   "max_nfev": 350,
   "minimum_jobs_for_acceptance": 16,
   "next_run_index": 5,
   "next_seed": 25260741,
   "runtime_seconds": 21000,
   "schema_version": 1,
+  "stopping_policy": "time_only",
   "target_runs": 30,
   "workers_per_job": 4
 }
