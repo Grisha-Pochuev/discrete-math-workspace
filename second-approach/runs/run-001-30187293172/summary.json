@@ -1,0 +1,997 @@
+{
+  "accepted": true,
+  "attempt_parts": [
+    {
+      "file": "attempts/part-0000.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0001.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0002.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0003.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0004.jsonl.gz",
+      "records": 20000
+    }
+  ],
+  "attempts_total": 120000,
+  "best": [
+    {
+      "_source": "second-approach-data-5/worker-1/attempts.jsonl",
+      "attempt": 94,
+      "binary_relation_rows": 216,
+      "candidate_id": "r001-j05-w1-a000094",
+      "closed": true,
+      "cost": 7.588462721137176e-10,
+      "elapsed_seconds": 4.129509210586548,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 3.8957572400993066e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 3.895757355581604e-05,
+      "mixed_max": 3.8957572400993066e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999984894019,
+          1.8945955915228296e-13
+        ],
+        [
+          0.9999999984861023,
+          6.576857114471013e-13
+        ],
+        [
+          0.999999998484472,
+          4.490852134608758e-14
+        ]
+      ],
+      "mono_max_error": 1.515528037065242e-09,
+      "nfev": 350,
+      "optimality": 8.852500398465849e-09,
+      "parent_candidate_id": "r000-j01-w2-a000729",
+      "seed": 7628668223487179815,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "1a1db37423267eb6fffc34d9fbeb85f7c1",
+      "support_size": 81,
+      "total_l2": 3.895757364399682e-05,
+      "weight_max_abs": 7.057362689163906,
+      "weight_min_abs": 8.613026300885392e-34
+    },
+    {
+      "_source": "second-approach-data-1/worker-2/attempts.jsonl",
+      "attempt": 976,
+      "binary_relation_rows": 0,
+      "candidate_id": "r001-j01-w2-a000976",
+      "closed": true,
+      "cost": 7.824448107109983e-10,
+      "elapsed_seconds": 2.86431884765625,
+      "exact_obstruction": "unresolved_no_binary_relations",
+      "family": "seed_bank_mutation",
+      "max_error": 3.955868179709031e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 3.9558685693861896e-05,
+      "mixed_max": 3.955868179709031e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999983467415,
+          3.109346114038093e-12
+        ],
+        [
+          0.9999999984455904,
+          -3.4833245978807835e-15
+        ],
+        [
+          0.9999999984357851,
+          3.519490255069386e-12
+        ]
+      ],
+      "mono_max_error": 1.653261454006669e-09,
+      "nfev": 350,
+      "optimality": 2.8038056191718838e-08,
+      "parent_candidate_id": "r000-j07-w3-a001218",
+      "seed": 4501334274868989330,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "7fffffffffffffffffffffffffffffffff",
+      "support_size": 135,
+      "total_l2": 3.9558685789874226e-05,
+      "weight_max_abs": 6.6754618974912665,
+      "weight_min_abs": 3.0681195400417955e-23
+    },
+    {
+      "_source": "second-approach-data-0/worker-1/attempts.jsonl",
+      "attempt": 64,
+      "binary_relation_rows": 216,
+      "candidate_id": "r001-j00-w1-a000064",
+      "closed": true,
+      "cost": 8.063196627098771e-10,
+      "elapsed_seconds": 3.240321397781372,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.015768047567225e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.015768068078299e-05,
+      "mixed_max": 4.015768047567225e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999983943225,
+          5.094258348492531e-13
+        ],
+        [
+          0.9999999983917958,
+          5.29604138340085e-13
+        ],
+        [
+          0.999999998388944,
+          4.222178162651136e-13
+        ]
+      ],
+      "mono_max_error": 1.6110560106348245e-09,
+      "nfev": 350,
+      "optimality": 3.989103622477385e-09,
+      "parent_candidate_id": "r000-j01-w2-a000729",
+      "seed": 373866919130578668,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "1a1db37423267eb6fffc34d9fbeb85f7c1",
+      "support_size": 81,
+      "total_l2": 4.01576807774024e-05,
+      "weight_max_abs": 6.973026344505995,
+      "weight_min_abs": 5.347056402899021e-22
+    },
+    {
+      "_source": "second-approach-data-7/worker-0/attempts.jsonl",
+      "attempt": 508,
+      "binary_relation_rows": 61,
+      "candidate_id": "r001-j07-w0-a000508",
+      "closed": true,
+      "cost": 8.240684743633941e-10,
+      "elapsed_seconds": 4.081900358200073,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.059724959177973e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.0597252868203716e-05,
+      "mixed_max": 4.059724959177973e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999983135257,
+          2.0046986293209557e-10
+        ],
+        [
+          0.9999999983576662,
+          9.795497746267756e-13
+        ],
+        [
+          0.9999999983567511,
+          1.2361223156176499e-12
+        ]
+      ],
+      "mono_max_error": 1.6983473463186827e-09,
+      "nfev": 350,
+      "optimality": 7.947613033522002e-08,
+      "parent_candidate_id": "r000-j11-w2-a000682",
+      "seed": 3491139984879715365,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "1efffedefbcb133d6ceefda7fb9f353ddf",
+      "support_size": 96,
+      "total_l2": 4.059725297020462e-05,
+      "weight_max_abs": 7.755056418131895,
+      "weight_min_abs": 3.579763712390615e-45
+    },
+    {
+      "_source": "second-approach-data-19/worker-1/attempts.jsonl",
+      "attempt": 1150,
+      "binary_relation_rows": 202,
+      "candidate_id": "r001-j19-w1-a001150",
+      "closed": true,
+      "cost": 8.647579840664042e-10,
+      "elapsed_seconds": 3.39241099357605,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.1587449290502826e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.1587449539579945e-05,
+      "mixed_max": 4.1587449290502826e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999982773491,
+          2.400857290751901e-13
+        ],
+        [
+          0.9999999982751571,
+          7.60017049294961e-13
+        ],
+        [
+          0.9999999982728376,
+          3.058664432842306e-14
+        ]
+      ],
+      "mono_max_error": 1.7271624133607323e-09,
+      "nfev": 350,
+      "optimality": 1.0766876309540225e-08,
+      "parent_candidate_id": "r000-j01-w2-a000729",
+      "seed": 6716149026302424048,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "1a1db77423267eb6fffc34d9fbeb85f7c1",
+      "support_size": 82,
+      "total_l2": 4.1587449646892365e-05,
+      "weight_max_abs": 7.0909106645876525,
+      "weight_min_abs": 1.3317084589833018e-26
+    },
+    {
+      "_source": "second-approach-data-12/worker-3/attempts.jsonl",
+      "attempt": 106,
+      "binary_relation_rows": 0,
+      "candidate_id": "r001-j12-w3-a000106",
+      "closed": true,
+      "cost": 9.013027611805968e-10,
+      "elapsed_seconds": 4.384860515594482,
+      "exact_obstruction": "unresolved_no_binary_relations",
+      "family": "seed_bank_mutation",
+      "max_error": 4.245710197328679e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.24571020285882e-05,
+      "mixed_max": 4.245710197328679e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999981989365,
+          3.197442310967179e-14
+        ],
+        [
+          0.9999999982044052,
+          -1.329214516232057e-13
+        ],
+        [
+          0.9999999982035443,
+          -1.4090326128091137e-12
+        ]
+      ],
+      "mono_max_error": 1.801063520829476e-09,
+      "nfev": 350,
+      "optimality": 5.482182232064067e-09,
+      "parent_candidate_id": "r000-j05-w1-a001420",
+      "seed": 3167965758899788106,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "7fbfdfb9ff5fb6ff67daffffbffff56ffd",
+      "support_size": 113,
+      "total_l2": 4.2457102142765156e-05,
+      "weight_max_abs": 7.407390394326026,
+      "weight_min_abs": 5.70728688762085e-29
+    },
+    {
+      "_source": "second-approach-data-8/worker-1/attempts.jsonl",
+      "attempt": 364,
+      "binary_relation_rows": 246,
+      "candidate_id": "r001-j08-w1-a000364",
+      "closed": true,
+      "cost": 9.028343982880569e-10,
+      "elapsed_seconds": 3.6342148780822754,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.249313324138591e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.249316164798565e-05,
+      "mixed_max": 4.249313324138591e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999981971044,
+          4.2299497238218626e-13
+        ],
+        [
+          0.9999999981974098,
+          7.704947790898624e-14
+        ],
+        [
+          0.9999999982015256,
+          8.822942376792388e-13
+        ]
+      ],
+      "mono_max_error": 1.8028956602023833e-09,
+      "nfev": 350,
+      "optimality": 9.190272615630148e-08,
+      "parent_candidate_id": "r000-j07-w2-a000321",
+      "seed": 9048039366458429128,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "4fdb446b66fbe62ff0917f0d2f07fc931f",
+      "support_size": 79,
+      "total_l2": 4.249316176252496e-05,
+      "weight_max_abs": 6.829084758318692,
+      "weight_min_abs": 6.515090128218461e-27
+    },
+    {
+      "_source": "second-approach-data-9/worker-0/attempts.jsonl",
+      "attempt": 1342,
+      "binary_relation_rows": 19,
+      "candidate_id": "r001-j09-w0-a001342",
+      "closed": true,
+      "cost": 9.256084993417527e-10,
+      "elapsed_seconds": 3.2247867584228516,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.30257684104542e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.302577121002289e-05,
+      "mixed_max": 4.30257684104542e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999980856652,
+          -1.2902290347227563e-11
+        ],
+        [
+          0.9999999981557782,
+          1.136812866064845e-12
+        ],
+        [
+          0.9999999981560178,
+          -1.3017087407973804e-12
+        ]
+      ],
+      "mono_max_error": 1.9143782809145424e-09,
+      "nfev": 350,
+      "optimality": 2.4607403860830954e-08,
+      "parent_candidate_id": "r000-j14-w2-a000667",
+      "seed": 7118304040066068098,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "7ffdfbb3fffd1fef6fefeafaffbefd7fff",
+      "support_size": 113,
+      "total_l2": 4.302577133165083e-05,
+      "weight_max_abs": 7.214095515217054,
+      "weight_min_abs": 1.6645755228160266e-29
+    },
+    {
+      "_source": "second-approach-data-5/worker-3/attempts.jsonl",
+      "attempt": 484,
+      "binary_relation_rows": 73,
+      "candidate_id": "r001-j05-w3-a000484",
+      "closed": true,
+      "cost": 9.58376109063855e-10,
+      "elapsed_seconds": 3.8607845306396484,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.3780720340496464e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.378072034249977e-05,
+      "mixed_max": 4.3780720340496464e-05,
+      "mono_amplitudes": [
+        [
+          0.99999998762318,
+          2.2878570704598644e-09
+        ],
+        [
+          1.0000000149519348,
+          2.253753794700941e-09
+        ],
+        [
+          0.9999999948992074,
+          -1.8202794493937802e-08
+        ]
+      ],
+      "mono_max_error": 1.8903962870016273e-08,
+      "nfev": 350,
+      "optimality": 5.84128218922994e-06,
+      "parent_candidate_id": "r000-j12-w1-a000357",
+      "seed": 3890004943241460731,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "5beffea6974fcfc4bfc21afda8a17ffede",
+      "support_size": 88,
+      "total_l2": 4.3780728844181085e-05,
+      "weight_max_abs": 9.623705114486262,
+      "weight_min_abs": 1.6565768799417944e-25
+    },
+    {
+      "_source": "second-approach-data-3/worker-3/attempts.jsonl",
+      "attempt": 1096,
+      "binary_relation_rows": 142,
+      "candidate_id": "r001-j03-w3-a001096",
+      "closed": true,
+      "cost": 9.601506987924981e-10,
+      "elapsed_seconds": 4.275708198547363,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.38195368937782e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.381953707700056e-05,
+      "mixed_max": 4.38195368937782e-05,
+      "mono_amplitudes": [
+        [
+          1.000000042622,
+          2.9842077142738788e-09
+        ],
+        [
+          1.0000003511223534,
+          -1.0459835364520979e-07
+        ],
+        [
+          0.9999999455317201,
+          1.0270290078107092e-07
+        ]
+      ],
+      "mono_max_error": 3.663710177576582e-07,
+      "nfev": 350,
+      "optimality": 8.163372223013865e-05,
+      "parent_candidate_id": "r000-j07-w2-a000027",
+      "seed": 6713746230740240800,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "faf5bffee39bad086fffa77cafa93c25b",
+      "support_size": 86,
+      "total_l2": 4.3821243679122066e-05,
+      "weight_max_abs": 7.062685059844568,
+      "weight_min_abs": 4.653191724015463e-26
+    },
+    {
+      "_source": "second-approach-data-12/worker-0/attempts.jsonl",
+      "attempt": 208,
+      "binary_relation_rows": 0,
+      "candidate_id": "r001-j12-w0-a000208",
+      "closed": true,
+      "cost": 9.656986821155128e-10,
+      "elapsed_seconds": 3.6283395290374756,
+      "exact_obstruction": "unresolved_no_binary_relations",
+      "family": "seed_bank_mutation",
+      "max_error": 4.3947666053721425e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.394766607055913e-05,
+      "mixed_max": 4.3947666053721425e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999980751285,
+          1.020850071142833e-12
+        ],
+        [
+          0.9999999980605377,
+          -9.281464648512517e-14
+        ],
+        [
+          0.9999999980725651,
+          7.402134460932066e-13
+        ]
+      ],
+      "mono_max_error": 1.9394622596817517e-09,
+      "nfev": 350,
+      "optimality": 4.327495039198646e-09,
+      "parent_candidate_id": "r000-j13-w3-a000481",
+      "seed": 6478872637542809933,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "7fffffffeeffefb8dfff99ff7fc6fffffe",
+      "support_size": 117,
+      "total_l2": 4.394766619777466e-05,
+      "weight_max_abs": 7.597060316314962,
+      "weight_min_abs": 5.874177196375177e-25
+    },
+    {
+      "_source": "second-approach-data-17/worker-2/attempts.jsonl",
+      "attempt": 670,
+      "binary_relation_rows": 32,
+      "candidate_id": "r001-j17-w2-a000670",
+      "closed": true,
+      "cost": 9.907379967786121e-10,
+      "elapsed_seconds": 3.0395612716674805,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.4513772938464297e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.4513772944917305e-05,
+      "mixed_max": 4.4513772938464297e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999980052787,
+          -5.6005200477224e-13
+        ],
+        [
+          0.9999999980277028,
+          1.7204015989590937e-12
+        ],
+        [
+          0.9999999980259946,
+          -1.702415985960216e-12
+        ]
+      ],
+      "mono_max_error": 1.994721355665327e-09,
+      "nfev": 350,
+      "optimality": 5.4594105088784244e-09,
+      "parent_candidate_id": "r000-j14-w2-a000667",
+      "seed": 7955041913328632405,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "7ffdf3b3fefd1faf7fefebfeffbefd7fff",
+      "support_size": 113,
+      "total_l2": 4.451377307707385e-05,
+      "weight_max_abs": 7.394397444773109,
+      "weight_min_abs": 1.4666418631945011e-24
+    },
+    {
+      "_source": "second-approach-data-17/worker-3/attempts.jsonl",
+      "attempt": 202,
+      "binary_relation_rows": 0,
+      "candidate_id": "r001-j17-w3-a000202",
+      "closed": true,
+      "cost": 1.0017319168475802e-09,
+      "elapsed_seconds": 2.734189510345459,
+      "exact_obstruction": "unresolved_no_binary_relations",
+      "family": "seed_bank_mutation",
+      "max_error": 4.476006407302446e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.476006407340942e-05,
+      "mixed_max": 4.476006407302446e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999792309743,
+          1.3547901273058827e-09
+        ],
+        [
+          1.0000000077604807,
+          -1.7499807158927183e-10
+        ],
+        [
+          0.9999999979036519,
+          3.460529085508314e-11
+        ]
+      ],
+      "mono_max_error": 2.0813166162493622e-08,
+      "nfev": 350,
+      "optimality": 6.218402672759149e-06,
+      "parent_candidate_id": "r000-j03-w0-a001249",
+      "seed": 996685398675737955,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "7fbffebfffffffbffffffb3bfffeb7bfff",
+      "support_size": 123,
+      "total_l2": 4.4760069634610264e-05,
+      "weight_max_abs": 7.3813554659867675,
+      "weight_min_abs": 7.09074744571395e-25
+    },
+    {
+      "_source": "second-approach-data-13/worker-3/attempts.jsonl",
+      "attempt": 118,
+      "binary_relation_rows": 283,
+      "candidate_id": "r001-j13-w3-a000118",
+      "closed": true,
+      "cost": 1.0165852246655655e-09,
+      "elapsed_seconds": 3.3403899669647217,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.509069121668706e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.509069124516215e-05,
+      "mixed_max": 4.509069121668706e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999979728944,
+          -1.2331802246023926e-12
+        ],
+        [
+          0.9999999979589066,
+          -1.0574874309554615e-13
+        ],
+        [
+          0.9999999979777823,
+          -1.841027330584666e-12
+        ]
+      ],
+      "mono_max_error": 2.041093408142118e-09,
+      "nfev": 350,
+      "optimality": 3.607592427787124e-09,
+      "parent_candidate_id": "r000-j10-w2-a000014",
+      "seed": 7921383392365004366,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "35fad3ffe87241678877cdfd5fdc990f3a",
+      "support_size": 81,
+      "total_l2": 4.5090691382270144e-05,
+      "weight_max_abs": 8.179356731488186,
+      "weight_min_abs": 3.7845547285732984e-28
+    },
+    {
+      "_source": "second-approach-data-14/worker-0/attempts.jsonl",
+      "attempt": 1330,
+      "binary_relation_rows": 147,
+      "candidate_id": "r001-j14-w0-a001330",
+      "closed": true,
+      "cost": 1.0403388065504753e-09,
+      "elapsed_seconds": 3.6153502464294434,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.560958871661926e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.5609589464616065e-05,
+      "mixed_max": 4.560958871661926e-05,
+      "mono_amplitudes": [
+        [
+          1.0000000467574306,
+          -1.3468660770010743e-09
+        ],
+        [
+          1.0000003982862542,
+          -9.281420088047828e-08
+        ],
+        [
+          0.9999994821396255,
+          -7.31308085058285e-08
+        ]
+      ],
+      "mono_max_error": 5.22998549329275e-07,
+      "nfev": 350,
+      "optimality": 0.00014765613193293623,
+      "parent_candidate_id": "r000-j07-w2-a000027",
+      "seed": 1324103289919567472,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "eaf5affee1bbad086fffa77cafa93a25b",
+      "support_size": 84,
+      "total_l2": 4.56144452240839e-05,
+      "weight_max_abs": 6.422261939922603,
+      "weight_min_abs": 1.6419032144597034e-20
+    },
+    {
+      "_source": "second-approach-data-7/worker-2/attempts.jsonl",
+      "attempt": 1096,
+      "binary_relation_rows": 394,
+      "candidate_id": "r001-j07-w2-a001096",
+      "closed": true,
+      "cost": 1.046439679313794e-09,
+      "elapsed_seconds": 2.8390564918518066,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.57250045629952e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.572500456347748e-05,
+      "mixed_max": 4.57250045629952e-05,
+      "mono_amplitudes": [
+        [
+          0.9999985739730819,
+          8.089401742905622e-08
+        ],
+        [
+          0.9999997640547598,
+          3.3218954753611394e-08
+        ],
+        [
+          0.9999999197307754,
+          -1.697225082697136e-09
+        ]
+      ],
+      "mono_max_error": 1.4283195066990927e-06,
+      "nfev": 350,
+      "optimality": 0.0002532367682725051,
+      "parent_candidate_id": "r000-j10-w2-a000938",
+      "seed": 3118207287934014859,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "47bfa13495fe9391487f847ed5f90001ff",
+      "support_size": 72,
+      "total_l2": 4.5747998411160985e-05,
+      "weight_max_abs": 7.691722672990564,
+      "weight_min_abs": 4.063579549104796e-24
+    },
+    {
+      "_source": "second-approach-data-10/worker-2/attempts.jsonl",
+      "attempt": 1420,
+      "binary_relation_rows": 0,
+      "candidate_id": "r001-j10-w2-a001420",
+      "closed": true,
+      "cost": 1.0574590506886133e-09,
+      "elapsed_seconds": 3.8786137104034424,
+      "exact_obstruction": "unresolved_no_binary_relations",
+      "family": "seed_bank_mutation",
+      "max_error": 4.598712746489736e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.598712757498542e-05,
+      "mixed_max": 4.598712746489736e-05,
+      "mono_amplitudes": [
+        [
+          0.9999998355967527,
+          1.2582306485599227e-07
+        ],
+        [
+          0.9999997700299689,
+          -4.54501237755169e-08
+        ],
+        [
+          0.9999999890985399,
+          6.533098079877615e-08
+        ]
+      ],
+      "mono_max_error": 2.34418277804421e-07,
+      "nfev": 350,
+      "optimality": 3.908013647731555e-05,
+      "parent_candidate_id": "r000-j02-w0-a001013",
+      "seed": 5716910615266551099,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "7fffffffffffffffffffffffffffffffff",
+      "support_size": 135,
+      "total_l2": 4.598823872880136e-05,
+      "weight_max_abs": 7.180521362453081,
+      "weight_min_abs": 2.3639819191906428e-23
+    },
+    {
+      "_source": "second-approach-data-19/worker-3/attempts.jsonl",
+      "attempt": 1000,
+      "binary_relation_rows": 198,
+      "candidate_id": "r001-j19-w3-a001000",
+      "closed": true,
+      "cost": 1.0622439450300822e-09,
+      "elapsed_seconds": 3.831193447113037,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.6092167181342946e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.609216719316514e-05,
+      "mixed_max": 4.6092167181342946e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999978803231,
+          -1.0175194020689562e-12
+        ],
+        [
+          0.9999999978702495,
+          9.997558336749497e-14
+        ],
+        [
+          0.9999999978860925,
+          -1.8691159731076823e-12
+        ]
+      ],
+      "mono_max_error": 2.1297504894252984e-09,
+      "nfev": 350,
+      "optimality": 4.11876628189656e-09,
+      "parent_candidate_id": "r000-j10-w2-a000014",
+      "seed": 9177167399736571735,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "35fef3ffe87261678877cdfd5fdc990f3a",
+      "support_size": 84,
+      "total_l2": 4.609216733958347e-05,
+      "weight_max_abs": 7.553635196316016,
+      "weight_min_abs": 3.974269799584989e-25
+    },
+    {
+      "_source": "second-approach-data-15/worker-3/attempts.jsonl",
+      "attempt": 82,
+      "binary_relation_rows": 119,
+      "candidate_id": "r001-j15-w3-a000082",
+      "closed": true,
+      "cost": 1.069089789614415e-09,
+      "elapsed_seconds": 3.3113656044006348,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.616916878406236e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.618404306688358e-05,
+      "mixed_max": 4.616916878406236e-05,
+      "mono_amplitudes": [
+        [
+          0.9999996953142261,
+          -9.885632637466369e-08
+        ],
+        [
+          1.0000005866705075,
+          2.1566346271445023e-08
+        ],
+        [
+          0.9999979062532348,
+          -6.186407055528466e-07
+        ]
+      ],
+      "mono_max_error": 2.1832296808384366e-06,
+      "nfev": 350,
+      "optimality": 0.000513114510262801,
+      "parent_candidate_id": "r000-j07-w2-a000321",
+      "seed": 8051400698639950144,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "6fdb446b6efbe6aff0917f0d2f47fcb79f",
+      "support_size": 86,
+      "total_l2": 4.624045392541935e-05,
+      "weight_max_abs": 6.283077169115357,
+      "weight_min_abs": 1.4947209492211812e-21
+    },
+    {
+      "_source": "second-approach-data-12/worker-1/attempts.jsonl",
+      "attempt": 784,
+      "binary_relation_rows": 165,
+      "candidate_id": "r001-j12-w1-a000784",
+      "closed": true,
+      "cost": 1.071435912170853e-09,
+      "elapsed_seconds": 4.427386999130249,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 4.629115814076564e-05,
+      "message": "The maximum number of function evaluations is exceeded.",
+      "mixed_l2": 4.629116340961084e-05,
+      "mixed_max": 4.629115814076564e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999978581228,
+          1.555977569012157e-13
+        ],
+        [
+          0.9999999976824221,
+          -5.4518556336091706e-11
+        ],
+        [
+          0.9999999978635,
+          1.4206968934615816e-12
+        ]
+      ],
+      "mono_max_error": 2.3182190642128435e-09,
+      "nfev": 350,
+      "optimality": 5.948346556478216e-08,
+      "parent_candidate_id": "r000-j07-w2-a000321",
+      "seed": 6003889175481610072,
+      "skipped_known_obstruction": false,
+      "status": 0,
+      "success": false,
+      "support_mask_hex": "4fdb466b66fbe62ff4917f0d2f07fdd21f",
+      "support_size": 82,
+      "total_l2": 4.629116356651349e-05,
+      "weight_max_abs": 6.7843780482306,
+      "weight_min_abs": 2.504900474406359e-31
+    }
+  ],
+  "created_at_unix": 1785055143.5087614,
+  "exact_obstruction_statuses": {
+    "not_checked_dense": 66477,
+    "unknown": 4180,
+    "unresolved_no_binary_relations": 49343
+  },
+  "families": {
+    "closure_growth_low_seed": 20000,
+    "closure_growth_medium_seed": 20000,
+    "dense_random": 19329,
+    "full": 20000,
+    "near_full": 20000,
+    "seed_bank_mutation": 16491,
+    "unknown": 4180
+  },
+  "jobs_expected": 20,
+  "jobs_missing": [],
+  "jobs_present": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "manifests": 20,
+  "minimum_jobs_for_acceptance": 16,
+  "numerical_successes": 0,
+  "optimized_attempts": 115820,
+  "run_id": 30187293172,
+  "run_index": 1,
+  "schema_version": 1,
+  "skipped_known_obstruction": 0,
+  "support_sizes": {
+    "100": 708,
+    "101": 648,
+    "102": 846,
+    "103": 819,
+    "104": 922,
+    "105": 702,
+    "106": 712,
+    "107": 672,
+    "108": 678,
+    "109": 842,
+    "110": 1841,
+    "111": 1664,
+    "112": 1807,
+    "113": 2145,
+    "114": 1817,
+    "115": 1886,
+    "116": 1869,
+    "117": 1856,
+    "118": 1982,
+    "119": 1774,
+    "120": 1892,
+    "121": 1920,
+    "122": 2032,
+    "123": 1796,
+    "124": 1854,
+    "125": 1797,
+    "126": 1020,
+    "127": 1053,
+    "128": 1196,
+    "129": 1179,
+    "130": 1270,
+    "131": 104,
+    "132": 100,
+    "133": 55,
+    "134": 31,
+    "135": 22962,
+    "55": 1,
+    "56": 1,
+    "57": 3,
+    "59": 3,
+    "60": 4,
+    "61": 5,
+    "62": 7,
+    "63": 8,
+    "64": 15,
+    "65": 18,
+    "66": 35,
+    "67": 58,
+    "68": 71,
+    "69": 108,
+    "70": 156,
+    "71": 253,
+    "72": 505,
+    "73": 584,
+    "74": 1014,
+    "75": 1547,
+    "76": 2029,
+    "77": 3029,
+    "78": 4239,
+    "79": 5729,
+    "80": 6842,
+    "81": 6556,
+    "82": 5664,
+    "83": 3629,
+    "84": 1968,
+    "85": 1025,
+    "86": 576,
+    "87": 382,
+    "88": 280,
+    "89": 173,
+    "90": 64,
+    "91": 9,
+    "94": 1,
+    "95": 2,
+    "96": 756,
+    "97": 622,
+    "98": 736,
+    "99": 662
+  },
+  "worker_errors": 4180,
+  "workflow_conclusion": "success"
+}
