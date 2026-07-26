@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "enabled": true,
+  "target_runs": 30,
+  "completed_runs": 0,
+  "next_run_index": 0,
+  "base_seed": 20260726,
+  "next_seed": 20260726,
+  "last_run_id": null,
+  "last_run_index": null,
+  "last_conclusion": null,
+  "last_run_accepted": null,
+  "runtime_seconds": 21000,
+  "jobs": 20,
+  "workers_per_job": 4,
+  "max_nfev": 350,
+  "max_attempts_per_worker": 1500,
+  "minimum_jobs_for_acceptance": 16
+}
