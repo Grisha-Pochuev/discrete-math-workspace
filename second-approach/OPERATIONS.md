@@ -8,6 +8,15 @@ This research track is designed to run as an automatic chain of approximately si
 - `Second approach collect` runs after every compute workflow, downloads every available artifact, preserves partial checkpoints, verifies the archive, commits it under `second-approach/runs/`, updates the evolutionary seed bank, and dispatches the next compute run.
 - `Second approach watchdog` runs hourly. It leaves an active chain alone, recovers a completed run whose collector did not archive it, or dispatches the next compute run if the chain stopped after a verified commit.
 
+## Runtime policy
+
+- The compute workflow requests 21,000 seconds per machine.
+- The runner reserves the final 600 seconds for orderly worker shutdown, manifest creation, validation, and artifact upload.
+- Numerical workers therefore continue attempting candidates until the shared deadline; there is no normal per-worker attempt limit.
+- The backward-compatible `--max-attempts` argument remains available only as an emergency diagnostic cap. Its default value is `0`, meaning disabled.
+- Each completed attempt is flushed to disk immediately, and each worker retains only its five best full-weight candidates, so a longer run does not cause unbounded in-memory growth.
+- Reaching the deadline may discard only the single attempt currently in progress. Earlier attempt records and promoted candidates remain available for collection.
+
 ## Failure policy
 
 A red compute workflow is not automatically treated as lost research.
