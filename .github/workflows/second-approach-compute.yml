@@ -19,10 +19,6 @@ on:
         description: Maximum least-squares evaluations per attempt
         required: false
         default: "350"
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/second-approach-compute.yml"
 
 permissions:
   contents: read
@@ -126,7 +122,6 @@ jobs:
             --seconds "$RUNTIME_SECONDS" \
             --workers 4 \
             --max-nfev "$MAX_NFEV" \
-            --max-attempts 1500 \
             --output out \
             2>&1 | tee out/driver.log
           code="${PIPESTATUS[0]}"
@@ -148,6 +143,8 @@ jobs:
           manifest = json.loads(Path("out/manifest.json").read_text())
           assert manifest["job_id"] == ${{ matrix.id }}
           assert manifest["workers"] == 4
+          assert manifest["stopping_policy"] == "time_only"
+          assert manifest["max_attempts_per_worker"] == 0
           print(json.dumps(manifest, indent=2, sort_keys=True))
           PY
 
