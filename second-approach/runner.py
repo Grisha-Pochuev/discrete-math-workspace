@@ -82,7 +82,7 @@ def worker_main(
     best: list[tuple[float, str]] = []
     attempt = 0
     started = time.time()
-    while time.time() < deadline and attempt < max_attempts:
+    while time.time() < deadline and (max_attempts <= 0 or attempt < max_attempts):
         seed = int(rng.integers(0, 2**63 - 1))
         local = np.random.default_rng(seed)
         attempt_started = time.time()
@@ -198,6 +198,7 @@ def worker_main(
         "attempts": attempt,
         "started_at": started,
         "finished_at": time.time(),
+        "stop_reason": "deadline" if time.time() >= deadline else "attempt_cap",
     })
 
 
@@ -209,7 +210,12 @@ def main() -> int:
     ap.add_argument("--seconds", type=int, default=19800)
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--max-nfev", type=int, default=300)
-    ap.add_argument("--max-attempts", type=int, default=1500)
+    ap.add_argument(
+        "--max-attempts",
+        type=int,
+        default=0,
+        help="Optional emergency cap per worker; 0 disables the cap and uses only the deadline.",
+    )
     ap.add_argument("--output", type=Path, required=True)
     args = ap.parse_args()
 
@@ -255,6 +261,7 @@ def main() -> int:
         "workers": args.workers,
         "max_nfev": args.max_nfev,
         "max_attempts_per_worker": args.max_attempts,
+        "stopping_policy": "time_only" if args.max_attempts <= 0 else "time_or_attempt_cap",
         "requested_seconds": args.seconds,
         "started_at": start,
         "finished_at": time.time(),
