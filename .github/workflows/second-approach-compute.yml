@@ -1,0 +1,161 @@
+name: Second approach compute
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_index:
+        description: Accepted research-run index
+        required: false
+        default: ""
+      base_seed:
+        description: Deterministic base seed
+        required: false
+        default: ""
+      runtime_seconds:
+        description: Total worker-host runtime budget
+        required: false
+        default: "21000"
+      max_nfev:
+        description: Maximum least-squares evaluations per attempt
+        required: false
+        default: "350"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/second-approach-compute.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: second-approach-compute
+  cancel-in-progress: false
+
+jobs:
+  compute:
+    name: dense-search-${{ matrix.id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      NUMEXPR_NUM_THREADS: "1"
+      PYTHONUNBUFFERED: "1"
+      RUN_INDEX_INPUT: ${{ inputs.run_index }}
+      BASE_SEED_INPUT: ${{ inputs.base_seed }}
+      RUNTIME_SECONDS_INPUT: ${{ inputs.runtime_seconds }}
+      MAX_NFEV_INPUT: ${{ inputs.max_nfev }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: second-approach/requirements.txt
+
+      - name: Resolve deterministic run configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY' | tee out/config.env
+          import json
+          import os
+          from pathlib import Path
+
+          state = json.loads(Path("second-approach/control.json").read_text())
+          run_index = int(os.environ.get("RUN_INDEX_INPUT") or state["next_run_index"])
+          base_seed = int(os.environ.get("BASE_SEED_INPUT") or state["next_seed"])
+          runtime_seconds = int(os.environ.get("RUNTIME_SECONDS_INPUT") or 21000)
+          max_nfev = int(os.environ.get("MAX_NFEV_INPUT") or 350)
+          print(f"RUN_INDEX={run_index}")
+          print(f"BASE_SEED={base_seed}")
+          print(f"RUNTIME_SECONDS={runtime_seconds}")
+          print(f"MAX_NFEV={max_nfev}")
+          PY
+          cat out/config.env >> "$GITHUB_ENV"
+          {
+            uname -a
+            nproc
+            lscpu
+            free -h
+            swapon --show
+            df -h .
+            ulimit -a
+          } > out/system.txt
+
+      - name: Install numerical dependencies
+        run: python -m pip install --disable-pip-version-check -r second-approach/requirements.txt
+
+      - name: Preflight model and exact data
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            second-approach/model.py \
+            second-approach/runner.py \
+            second-approach/collect.py \
+            second-approach/verify_run.py
+          test -f runs/2026-07-22-a/verify.py
+          PYTHONPATH=second-approach python - <<'PY'
+          import numpy as np
+          import model
+          rng = np.random.default_rng(1)
+          mask = model.near_full_support(rng, 8)
+          assert model.is_closed(mask)
+          assert model.has_mono_targets(mask)
+          result = model.solve_support(mask, rng, max_nfev=2)
+          assert np.isfinite(result["max_error"])
+          print({"support_size": mask.bit_count(), "max_error": result["max_error"]})
+          PY
+
+      - name: Run checkpointed counterexample search
+        shell: bash
+        run: |
+          set -uo pipefail
+          python second-approach/runner.py \
+            --job-id "${{ matrix.id }}" \
+            --run-index "$RUN_INDEX" \
+            --base-seed "$BASE_SEED" \
+            --seconds "$RUNTIME_SECONDS" \
+            --workers 4 \
+            --max-nfev "$MAX_NFEV" \
+            --max-attempts 1500 \
+            --output out \
+            2>&1 | tee out/driver.log
+          code="${PIPESTATUS[0]}"
+          printf '%s\n' "$code" > out/runner-exit-code.txt
+          exit 0
+
+      - name: Validate artifact structure
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f out/config.env
+          test -f out/system.txt
+          test -f out/driver.log
+          test -f out/manifest.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path("out/manifest.json").read_text())
+          assert manifest["job_id"] == ${{ matrix.id }}
+          assert manifest["workers"] == 4
+          print(json.dumps(manifest, indent=2, sort_keys=True))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: second-approach-data-${{ matrix.id }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
