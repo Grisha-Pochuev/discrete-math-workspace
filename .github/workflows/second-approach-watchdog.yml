@@ -1,0 +1,87 @@
+name: Second approach watchdog
+
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: second-approach-watchdog
+  cancel-in-progress: true
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Recover a stalled chain or leave a healthy chain alone
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' > /tmp/control.env
+          import json
+          from pathlib import Path
+          state = json.loads(Path("second-approach/control.json").read_text())
+          print(f"ENABLED={str(bool(state['enabled'])).lower()}")
+          print(f"COMPLETED={int(state['completed_runs'])}")
+          print(f"TARGET={int(state['target_runs'])}")
+          print(f"NEXT_INDEX={int(state['next_run_index'])}")
+          print(f"NEXT_SEED={int(state['next_seed'])}")
+          print(f"LAST_RUN_ID={state.get('last_run_id') or ''}")
+          PY
+          source /tmp/control.env
+          if [ "$ENABLED" != true ] || [ "$COMPLETED" -ge "$TARGET" ]; then
+            echo "second approach is disabled or complete"
+            exit 0
+          fi
+
+          compute_json="$(gh api \
+            -H 'Accept: application/vnd.github+json' \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/second-approach-compute.yml/runs?per_page=10")"
+          active_compute="$(python -c 'import json,sys; d=json.load(sys.stdin); print(next((str(r["id"]) for r in d["workflow_runs"] if r["status"] != "completed"), ""))' <<<"$compute_json")"
+          if [ -n "$active_compute" ]; then
+            echo "compute run $active_compute is active; chain is healthy"
+            exit 0
+          fi
+
+          latest_id="$(python -c 'import json,sys; d=json.load(sys.stdin); print(d["workflow_runs"][0]["id"] if d["workflow_runs"] else "")' <<<"$compute_json")"
+          latest_conclusion="$(python -c 'import json,sys; d=json.load(sys.stdin); print((d["workflow_runs"][0].get("conclusion") or "unknown") if d["workflow_runs"] else "")' <<<"$compute_json")"
+          if [ -z "$latest_id" ]; then
+            gh workflow run second-approach-compute.yml --ref main \
+              -f run_index="$NEXT_INDEX" -f base_seed="$NEXT_SEED" \
+              -f runtime_seconds=21000 -f max_nfev=350
+            echo "no compute history; dispatched run index $NEXT_INDEX"
+            exit 0
+          fi
+
+          collector_json="$(gh api \
+            -H 'Accept: application/vnd.github+json' \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/second-approach-collect.yml/runs?per_page=10")"
+          active_collector="$(python -c 'import json,sys; d=json.load(sys.stdin); print(next((str(r["id"]) for r in d["workflow_runs"] if r["status"] != "completed"), ""))' <<<"$collector_json")"
+          if [ -n "$active_collector" ]; then
+            echo "collector run $active_collector is active; waiting"
+            exit 0
+          fi
+
+          if [ "$LAST_RUN_ID" != "$latest_id" ]; then
+            gh workflow run second-approach-collect.yml --ref main \
+              -f source_run_id="$latest_id" \
+              -f source_conclusion="$latest_conclusion"
+            echo "recovery collector dispatched for compute run $latest_id"
+            exit 0
+          fi
+
+          gh workflow run second-approach-compute.yml --ref main \
+            -f run_index="$NEXT_INDEX" -f base_seed="$NEXT_SEED" \
+            -f runtime_seconds=21000 -f max_nfev=350
+          echo "archived run had no successor; dispatched run index $NEXT_INDEX"
