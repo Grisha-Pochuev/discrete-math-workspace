@@ -21,15 +21,29 @@ A small numerical residual is only a lead. It becomes a proof only after exact c
 - Raw artifacts are retained by GitHub for 14 days.
 - Compact summaries and the best numerical certificate candidates are committed under `third-approach/runs/`.
 - There is no GitHub watchdog and no self-dispatching collector. The single workflow computes, collects, verifies, and commits its own run. ChatGPT scheduled tracking decides whether to launch the next run.
+- Executable-code changes are checked by the separate short `Third approach smoke test` before another long run is allowed.
+
+## Adaptive candidate selection
+
+After the first accepted run, later runs use a mixed exploration policy rather than following only the current numerical leader.
+
+- Fresh search starts from a newly sampled support.
+- Elite mutation makes a relatively small change to a rank-weighted parent selected from the strongest part of the bank.
+- Diverse mutation chooses a parent from a structural bucket uniformly before making a larger change.
+
+The normal mixture is 45% fresh search, 35% elite mutation, and 20% diverse mutation. Code-level guardrails keep fresh search at or above 35%, elite mutation at or below 45%, and diverse mutation at or above 15% whenever a bank exists. An absent or unreadable bank safely falls back to 100% fresh search.
+
+The committed bank retains both global leaders and structurally distinct candidates. It does not consist solely of the numerically best variants. Scheduled tracking may shift the mixture within the guardrails: sustained progress can justify modestly more elite mutation, while a three-run plateau or structural collapse increases fresh exploration.
 
 ## Files
 
-- `certificate.py` -- GHZ polynomial evaluation and numerical certificate fitting.
-- `runner.py` -- checkpointed four-process worker driver.
-- `collect.py` -- aggregation and compact archival.
-- `control.json` -- accepted-run state and next-run parameters.
+- `certificate.py` -- GHZ polynomial evaluation, fresh support generation, parent mutation, and numerical certificate fitting.
+- `runner.py` -- checkpointed four-process worker driver and adaptive parent selection.
+- `collect.py` -- aggregation, diversity-aware bank retention, and compact archival.
+- `AGENTS.md` -- mandatory safe-operation and adaptive-search rules.
+- `control.json` -- accepted-run state, next-run parameters, and policy guardrails.
 - `launch.json` -- changing this file launches exactly one new workflow run.
-- `candidates/bank.json.gz` -- best certificate leads accumulated across accepted runs.
+- `candidates/bank.json.gz` -- elite and structurally diverse certificate leads accumulated across accepted runs.
 - `runs/` -- committed run summaries.
 
 ## Scientific scope
