@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from itertools import product
+from typing import Any
 
 import numpy as np
 from scipy import linalg
@@ -23,6 +24,7 @@ D = 3
 EDGES = [(i, j) for i in range(N) for j in range(i + 1, N)]
 EDGE_INDEX = {edge: k for k, edge in enumerate(EDGES)}
 VARIABLE_COUNT = len(EDGES) * D * D
+ALL_VARIABLES = np.arange(VARIABLE_COUNT, dtype=np.int16)
 
 
 def _perfect_matchings(vertices: tuple[int, ...]) -> list[tuple[tuple[int, int], ...]]:
@@ -73,32 +75,86 @@ class SearchShape:
     validation_samples: int
 
 
-def support_template(rng: np.random.Generator, support_size: int) -> np.ndarray:
-    """Balanced support containing a monochromatic matching for every color."""
-    support: set[int] = set()
-    for color in range(D):
-        matching = MATCHINGS[int(rng.integers(0, len(MATCHINGS)))]
-        for i, j in matching:
-            support.add(variable_index(i, j, color, color))
+def _mono_matching_variables(
+    rng: np.random.Generator, support: set[int], color: int
+) -> set[int]:
+    active = []
+    for matching in MATCHINGS:
+        variables = {variable_index(i, j, color, color) for i, j in matching}
+        if variables.issubset(support):
+            active.append(variables)
+    if active:
+        return set(active[int(rng.integers(0, len(active)))])
+    matching = MATCHINGS[int(rng.integers(0, len(MATCHINGS)))]
+    return {variable_index(i, j, color, color) for i, j in matching}
 
-    cross = [
-        variable_index(i, j, a, b)
-        for i, j in EDGES
-        for a in range(D)
-        for b in range(D)
-        if a != b
-    ]
-    mono = [
-        variable_index(i, j, a, a)
-        for i, j in EDGES
-        for a in range(D)
-    ]
-    rng.shuffle(cross)
-    rng.shuffle(mono)
-    for idx in cross + mono:
-        if len(support) >= support_size:
+
+def support_template(
+    rng: np.random.Generator,
+    support_size: int,
+    *,
+    parent_support: list[int] | np.ndarray | None = None,
+    mutation_fraction: float = 0.25,
+) -> np.ndarray:
+    """Create a balanced support, fresh or by mutating a previous candidate.
+
+    Every returned support contains a complete monochromatic perfect matching
+    for each color. Parent mutation never removes all such witnesses.
+    """
+    target_size = int(np.clip(support_size, 9, VARIABLE_COUNT))
+    if parent_support is None:
+        support: set[int] = set()
+    else:
+        support = {
+            int(value)
+            for value in parent_support
+            if 0 <= int(value) < VARIABLE_COUNT
+        }
+
+    mandatory: set[int] = set()
+    for color in range(D):
+        witness = _mono_matching_variables(rng, support, color)
+        support.update(witness)
+        mandatory.update(witness)
+
+    if parent_support is not None and support:
+        replacement_count = max(
+            1, int(round(target_size * float(np.clip(mutation_fraction, 0.02, 0.80))))
+        )
+        removable = np.asarray(sorted(support - mandatory), dtype=np.int16)
+        if len(removable):
+            remove_count = min(len(removable), replacement_count)
+            removed = rng.choice(removable, size=remove_count, replace=False)
+            support.difference_update(int(value) for value in removed)
+
+    pool = ALL_VARIABLES.copy()
+    rng.shuffle(pool)
+    for value in pool:
+        if len(support) >= target_size:
             break
-        support.add(int(idx))
+        support.add(int(value))
+
+    if len(support) > target_size:
+        removable = np.asarray(sorted(support - mandatory), dtype=np.int16)
+        trim_count = min(len(removable), len(support) - target_size)
+        if trim_count:
+            removed = rng.choice(removable, size=trim_count, replace=False)
+            support.difference_update(int(value) for value in removed)
+
+    for color in range(D):
+        witness = _mono_matching_variables(rng, support, color)
+        support.update(witness)
+
+    if len(support) > target_size:
+        protected: set[int] = set()
+        for color in range(D):
+            protected.update(_mono_matching_variables(rng, support, color))
+        removable = np.asarray(sorted(support - protected), dtype=np.int16)
+        trim_count = min(len(removable), len(support) - target_size)
+        if trim_count:
+            removed = rng.choice(removable, size=trim_count, replace=False)
+            support.difference_update(int(value) for value in removed)
+
     return np.asarray(sorted(support), dtype=np.int16)
 
 
@@ -112,15 +168,37 @@ def active_rows(support: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 
 def choose_equations(
-    rng: np.random.Generator, support: np.ndarray, limit: int
+    rng: np.random.Generator,
+    support: np.ndarray,
+    limit: int,
+    *,
+    preferred_rows: list[int] | np.ndarray | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     rows, term_counts = active_rows(support)
+    active_set = {int(row) for row in rows}
     mono_set = {int(row) for row in MONO_ROWS}
-    mono = [int(row) for row in MONO_ROWS]
-    mixed = [int(row) for row in rows if int(row) not in mono_set]
+    selected = [int(row) for row in MONO_ROWS]
+
+    capacity = max(0, int(limit) - len(selected))
+    if preferred_rows is not None and capacity:
+        inherited = [
+            int(row)
+            for row in preferred_rows
+            if int(row) in active_set and int(row) not in mono_set
+        ]
+        rng.shuffle(inherited)
+        keep = min(len(inherited), max(1, int(round(capacity * 0.65))))
+        selected.extend(inherited[:keep])
+
+    selected_set = set(selected)
+    mixed = [
+        int(row)
+        for row in rows
+        if int(row) not in mono_set and int(row) not in selected_set
+    ]
     rng.shuffle(mixed)
     mixed.sort(key=lambda row: (int(term_counts[row]), rng.random()))
-    selected = mono + mixed[: max(0, limit - len(mono))]
+    selected.extend(mixed[: max(0, int(limit) - len(selected))])
     return np.asarray(selected, dtype=np.int32), term_counts
 
 
@@ -154,16 +232,61 @@ def feature_matrix(
     return (equations[:, :, None] * basis[:, None, :]).reshape(points.shape[0], -1)
 
 
-def search_once(rng: np.random.Generator, shape: SearchShape) -> dict:
-    support = support_template(rng, shape.support_size)
-    rows, term_counts = choose_equations(rng, support, shape.equation_limit)
+def _parent_multiplier_variables(parent: dict[str, Any]) -> list[int]:
+    support = [int(value) for value in parent.get("support_variables", [])]
+    variables = []
+    for position in parent.get("multiplier_positions", []):
+        pos = int(position)
+        if 0 <= pos < len(support):
+            variables.append(support[pos])
+    return variables
+
+
+def search_once(
+    rng: np.random.Generator,
+    shape: SearchShape,
+    *,
+    parent: dict[str, Any] | None = None,
+    search_mode: str = "fresh",
+    mutation_fraction: float = 0.25,
+) -> dict:
+    parent_support = None if parent is None else parent.get("support_variables", [])
+    support = support_template(
+        rng,
+        shape.support_size,
+        parent_support=parent_support,
+        mutation_fraction=mutation_fraction,
+    )
+    preferred_rows = None if parent is None else parent.get("equation_rows", [])
+    rows, term_counts = choose_equations(
+        rng, support, shape.equation_limit, preferred_rows=preferred_rows
+    )
     if len(rows) < 6:
         raise RuntimeError("support activates too few GHZ equations")
 
     multiplier_count = min(shape.multiplier_count, len(support))
-    multiplier_positions = np.sort(
-        rng.choice(len(support), size=multiplier_count, replace=False)
-    ).astype(np.int16)
+    inherited_variables = set(_parent_multiplier_variables(parent or {}))
+    inherited_positions = [
+        pos for pos, variable in enumerate(support) if int(variable) in inherited_variables
+    ]
+    rng.shuffle(inherited_positions)
+    preserved_count = min(
+        len(inherited_positions),
+        multiplier_count,
+        max(0, int(round(multiplier_count * 0.60))),
+    )
+    chosen = list(inherited_positions[:preserved_count])
+    chosen_set = set(chosen)
+    remaining = [pos for pos in range(len(support)) if pos not in chosen_set]
+    if multiplier_count > len(chosen):
+        extra = rng.choice(
+            np.asarray(remaining, dtype=np.int16),
+            size=multiplier_count - len(chosen),
+            replace=False,
+        )
+        chosen.extend(int(value) for value in extra)
+    multiplier_positions = np.asarray(sorted(chosen), dtype=np.int16)
+
     feature_count = len(rows) * (1 + multiplier_count)
     train_count = max(shape.train_samples, 2 * feature_count + 32)
 
@@ -190,6 +313,12 @@ def search_once(rng: np.random.Generator, shape: SearchShape) -> dict:
     coefficient_norm = float(np.linalg.norm(coefficients))
     score = validation_rms + 0.15 * validation_max + 1e-8 * coefficient_norm
 
+    parent_support_set = {
+        int(value) for value in (parent or {}).get("support_variables", [])
+    }
+    support_set = {int(value) for value in support}
+    support_distance = len(parent_support_set.symmetric_difference(support_set))
+
     return {
         "certificate_score": score,
         "train_rms": train_rms,
@@ -211,6 +340,24 @@ def search_once(rng: np.random.Generator, shape: SearchShape) -> dict:
         ),
         "certificate_kind": "affine-nullstellensatz-numerical-candidate",
         "scope": "n=6,d=3,restricted-support-family",
+        "search_mode": search_mode,
+        "parent_candidate_id": None if parent is None else parent.get("candidate_id"),
+        "parent_certificate_score": (
+            None if parent is None else parent.get("certificate_score")
+        ),
+        "mutation_fraction": 0.0 if parent is None else float(mutation_fraction),
+        "support_distance_from_parent": (
+            None if parent is None else int(support_distance)
+        ),
+        "inherited_equation_count": (
+            0
+            if parent is None
+            else len(
+                set(int(v) for v in parent.get("equation_rows", []))
+                & set(int(v) for v in rows)
+            )
+        ),
+        "inherited_multiplier_count": int(preserved_count),
     }
 
 
