@@ -11,7 +11,24 @@
   "next_run_index": 0,
   "next_seed": 20260728,
   "runtime_seconds": 21000,
-  "schema_version": 1,
+  "schema_version": 2,
+  "search_policy_defaults": {
+    "diverse_mutation_fraction": 0.2,
+    "diverse_mutation_max": 0.5,
+    "diverse_mutation_min": 0.25,
+    "elite_mutation_fraction": 0.35,
+    "elite_mutation_max": 0.2,
+    "elite_mutation_min": 0.08,
+    "elite_parent_limit": 300,
+    "fresh_fraction": 0.45
+  },
+  "search_policy_guardrails": {
+    "maximum_elite_fraction": 0.45,
+    "minimum_diverse_fraction": 0.15,
+    "minimum_fresh_fraction": 0.35,
+    "stagnation_runs": 3,
+    "stagnation_relative_improvement": 0.02
+  },
   "stopping_policy": "time_only",
   "target_runs": 30,
   "workers_per_job": 4
