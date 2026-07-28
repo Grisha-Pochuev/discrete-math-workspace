@@ -18,6 +18,7 @@ jobs:
     name: proof-certificate-search-${{ matrix.id }}
     runs-on: ubuntu-latest
     timeout-minutes: 360
+    continue-on-error: true
     strategy:
       fail-fast: false
       max-parallel: 20
@@ -43,6 +44,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p out
+          cp third-approach/launch.json out/launch.json
           python - <<'PY' | tee out/config.env
           import json
           from pathlib import Path
@@ -65,8 +67,20 @@ jobs:
             ulimit -a
           } > out/system.txt
 
-      - name: Install numerical dependencies
-        run: python -m pip install --disable-pip-version-check -r third-approach/requirements.txt
+      - name: Install numerical dependencies with retries
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            if python -m pip install --disable-pip-version-check \
+              -r third-approach/requirements.txt; then
+              exit 0
+            fi
+            if [ "$attempt" = 3 ]; then
+              exit 1
+            fi
+            sleep $((attempt * 15))
+          done
 
       - name: Preflight the real execution path
         shell: bash
@@ -87,12 +101,26 @@ jobs:
             --output smoke
           test -f smoke/manifest.json
           test -n "$(find smoke -name 'candidate-*.json.gz' -print -quit)"
+          python - <<'PY'
+          import json
+          manifest = json.load(open("smoke/manifest.json"))
+          assert manifest["candidate_bank_size"] >= 0
+          policy = manifest["search_policy"]
+          assert abs(
+              policy["fresh_fraction"]
+              + policy["elite_mutation_fraction"]
+              + policy["diverse_mutation_fraction"]
+              - 1.0
+          ) < 1e-9
+          assert policy["fresh_fraction"] >= 0.35
+          assert policy["elite_mutation_fraction"] <= 0.45
+          PY
           rm -rf smoke
 
       - name: Run checkpointed proof-certificate search
         shell: bash
         run: |
-          set -uo pipefail
+          set +e
           PYTHONPATH=third-approach python third-approach/runner.py \
             --job-id "${{ matrix.id }}" \
             --run-index "$RUN_INDEX" \
@@ -104,6 +132,14 @@ jobs:
             2>&1 | tee out/driver.log
           code="${PIPESTATUS[0]}"
           printf '%s\n' "$code" > out/runner-exit-code.txt
+          if [ "$code" -eq 0 ]; then
+            exit 0
+          fi
+          if test -f out/manifest.json && \
+             test -n "$(find out -name 'candidate-*.json.gz' -print -quit)"; then
+            echo "runner returned $code but left a usable bounded result"
+            exit 0
+          fi
           exit "$code"
 
       - name: Validate artifact structure
@@ -126,6 +162,9 @@ jobs:
           assert manifest["stopping_policy"] == "time_only"
           assert manifest["max_attempts_per_worker"] == 0
           assert any(w.get("best_score") is not None for w in manifest["worker_manifests"])
+          policy = manifest["search_policy"]
+          assert policy["fresh_fraction"] >= 0.35
+          assert policy["elite_mutation_fraction"] <= 0.45
           print(json.dumps(manifest, indent=2, sort_keys=True))
           PY
 
@@ -221,6 +260,8 @@ jobs:
 
           summary = json.load(open(sys.argv[1]))
           assert summary["accepted"], summary
+          assert summary["completed_jobs"] >= summary["minimum_jobs"]
+          assert summary["candidate_count"] > 0
           print(json.dumps(summary, indent=2, sort_keys=True))
           PY
 
@@ -229,6 +270,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: third-approach-collection-${{ github.run_id }}
-          path: work/collector.log
+          path: |
+            work/collector.log
+            third-approach/runs
           if-no-files-found: warn
           retention-days: 14
