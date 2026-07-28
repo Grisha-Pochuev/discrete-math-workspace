@@ -1,15 +1,25 @@
 {
   "approach": "third-proof-oriented-numerical-certificates",
-  "completed_runs": 0,
+  "best_score_history": [
+    {
+      "best_certificate_score": 0.2518749790151989,
+      "distinct_structural_buckets": 58,
+      "distinct_support_fingerprints": 400,
+      "run_id": 30374839615,
+      "run_index": 0
+    }
+  ],
+  "completed_runs": 1,
   "enabled": true,
   "jobs": 20,
-  "last_run_accepted": null,
-  "last_run_id": null,
-  "last_run_index": null,
+  "last_best_certificate_score": 0.2518749790151989,
+  "last_run_accepted": true,
+  "last_run_id": 30374839615,
+  "last_run_index": 0,
   "max_attempts_per_worker": 0,
   "minimum_jobs_for_acceptance": 16,
-  "next_run_index": 0,
-  "next_seed": 20260728,
+  "next_run_index": 1,
+  "next_seed": 21260731,
   "runtime_seconds": 21000,
   "schema_version": 2,
   "search_policy_defaults": {
@@ -26,8 +36,8 @@
     "maximum_elite_fraction": 0.45,
     "minimum_diverse_fraction": 0.15,
     "minimum_fresh_fraction": 0.35,
-    "stagnation_runs": 3,
-    "stagnation_relative_improvement": 0.02
+    "stagnation_relative_improvement": 0.02,
+    "stagnation_runs": 3
   },
   "stopping_policy": "time_only",
   "target_runs": 30,
