@@ -1,7 +1,12 @@
 {
-  "base_seed": 20260728,
+  "base_seed": 21260731,
   "max_attempts": 0,
-  "nonce": "first-run-2026-07-28",
-  "run_index": 0,
-  "runtime_seconds": 21000
+  "nonce": "run-001-2026-07-28",
+  "run_index": 1,
+  "runtime_seconds": 21000,
+  "search_policy": {
+    "fresh_fraction": 0.45,
+    "elite_mutation_fraction": 0.35,
+    "diverse_mutation_fraction": 0.20
+  }
 }
