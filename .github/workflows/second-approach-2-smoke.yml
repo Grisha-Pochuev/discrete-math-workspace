@@ -124,3 +124,5 @@ jobs:
           }
           print(json.dumps(summary, indent=2, sort_keys=True))
           PY
+
+# This trailing comment intentionally makes the first registered workflow receive a push event.
