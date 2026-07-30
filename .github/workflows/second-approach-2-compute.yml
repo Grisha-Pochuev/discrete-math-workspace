@@ -1,0 +1,259 @@
+name: Second approach 2.0 independent basin search
+
+on:
+  push:
+    paths:
+      - second-approach-2.0/launch.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: second-approach-2-compute
+  cancel-in-progress: false
+
+jobs:
+  compute:
+    name: independent-basin-search-${{ matrix.id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      NUMEXPR_NUM_THREADS: "1"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: second-approach-2.0/requirements.txt
+
+      - name: Resolve deterministic run configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          cp second-approach-2.0/launch.json out/launch.json
+          python - <<'PY' | tee out/config.env
+          import json
+          from pathlib import Path
+
+          launch = json.loads(Path("second-approach-2.0/launch.json").read_text())
+          assert int(launch.get("runtime_seconds", 0)) == 21000
+          assert int(launch.get("max_attempts", -1)) == 0
+          print(f"RUN_INDEX={int(launch['run_index'])}")
+          print(f"BASE_SEED={int(launch['base_seed'])}")
+          print(f"RUNTIME_SECONDS={int(launch['runtime_seconds'])}")
+          print(f"MAX_ATTEMPTS={int(launch['max_attempts'])}")
+          print(f"LAUNCH_NONCE={launch.get('nonce', '')}")
+          PY
+          cat out/config.env >> "$GITHUB_ENV"
+          {
+            uname -a
+            nproc
+            lscpu
+            free -h
+            swapon --show
+            df -h .
+            ulimit -a
+          } > out/system.txt
+
+      - name: Install numerical dependencies with retries
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            if python -m pip install --disable-pip-version-check -r second-approach-2.0/requirements.txt; then
+              exit 0
+            fi
+            if [ "$attempt" = 3 ]; then
+              exit 1
+            fi
+            sleep $((attempt * 15))
+          done
+
+      - name: Preflight the real execution path
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            second-approach-2.0/engine.py \
+            second-approach-2.0/runner.py \
+            second-approach-2.0/collect.py \
+            second-approach-2.0/verify_run.py
+          rm -rf preflight
+          PYTHONPATH=second-approach-2.0 python second-approach-2.0/runner.py \
+            --job-id "${{ matrix.id }}" \
+            --run-index "$RUN_INDEX" \
+            --base-seed "$BASE_SEED" \
+            --seconds 90 \
+            --workers 1 \
+            --max-attempts 1 \
+            --max-nfev 80 \
+            --output preflight
+          test -f preflight/manifest.json
+          test -n "$(find preflight -name 'candidate-*.json.gz' -print -quit)"
+          rm -rf preflight
+
+      - name: Run checkpointed independent-basin search
+        shell: bash
+        run: |
+          set +e
+          PYTHONPATH=second-approach-2.0 python second-approach-2.0/runner.py \
+            --job-id "${{ matrix.id }}" \
+            --run-index "$RUN_INDEX" \
+            --base-seed "$BASE_SEED" \
+            --seconds "$RUNTIME_SECONDS" \
+            --workers 4 \
+            --max-attempts "$MAX_ATTEMPTS" \
+            --max-nfev 300 \
+            --output out \
+            2>&1 | tee out/driver.log
+          code="${PIPESTATUS[0]}"
+          printf '%s\n' "$code" > out/runner-exit-code.txt
+          if [ "$code" -eq 0 ]; then
+            exit 0
+          fi
+          if test -f out/manifest.json && test -n "$(find out -name 'candidate-*.json.gz' -print -quit)"; then
+            echo "runner returned $code but left a usable bounded result"
+            exit 0
+          fi
+          exit "$code"
+
+      - name: Validate artifact structure
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f out/config.env
+          test -f out/system.txt
+          test -f out/driver.log
+          test -f out/manifest.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          manifest = json.loads(Path("out/manifest.json").read_text())
+          assert manifest["job_id"] == ${{ matrix.id }}
+          assert manifest["workers"] == 4
+          assert manifest["approach"] == "second-approach-2.0-independent-basin-counterexample-search"
+          assert manifest["stopping_policy"] == "time_only"
+          assert manifest["max_attempts_per_worker"] == 0
+          assert len(manifest["lane_assignments"]) == 4
+          assert any(worker.get("best_score") is not None for worker in manifest["worker_manifests"])
+          print(json.dumps(manifest, indent=2, sort_keys=True))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: second-approach-2-data-${{ matrix.id }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6
+
+  collect:
+    name: collect-and-commit-independent-basin-search
+    needs: compute
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Synchronize and prepare aggregation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          git checkout main
+          git reset --hard origin/main
+          mkdir -p work/artifacts
+
+      - name: Download all available matrix artifacts
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: second-approach-2-data-*
+          path: work/artifacts
+          merge-multiple: false
+
+      - name: Aggregate and verify compact results
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=second-approach-2.0 python second-approach-2.0/collect.py \
+            --artifacts work/artifacts \
+            --repo . \
+            --run-id "$GITHUB_RUN_ID" \
+            --conclusion "${{ needs.compute.result }}" \
+            --expected-jobs 20 \
+            --min-jobs 16 \
+            | tee work/collector.log
+          summary="$(find second-approach-2.0/runs -path "*-${GITHUB_RUN_ID}/summary.json" -print -quit)"
+          test -n "$summary"
+          run_dir="$(dirname "$summary")"
+          python second-approach-2.0/verify_run.py "$run_dir" | tee work/verifier.log
+
+      - name: Commit the accepted run archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          summary="$(find second-approach-2.0/runs -path "*-${GITHUB_RUN_ID}/summary.json" -print -quit)"
+          python - "$summary" <<'PY'
+          import json
+          import sys
+          summary = json.load(open(sys.argv[1]))
+          assert summary["accepted"], summary
+          assert len(summary["jobs_present"]) >= summary["minimum_jobs_for_acceptance"]
+          assert summary["promoted_candidates"] > 0
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add second-approach-2.0/runs second-approach-2.0/control.json second-approach-2.0/candidates/bank.json.gz
+          if git diff --cached --quiet; then
+            echo "no archive changes were produced" >&2
+            exit 1
+          fi
+          git commit -m "save second-approach-2.0 run from ${GITHUB_RUN_ID}"
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            if [ "$attempt" = 3 ]; then
+              echo "failed to push the verified archive after three attempts" >&2
+              exit 1
+            fi
+            git pull --rebase origin main
+          done
+
+      - name: Upload collection diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: second-approach-2-collection-${{ github.run_id }}
+          path: |
+            work/collector.log
+            work/verifier.log
+            second-approach-2.0/runs
+          if-no-files-found: warn
+          retention-days: 14
