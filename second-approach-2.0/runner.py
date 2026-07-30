@@ -37,6 +37,30 @@ def complex_pairs(values: np.ndarray) -> list[list[float]]:
     return [[float(z.real), float(z.imag)] for z in values]
 
 
+def sanitize_initial_x(
+    initial_x: np.ndarray | None,
+    bound: float,
+) -> tuple[np.ndarray | None, int]:
+    """Keep inherited starts strictly inside scipy's box constraints.
+
+    Legacy candidates may contain coordinates on the old +/-bound boundary.
+    The legacy model adds a small random perturbation before least_squares,
+    which can otherwise make x0 infeasible. Keep a generous interior margin.
+    """
+    if initial_x is None:
+        return None, 0
+    values = np.asarray(initial_x, dtype=np.complex128).copy()
+    margin = max(0.25, 0.05 * float(bound))
+    limit = max(0.0, float(bound) - margin)
+    clipped_real = np.clip(values.real, -limit, limit)
+    clipped_imag = np.clip(values.imag, -limit, limit)
+    changed = int(
+        np.count_nonzero(clipped_real != values.real)
+        + np.count_nonzero(clipped_imag != values.imag)
+    )
+    return clipped_real + 1j * clipped_imag, changed
+
+
 def worker_main(
     repo: str,
     output: str,
@@ -57,7 +81,9 @@ def worker_main(
     legacy_bank = engine.load_bank(repo_path / "second-approach" / "candidates" / "seed-bank.json.gz")
     new_bank = engine.load_bank(repo_path / "second-approach-2.0" / "candidates" / "bank.json.gz")
     lane = engine.lane_for(job_id, worker_id)
-    rng = np.random.default_rng(base_seed + run_index * 10_000_019 + job_id * 100_003 + worker_id * 1009)
+    rng = np.random.default_rng(
+        base_seed + run_index * 10_000_019 + job_id * 100_003 + worker_id * 1009
+    )
     best: list[tuple[float, str]] = []
     attempt = 0
     errors = 0
@@ -69,14 +95,30 @@ def worker_main(
         seed = int(rng.integers(0, 2**63 - 1))
         local = np.random.default_rng(seed)
         attempt_started = time.time()
+        error_context: dict = {"lane": lane}
         try:
-            selection = engine.choose_support(model, exact, local, lane, legacy_bank, new_bank)
+            selection = engine.choose_support(
+                model, exact, local, lane, legacy_bank, new_bank
+            )
             mask = int(selection.pop("mask"))
             initial_x = selection.pop("initial_x", None)
             family = str(selection.pop("family"))
+            error_context.update(
+                {
+                    "family": family,
+                    "support_size": mask.bit_count(),
+                    "support_mask_hex": f"{mask:x}",
+                    "parent_candidate_id": selection.get("parent_candidate_id"),
+                    "parent_max_error": selection.get("parent_max_error"),
+                }
+            )
             obstruction, binary_rows = engine.exact_status(model, exact, mask)
             known = obstruction in engine.KNOWN_OBSTRUCTIONS
-            should_skip = known and lane not in {"obstruction_boundary", "precision_audit"} and attempt % 5 != 0
+            should_skip = (
+                known
+                and lane not in {"obstruction_boundary", "precision_audit"}
+                and attempt % 5 != 0
+            )
             base_record = {
                 "attempt": attempt,
                 "seed": seed,
@@ -90,11 +132,14 @@ def worker_main(
                 **selection,
             }
             if should_skip:
-                append_jsonl(attempts_path, {
-                    **base_record,
-                    "skipped_known_obstruction": True,
-                    "elapsed_seconds": time.time() - attempt_started,
-                })
+                append_jsonl(
+                    attempts_path,
+                    {
+                        **base_record,
+                        "skipped_known_obstruction": True,
+                        "elapsed_seconds": time.time() - attempt_started,
+                    },
+                )
                 skipped += 1
                 attempt += 1
                 continue
@@ -106,6 +151,7 @@ def worker_main(
                 solve_nfev = max(900, max_nfev * 3)
                 scale = 0.03
                 bound = 16.0
+            initial_x, clipped_coordinates = sanitize_initial_x(initial_x, bound)
             result = model.solve_support(
                 mask,
                 local,
@@ -115,14 +161,22 @@ def worker_main(
                 initial_x=initial_x,
             )
             optimized += 1
-            candidate_id = f"sa20-r{run_index:03d}-j{job_id:02d}-w{worker_id}-a{attempt:06d}"
-            top_residuals, basin_fingerprint = engine.residual_signature(model, np.asarray(result["x"], dtype=np.complex128))
+            candidate_id = (
+                f"sa20-r{run_index:03d}-j{job_id:02d}-w{worker_id}-a{attempt:06d}"
+            )
+            top_residuals, basin_fingerprint = engine.residual_signature(
+                model, np.asarray(result["x"], dtype=np.complex128)
+            )
             parent_score = selection.get("parent_max_error")
-            improved_parent = bool(parent_score is not None and float(result["max_error"]) < float(parent_score))
+            improved_parent = bool(
+                parent_score is not None
+                and float(result["max_error"]) < float(parent_score)
+            )
             summary = {
                 **base_record,
                 "candidate_id": candidate_id,
                 "skipped_known_obstruction": False,
+                "initial_point_clipped_coordinates": clipped_coordinates,
                 "status": result["status"],
                 "message": result["message"],
                 "nfev": result["nfev"],
@@ -151,11 +205,15 @@ def worker_main(
                 x = np.asarray(result["x"], dtype=np.complex128)
                 payload["active_variables"] = [int(v) for v in active]
                 payload["active_weights"] = complex_pairs(x[active])
-                payload["legacy_rooted"] = bool(payload.get("legacy_rooted", lane == "legacy_control"))
+                payload["legacy_rooted"] = bool(
+                    payload.get("legacy_rooted", lane == "legacy_control")
+                )
                 if not payload.get("lineage_root"):
                     payload["lineage_root"] = candidate_id
                 candidate_path = root / f"candidate-{candidate_id}.json.gz"
-                with gzip.open(candidate_path, "wt", encoding="utf-8", compresslevel=9) as out:
+                with gzip.open(
+                    candidate_path, "wt", encoding="utf-8", compresslevel=9
+                ) as out:
                     json.dump(payload, out, sort_keys=True, separators=(",", ":"))
                     out.write("\n")
                 best.append((score, candidate_path.name))
@@ -165,25 +223,53 @@ def worker_main(
                     old_path = root / old_name
                     if old_path.exists():
                         old_path.unlink()
-                atomic_json(root / "best.json", {
-                    "worker_id": worker_id,
-                    "lane": lane,
-                    "updated_at": time.time(),
-                    "best": [{"max_error": value, "file": name} for value, name in best],
-                })
+                atomic_json(
+                    root / "best.json",
+                    {
+                        "worker_id": worker_id,
+                        "lane": lane,
+                        "updated_at": time.time(),
+                        "best": [
+                            {"max_error": value, "file": name}
+                            for value, name in best
+                        ],
+                    },
+                )
         except BaseException as exc:
             errors += 1
-            append_jsonl(attempts_path, {
-                "attempt": attempt,
-                "seed": seed,
-                "lane": lane,
-                "error": type(exc).__name__,
-                "message": str(exc),
-                "traceback": traceback.format_exc(),
-                "elapsed_seconds": time.time() - attempt_started,
-            })
+            append_jsonl(
+                attempts_path,
+                {
+                    "attempt": attempt,
+                    "seed": seed,
+                    **error_context,
+                    "error": type(exc).__name__,
+                    "message": str(exc),
+                    "traceback": traceback.format_exc(),
+                    "elapsed_seconds": time.time() - attempt_started,
+                },
+            )
         attempt += 1
-        atomic_json(root / "checkpoint.json", {
+        atomic_json(
+            root / "checkpoint.json",
+            {
+                "worker_id": worker_id,
+                "global_worker_id": job_id * 4 + worker_id,
+                "lane": lane,
+                "attempts": attempt,
+                "optimized_attempts": optimized,
+                "skipped_known_obstruction": skipped,
+                "errors": errors,
+                "best_score": best[0][0] if best else None,
+                "started_at": started,
+                "updated_at": time.time(),
+                "deadline": deadline,
+            },
+        )
+
+    atomic_json(
+        root / "complete.json",
+        {
             "worker_id": worker_id,
             "global_worker_id": job_id * 4 + worker_id,
             "lane": lane,
@@ -193,23 +279,10 @@ def worker_main(
             "errors": errors,
             "best_score": best[0][0] if best else None,
             "started_at": started,
-            "updated_at": time.time(),
-            "deadline": deadline,
-        })
-
-    atomic_json(root / "complete.json", {
-        "worker_id": worker_id,
-        "global_worker_id": job_id * 4 + worker_id,
-        "lane": lane,
-        "attempts": attempt,
-        "optimized_attempts": optimized,
-        "skipped_known_obstruction": skipped,
-        "errors": errors,
-        "best_score": best[0][0] if best else None,
-        "started_at": started,
-        "finished_at": time.time(),
-        "stop_reason": "deadline" if time.time() >= deadline else "attempt_cap",
-    })
+            "finished_at": time.time(),
+            "stop_reason": "deadline" if time.time() >= deadline else "attempt_cap",
+        },
+    )
 
 
 def main() -> int:
@@ -235,15 +308,24 @@ def main() -> int:
         process = mp.Process(
             target=worker_main,
             args=(
-                str(repo), str(args.output), args.run_index, args.job_id, worker_id,
-                args.base_seed, deadline, args.max_nfev, args.max_attempts,
+                str(repo),
+                str(args.output),
+                args.run_index,
+                args.job_id,
+                worker_id,
+                args.base_seed,
+                deadline,
+                args.max_nfev,
+                args.max_attempts,
             ),
             daemon=False,
         )
         process.start()
         processes.append(process)
 
-    while time.time() < deadline and any(process.is_alive() for process in processes):
+    while time.time() < deadline and any(
+        process.is_alive() for process in processes
+    ):
         time.sleep(5)
     for process in processes:
         if process.is_alive():
@@ -259,11 +341,15 @@ def main() -> int:
         checkpoint = args.output / f"worker-{worker_id}" / "checkpoint.json"
         complete = args.output / f"worker-{worker_id}" / "complete.json"
         source = complete if complete.exists() else checkpoint
-        info = json.loads(source.read_text(encoding="utf-8")) if source.exists() else {
-            "worker_id": worker_id,
-            "lane": engine.lane_for(args.job_id, worker_id),
-            "missing_checkpoint": True,
-        }
+        info = (
+            json.loads(source.read_text(encoding="utf-8"))
+            if source.exists()
+            else {
+                "worker_id": worker_id,
+                "lane": engine.lane_for(args.job_id, worker_id),
+                "missing_checkpoint": True,
+            }
+        )
         info["exitcode"] = process.exitcode
         worker_manifests.append(info)
 
@@ -274,10 +360,15 @@ def main() -> int:
         "job_id": args.job_id,
         "base_seed": args.base_seed,
         "workers": args.workers,
-        "lane_assignments": [engine.lane_for(args.job_id, worker_id) for worker_id in range(args.workers)],
+        "lane_assignments": [
+            engine.lane_for(args.job_id, worker_id)
+            for worker_id in range(args.workers)
+        ],
         "max_nfev": args.max_nfev,
         "max_attempts_per_worker": args.max_attempts,
-        "stopping_policy": "time_only" if args.max_attempts <= 0 else "time_or_attempt_cap",
+        "stopping_policy": (
+            "time_only" if args.max_attempts <= 0 else "time_or_attempt_cap"
+        ),
         "requested_seconds": args.seconds,
         "started_at": start,
         "finished_at": time.time(),
