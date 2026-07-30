@@ -1,0 +1,126 @@
+name: Second approach 2.0 smoke test
+
+on:
+  push:
+    paths:
+      - second-approach-2.0/engine.py
+      - second-approach-2.0/runner.py
+      - second-approach-2.0/collect.py
+      - second-approach-2.0/verify_run.py
+      - second-approach-2.0/requirements.txt
+      - .github/workflows/second-approach-2-compute.yml
+      - .github/workflows/second-approach-2-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: second-approach-2-smoke
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      NUMEXPR_NUM_THREADS: "1"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: second-approach-2.0/requirements.txt
+
+      - name: Install dependencies with retries
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            if python -m pip install --disable-pip-version-check -r second-approach-2.0/requirements.txt; then
+              exit 0
+            fi
+            if [ "$attempt" = 3 ]; then
+              exit 1
+            fi
+            sleep $((attempt * 10))
+          done
+
+      - name: Validate lane allocation and syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            second-approach-2.0/engine.py \
+            second-approach-2.0/runner.py \
+            second-approach-2.0/collect.py \
+            second-approach-2.0/verify_run.py
+          PYTHONPATH=second-approach-2.0 python - <<'PY'
+          from collections import Counter
+          import engine
+
+          counts = Counter(engine.lane_for(job, worker) for job in range(20) for worker in range(4))
+          assert dict(counts) == engine.LANE_COUNTS, (counts, engine.LANE_COUNTS)
+          assert sum(counts.values()) == 80
+          print(counts)
+          PY
+
+      - name: Exercise all five search lanes and the collector
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf smoke-output smoke-artifacts smoke-repo
+          mkdir -p smoke-output smoke-artifacts smoke-repo
+          for job in 0 8 13 17 19; do
+            PYTHONPATH=second-approach-2.0 python second-approach-2.0/runner.py \
+              --job-id "$job" \
+              --run-index 0 \
+              --base-seed 123456789 \
+              --seconds 150 \
+              --workers 1 \
+              --max-attempts 1 \
+              --max-nfev 100 \
+              --output "smoke-output/job-$job"
+            test -f "smoke-output/job-$job/manifest.json"
+            test -n "$(find "smoke-output/job-$job" -name 'candidate-*.json.gz' -print -quit)"
+            mkdir -p "smoke-artifacts/second-approach-2-data-$job"
+            cp -a "smoke-output/job-$job/." "smoke-artifacts/second-approach-2-data-$job/"
+          done
+
+          cp -a second-approach-2.0 smoke-repo/
+          PYTHONPATH=second-approach-2.0 python second-approach-2.0/collect.py \
+            --artifacts smoke-artifacts \
+            --repo smoke-repo \
+            --run-id 1 \
+            --conclusion success \
+            --expected-jobs 5 \
+            --min-jobs 5
+
+          summary="$(find smoke-repo/second-approach-2.0/runs -name summary.json -print -quit)"
+          test -n "$summary"
+          run_dir="$(dirname "$summary")"
+          python second-approach-2.0/verify_run.py "$run_dir"
+          python - "$summary" <<'PY'
+          import json
+          import sys
+
+          summary = json.load(open(sys.argv[1]))
+          assert summary["accepted"]
+          assert summary["promoted_candidates"] >= 5
+          assert summary["distinct_support_fingerprints"] > 0
+          assert summary["distinct_residual_basin_fingerprints"] > 0
+          assert set(summary["lane_promoted_counts"]) == {
+              "fresh_independent",
+              "obstruction_boundary",
+              "novelty_far",
+              "legacy_control",
+              "precision_audit",
+          }
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
