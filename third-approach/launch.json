@@ -1,8 +1,8 @@
 {
-  "base_seed": 25260743,
+  "base_seed": 26260746,
   "max_attempts": 0,
-  "nonce": "run-005-2026-07-30T00-50-automation",
-  "run_index": 5,
+  "nonce": "run-006-2026-07-30T06-44-automation",
+  "run_index": 6,
   "runtime_seconds": 21000,
   "search_policy": {
     "fresh_fraction": 0.60,
