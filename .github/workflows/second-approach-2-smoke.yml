@@ -52,7 +52,7 @@ jobs:
             sleep $((attempt * 10))
           done
 
-      - name: Validate lane allocation and syntax
+      - name: Validate lane allocation, inherited starts, and syntax
         shell: bash
         run: |
           set -euo pipefail
@@ -63,11 +63,22 @@ jobs:
             second-approach-2.0/verify_run.py
           PYTHONPATH=second-approach-2.0 python - <<'PY'
           from collections import Counter
+          import numpy as np
           import engine
+          import runner
 
           counts = Counter(engine.lane_for(job, worker) for job in range(20) for worker in range(4))
           assert dict(counts) == engine.LANE_COUNTS, (counts, engine.LANE_COUNTS)
           assert sum(counts.values()) == 80
+
+          raw = np.asarray([100 + 100j, -100 - 100j, 7.99 - 7.99j], dtype=np.complex128)
+          safe, changed = runner.sanitize_initial_x(raw, 8.0)
+          assert safe is not None
+          assert changed >= 4
+          assert np.max(np.abs(safe.real)) <= 7.6
+          assert np.max(np.abs(safe.imag)) <= 7.6
+          untouched, changed_none = runner.sanitize_initial_x(None, 8.0)
+          assert untouched is None and changed_none == 0
           print(counts)
           PY
 
@@ -124,5 +135,3 @@ jobs:
           }
           print(json.dumps(summary, indent=2, sort_keys=True))
           PY
-
-# This trailing comment intentionally makes the first registered workflow receive a push event.
