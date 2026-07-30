@@ -49,19 +49,26 @@
       "distinct_support_fingerprints": 400,
       "run_id": 30512061952,
       "run_index": 6
+    },
+    {
+      "best_certificate_score": 0.25435831921014035,
+      "distinct_structural_buckets": 55,
+      "distinct_support_fingerprints": 399,
+      "run_id": 30532177734,
+      "run_index": 7
     }
   ],
-  "completed_runs": 7,
+  "completed_runs": 8,
   "enabled": true,
   "jobs": 20,
-  "last_best_certificate_score": 0.25317555450602575,
+  "last_best_certificate_score": 0.25435831921014035,
   "last_run_accepted": true,
-  "last_run_id": 30512061952,
-  "last_run_index": 6,
+  "last_run_id": 30532177734,
+  "last_run_index": 7,
   "max_attempts_per_worker": 0,
   "minimum_jobs_for_acceptance": 16,
-  "next_run_index": 7,
-  "next_seed": 27260749,
+  "next_run_index": 8,
+  "next_seed": 28260752,
   "runtime_seconds": 21000,
   "schema_version": 2,
   "search_policy_defaults": {
