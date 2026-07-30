@@ -59,7 +59,8 @@
     }
   ],
   "completed_runs": 8,
-  "enabled": true,
+  "enabled": false,
+  "final_report": "third-approach/FINAL_REPORT.md",
   "jobs": 20,
   "last_best_certificate_score": 0.25435831921014035,
   "last_run_accepted": true,
@@ -88,6 +89,8 @@
     "stagnation_relative_improvement": 0.02,
     "stagnation_runs": 3
   },
+  "stop_reason": "manual_pause_after_eight_accepted_runs_and_observed_score_plateau",
+  "stopped_at": "2026-07-30T18:37:00Z",
   "stopping_policy": "time_only",
   "target_runs": 30,
   "workers_per_job": 4
