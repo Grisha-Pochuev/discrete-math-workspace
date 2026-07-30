@@ -1,0 +1,33 @@
+{
+  "approach": "second-approach-2.0-independent-basin-counterexample-search",
+  "schema_version": 1,
+  "enabled": true,
+  "completed_runs": 0,
+  "base_seed": 20260730,
+  "next_run_index": 0,
+  "next_seed": 20260730,
+  "runtime_seconds": 21000,
+  "max_attempts_per_worker": 0,
+  "jobs": 20,
+  "workers_per_job": 4,
+  "minimum_jobs_for_acceptance": 16,
+  "run_limit": null,
+  "stopping_policy": "time_only_and_scientific_value",
+  "lane_plan": {
+    "fresh_independent": 30,
+    "obstruction_boundary": 20,
+    "novelty_far": 16,
+    "legacy_control": 8,
+    "precision_audit": 6
+  },
+  "lane_plan_version": 1,
+  "old_second_approach_record": 9.46e-06,
+  "best_score_history": [],
+  "last_run_id": null,
+  "last_run_index": null,
+  "last_run_accepted": null,
+  "global_best_max_error": null,
+  "global_best_candidate_id": null,
+  "global_best_independent_max_error": null,
+  "global_best_independent_candidate_id": null
+}
