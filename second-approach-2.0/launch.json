@@ -1,8 +1,8 @@
 {
-  "run_index": 4,
-  "base_seed": 24260742,
+  "run_index": 5,
+  "base_seed": 25260745,
   "runtime_seconds": 21000,
   "max_attempts": 0,
   "lane_plan_version": 1,
-  "nonce": "sa20-run-004-2026-07-31T19-36-00Z"
+  "nonce": "sa20-run-005-2026-08-01T01-41-00Z"
 }
