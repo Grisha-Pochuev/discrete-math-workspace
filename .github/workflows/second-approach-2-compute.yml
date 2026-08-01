@@ -52,10 +52,24 @@ jobs:
           launch = json.loads(Path("second-approach-2.0/launch.json").read_text())
           assert int(launch.get("runtime_seconds", 0)) == 21000
           assert int(launch.get("max_attempts", -1)) == 0
+          lane_plan_version = int(launch.get("lane_plan_version", 1))
+          legacy_strategy = str(launch.get("legacy_strategy", "micro_polish"))
+          independent_strategy = str(launch.get("independent_strategy", "balanced"))
+          assert lane_plan_version in {1, 2}
+          assert legacy_strategy in {
+              "micro_polish", "support_mutation", "wide_restart",
+              "bound_expansion", "residual_escape",
+          }
+          assert independent_strategy in {
+              "balanced", "precision_heavy", "mutation_heavy", "escape_heavy",
+          }
           print(f"RUN_INDEX={int(launch['run_index'])}")
           print(f"BASE_SEED={int(launch['base_seed'])}")
           print(f"RUNTIME_SECONDS={int(launch['runtime_seconds'])}")
           print(f"MAX_ATTEMPTS={int(launch['max_attempts'])}")
+          print(f"LANE_PLAN_VERSION={lane_plan_version}")
+          print(f"LEGACY_STRATEGY={legacy_strategy}")
+          print(f"INDEPENDENT_STRATEGY={independent_strategy}")
           print(f"LAUNCH_NONCE={launch.get('nonce', '')}")
           PY
           cat out/config.env >> "$GITHUB_ENV"
@@ -88,14 +102,14 @@ jobs:
         run: |
           set -euo pipefail
           python -m py_compile \
+            second-approach-2.0/adaptive_v2.py \
             second-approach-2.0/engine.py \
             second-approach-2.0/runner.py \
             second-approach-2.0/collect.py \
             second-approach-2.0/verify_run.py
 
-          # Lane-specific paths are exercised by the dedicated smoke workflow.
-          # Per-shard preflight uses a bounded fresh lane so a hard numerical
-          # instance cannot consume the six-hour compute budget before search.
+          # The dedicated smoke workflow exercises every lane. Per-shard
+          # preflight is deliberately bounded so it cannot consume the long run.
           rm -rf preflight
           set +e
           timeout --signal=TERM --kill-after=20s 300s \
@@ -108,6 +122,9 @@ jobs:
               --workers 1 \
               --max-attempts 3 \
               --max-nfev 80 \
+              --lane-plan-version "$LANE_PLAN_VERSION" \
+              --legacy-strategy "$LEGACY_STRATEGY" \
+              --independent-strategy "$INDEPENDENT_STRATEGY" \
               --output preflight \
               > out/preflight.log 2>&1
           runner_code="$?"
@@ -121,6 +138,7 @@ jobs:
           manifest = json.loads(manifest_path.read_text())
           assert manifest["workers"] == 1
           assert manifest["job_id"] == 0
+          assert manifest["lane_plan_version"] == int(__import__("os").environ["LANE_PLAN_VERSION"])
           worker = manifest["worker_manifests"][0]
           assert worker.get("exitcode") == 0, worker
           assert int(worker.get("attempts", 0)) >= 1, worker
@@ -163,6 +181,9 @@ jobs:
             --workers 4 \
             --max-attempts "$MAX_ATTEMPTS" \
             --max-nfev 300 \
+            --lane-plan-version "$LANE_PLAN_VERSION" \
+            --legacy-strategy "$LEGACY_STRATEGY" \
+            --independent-strategy "$INDEPENDENT_STRATEGY" \
             --output out \
             2>&1 | tee out/driver.log
           code="${PIPESTATUS[0]}"
@@ -187,6 +208,7 @@ jobs:
           test -f out/manifest.json
           python - <<'PY'
           import json
+          import os
           from pathlib import Path
 
           manifest = json.loads(Path("out/manifest.json").read_text())
@@ -195,6 +217,9 @@ jobs:
           assert manifest["approach"] == "second-approach-2.0-independent-basin-counterexample-search"
           assert manifest["stopping_policy"] == "time_only"
           assert manifest["max_attempts_per_worker"] == 0
+          assert manifest["lane_plan_version"] == int(os.environ["LANE_PLAN_VERSION"])
+          assert manifest["legacy_strategy"] == os.environ["LEGACY_STRATEGY"]
+          assert manifest["independent_strategy"] == os.environ["INDEPENDENT_STRATEGY"]
           assert len(manifest["lane_assignments"]) == 4
           assert any(worker.get("best_score") is not None for worker in manifest["worker_manifests"])
           print(json.dumps(manifest, indent=2, sort_keys=True))
