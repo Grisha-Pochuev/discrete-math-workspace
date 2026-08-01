@@ -3,6 +3,8 @@ name: Second approach 2.0 smoke test
 on:
   push:
     paths:
+      - second-approach-2.0/adaptive_v2.py
+      - second-approach-2.0/adaptive_parts/**
       - second-approach-2.0/engine.py
       - second-approach-2.0/runner.py
       - second-approach-2.0/collect.py
@@ -22,7 +24,7 @@ concurrency:
 jobs:
   smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     env:
       OMP_NUM_THREADS: "1"
       OPENBLAS_NUM_THREADS: "1"
@@ -52,11 +54,12 @@ jobs:
             sleep $((attempt * 10))
           done
 
-      - name: Validate lane allocation, final bound safety, and syntax
+      - name: Validate both lane plans, lineage classification, bound safety, and syntax
         shell: bash
         run: |
           set -euo pipefail
           python -m py_compile \
+            second-approach-2.0/adaptive_v2.py \
             second-approach-2.0/engine.py \
             second-approach-2.0/runner.py \
             second-approach-2.0/collect.py \
@@ -67,9 +70,27 @@ jobs:
           import engine
           import runner
 
-          counts = Counter(engine.lane_for(job, worker) for job in range(20) for worker in range(4))
-          assert dict(counts) == engine.LANE_COUNTS, (counts, engine.LANE_COUNTS)
-          assert sum(counts.values()) == 80
+          for version, expected in engine.LANE_PLANS.items():
+              counts = Counter(
+                  engine.lane_for(job, worker, version)
+                  for job in range(20)
+                  for worker in range(4)
+              )
+              assert dict(counts) == expected, (version, counts, expected)
+              assert sum(counts.values()) == 80
+
+          assert engine.is_independent_candidate({
+              "candidate_id": "child",
+              "lineage_root": "sa20-r000-fresh",
+              "lane": "precision_audit",
+              "legacy_rooted": False,
+          })
+          assert not engine.is_independent_candidate({
+              "candidate_id": "old",
+              "lineage_root": "r012-old",
+              "lane": "precision_audit",
+              "legacy_rooted": True,
+          })
 
           raw = np.asarray([100 + 100j, -100 - 100j, 7.99 - 7.99j], dtype=np.complex128)
           safe, changed = runner.sanitize_initial_x(raw, 8.0)
@@ -106,24 +127,28 @@ jobs:
           )
           assert final_changed == 4, (final_changed, result)
           assert regression.structured_initial_point == regression._unsafe_start
-          print(counts)
+          print(engine.LANE_PLANS)
           PY
 
-      - name: Exercise all five search lanes and the collector
+      - name: Exercise all version-2 lanes and the backward-compatible collector
         shell: bash
         run: |
           set -euo pipefail
           rm -rf smoke-output smoke-artifacts smoke-repo
           mkdir -p smoke-output smoke-artifacts smoke-repo
-          for job in 0 8 13 17 19; do
+          # worker 0 of these jobs lands in each of the eight version-2 lanes.
+          for job in 0 3 5 7 12 16 18 19; do
             PYTHONPATH=second-approach-2.0 python second-approach-2.0/runner.py \
               --job-id "$job" \
-              --run-index 0 \
+              --run-index 9 \
               --base-seed 123456789 \
               --seconds 150 \
               --workers 1 \
               --max-attempts 1 \
-              --max-nfev 100 \
+              --max-nfev 60 \
+              --lane-plan-version 2 \
+              --legacy-strategy support_mutation \
+              --independent-strategy balanced \
               --output "smoke-output/job-$job"
             test -f "smoke-output/job-$job/manifest.json"
             test -n "$(find "smoke-output/job-$job" -name 'candidate-*.json.gz' -print -quit)"
@@ -137,10 +162,10 @@ jobs:
             --repo smoke-repo \
             --run-id 1 \
             --conclusion success \
-            --expected-jobs 5 \
-            --min-jobs 5
+            --expected-jobs 8 \
+            --min-jobs 8
 
-          summary="$(find smoke-repo/second-approach-2.0/runs -name summary.json -print -quit)"
+          summary="$(find smoke-repo/second-approach-2.0/runs -path '*-1/summary.json' -print -quit)"
           test -n "$summary"
           run_dir="$(dirname "$summary")"
           python second-approach-2.0/verify_run.py "$run_dir"
@@ -150,15 +175,23 @@ jobs:
 
           summary = json.load(open(sys.argv[1]))
           assert summary["accepted"]
-          assert summary["promoted_candidates"] >= 5
+          assert summary["lane_plan_version"] == 2
+          assert summary["legacy_strategy"] == "support_mutation"
+          assert summary["independent_strategy"] == "balanced"
+          assert summary["promoted_candidates"] >= 8
           assert summary["distinct_support_fingerprints"] > 0
           assert summary["distinct_residual_basin_fingerprints"] > 0
           assert set(summary["lane_promoted_counts"]) == {
               "fresh_independent",
               "obstruction_boundary",
               "novelty_far",
-              "legacy_control",
-              "precision_audit",
+              "independent_precision",
+              "independent_mutation",
+              "legacy_adaptive",
+              "legacy_escape",
+              "legacy_precision",
           }
+          assert summary["inherited_independent_promoted"] >= 2
+          assert summary["distinct_independent_lineage_roots"] > 0
           print(json.dumps(summary, indent=2, sort_keys=True))
           PY
