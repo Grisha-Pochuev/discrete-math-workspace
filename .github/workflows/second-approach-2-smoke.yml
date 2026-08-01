@@ -52,7 +52,7 @@ jobs:
             sleep $((attempt * 10))
           done
 
-      - name: Validate lane allocation, inherited starts, and syntax
+      - name: Validate lane allocation, final bound safety, and syntax
         shell: bash
         run: |
           set -euo pipefail
@@ -79,6 +79,33 @@ jobs:
           assert np.max(np.abs(safe.imag)) <= 7.6
           untouched, changed_none = runner.sanitize_initial_x(None, 8.0)
           assert untouched is None and changed_none == 0
+
+          class RegressionModel:
+              def __init__(self):
+                  self.structured_initial_point = self._unsafe_start
+
+              @staticmethod
+              def _unsafe_start(*args, **kwargs):
+                  return np.asarray([9.0, -9.0, 8.0, -8.0], dtype=float)
+
+              def solve_support(self, mask, rng, **kwargs):
+                  y0 = self.structured_initial_point(None, None, rng, 0.12)
+                  assert np.all(y0 > -8.0), y0
+                  assert np.all(y0 < 8.0), y0
+                  return {"y0": y0}
+
+          regression = RegressionModel()
+          result, final_changed = runner.solve_support_with_bound_safe_start(
+              regression,
+              0,
+              np.random.default_rng(1),
+              max_nfev=1,
+              scale=0.12,
+              bound=8.0,
+              initial_x=None,
+          )
+          assert final_changed == 4, (final_changed, result)
+          assert regression.structured_initial_point == regression._unsafe_start
           print(counts)
           PY
 
