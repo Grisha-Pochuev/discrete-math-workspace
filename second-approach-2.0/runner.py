@@ -41,12 +41,7 @@ def sanitize_initial_x(
     initial_x: np.ndarray | None,
     bound: float,
 ) -> tuple[np.ndarray | None, int]:
-    """Keep inherited starts strictly inside scipy's box constraints.
-
-    Legacy candidates may contain coordinates on the old +/-bound boundary.
-    The legacy model adds a small random perturbation before least_squares,
-    which can otherwise make x0 infeasible. Keep a generous interior margin.
-    """
+    """Move inherited weights away from the numerical box boundary."""
     if initial_x is None:
         return None, 0
     values = np.asarray(initial_x, dtype=np.complex128).copy()
@@ -59,6 +54,50 @@ def sanitize_initial_x(
         + np.count_nonzero(clipped_imag != values.imag)
     )
     return clipped_real + 1j * clipped_imag, changed
+
+
+def solve_support_with_bound_safe_start(
+    model,
+    mask: int,
+    rng: np.random.Generator,
+    *,
+    max_nfev: int,
+    scale: float,
+    bound: float,
+    initial_x: np.ndarray | None,
+) -> tuple[dict, int]:
+    """Clip the *constructed* real start vector strictly inside SciPy bounds.
+
+    The legacy model perturbs inherited weights and then adds unit target roots.
+    Therefore clipping only ``initial_x`` is insufficient: the final ``y0`` can
+    again leave the box.  This wrapper changes only that final starting vector
+    and restores the legacy generator immediately after the solve.
+    """
+    original = model.structured_initial_point
+    clipped_coordinates = 0
+    lower = np.nextafter(-float(bound), np.inf)
+    upper = np.nextafter(float(bound), -np.inf)
+
+    def bound_safe_initial_point(*args, **kwargs):
+        nonlocal clipped_coordinates
+        y0 = np.asarray(original(*args, **kwargs), dtype=float)
+        safe = np.clip(y0, lower, upper)
+        clipped_coordinates += int(np.count_nonzero(safe != y0))
+        return safe
+
+    model.structured_initial_point = bound_safe_initial_point
+    try:
+        result = model.solve_support(
+            mask,
+            rng,
+            max_nfev=max_nfev,
+            scale=scale,
+            bound=bound,
+            initial_x=initial_x,
+        )
+    finally:
+        model.structured_initial_point = original
+    return result, clipped_coordinates
 
 
 def worker_main(
@@ -78,8 +117,12 @@ def worker_main(
     attempts_path = root / "attempts.jsonl"
     model = engine.load_legacy_model(repo_path)
     exact = engine.load_exact_analyser(repo_path)
-    legacy_bank = engine.load_bank(repo_path / "second-approach" / "candidates" / "seed-bank.json.gz")
-    new_bank = engine.load_bank(repo_path / "second-approach-2.0" / "candidates" / "bank.json.gz")
+    legacy_bank = engine.load_bank(
+        repo_path / "second-approach" / "candidates" / "seed-bank.json.gz"
+    )
+    new_bank = engine.load_bank(
+        repo_path / "second-approach-2.0" / "candidates" / "bank.json.gz"
+    )
     lane = engine.lane_for(job_id, worker_id)
     rng = np.random.default_rng(
         base_seed + run_index * 10_000_019 + job_id * 100_003 + worker_id * 1009
@@ -151,8 +194,10 @@ def worker_main(
                 solve_nfev = max(900, max_nfev * 3)
                 scale = 0.03
                 bound = 16.0
-            initial_x, clipped_coordinates = sanitize_initial_x(initial_x, bound)
-            result = model.solve_support(
+
+            initial_x, inherited_clipped = sanitize_initial_x(initial_x, bound)
+            result, constructed_clipped = solve_support_with_bound_safe_start(
+                model,
                 mask,
                 local,
                 max_nfev=solve_nfev,
@@ -176,7 +221,8 @@ def worker_main(
                 **base_record,
                 "candidate_id": candidate_id,
                 "skipped_known_obstruction": False,
-                "initial_point_clipped_coordinates": clipped_coordinates,
+                "inherited_initial_point_clipped_coordinates": inherited_clipped,
+                "constructed_initial_point_clipped_coordinates": constructed_clipped,
                 "status": result["status"],
                 "message": result["message"],
                 "nfev": result["nfev"],
@@ -198,8 +244,7 @@ def worker_main(
             }
             append_jsonl(attempts_path, summary)
             score = float(result["max_error"])
-            promote = len(best) < 8 or score < max(item[0] for item in best)
-            if promote:
+            if len(best) < 8 or score < max(item[0] for item in best):
                 payload = dict(summary)
                 active = np.asarray(result["active"], dtype=np.int16)
                 x = np.asarray(result["x"], dtype=np.complex128)
