@@ -93,18 +93,23 @@ jobs:
             second-approach-2.0/collect.py \
             second-approach-2.0/verify_run.py
 
+          # Lane-specific paths are exercised by the dedicated smoke workflow.
+          # Per-shard preflight uses a bounded fresh lane so a hard numerical
+          # instance cannot consume the six-hour compute budget before search.
           rm -rf preflight
           set +e
-          PYTHONPATH=second-approach-2.0 python second-approach-2.0/runner.py \
-            --job-id "${{ matrix.id }}" \
-            --run-index "$RUN_INDEX" \
-            --base-seed "$BASE_SEED" \
-            --seconds 120 \
-            --workers 1 \
-            --max-attempts 3 \
-            --max-nfev 120 \
-            --output preflight \
-            > out/preflight.log 2>&1
+          timeout --signal=TERM --kill-after=20s 300s \
+            env PYTHONPATH=second-approach-2.0 \
+            python second-approach-2.0/runner.py \
+              --job-id 0 \
+              --run-index "$RUN_INDEX" \
+              --base-seed "$BASE_SEED" \
+              --seconds 120 \
+              --workers 1 \
+              --max-attempts 3 \
+              --max-nfev 80 \
+              --output preflight \
+              > out/preflight.log 2>&1
           runner_code="$?"
 
           python - <<'PY'
@@ -115,6 +120,7 @@ jobs:
           assert manifest_path.exists(), "preflight did not create manifest.json"
           manifest = json.loads(manifest_path.read_text())
           assert manifest["workers"] == 1
+          assert manifest["job_id"] == 0
           worker = manifest["worker_manifests"][0]
           assert worker.get("exitcode") == 0, worker
           assert int(worker.get("attempts", 0)) >= 1, worker
