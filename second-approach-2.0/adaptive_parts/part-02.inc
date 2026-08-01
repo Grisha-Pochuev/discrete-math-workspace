@@ -58,9 +58,12 @@
         return result
 
     if lane in {"legacy_adaptive", "legacy_escape", "legacy_precision"}:
+        legacy_pool = legacy_bank + [
+            item for item in new_bank if not is_independent_candidate(item)
+        ]
         parent = choose_diverse_parent(
             rng,
-            legacy_bank,
+            legacy_pool,
             independent_only=False,
             global_worker_id=global_worker_id,
             run_index=run_index,
