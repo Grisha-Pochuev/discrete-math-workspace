@@ -76,7 +76,7 @@ def is_independent(item: dict[str, Any]) -> bool:
     if str(item.get("lineage_origin", "")) == "independent":
         return True
     lane = str(item.get("lane", ""))
-    if lane in FRESH_LANES | INHERITED_INDEPENDENT_LANES:
+    if lane in FRESH_INDEPENDENT_LANES | INHERITED_INDEPENDENT_LANES:
         return True
     return lineage_root(item).startswith("sa20-")
 
