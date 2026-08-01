@@ -1,4 +1,17 @@
 {
+  "allowed_independent_strategies": [
+    "balanced",
+    "precision_heavy",
+    "mutation_heavy",
+    "escape_heavy"
+  ],
+  "allowed_legacy_strategies": [
+    "micro_polish",
+    "support_mutation",
+    "wide_restart",
+    "bound_expansion",
+    "residual_escape"
+  ],
   "approach": "second-approach-2.0-independent-basin-counterexample-search",
   "base_seed": 20260730,
   "best_score_history": [
@@ -133,6 +146,8 @@
   ],
   "candidate_bank_size": 1200,
   "completed_runs": 8,
+  "default_next_independent_strategy": "balanced",
+  "default_next_legacy_strategy": "support_mutation",
   "enabled": true,
   "global_best_candidate_id": "sa20-r007-j19-w1-a068900",
   "global_best_independent_candidate_id": "sa20-r004-j00-w3-a000114",
@@ -140,14 +155,20 @@
   "global_best_max_error": 1.2877995019708488e-06,
   "jobs": 20,
   "lane_plan": {
-    "fresh_independent": 30,
-    "legacy_control": 8,
-    "novelty_far": 16,
-    "obstruction_boundary": 20,
-    "precision_audit": 6
+    "fresh_independent": 12,
+    "independent_mutation": 16,
+    "independent_precision": 20,
+    "legacy_adaptive": 8,
+    "legacy_escape": 4,
+    "legacy_precision": 4,
+    "novelty_far": 8,
+    "obstruction_boundary": 8
   },
-  "lane_plan_version": 1,
+  "lane_plan_version": 2,
   "last_conclusion": "success",
+  "last_independent_strategy": "fresh_only_v1",
+  "last_lane_plan_version": 1,
+  "last_legacy_strategy": "precision_v1",
   "last_run_accepted": true,
   "last_run_id": 30702060939,
   "last_run_index": 7,
@@ -158,7 +179,11 @@
   "old_second_approach_record": 9.46e-06,
   "run_limit": null,
   "runtime_seconds": 21000,
-  "schema_version": 1,
+  "schema_version": 2,
   "stopping_policy": "time_only_and_scientific_value",
+  "strategy_change_policy": {
+    "independent": "develop several distinct independent lineages; rotate tactic after three runs below 2% inherited-frontier gain or a falling parent-improvement fraction; keep fresh exploration as a guardrail",
+    "legacy": "keep a tactic only while it gives material frontier progress; rotate after a three-run gain below 2%, two runs without a global record, or clear lineage concentration"
+  },
   "workers_per_job": 4
 }
