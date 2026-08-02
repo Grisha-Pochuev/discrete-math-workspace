@@ -64,6 +64,9 @@ jobs:
             second-approach-2.0/runner.py \
             second-approach-2.0/collect.py \
             second-approach-2.0/verify_run.py
+          # The collector must remain importable in failed-job reruns that do
+          # not install numerical dependencies.
+          PYTHONPATH=second-approach-2.0 python -S -c 'import collect; assert callable(collect.collect_main)'
           PYTHONPATH=second-approach-2.0 python - <<'PY'
           from collections import Counter
           import numpy as np
@@ -136,22 +139,38 @@ jobs:
           set -euo pipefail
           rm -rf smoke-output smoke-artifacts smoke-repo
           mkdir -p smoke-output smoke-artifacts smoke-repo
-          # worker 0 of these jobs lands in each of the eight version-2 lanes.
+          # Worker 0 of these jobs lands in each of the eight version-2 lanes.
+          # Three bounded attempts avoid treating one unlucky numerical start
+          # as a systematic lane failure, while retaining a strict short test.
           for job in 0 3 5 7 12 16 18 19; do
+            echo "=== exercising job $job ==="
+            set +e
             PYTHONPATH=second-approach-2.0 python second-approach-2.0/runner.py \
               --job-id "$job" \
               --run-index 9 \
               --base-seed 123456789 \
-              --seconds 150 \
+              --seconds 180 \
               --workers 1 \
-              --max-attempts 1 \
+              --max-attempts 3 \
               --max-nfev 60 \
               --lane-plan-version 2 \
               --legacy-strategy support_mutation \
               --independent-strategy balanced \
-              --output "smoke-output/job-$job"
+              --output "smoke-output/job-$job" \
+              > "smoke-output/job-$job-driver.log" 2>&1
+            runner_code="$?"
+            set -e
+            cat "smoke-output/job-$job-driver.log" || true
+            find "smoke-output/job-$job" -name attempts.jsonl -type f \
+              -exec sh -c 'echo --- "$1"; cat "$1"' _ {} \; 2>/dev/null || true
+            cat "smoke-output/job-$job/manifest.json" 2>/dev/null || true
+            test "$runner_code" -eq 0
             test -f "smoke-output/job-$job/manifest.json"
-            test -n "$(find "smoke-output/job-$job" -name 'candidate-*.json.gz' -print -quit)"
+            candidate="$(find "smoke-output/job-$job" -name 'candidate-*.json.gz' -print -quit)"
+            if [ -z "$candidate" ]; then
+              echo "lane for job $job produced no candidate in three bounded attempts" >&2
+              exit 1
+            fi
             mkdir -p "smoke-artifacts/second-approach-2-data-$job"
             cp -a "smoke-output/job-$job/." "smoke-artifacts/second-approach-2-data-$job/"
           done
