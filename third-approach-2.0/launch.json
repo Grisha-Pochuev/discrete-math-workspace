@@ -1,0 +1,9 @@
+{
+  "enabled": false,
+  "run_index": 0,
+  "base_seed": 2026080201,
+  "runtime_seconds": 21000,
+  "max_attempts": 0,
+  "strategy_profile": "balanced",
+  "nonce": "dormant-until-second-approach-2.0-finishes"
+}
