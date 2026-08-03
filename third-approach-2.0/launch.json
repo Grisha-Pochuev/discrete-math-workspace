@@ -1,9 +1,17 @@
 {
   "enabled": true,
-  "run_index": 0,
-  "base_seed": 2026080201,
+  "run_index": 1,
+  "base_seed": 2027080204,
   "runtime_seconds": 21000,
   "max_attempts": 0,
-  "strategy_profile": "balanced",
-  "nonce": "ta20-run-000-2026-08-02T22-56-33Z"
+  "strategy_profile": "contrast_focus",
+  "lane_weights": {
+    "fresh": 0.15,
+    "elite_refine": 0.28,
+    "basin_refine": 0.20,
+    "degree_expand": 0.10,
+    "support_escape": 0.05,
+    "contrast_focus": 0.22
+  },
+  "nonce": "ta20-run-001-2026-08-03T05-59-06Z"
 }
