@@ -1,0 +1,69 @@
+name: Carmichael source probe
+
+on:
+  push:
+    branches:
+      - chebyshev-carmichael-search
+    paths:
+      - .github/workflows/chebyshev-source-probe.yml
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Probe official table mirrors
+        shell: bash
+        run: |
+          set -u
+          urls=(
+            'https://blue.butler.edu/~jewebste/cars_table_10to22.txt'
+            'http://blue.butler.edu/~jewebste/cars_table_10to22.txt'
+          )
+          ok=0
+          for i in "${!urls[@]}"; do
+            url="${urls[$i]}"
+            echo "=== URL $url ==="
+            rm -f "headers-$i.txt" "probe-$i.txt"
+            set +e
+            curl --http1.1 --location --fail --show-error \
+              --retry 2 --retry-all-errors --connect-timeout 20 --max-time 90 \
+              --range 0-65535 --max-filesize 1048576 \
+              --user-agent 'Mozilla/5.0 (compatible; mathematical research)' \
+              --dump-header "headers-$i.txt" \
+              "$url" -o "probe-$i.txt"
+            rc=$?
+            set -e
+            echo "curl_rc=$rc"
+            test -f "headers-$i.txt" && sed -n '1,40p' "headers-$i.txt" || true
+            test -f "probe-$i.txt" && wc -c "probe-$i.txt" || true
+            if test "$rc" -eq 0 && test -s "probe-$i.txt"; then
+              python3 - "$url" "probe-$i.txt" <<'PY'
+          import pathlib, re, sys
+          url, name = sys.argv[1:]
+          data = pathlib.Path(name).read_bytes()
+          text = data.decode('utf-8', errors='replace')
+          lines = text.splitlines()
+          print('url=', url)
+          print('bytes=', len(data), 'lines=', len(lines))
+          for j, line in enumerate(lines[:20]):
+              print(f'{j+1:02d}: {line!r}')
+          complete = lines[:-1] if data and data[-1:] not in (b'\n', b'\r') else lines
+          nonempty = [x.strip() for x in complete if x.strip()]
+          digits_only = sum(bool(re.fullmatch(r'\d+', x)) for x in nonempty)
+          first_integer = sum(bool(re.match(r'^\s*\d+(?:\s|$)', x)) for x in nonempty)
+          print('complete_nonempty=', len(nonempty))
+          print('digits_only=', digits_only)
+          print('first_integer=', first_integer)
+          if nonempty and first_integer == len(nonempty):
+              print('FORMAT_ACCEPTED')
+          else:
+              raise SystemExit('FORMAT_REJECTED')
+          PY
+              ok=1
+            fi
+          done
+          test "$ok" -eq 1
