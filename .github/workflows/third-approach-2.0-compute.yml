@@ -237,14 +237,23 @@ jobs:
           assert any(worker.get("best_score") is not None for worker in manifest["worker_manifests"])
           PY
 
+      - name: Bundle complete result tree
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -d out
+          tar -czf result.tar.gz -C out .
+          test -s result.tar.gz
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: third-approach-2.0-data-${{ matrix.id }}
-          path: out/
+          path: result.tar.gz
           if-no-files-found: error
           retention-days: 14
-          compression-level: 6
+          compression-level: 0
 
   collect:
     needs: [prepare, compute]
@@ -277,6 +286,19 @@ jobs:
           pattern: third-approach-2.0-data-*
           path: work/artifacts
           merge-multiple: false
+
+      - name: Expand complete matrix payloads
+        shell: bash
+        run: |
+          set -euo pipefail
+          found=0
+          while IFS= read -r -d '' bundle; do
+            found=$((found + 1))
+            destination="$(dirname "$bundle")/payload"
+            mkdir -p "$destination"
+            tar -xzf "$bundle" -C "$destination"
+          done < <(find work/artifacts -name result.tar.gz -print0)
+          test "$found" -ge 1
 
       - name: Aggregate and classify the run
         shell: bash
