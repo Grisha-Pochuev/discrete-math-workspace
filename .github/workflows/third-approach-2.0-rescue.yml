@@ -17,12 +17,18 @@ concurrency:
 jobs:
   prepare:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     outputs:
       enabled: ${{ steps.config.outputs.enabled }}
       source_run_id: ${{ steps.config.outputs.source_run_id }}
       source_run_index: ${{ steps.config.outputs.source_run_index }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            third-approach-2.0
+          sparse-checkout-cone-mode: true
 
       - id: config
         name: Validate rescue configuration
@@ -48,9 +54,14 @@ jobs:
     needs: prepare
     if: needs.prepare.outputs.enabled == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            third-approach-2.0
+          sparse-checkout-cone-mode: true
 
       - name: Compile and exercise streaming compactor
         shell: bash
@@ -89,7 +100,7 @@ jobs:
     if: needs.prepare.outputs.enabled == 'true'
     name: compact-proof-basin-${{ matrix.id }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       max-parallel: 20
@@ -97,6 +108,11 @@ jobs:
         id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            third-approach-2.0
+          sparse-checkout-cone-mode: true
 
       - name: Record disk before download
         run: df -h .
@@ -144,12 +160,15 @@ jobs:
     needs: [prepare, compact]
     if: ${{ always() && needs.prepare.outputs.enabled == 'true' && needs.compact.result != 'skipped' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
+          sparse-checkout: |
+            third-approach-2.0
+          sparse-checkout-cone-mode: true
 
       - uses: actions/setup-python@v5
         with:
