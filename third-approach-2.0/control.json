@@ -22,7 +22,7 @@
   "last_best_certificate_score": 1.7339612829812478e-12,
   "last_exact_verified_count": 34,
   "last_plateau_detected": false,
-  "last_run_accepted": true,
+  "last_run_accepted": false,
   "last_run_id": 30771199582,
   "last_run_index": 0,
   "launch_gate": "wait_for_current_second_approach_2.0_archive_commit",
