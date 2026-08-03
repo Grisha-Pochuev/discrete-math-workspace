@@ -16,6 +16,7 @@ concurrency:
 jobs:
   prepare:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     outputs:
       enabled: ${{ steps.config.outputs.enabled }}
       run_index: ${{ steps.config.outputs.run_index }}
@@ -25,6 +26,11 @@ jobs:
       strategy_profile: ${{ steps.config.outputs.strategy_profile }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            third-approach-2.0
+          sparse-checkout-cone-mode: true
 
       - id: config
         name: Validate deterministic launch configuration
@@ -36,13 +42,29 @@ jobs:
           from pathlib import Path
 
           launch = json.loads(Path("third-approach-2.0/launch.json").read_text())
-          allowed = {"balanced", "multi_basin", "degree_expand", "support_escape", "contrast_focus"}
+          allowed = {
+              "balanced",
+              "multi_basin",
+              "degree_expand",
+              "support_escape",
+              "contrast_focus",
+              "exact_reconstruction",
+          }
+          lanes = {
+              "fresh",
+              "elite_refine",
+              "basin_refine",
+              "degree_expand",
+              "support_escape",
+              "contrast_focus",
+          }
           enabled = bool(launch.get("enabled", False))
           run_index = int(launch["run_index"])
           base_seed = int(launch["base_seed"])
           runtime = int(launch.get("runtime_seconds", 21000))
           attempts = int(launch.get("max_attempts", 0))
           profile = str(launch.get("strategy_profile", "balanced"))
+          weights = launch.get("lane_weights")
           if run_index < 0 or base_seed <= 0:
               raise SystemExit("invalid run index or seed")
           if runtime != 21000:
@@ -51,6 +73,16 @@ jobs:
               raise SystemExit("full runs must be time-limited, not attempt-limited")
           if profile not in allowed:
               raise SystemExit(f"unknown strategy profile: {profile}")
+          if weights is not None:
+              if not isinstance(weights, dict) or set(weights) != lanes:
+                  raise SystemExit("lane_weights must define exactly the six supported lanes")
+              values = {key: float(value) for key, value in weights.items()}
+              if any(value < 0 for value in values.values()):
+                  raise SystemExit("lane weights must be non-negative")
+              if abs(sum(values.values()) - 1.0) > 1e-9:
+                  raise SystemExit("lane weights must sum to 1")
+              if values["fresh"] < 0.15:
+                  raise SystemExit("fresh lane must retain at least 15% of the search")
           print(f"enabled={'true' if enabled else 'false'}")
           print(f"run_index={run_index}")
           print(f"base_seed={base_seed}")
@@ -63,7 +95,7 @@ jobs:
     needs: prepare
     if: needs.prepare.outputs.enabled == 'true'
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 25
     env:
       OMP_NUM_THREADS: "1"
       OPENBLAS_NUM_THREADS: "1"
@@ -72,6 +104,11 @@ jobs:
       PYTHONUNBUFFERED: "1"
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            third-approach-2.0
+          sparse-checkout-cone-mode: true
 
       - uses: actions/setup-python@v5
         with:
@@ -126,6 +163,7 @@ jobs:
           test -s smoke-result.tar.gz
           test -z "$(tar -tzf smoke-result.tar.gz | grep '/metrics.jsonl$' || true)"
           test -n "$(tar -tzf smoke-result.tar.gz | grep 'candidate-.*json.gz$' | head -1)"
+          test "$(stat -c '%s' smoke-result.tar.gz)" -lt 536870912
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -154,6 +192,11 @@ jobs:
       PYTHONUNBUFFERED: "1"
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            third-approach-2.0
+          sparse-checkout-cone-mode: true
 
       - uses: actions/setup-python@v5
         with:
@@ -274,12 +317,15 @@ jobs:
     needs: [prepare, compute]
     if: ${{ always() && needs.prepare.outputs.enabled == 'true' && needs.compute.result != 'skipped' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
+          sparse-checkout: |
+            third-approach-2.0
+          sparse-checkout-cone-mode: true
 
       - uses: actions/setup-python@v5
         with:
