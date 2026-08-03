@@ -89,7 +89,8 @@ jobs:
           python -m py_compile \
             third-approach-2.0/certificate.py \
             third-approach-2.0/runner.py \
-            third-approach-2.0/collect.py
+            third-approach-2.0/collect.py \
+            third-approach-2.0/compact_payload.py
           PYTHONPATH=third-approach-2.0 python third-approach-2.0/certificate.py --self-test
 
       - name: Real-path four-worker smoke test
@@ -116,6 +117,15 @@ jobs:
           assert all(worker.get("best_score") is not None for worker in manifest["worker_manifests"])
           assert sum(int(worker.get("errors", 0)) for worker in manifest["worker_manifests"]) == 0
           PY
+
+      - name: Verify compact bundle rule
+        shell: bash
+        run: |
+          set -euo pipefail
+          tar -czf smoke-result.tar.gz --exclude='*/metrics.jsonl' -C smoke .
+          test -s smoke-result.tar.gz
+          test -z "$(tar -tzf smoke-result.tar.gz | grep '/metrics.jsonl$' || true)"
+          test -n "$(tar -tzf smoke-result.tar.gz | grep 'candidate-.*json.gz$' | head -1)"
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -237,14 +247,19 @@ jobs:
           assert any(worker.get("best_score") is not None for worker in manifest["worker_manifests"])
           PY
 
-      - name: Bundle complete result tree
+      - name: Bundle compact result tree
         if: always()
         shell: bash
         run: |
           set -euo pipefail
           test -d out
-          tar -czf result.tar.gz -C out .
+          tar -czf result.tar.gz --exclude='*/metrics.jsonl' -C out .
           test -s result.tar.gz
+          test -z "$(tar -tzf result.tar.gz | grep '/metrics.jsonl$' || true)"
+          test -n "$(tar -tzf result.tar.gz | grep 'candidate-.*json.gz$' | head -1)"
+          size="$(stat -c '%s' result.tar.gz)"
+          test "$size" -lt 536870912
+          du -sh out result.tar.gz
 
       - uses: actions/upload-artifact@v4
         if: always()
