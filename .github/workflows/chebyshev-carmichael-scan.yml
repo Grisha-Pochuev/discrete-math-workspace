@@ -13,7 +13,10 @@ permissions:
 
 env:
   SHARDS: 20
-  DATA_URL: https://oeis.org/A002997/a002997.7z
+  SOURCE_BYTES: 2718819042
+  EXPECTED_ROWS: 49679870
+  OVERLAP_BYTES: 65536
+  DATA_URL: https://blue.butler.edu/~jewebste/cars_table_10to22.txt
 
 concurrency:
   group: chebyshev-carmichael-exhaustive
@@ -23,55 +26,47 @@ jobs:
   prepare:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 10
     steps:
-      - name: Install archive tools
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq p7zip-full
-
-      - name: Download and validate the OEIS Carmichael table
+      - name: Validate official source metadata
         run: |
           set -euxo pipefail
-          mkdir -p source
-          curl --fail --location --retry 8 --retry-all-errors \
-            --user-agent 'Mozilla/5.0' \
-            "$DATA_URL" -o source/a002997.7z
-          7z t source/a002997.7z
-          sha256sum source/a002997.7z | tee source/archive.sha256
+          curl --http1.1 --fail --location --show-error \
+            --retry 5 --retry-all-errors --connect-timeout 20 --max-time 120 \
+            --range 0-0 --dump-header headers.txt \
+            --user-agent 'Mozilla/5.0 (compatible; mathematical research)' \
+            "$DATA_URL" -o first-byte.bin
+          cat headers.txt
           python3 - <<'PY'
-          import hashlib, json, os
-          path = 'source/a002997.7z'
-          h = hashlib.sha256()
-          with open(path, 'rb') as f:
-              for block in iter(lambda: f.read(8 * 1024 * 1024), b''):
-                  h.update(block)
+          import json, os, re
+          headers = open('headers.txt', encoding='latin-1').read()
+          matches = re.findall(r'(?im)^Content-Range:\s*bytes\s+\d+-\d+/(\d+)\s*$', headers)
+          if not matches:
+              raise SystemExit('missing Content-Range')
+          size = int(matches[-1])
+          expected = int(os.environ['SOURCE_BYTES'])
+          if size != expected:
+              raise SystemExit(f'source size changed: {size} != {expected}')
+          def last_header(name):
+              values = re.findall(rf'(?im)^{re.escape(name)}:\s*(.*?)\s*$', headers)
+              return values[-1] if values else None
           meta = {
               'url': os.environ['DATA_URL'],
-              'archive_name': 'a002997.7z',
-              'archive_bytes': os.path.getsize(path),
-              'sha256': h.hexdigest(),
-              'declared_entries': 49_679_870,
-              'upper_bound': '10^22',
+              'bytes': size,
+              'etag': last_header('ETag'),
+              'last_modified': last_header('Last-Modified'),
+              'expected_rows': int(os.environ['EXPECTED_ROWS']),
+              'description': 'Complete published Carmichael table below 10^22 with prime factors',
           }
-          with open('source/source.json', 'w', encoding='utf-8') as f:
-              json.dump(meta, f, indent=2)
+          open('source.json', 'w', encoding='utf-8').write(json.dumps(meta, indent=2) + '\n')
           print(json.dumps(meta, indent=2))
           PY
-
-      - name: Upload source archive
-        uses: actions/upload-artifact@v4
-        with:
-          name: carmichael-source
-          path: source/a002997.7z
-          compression-level: 0
-          retention-days: 3
 
       - name: Upload source metadata
         uses: actions/upload-artifact@v4
         with:
           name: source-meta
-          path: source/source.json
+          path: source.json
           retention-days: 14
 
   test:
@@ -100,7 +95,7 @@ jobs:
     timeout-minutes: 350
     strategy:
       fail-fast: false
-      max-parallel: 20
+      max-parallel: 10
       matrix:
         shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     steps:
@@ -108,16 +103,36 @@ jobs:
         with:
           sparse-checkout: chebyshev-search
 
-      - name: Install dependencies
+      - name: Install Boost headers
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq p7zip-full libboost-dev
+          sudo apt-get install -y -qq libboost-dev
 
-      - name: Download source archive
-        uses: actions/download-artifact@v4
-        with:
-          name: carmichael-source
-          path: source
+      - name: Download assigned byte range
+        shell: bash
+        run: |
+          set -euxo pipefail
+          shard='${{ matrix.shard }}'
+          logical_start=$(( SOURCE_BYTES * shard / SHARDS ))
+          logical_end=$(( SOURCE_BYTES * (shard + 1) / SHARDS ))
+          fetch_start=$(( logical_start > OVERLAP_BYTES ? logical_start - OVERLAP_BYTES : 0 ))
+          fetch_end=$(( logical_end + OVERLAP_BYTES < SOURCE_BYTES ? logical_end + OVERLAP_BYTES : SOURCE_BYTES ))
+          expected_bytes=$(( fetch_end - fetch_start ))
+          curl --http1.1 --fail --location --show-error \
+            --retry 8 --retry-all-errors --connect-timeout 30 --max-time 2400 \
+            --range "${fetch_start}-$((fetch_end - 1))" \
+            --user-agent 'Mozilla/5.0 (compatible; mathematical research)' \
+            "$DATA_URL" -o raw-range.txt
+          actual_bytes=$(wc -c < raw-range.txt)
+          test "$actual_bytes" -eq "$expected_bytes"
+          python3 chebyshev-search/slice_range.py \
+            --input raw-range.txt \
+            --output assigned-lines.txt \
+            --fetch-start "$fetch_start" \
+            --logical-start "$logical_start" \
+            --logical-end "$logical_end" \
+            --source-size "$SOURCE_BYTES" \
+            --meta 'slice-${{ matrix.shard }}.json'
 
       - name: Compile scanner
         run: |
@@ -127,13 +142,13 @@ jobs:
       - name: Scan shard ${{ matrix.shard }}
         run: |
           set -o pipefail
-          7z x source/a002997.7z -so | \
-            chebyshev-search/scan \
-              --shard '${{ matrix.shard }}' \
-              --shards "$SHARDS" \
-              --output 'result-${{ matrix.shard }}.json' \
-              2> 'scan-${{ matrix.shard }}.log'
-          cat 'scan-${{ matrix.shard }}.log'
+          chebyshev-search/scan \
+            --shard '${{ matrix.shard }}' \
+            --shards "$SHARDS" \
+            --output 'result-${{ matrix.shard }}.json' \
+            < assigned-lines.txt \
+            2> 'scan-${{ matrix.shard }}.log'
+          tail -n 100 'scan-${{ matrix.shard }}.log'
           cat 'result-${{ matrix.shard }}.json'
 
       - name: Upload shard result
@@ -143,6 +158,7 @@ jobs:
           name: scan-${{ matrix.shard }}
           path: |
             result-${{ matrix.shard }}.json
+            slice-${{ matrix.shard }}.json
             scan-${{ matrix.shard }}.log
           retention-days: 14
 
