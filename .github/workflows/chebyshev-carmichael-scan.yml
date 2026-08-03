@@ -1,0 +1,185 @@
+name: Chebyshev Carmichael exhaustive scan
+
+on:
+  push:
+    branches:
+      - chebyshev-carmichael-search
+    paths:
+      - chebyshev-search/**
+      - .github/workflows/chebyshev-carmichael-scan.yml
+
+permissions:
+  contents: write
+
+env:
+  SHARDS: 20
+  DATA_URL: https://oeis.org/A002997/a002997.7z
+
+concurrency:
+  group: chebyshev-carmichael-exhaustive
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install archive tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full
+
+      - name: Download and validate the OEIS Carmichael table
+        run: |
+          set -euxo pipefail
+          mkdir -p source
+          curl --fail --location --retry 8 --retry-all-errors \
+            --user-agent 'Mozilla/5.0' \
+            "$DATA_URL" -o source/a002997.7z
+          7z t source/a002997.7z
+          sha256sum source/a002997.7z | tee source/archive.sha256
+          python3 - <<'PY'
+          import hashlib, json, os
+          path = 'source/a002997.7z'
+          h = hashlib.sha256()
+          with open(path, 'rb') as f:
+              for block in iter(lambda: f.read(8 * 1024 * 1024), b''):
+                  h.update(block)
+          meta = {
+              'url': os.environ['DATA_URL'],
+              'archive_name': 'a002997.7z',
+              'archive_bytes': os.path.getsize(path),
+              'sha256': h.hexdigest(),
+              'declared_entries': 49_679_870,
+              'upper_bound': '10^22',
+          }
+          with open('source/source.json', 'w', encoding='utf-8') as f:
+              json.dump(meta, f, indent=2)
+          print(json.dumps(meta, indent=2))
+          PY
+
+      - name: Upload source archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: carmichael-source
+          path: source/a002997.7z
+          compression-level: 0
+          retention-days: 3
+
+      - name: Upload source metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-meta
+          path: source/source.json
+          retention-days: 14
+
+  test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and run regression tests
+        run: |
+          set -euxo pipefail
+          g++ -O3 -std=c++20 -Wall -Wextra \
+            chebyshev-search/test.cpp -o chebyshev-search/test
+          chebyshev-search/test
+
+  scan:
+    if: github.actor != 'github-actions[bot]'
+    needs: [prepare, test]
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install archive tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full
+
+      - name: Download source archive
+        uses: actions/download-artifact@v4
+        with:
+          name: carmichael-source
+          path: source
+
+      - name: Compile scanner
+        run: |
+          g++ -O3 -march=x86-64-v3 -std=c++20 -DNDEBUG \
+            chebyshev-search/scan.cpp -o chebyshev-search/scan
+
+      - name: Scan shard ${{ matrix.shard }}
+        run: |
+          set -o pipefail
+          7z x source/a002997.7z -so | \
+            chebyshev-search/scan \
+              --shard '${{ matrix.shard }}' \
+              --shards "$SHARDS" \
+              --output 'result-${{ matrix.shard }}.json' \
+              2> 'scan-${{ matrix.shard }}.log'
+          cat 'scan-${{ matrix.shard }}.log'
+          cat 'result-${{ matrix.shard }}.json'
+
+      - name: Upload shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scan-${{ matrix.shard }}
+          path: |
+            result-${{ matrix.shard }}.json
+            scan-${{ matrix.shard }}.log
+          retention-days: 14
+
+  aggregate:
+    if: always() && github.actor != 'github-actions[bot]' && needs.prepare.result == 'success'
+    needs: [prepare, test, scan]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: chebyshev-carmichael-search
+
+      - name: Download shard results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: scan-*
+          path: artifacts
+
+      - name: Download source metadata
+        uses: actions/download-artifact@v4
+        with:
+          name: source-meta
+          path: artifacts/source-meta
+
+      - name: Aggregate and validate
+        id: aggregate
+        continue-on-error: true
+        run: python3 chebyshev-search/aggregate.py
+
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add chebyshev-search/results
+          if git diff --cached --quiet; then
+            echo 'No result changes to commit.'
+          else
+            git commit -m 'Record exhaustive Chebyshev Carmichael scan [skip ci]'
+            git push origin HEAD:chebyshev-carmichael-search
+          fi
+
+      - name: Require a complete scan
+        if: steps.aggregate.outcome == 'failure'
+        run: exit 1
