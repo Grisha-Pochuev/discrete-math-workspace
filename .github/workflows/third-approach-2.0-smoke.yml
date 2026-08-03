@@ -1,0 +1,158 @@
+name: Third approach 2.0 smoke test
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - third-approach-2.0/certificate.py
+      - third-approach-2.0/runner.py
+      - third-approach-2.0/collect.py
+      - third-approach-2.0/compact_payload.py
+      - third-approach-2.0/requirements.txt
+      - .github/workflows/third-approach-2.0-compute.yml
+      - .github/workflows/third-approach-2.0-smoke.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: third-approach-2.0-smoke
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      NUMEXPR_NUM_THREADS: "1"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            third-approach-2.0
+          sparse-checkout-cone-mode: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: third-approach-2.0/requirements.txt
+
+      - name: Install numerical dependencies
+        run: python -m pip install --disable-pip-version-check -r third-approach-2.0/requirements.txt
+
+      - name: Validate launch schema and supported profiles
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          launch = json.loads(Path('third-approach-2.0/launch.json').read_text())
+          profiles = {
+              'balanced',
+              'multi_basin',
+              'degree_expand',
+              'support_escape',
+              'contrast_focus',
+              'exact_reconstruction',
+          }
+          lanes = {
+              'fresh',
+              'elite_refine',
+              'basin_refine',
+              'degree_expand',
+              'support_escape',
+              'contrast_focus',
+          }
+          assert launch['strategy_profile'] in profiles
+          assert int(launch['runtime_seconds']) == 21000
+          assert int(launch['max_attempts']) == 0
+          weights = launch.get('lane_weights', {})
+          assert set(weights) == lanes
+          assert abs(sum(float(v) for v in weights.values()) - 1.0) < 1e-9
+          assert float(weights['fresh']) >= 0.15
+          print(json.dumps({'profile': launch['strategy_profile'], 'lane_weights': weights}, indent=2))
+          PY
+
+      - name: Compile all execution-path Python files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            third-approach-2.0/certificate.py \
+            third-approach-2.0/runner.py \
+            third-approach-2.0/collect.py \
+            third-approach-2.0/compact_payload.py
+          PYTHONPATH=third-approach-2.0 python third-approach-2.0/certificate.py --self-test
+
+      - name: Exercise the real four-worker runner path
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf smoke
+          run_index="$(python -c "import json; print(json.load(open('third-approach-2.0/launch.json'))['run_index'])")"
+          base_seed="$(python -c "import json; print(json.load(open('third-approach-2.0/launch.json'))['base_seed'])")"
+          PYTHONPATH=third-approach-2.0 python third-approach-2.0/runner.py \
+            --job-id 0 \
+            --run-index "$run_index" \
+            --base-seed "$base_seed" \
+            --seconds 120 \
+            --workers 4 \
+            --max-attempts 2 \
+            --output smoke
+          test -f smoke/manifest.json
+          test "$(find smoke -name 'candidate-*.json.gz' | wc -l)" -ge 4
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path('smoke/manifest.json').read_text())
+          assert manifest['approach'] == 'third-approach-2.0-multibasin-proof-certificates'
+          assert manifest['workers'] == 4
+          assert all(worker.get('best_score') is not None for worker in manifest['worker_manifests'])
+          assert sum(int(worker.get('errors', 0)) for worker in manifest['worker_manifests']) == 0
+          PY
+
+      - name: Exercise collector and compact artifact rules
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf smoke-artifacts smoke-repo
+          mkdir -p smoke-artifacts/job-0/payload smoke-repo/third-approach-2.0/candidates
+          cp -a smoke/. smoke-artifacts/job-0/payload/
+          cp third-approach-2.0/launch.json smoke-repo/third-approach-2.0/launch.json
+          cp third-approach-2.0/control.json smoke-repo/third-approach-2.0/control.json
+          PYTHONPATH=third-approach-2.0 python third-approach-2.0/collect.py \
+            --artifacts smoke-artifacts \
+            --repo smoke-repo \
+            --run-id 999999999 \
+            --expected-jobs 1 \
+            --min-jobs 1 \
+            > smoke-collector.json
+          python - <<'PY'
+          import json
+          summary = json.load(open('smoke-collector.json'))
+          assert summary['accepted']
+          assert summary['completed_jobs'] == 1
+          PY
+          tar -czf smoke-result.tar.gz --exclude='*/metrics.jsonl' -C smoke .
+          test -s smoke-result.tar.gz
+          test -z "$(tar -tzf smoke-result.tar.gz | grep '/metrics.jsonl$' || true)"
+          test -n "$(tar -tzf smoke-result.tar.gz | grep 'candidate-.*json.gz$' | head -1)"
+          test "$(stat -c '%s' smoke-result.tar.gz)" -lt 536870912
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: third-approach-2.0-independent-smoke-${{ github.run_id }}
+          path: |
+            smoke/
+            smoke-collector.json
+          if-no-files-found: warn
+          retention-days: 7
