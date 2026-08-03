@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "source_run_id": 30816078194,
+  "source_run_index": 1,
+  "reason": "preserve successful 20-job computation after collector disk exhaustion caused by 34 GB of full metrics artifacts",
+  "nonce": "ta20-rescue-run-001-2026-08-03T20-03-00Z"
+}
