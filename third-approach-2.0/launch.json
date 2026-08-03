@@ -1,17 +1,17 @@
 {
   "enabled": true,
-  "run_index": 1,
-  "base_seed": 2027080204,
+  "run_index": 2,
+  "base_seed": 2028080207,
   "runtime_seconds": 21000,
   "max_attempts": 0,
-  "strategy_profile": "contrast_focus",
+  "strategy_profile": "exact_reconstruction",
   "lane_weights": {
     "fresh": 0.15,
-    "elite_refine": 0.28,
-    "basin_refine": 0.20,
-    "degree_expand": 0.10,
+    "elite_refine": 0.32,
+    "basin_refine": 0.18,
+    "degree_expand": 0.12,
     "support_escape": 0.05,
-    "contrast_focus": 0.22
+    "contrast_focus": 0.18
   },
-  "nonce": "ta20-run-001-retry-artifact-fix-2026-08-03T12-58-00Z"
+  "nonce": "ta20-run-002-exact-reconstruction-2026-08-03T22-25-00Z"
 }
