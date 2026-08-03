@@ -1,0 +1,247 @@
+name: Rescue Third approach 2.0 collection
+
+on:
+  push:
+    paths:
+      - third-approach-2.0/rescue.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: third-approach-2.0-rescue
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    outputs:
+      enabled: ${{ steps.config.outputs.enabled }}
+      source_run_id: ${{ steps.config.outputs.source_run_id }}
+      source_run_index: ${{ steps.config.outputs.source_run_index }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: config
+        name: Validate rescue configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+
+          rescue = json.loads(Path("third-approach-2.0/rescue.json").read_text())
+          enabled = bool(rescue.get("enabled", False))
+          source_run_id = int(rescue["source_run_id"])
+          source_run_index = int(rescue["source_run_index"])
+          if source_run_id <= 0 or source_run_index < 0:
+              raise SystemExit("invalid rescue run identifiers")
+          print(f"enabled={'true' if enabled else 'false'}")
+          print(f"source_run_id={source_run_id}")
+          print(f"source_run_index={source_run_index}")
+          PY
+
+  validate:
+    needs: prepare
+    if: needs.prepare.outputs.enabled == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile and exercise streaming compactor
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile third-approach-2.0/compact_payload.py third-approach-2.0/collect.py
+          rm -rf synthetic compact-test synthetic-result.tar.gz
+          mkdir -p synthetic/worker-0
+          cat > synthetic/manifest.json <<'JSON'
+          {"approach":"third-approach-2.0-multibasin-proof-certificates","run_index":1,"job_id":0,"worker_manifests":[]}
+          JSON
+          python - <<'PY'
+          import gzip, json
+          with gzip.open('synthetic/worker-0/candidate-test.json.gz', 'wt') as out:
+              json.dump({'candidate_id':'test','run_index':1,'certificate_score':1.0}, out)
+          with open('synthetic/worker-0/metrics.jsonl', 'wb') as out:
+              out.truncate(16 * 1024 * 1024)
+          PY
+          tar -czf synthetic-result.tar.gz -C synthetic .
+          python third-approach-2.0/compact_payload.py \
+            --bundle synthetic-result.tar.gz \
+            --output compact-test
+          test -f compact-test/manifest.json
+          test -f compact-test/worker-0/candidate-test.json.gz
+          test ! -e compact-test/worker-0/metrics.jsonl
+          python - <<'PY'
+          import json
+          summary = json.load(open('compact-test/compaction.json'))
+          assert summary['candidate_files'] == 1
+          assert summary['manifest_files'] == 1
+          assert summary['skipped_uncompressed_bytes'] >= 16 * 1024 * 1024
+          PY
+
+  compact:
+    needs: [prepare, validate]
+    if: needs.prepare.outputs.enabled == 'true'
+    name: compact-proof-basin-${{ matrix.id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Record disk before download
+        run: df -h .
+
+      - name: Download one preserved full result artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: third-approach-2.0-data-${{ matrix.id }}
+          path: input
+          repository: Grisha-Pochuev/discrete-math-workspace
+          run-id: ${{ needs.prepare.outputs.source_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Stream only collector-relevant files
+        shell: bash
+        run: |
+          set -euo pipefail
+          bundle="$(find input -name result.tar.gz -print -quit)"
+          test -n "$bundle"
+          mkdir -p compact/payload
+          python third-approach-2.0/compact_payload.py \
+            --bundle "$bundle" \
+            --output compact/payload \
+            | tee compact/compactor.log
+          test -f compact/payload/manifest.json
+          test -n "$(find compact/payload -name 'candidate-*.json.gz' -print -quit)"
+          tar -czf compact/result-compact.tar.gz -C compact/payload .
+          test -s compact/result-compact.tar.gz
+          size="$(stat -c '%s' compact/result-compact.tar.gz)"
+          test "$size" -lt 536870912
+          rm -rf input compact/payload
+          df -h .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: third-approach-2.0-compact-${{ matrix.id }}
+          path: |
+            compact/result-compact.tar.gz
+            compact/compactor.log
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+  collect:
+    needs: [prepare, compact]
+    if: ${{ always() && needs.prepare.outputs.enabled == 'true' && needs.compact.result != 'skipped' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Synchronize main and prepare compact aggregation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          git checkout main
+          git reset --hard origin/main
+          mkdir -p work/artifacts
+
+      - name: Download compact matrix artifacts
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: third-approach-2.0-compact-*
+          path: work/downloads
+          merge-multiple: false
+
+      - name: Expand compact payloads
+        shell: bash
+        run: |
+          set -euo pipefail
+          found=0
+          while IFS= read -r -d '' bundle; do
+            found=$((found + 1))
+            destination="work/artifacts/job-${found}/payload"
+            mkdir -p "$destination"
+            tar -xzf "$bundle" -C "$destination"
+          done < <(find work/downloads -name result-compact.tar.gz -print0)
+          test "$found" -ge 16
+          df -h .
+
+      - name: Aggregate the preserved computation
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=third-approach-2.0 python third-approach-2.0/collect.py \
+            --artifacts work/artifacts \
+            --repo . \
+            --run-id "${{ needs.prepare.outputs.source_run_id }}" \
+            --expected-jobs 20 \
+            --min-jobs 16 \
+            | tee work/collector.log
+
+      - name: Commit accepted rescue archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            third-approach-2.0/runs \
+            third-approach-2.0/control.json \
+            third-approach-2.0/candidates/bank.json.gz
+          if git diff --cached --quiet; then
+            echo 'rescue collector produced no archive changes' >&2
+            exit 1
+          fi
+          git commit -m "save third-approach-2.0 run from ${{ needs.prepare.outputs.source_run_id }}"
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            if [ "$attempt" = 4 ]; then
+              echo 'failed to push rescued archive after four attempts' >&2
+              exit 1
+            fi
+            git pull --rebase origin main
+          done
+
+      - name: Require one accepted control advance
+        shell: bash
+        run: |
+          set -euo pipefail
+          summary="$(find third-approach-2.0/runs -path "*-${{ needs.prepare.outputs.source_run_id }}/summary.json" -print -quit)"
+          test -n "$summary"
+          python - "$summary" <<'PY'
+          import json
+          import sys
+          summary = json.load(open(sys.argv[1]))
+          assert summary['accepted'], summary
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: third-approach-2.0-rescue-collection-${{ github.run_id }}
+          path: work/collector.log
+          if-no-files-found: warn
+          retention-days: 14
