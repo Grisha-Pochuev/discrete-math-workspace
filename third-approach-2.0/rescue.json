@@ -2,6 +2,6 @@
   "enabled": true,
   "source_run_id": 30816078194,
   "source_run_index": 1,
-  "reason": "preserve successful 20-job computation after collector disk exhaustion caused by 34 GB of full metrics artifacts",
-  "nonce": "ta20-rescue-run-001-2026-08-03T20-03-00Z"
+  "reason": "preserve successful 20-job computation after collector disk exhaustion; retry with sparse checkout and enlarged validation timeout after the first rescue exhausted its 8-minute checkout window",
+  "nonce": "ta20-rescue-run-001-retry-2026-08-03T21-16-00Z"
 }
