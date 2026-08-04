@@ -16,6 +16,8 @@ Search for exact or near-exact algebraic certificates that rule out support-rest
 8. Preserve raw artifacts and rejected-run diagnostics. A green workflow means technical success, not mathematical success.
 9. A profile recommended by `collect.py` must be accepted by the compute workflow and exercised by the independent smoke workflow before it is written to `launch.json`.
 10. After changing execution code or workflow logic, do not launch a long matrix until `Third approach 2.0 smoke test` succeeds on the exact commit containing the fix.
+11. The job timeout must exceed the requested runner duration by at least 60 minutes. A job-level timeout also kills `if: always()` shutdown, packaging and upload steps.
+12. A worker may retain at most 80 candidate files: bounded global elites, bounded exact restricted certificates, and bounded basin and lineage champions. Counting exact candidates is unbounded; saving their full files is not.
 
 ## Hourly monitoring cycle
 
@@ -62,3 +64,4 @@ Do not discard the old global best when rotating. Preserve it as an elite, but c
 - Use sparse checkout for preparation, validation, compute and collection; this repository is large enough that a full checkout can consume most of a short-stage timeout.
 - Do not duplicate profile allow-lists without checking their compatibility. The failure of run `30858625970` was caused by `collect.py` recommending `exact_reconstruction` while the workflow rejected that profile before smoke or compute began.
 - A completed rescue must be disabled after its archive is accepted so an old source run is not accidentally rescued again.
+- Run `30859608967` completed its mathematical search and uploaded all 20 source artifacts, but most jobs reached the 360-minute job timeout while shutting down and packaging. The same run also exposed unbounded saving of every `exact_verified` candidate, producing roughly gigabyte-sized artifacts. Do not recompute this work: rescue its artifacts, and keep the permanent 420-minute job timeout, 600-second runner reserve, 80-file worker retention cap, 320-file job cap and 128 MiB compact artifact limit.
