@@ -17,8 +17,8 @@
   "recommended_next_action": "complete_smoke_then_launch_run_000_once",
   "schema_version": 1,
   "scientific_stopping_rule": "stop_or_pivot_after_two_accepted_runs_without_new_canonical_class_smaller_certificate_contrast_pair_coverage_gain_hard_survivor_or_transfer_evidence",
-  "smoke_required": true,
-  "smoke_verified_for_code_sha": null,
+  "smoke_required": false,
+  "smoke_verified_for_code_sha": "e517a9d16c27d8df67958d09e0880f3761a7c39d",
   "source_frontier": {
     "third_approach_2_0_last_accepted_commit": "ae97833ea31d9aa359939b2a540aeac3d391cad8",
     "third_approach_2_0_last_accepted_run_id": 30911346279

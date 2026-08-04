@@ -1,9 +1,9 @@
 {
-  "consecutive_technical_failures": 2,
-  "current_gate": "smoke_failed_requires_repair",
-  "last_action": "recorded_failed_smoke",
+  "consecutive_technical_failures": 0,
+  "current_gate": "waiting_for_repository_concurrency",
+  "last_action": "green_smoke_waiting_for_concurrency",
   "last_action_commit": null,
-  "last_checked_at": "2026-08-04T21:40:15.818975+00:00",
+  "last_checked_at": "2026-08-04T21:40:40.517711+00:00",
   "last_observed_active_runs": {
     "compute": 0,
     "conflicts": 1
