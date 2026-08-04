@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 import gzip
+import hashlib
 import json
 import math
 import multiprocessing as mp
@@ -61,7 +62,22 @@ PROFILE_WEIGHTS: dict[str, dict[str, float]] = {
         "support_escape": 0.10,
         "contrast_focus": 0.30,
     },
+    "exact_reconstruction": {
+        "fresh": 0.15,
+        "elite_refine": 0.32,
+        "basin_refine": 0.18,
+        "degree_expand": 0.12,
+        "support_escape": 0.05,
+        "contrast_focus": 0.18,
+    },
 }
+
+ELITE_LIMIT = 32
+EXACT_LIMIT = 16
+BASIN_BUCKETS = 16
+LINEAGE_BUCKETS = 16
+MAX_RETAINED_PER_WORKER = ELITE_LIMIT + EXACT_LIMIT + BASIN_BUCKETS + LINEAGE_BUCKETS
+LONG_RUN_SHUTDOWN_RESERVE_SECONDS = 600
 
 
 def atomic_json(path: Path, document: dict[str, Any]) -> None:
@@ -106,18 +122,21 @@ def load_candidate_bank(repo: Path) -> tuple[list[dict[str, Any]], str | None]:
 
 
 def normalize_weights(profile: str, bank_size: int, launch: dict[str, Any]) -> dict[str, float]:
-    weights = dict(PROFILE_WEIGHTS.get(profile, PROFILE_WEIGHTS["balanced"]))
+    if profile not in PROFILE_WEIGHTS:
+        raise ValueError(f"unsupported strategy profile: {profile}")
+    weights = dict(PROFILE_WEIGHTS[profile])
     supplied = launch.get("lane_weights")
     if isinstance(supplied, dict):
+        if set(supplied) != set(weights):
+            raise ValueError("lane_weights must define exactly the six supported lanes")
         for lane in weights:
-            if lane in supplied:
-                weights[lane] = max(0.0, float(supplied[lane]))
+            weights[lane] = max(0.0, float(supplied[lane]))
     if bank_size == 0:
         return {lane: (1.0 if lane == "fresh" else 0.0) for lane in weights}
     weights["fresh"] = max(0.15, weights["fresh"])
     total = sum(weights.values())
     if total <= 0:
-        return dict(PROFILE_WEIGHTS["balanced"])
+        raise ValueError("lane weights have zero total")
     return {lane: value / total for lane, value in weights.items()}
 
 
@@ -193,6 +212,91 @@ def lane_parameters(lane: str) -> tuple[float, float, float]:
     }[lane]
 
 
+def stable_bucket(namespace: str, key: str, count: int) -> int:
+    payload = f"{namespace}:{key}".encode("utf-8")
+    return int.from_bytes(hashlib.sha256(payload).digest()[:8], "big") % count
+
+
+def candidate_meta(result: dict[str, Any], filename: str) -> dict[str, Any]:
+    return {
+        "candidate_id": str(result["candidate_id"]),
+        "score": float(result["certificate_score"]),
+        "filename": filename,
+        "exact_verified": bool(result.get("exact_verified", False)),
+        "basin": str(result.get("basin_fingerprint", "unknown")),
+        "lineage": str(result.get("lineage_root", result["candidate_id"])),
+    }
+
+
+def prune_ranked(store: dict[str, dict[str, Any]], limit: int) -> None:
+    if len(store) <= limit:
+        return
+    chosen = sorted(store.values(), key=lambda item: (item["score"], item["candidate_id"]))[:limit]
+    store.clear()
+    store.update((item["candidate_id"], item) for item in chosen)
+
+
+def selected_records(
+    elites: dict[str, dict[str, Any]],
+    exact: dict[str, dict[str, Any]],
+    basins: dict[int, dict[str, Any]],
+    lineages: dict[int, dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    selected: dict[str, dict[str, Any]] = {}
+    for group in (elites.values(), exact.values(), basins.values(), lineages.values()):
+        for item in group:
+            current = selected.get(item["candidate_id"])
+            if current is None or item["score"] < current["score"]:
+                selected[item["candidate_id"]] = item
+    return selected
+
+
+def retain_candidate(
+    root: Path,
+    result: dict[str, Any],
+    elites: dict[str, dict[str, Any]],
+    exact: dict[str, dict[str, Any]],
+    basins: dict[int, dict[str, Any]],
+    lineages: dict[int, dict[str, Any]],
+) -> int:
+    before = selected_records(elites, exact, basins, lineages)
+    candidate_id = str(result["candidate_id"])
+    filename = f"candidate-{candidate_id}.json.gz"
+    item = candidate_meta(result, filename)
+
+    elites[candidate_id] = item
+    prune_ranked(elites, ELITE_LIMIT)
+    if item["exact_verified"]:
+        exact[candidate_id] = item
+        prune_ranked(exact, EXACT_LIMIT)
+
+    basin_bucket = stable_bucket("basin", item["basin"], BASIN_BUCKETS)
+    previous_basin = basins.get(basin_bucket)
+    if previous_basin is None or item["score"] < previous_basin["score"]:
+        basins[basin_bucket] = item
+
+    lineage_bucket = stable_bucket("lineage", item["lineage"], LINEAGE_BUCKETS)
+    previous_lineage = lineages.get(lineage_bucket)
+    if previous_lineage is None or item["score"] < previous_lineage["score"]:
+        lineages[lineage_bucket] = item
+
+    after = selected_records(elites, exact, basins, lineages)
+    if candidate_id in after:
+        candidate_path = root / filename
+        with gzip.open(candidate_path, "wt", encoding="utf-8", compresslevel=6) as out:
+            json.dump(result, out, sort_keys=True, separators=(",", ":"))
+            out.write("\n")
+
+    for removed_id in set(before) - set(after):
+        old_path = root / before[removed_id]["filename"]
+        if old_path.exists():
+            old_path.unlink()
+
+    if len(after) > MAX_RETAINED_PER_WORKER:
+        raise RuntimeError("candidate retention invariant exceeded")
+    return len(after)
+
+
 def worker_main(
     repo: str,
     output: str,
@@ -212,10 +316,14 @@ def worker_main(
         base_seed + run_index * 10_000_019 + job_id * 100_003 + worker_id * 1_009
     )
     bank, bank_error = load_candidate_bank(repo_path)
-    best: list[tuple[float, str]] = []
+    elites: dict[str, dict[str, Any]] = {}
+    exact: dict[str, dict[str, Any]] = {}
+    basins: dict[int, dict[str, Any]] = {}
+    lineages: dict[int, dict[str, Any]] = {}
     attempts = 0
     errors = 0
     exact_count = 0
+    retained_count = 0
     lane_counts: Counter[str] = Counter()
     parent_counts: Counter[str] = Counter()
     started = time.time()
@@ -285,21 +393,7 @@ def worker_main(
                     "elapsed_seconds": result["elapsed_seconds"],
                 },
             )
-
-            value = float(result["certificate_score"])
-            should_save = result.get("exact_verified") or len(best) < 8 or value < max(item[0] for item in best)
-            if should_save:
-                candidate_path = root / f"candidate-{candidate_id}.json.gz"
-                with gzip.open(candidate_path, "wt", encoding="utf-8", compresslevel=6) as out:
-                    json.dump(result, out, sort_keys=True, separators=(",", ":"))
-                    out.write("\n")
-                best.append((value, candidate_path.name))
-                best.sort()
-                while len(best) > 8:
-                    _, old_name = best.pop()
-                    old_path = root / old_name
-                    if old_path.exists() and not (result.get("exact_verified") and old_name == candidate_path.name):
-                        old_path.unlink()
+            retained_count = retain_candidate(root, result, elites, exact, basins, lineages)
         except BaseException as exc:
             errors += 1
             append_jsonl(
@@ -314,6 +408,7 @@ def worker_main(
 
         attempts += 1
         if attempts % 5 == 0 or time.time() >= deadline:
+            best_score = min((item["score"] for item in elites.values()), default=None)
             atomic_json(
                 root / "checkpoint.json",
                 {
@@ -321,7 +416,9 @@ def worker_main(
                     "attempts": attempts,
                     "errors": errors,
                     "exact_candidates": exact_count,
-                    "best_score": best[0][0] if best else None,
+                    "retained_candidate_files": retained_count,
+                    "retention_limit": MAX_RETAINED_PER_WORKER,
+                    "best_score": best_score,
                     "started_at": started,
                     "updated_at": time.time(),
                     "deadline": deadline,
@@ -333,6 +430,7 @@ def worker_main(
                 },
             )
 
+    best_score = min((item["score"] for item in elites.values()), default=None)
     atomic_json(
         root / "complete.json",
         {
@@ -340,7 +438,9 @@ def worker_main(
             "attempts": attempts,
             "errors": errors,
             "exact_candidates": exact_count,
-            "best_score": best[0][0] if best else None,
+            "retained_candidate_files": retained_count,
+            "retention_limit": MAX_RETAINED_PER_WORKER,
+            "best_score": best_score,
             "started_at": started,
             "finished_at": time.time(),
             "stop_reason": "deadline" if time.time() >= deadline else "attempt_cap",
@@ -372,7 +472,11 @@ def main() -> int:
 
     args.output.mkdir(parents=True, exist_ok=True)
     started = time.time()
-    reserve = 180 if args.seconds >= 1800 else max(10, args.seconds // 5)
+    reserve = (
+        LONG_RUN_SHUTDOWN_RESERVE_SECONDS
+        if args.seconds >= 1800
+        else max(10, args.seconds // 5)
+    )
     deadline = started + max(20, args.seconds - reserve)
     processes: list[mp.Process] = []
     for worker_id in range(args.workers):
@@ -418,7 +522,7 @@ def main() -> int:
         aggregate_lanes.update(info.get("lane_counts", {}))
 
     manifest = {
-        "schema_version": 1,
+        "schema_version": 2,
         "approach": "third-approach-2.0-multibasin-proof-certificates",
         "run_index": args.run_index,
         "job_id": args.job_id,
@@ -427,7 +531,9 @@ def main() -> int:
         "max_attempts_per_worker": args.max_attempts,
         "stopping_policy": "time_only" if args.max_attempts <= 0 else "time_or_attempt_cap",
         "requested_runtime_seconds": args.seconds,
+        "shutdown_reserve_seconds": reserve,
         "effective_search_seconds": max(20, args.seconds - reserve),
+        "max_retained_candidates_per_worker": MAX_RETAINED_PER_WORKER,
         "hostname": socket.gethostname(),
         "started_at": started,
         "finished_at": time.time(),
