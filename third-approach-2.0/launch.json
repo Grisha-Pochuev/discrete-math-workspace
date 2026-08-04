@@ -1,7 +1,7 @@
 {
   "enabled": true,
-  "run_index": 3,
-  "base_seed": 2029080210,
+  "run_index": 4,
+  "base_seed": 2030080213,
   "runtime_seconds": 21000,
   "max_attempts": 0,
   "strategy_profile": "exact_reconstruction",
@@ -13,5 +13,5 @@
     "support_escape": 0.05,
     "contrast_focus": 0.18
   },
-  "nonce": "ta20-run-003-exact-reconstruction-2026-08-04T06-53-00Z"
+  "nonce": "ta20-run-004-exact-reconstruction-2026-08-04T12-54-00Z"
 }
