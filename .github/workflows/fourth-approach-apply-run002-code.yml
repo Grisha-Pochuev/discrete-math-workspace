@@ -1,0 +1,111 @@
+name: Apply Fourth approach run 002 code
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-apply-run002-code.yml'
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: fourth-approach-apply-run002-code
+  cancel-in-progress: false
+
+jobs:
+  publish-and-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Blobless sparse clone
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
+
+      - name: Reassemble and inspect verified code package
+        shell: bash
+        run: |
+          set -euo pipefail
+          for part in fourth-approach/tools/run002-code.part{00..02}; do
+            test -s "$part"
+          done
+          cat fourth-approach/tools/run002-code.part{00..02} | base64 --decode > /tmp/run002-code.tar.gz
+          tar -tzf /tmp/run002-code.tar.gz | tee /tmp/run002-files.txt
+          test -s /tmp/run002-files.txt
+          if grep -E '(^/|(^|/)\.\.(/|$)|^\.github/|__pycache__|\.pyc$)' /tmp/run002-files.txt; then
+            echo 'unsafe path in run002 package' >&2
+            exit 2
+          fi
+          if grep -v '^fourth-approach/' /tmp/run002-files.txt; then
+            echo 'package contains files outside fourth-approach' >&2
+            exit 2
+          fi
+          tar -xzf /tmp/run002-code.tar.gz -C .
+
+      - name: Validate the real run 002 path
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf fourth-approach/__pycache__ fourth-approach/tests/__pycache__
+          python -m py_compile \
+            fourth-approach/schema.py \
+            fourth-approach/inventory.py \
+            fourth-approach/canonicalize.py \
+            fourth-approach/minimize.py \
+            fourth-approach/runner.py \
+            fourth-approach/collect.py \
+            fourth-approach/verify_run.py
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python -m unittest discover \
+            -s fourth-approach/tests -p 'test_*.py' -v
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python - <<'PY'
+          from schema import read_json, validate_launch, validate_spec
+          launch = validate_launch(read_json('fourth-approach/launch.json'))
+          spec = validate_spec(read_json(launch['spec_path']), launch, require_ready=True)
+          assert launch['enabled'] is False
+          assert launch['run_index'] == 2
+          assert launch['task'] == 'stage2_minimize_certificates'
+          assert launch['jobs'] == 20
+          assert launch['minimum_jobs'] >= 18
+          assert launch['runtime_seconds'] == 20700
+          assert spec['implementation_status'] == 'ready'
+          PY
+
+      - name: Commit code and remove staging pieces
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm -f fourth-approach/tools/run002-code.part{00..02}
+          rm -rf fourth-approach/__pycache__ fourth-approach/tests/__pycache__
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach
+          git commit -m 'implement six-hour Fourth approach run 002 minimization'
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then
+              break
+            fi
+            if [ "$attempt" = 4 ]; then
+              echo 'failed to publish run 002 code after four attempts' >&2
+              exit 1
+            fi
+            git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+            git rebase origin/main
+          done
+
+      - name: Dispatch real-path smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh workflow run fourth-approach-smoke.yml --repo "$GH_REPO" --ref main
+          echo 'Dispatched real-path smoke for run 002.' >> "$GITHUB_STEP_SUMMARY"
