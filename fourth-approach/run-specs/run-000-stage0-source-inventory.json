@@ -23,13 +23,14 @@
     "**/__pycache__/**/*",
     "**/*.pyc"
   ],
-  "parse_summary_json": true,
+  "parse_summary_policy": "required_latest_only",
   "content_identity": "source_commit_plus_path_plus_git_blob_oid",
   "bulk_download_policy": "do_not_download_large_archives_during_inventory",
   "primary_metrics": [
     "files_inventoried",
     "bytes_referenced",
-    "accepted_run_summaries",
+    "summary_files_inventoried",
+    "parsed_run_summaries",
     "exact_certificate_archives",
     "second_approach_candidate_archives",
     "unreadable_files",
