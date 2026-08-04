@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "run_index": 0,
+  "task": "stage0_source_inventory",
+  "title": "Freeze and inventory the research frontier for GPT-5.6 Sol",
+  "research_question": "Which immutable files and accepted run summaries constitute the current First, Second, Third, and Third 2.0 evidence frontier?",
+  "source_commit_requirements": {
+    "third_approach_2_0_last_accepted_commit": "ae97833ea31d9aa359939b2a540aeac3d391cad8",
+    "third_approach_2_0_last_accepted_run_id": 30911346279
+  },
+  "include_globs": [
+    "first-approach/**/*",
+    "second-approach/**/*",
+    "second-approach-2.0/**/*",
+    "third-approach/**/*",
+    "third-approach-2.0/**/*",
+    "*.md",
+    "*.txt"
+  ],
+  "exclude_globs": [
+    ".git/**/*",
+    "fourth-approach/runs/**/*",
+    "**/__pycache__/**/*",
+    "**/*.pyc"
+  ],
+  "parse_summary_json": true,
+  "hash_algorithm": "sha256",
+  "primary_metrics": [
+    "files_inventoried",
+    "accepted_run_summaries",
+    "exact_certificate_archives",
+    "second_approach_candidate_archives",
+    "unreadable_files",
+    "duplicate_content_hashes"
+  ],
+  "acceptance_criteria": {
+    "minimum_completed_jobs": 4,
+    "maximum_worker_errors": 0,
+    "require_last_third_2_0_run": true,
+    "require_reproducible_manifest": true
+  },
+  "scientific_output": "A source manifest and human-readable inventory that future stages and GPT-5.6 Sol can audit.",
+  "next_decision": "Review the inventory, then implement canonicalization and independent certificate verification for run 001."
+}
