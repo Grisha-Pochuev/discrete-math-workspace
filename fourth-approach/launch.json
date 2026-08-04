@@ -1,12 +1,12 @@
 {
-  "schema_version": 1,
   "enabled": false,
-  "run_index": 1,
-  "task": "stage1_canonicalize_verify",
-  "spec_path": "fourth-approach/run-specs/run-001-stage1-canonicalize-verify.json",
   "jobs": 20,
-  "minimum_jobs": 20,
-  "runtime_seconds": 20700,
   "max_attempts": 0,
-  "nonce": "fourth-run-001-disabled-after-repair"
+  "minimum_jobs": 20,
+  "nonce": "fourth-run-001-disabled-after-repair",
+  "run_index": 1,
+  "runtime_seconds": 20700,
+  "schema_version": 1,
+  "spec_path": "fourth-approach/run-specs/run-001-stage1-canonicalize-verify.json",
+  "task": "stage1_canonicalize_verify"
 }

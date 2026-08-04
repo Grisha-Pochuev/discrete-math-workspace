@@ -1,10 +1,13 @@
 {
-  "schema_version": 1,
-  "last_checked_at": null,
-  "last_observed_active_runs": [],
-  "last_action": "repaired_stale_launch_and_implemented_run_001",
+  "consecutive_technical_failures": 1,
+  "current_gate": "smoke_failed_requires_repair",
+  "last_action": "recorded_failed_smoke",
   "last_action_commit": null,
-  "consecutive_technical_failures": 0,
-  "current_gate": "await_stage1_real_path_smoke",
-  "notes": "Accepted run 000 is archived. Launch is aligned to run 001 and disabled until a green smoke for the current code."
+  "last_checked_at": "2026-08-04T22:46:22.248314+00:00",
+  "last_observed_active_runs": {
+    "compute": 0,
+    "conflicts": 0
+  },
+  "notes": "Accepted run 000 is archived. Launch is aligned to run 001 and disabled until a green smoke for the current code.",
+  "schema_version": 1
 }
