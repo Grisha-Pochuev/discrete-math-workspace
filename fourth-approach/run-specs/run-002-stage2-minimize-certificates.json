@@ -1,25 +1,33 @@
 {
   "schema_version": 1,
-  "implementation_status": "draft_not_supported_by_current_runner",
+  "implementation_status": "ready",
   "stage_name": "certificate_minimization",
   "run_index": 2,
   "task": "stage2_minimize_certificates",
-  "title": "Minimize independently verified canonical obstruction certificates",
-  "research_question": "What is the smallest exact support, equation set, multiplier set, and rational coefficient description that preserves each canonical obstruction mechanism?",
-  "source_requirement": "accepted Fourth approach run 001 canonical classes and verification results",
+  "title": "Long exact minimization of independently verified obstruction certificates",
+  "research_question": "How far can each independently verified canonical obstruction certificate be reduced by exact rational re-solving and repeated deletion of support variables and certificate terms?",
+  "source_canonical_classes": "fourth-approach/runs/run-001-30957731562/canonical-classes.json",
+  "candidate_archives": [
+    {"path": "third-approach-2.0/runs/run-000-30771199582/top-candidates.json.gz", "run_id": 30771199582},
+    {"path": "third-approach-2.0/runs/run-001-30816078194/top-candidates.json.gz", "run_id": 30816078194},
+    {"path": "third-approach-2.0/runs/run-002-30859608967/top-candidates.json.gz", "run_id": 30859608967},
+    {"path": "third-approach-2.0/runs/run-003-30885477934/top-candidates.json.gz", "run_id": 30885477934},
+    {"path": "third-approach-2.0/runs/run-004-30911346279/top-candidates.json.gz", "run_id": 30911346279}
+  ],
+  "minimality_method": "time-bounded randomized greedy deletion with exact rational Gaussian re-solving; all retained identities are independently reverified; global minimality is not claimed",
   "primary_metrics": [
-    "classes_attempted",
-    "classes_with_smaller_certificate",
+    "classes_minimized",
+    "classes_with_smaller_support",
+    "classes_with_fewer_terms",
     "support_variables_removed",
-    "equations_removed",
-    "multiplier_terms_removed",
-    "coefficient_height_reduction",
-    "independently_reverified_minimal_candidates"
+    "certificate_terms_removed",
+    "optimization_attempts",
+    "independently_reverified"
   ],
   "acceptance_criteria": {
-    "every_reduction_independently_exactly_verified": true,
-    "minimality_notions_reported_separately": true,
-    "original_representatives_preserved": true
+    "all_2594_canonical_classes_covered": true,
+    "every_retained_certificate_exactly_reverified": true,
+    "minimum_completed_jobs": 18
   },
   "execution": {
     "jobs": 20,
@@ -27,7 +35,6 @@
     "runtime_seconds": 20700,
     "max_attempts": 0
   },
-  "scientific_output": "A compact library of simple exact obstruction cores that GPT-5.6 Sol can inspect and attempt to generalize.",
-  "next_spec_path": "fourth-approach/run-specs/run-003-stage3-deletion-contrasts.json",
-  "next_decision": "Build one-edit deletion contrasts from the minimized obstruction cores."
+  "scientific_output": "A compact exact library of reduced support-restricted obstruction certificates for GPT-5.6 Sol to inspect and generalize.",
+  "next_decision": "Manually review the minimized library before deciding whether to construct deletion contrasts."
 }

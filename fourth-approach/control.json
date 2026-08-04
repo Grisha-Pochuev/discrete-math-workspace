@@ -1,73 +1,46 @@
 {
+  "schema_version": 1,
   "approach": "fourth-approach-obstruction-guided-exact-synthesis",
-  "automation_mode": "hourly_guarded_one_transition",
+  "automation_mode": "manual_single_run",
+  "tracking_enabled": false,
   "completed_runs": 2,
   "current_stage": 2,
   "current_stage_name": "certificate_minimization",
-  "full_run_auto_launch_allowed": true,
-  "large_matrix_concurrency_guard": true,
-  "last_run_accepted": true,
   "last_run_id": 30957731562,
   "last_run_index": 1,
-  "max_one_transition_per_watch": true,
-  "minimum_free_concurrency_slots": 20,
+  "last_run_accepted": true,
   "next_run_index": 2,
-  "next_spec_path": "fourth-approach/run-specs/run-002-stage2-minimize-certificates.json",
   "next_task": "stage2_minimize_certificates",
-  "recommended_next_action": "implement_next_stage_then_smoke",
+  "next_spec_path": "fourth-approach/run-specs/run-002-stage2-minimize-certificates.json",
+  "smoke_required": false,
+  "smoke_verified_for_code_sha": null,
+  "full_run_auto_launch_allowed": false,
+  "large_matrix_concurrency_guard": true,
+  "minimum_free_concurrency_slots": 20,
+  "recommended_next_action": "manual_run_002_launched_once_no_automatic_successor",
+  "scientific_stopping_rule": "manual review after run 002",
+  "source_frontier": {
+    "third_approach_2_0_last_accepted_run_id": 30911346279,
+    "third_approach_2_0_last_accepted_commit": "ae97833ea31d9aa359939b2a540aeac3d391cad8"
+  },
   "run_history": [
     {
-      "accepted": true,
-      "metrics": {
-        "accepted_run_summaries": 1,
-        "bytes_referenced": 0,
-        "duplicate_content_ids": 2,
-        "exact_certificate_archives": 19,
-        "files_inventoried": 13689,
-        "parsed_run_summaries": 1,
-        "required_third_2_0_run_found": true,
-        "second_approach_candidate_archives": 13425,
-        "summary_files_inventoried": 39,
-        "unreadable_files": 0
-      },
       "run_id": 30954702268,
       "run_index": 0,
-      "source_sha": "d05db26f57dbcfb40c37e2d2cbb006c5a89cda31",
-      "task": "stage0_source_inventory"
+      "task": "stage0_source_inventory",
+      "accepted": true
     },
     {
-      "accepted": true,
-      "metrics": {
-        "all_full_shards_complete": true,
-        "canonical_certificate_signatures": 2594,
-        "canonical_support_classes": 2594,
-        "complete_shards": 20,
-        "coverage_ok": true,
-        "duplicate_exact_certificates_removed": 0,
-        "independently_verified_certificates": 2594,
-        "non_exact_candidates_encountered": 0,
-        "processed_candidate_records": 2594,
-        "production_exact_claims": 2594,
-        "raw_candidates_in_source_archives": 3200,
-        "raw_exact_certificates": 2594,
-        "rejected_certificates": 0
-      },
       "run_id": 30957731562,
       "run_index": 1,
-      "source_sha": "facfbcd54918841042d3549d07104d3cf2e0c7b1",
-      "task": "stage1_canonicalize_verify"
+      "task": "stage1_canonicalize_verify",
+      "accepted": true,
+      "metrics": {
+        "canonical_support_classes": 2594,
+        "independently_verified_certificates": 2594,
+        "rejected_certificates": 0,
+        "completed_jobs": 20
+      }
     }
-  ],
-  "schema_version": 1,
-  "scientific_stopping_rule": "stop_or_pivot_after_two_accepted_runs_without_new_canonical_class_smaller_certificate_contrast_pair_coverage_gain_hard_survivor_or_transfer_evidence",
-  "smoke_required": true,
-  "smoke_verified_for_code_sha": null,
-  "source_frontier": {
-    "third_approach_2_0_last_accepted_commit": "ae97833ea31d9aa359939b2a540aeac3d391cad8",
-    "third_approach_2_0_last_accepted_run_id": 30911346279
-  },
-  "stop_on_any_technical_failure": true,
-  "stop_on_rejected_collection": true,
-  "stop_on_unexpected_schema": true,
-  "tracking_enabled": true
+  ]
 }
