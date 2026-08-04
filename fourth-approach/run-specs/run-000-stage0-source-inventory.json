@@ -24,14 +24,16 @@
     "**/*.pyc"
   ],
   "parse_summary_json": true,
-  "hash_algorithm": "sha256",
+  "content_identity": "source_commit_plus_path_plus_git_blob_oid",
+  "bulk_download_policy": "do_not_download_large_archives_during_inventory",
   "primary_metrics": [
     "files_inventoried",
+    "bytes_referenced",
     "accepted_run_summaries",
     "exact_certificate_archives",
     "second_approach_candidate_archives",
     "unreadable_files",
-    "duplicate_content_hashes"
+    "duplicate_content_ids"
   ],
   "acceptance_criteria": {
     "minimum_completed_jobs": 4,
@@ -39,6 +41,6 @@
     "require_last_third_2_0_run": true,
     "require_reproducible_manifest": true
   },
-  "scientific_output": "A source manifest and human-readable inventory that future stages and GPT-5.6 Sol can audit.",
+  "scientific_output": "A source manifest and human-readable inventory that future stages and GPT-5.6 Sol can audit without repeatedly downloading the bulk archives.",
   "next_decision": "Review the inventory, then implement canonicalization and independent certificate verification for run 001."
 }
