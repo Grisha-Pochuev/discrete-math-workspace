@@ -1,15 +1,10 @@
 {
-  "consecutive_technical_failures": 2,
-  "current_gate": "compute_dispatch_requested",
-  "dispatch_requested_at": "2026-08-04T22:47:46.754028+00:00",
-  "dispatch_requested_for_nonce": "fourth-run-001-smoke-30957687230",
-  "last_action": "enabled_and_requested_compute_after_green_smoke",
-  "last_action_commit": null,
-  "last_checked_at": "2026-08-04T22:47:46.754028+00:00",
-  "last_observed_active_runs": {
-    "compute": 0,
-    "large_conflicts": 0
-  },
+  "consecutive_technical_failures": 0,
+  "current_gate": "await_next_stage_implementation",
+  "last_action": "accepted_run_and_prepared_next_disabled",
+  "last_action_commit": "facfbcd54918841042d3549d07104d3cf2e0c7b1",
+  "last_checked_at": null,
+  "last_observed_active_runs": [],
   "notes": "Accepted run 000 is archived. Launch is aligned to run 001 and disabled until a green smoke for the current code.",
   "schema_version": 1
 }

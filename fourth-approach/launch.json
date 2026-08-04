@@ -1,12 +1,12 @@
 {
-  "enabled": true,
+  "enabled": false,
   "jobs": 20,
   "max_attempts": 0,
-  "minimum_jobs": 20,
-  "nonce": "fourth-run-001-smoke-30957687230",
-  "run_index": 1,
+  "minimum_jobs": 18,
+  "nonce": "fourth-run-002-disabled-after-30957731562",
+  "run_index": 2,
   "runtime_seconds": 20700,
   "schema_version": 1,
-  "spec_path": "fourth-approach/run-specs/run-001-stage1-canonicalize-verify.json",
-  "task": "stage1_canonicalize_verify"
+  "spec_path": "fourth-approach/run-specs/run-002-stage2-minimize-certificates.json",
+  "task": "stage2_minimize_certificates"
 }
