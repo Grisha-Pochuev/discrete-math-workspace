@@ -1,0 +1,141 @@
+name: Rescue Fourth approach collection
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: 'Completed Fourth approach compute workflow run ID'
+        required: true
+        type: string
+      source_sha:
+        description: 'Commit SHA used by the compute run'
+        required: true
+        type: string
+      run_index:
+        description: 'Fourth approach research run index'
+        required: true
+        type: string
+      spec_path:
+        description: 'Immutable run specification path'
+        required: true
+        default: 'fourth-approach/run-specs/run-000-stage0-source-inventory.json'
+        type: string
+      expected_jobs:
+        description: 'Expected shard count'
+        required: true
+        default: '4'
+        type: string
+      minimum_jobs:
+        description: 'Minimum acceptable completed shards'
+        required: true
+        default: '4'
+        type: string
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: fourth-approach-rescue-${{ inputs.source_run_id }}
+  cancel-in-progress: false
+
+jobs:
+  rescue:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Validate rescue inputs and create diagnostics first
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p work/artifacts
+          printf '%s\n' '${{ inputs.source_run_id }}' > work/source-run-id.txt
+          printf '%s\n' '${{ inputs.source_sha }}' > work/source-sha.txt
+          case '${{ inputs.source_run_id }}' in (*[!0-9]*|'') exit 2;; esac
+          case '${{ inputs.run_index }}' in (*[!0-9]*|'') exit 2;; esac
+          case '${{ inputs.expected_jobs }}' in (*[!0-9]*|'') exit 2;; esac
+          case '${{ inputs.minimum_jobs }}' in (*[!0-9]*|'') exit 2;; esac
+          PYTHONPATH=fourth-approach python - <<'PY'
+          from schema import read_json, validate_spec
+          spec = validate_spec(read_json('${{ inputs.spec_path }}'))
+          assert spec['run_index'] == int('${{ inputs.run_index }}')
+          PY
+
+      - name: Download original compute artifacts without recomputation
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ inputs.source_run_id }}
+          pattern: fourth-approach-data-*
+          path: work/artifacts
+          merge-multiple: false
+
+      - name: Aggregate and independently verify rescued artifacts
+        id: aggregate
+        shell: bash
+        run: |
+          set -uo pipefail
+          set +e
+          PYTHONPATH=fourth-approach python fourth-approach/collect.py \
+            --artifacts work/artifacts \
+            --repo . \
+            --run-id '${{ inputs.source_run_id }}' \
+            --source-sha '${{ inputs.source_sha }}' \
+            --expected-jobs '${{ inputs.expected_jobs }}' \
+            --minimum-jobs '${{ inputs.minimum_jobs }}' \
+            --spec '${{ inputs.spec_path }}' \
+            --rescue > work/collector.log 2>&1
+          code=$?
+          set -e
+          printf '%s\n' "$code" > work/collector-exit-code.txt
+          run_dir="fourth-approach/runs/run-$(printf '%03d' '${{ inputs.run_index }}')-${{ inputs.source_run_id }}"
+          if [ -d "$run_dir" ]; then
+            PYTHONPATH=fourth-approach python fourth-approach/verify_run.py "$run_dir" \
+              > work/verifier.log 2>&1 || code=4
+          else
+            printf '%s\n' 'collector did not create a run directory' > work/verifier.log
+            code=5
+          fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Commit rescued immutable archive with rebase retries
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach/runs fourth-approach/control.json
+          if git diff --cached --quiet; then
+            echo 'No new changes; archive may already have been rescued.'
+          else
+            git commit -m "rescue fourth-approach run ${{ inputs.source_run_id }} artifacts"
+            for attempt in 1 2 3 4; do
+              if git push origin HEAD:main; then break; fi
+              if [ "$attempt" = 4 ]; then exit 1; fi
+              git pull --rebase origin main
+            done
+          fi
+
+      - name: Fail only after preservation if rescue remains rejected
+        shell: bash
+        run: |
+          set -euo pipefail
+          code='${{ steps.aggregate.outputs.code }}'
+          if [ "$code" != '0' ]; then exit "$code"; fi
+          run_dir="fourth-approach/runs/run-$(printf '%03d' '${{ inputs.run_index }}')-${{ inputs.source_run_id }}"
+          PYTHONPATH=fourth-approach python fourth-approach/verify_run.py "$run_dir" --require-accepted
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-rescue-${{ inputs.source_run_id }}-${{ github.run_id }}
+          path: work/
+          if-no-files-found: warn
+          retention-days: 21
