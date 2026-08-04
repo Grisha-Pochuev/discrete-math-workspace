@@ -1,0 +1,8 @@
+{
+  "completed_at": "2026-08-04T21:25:47.977496+00:00",
+  "result": "cancelled",
+  "schema_version": 1,
+  "tested_sha": "05d627e9b48298123cff8d6d2be76553832d7da1",
+  "workflow": "Fourth approach real-path smoke",
+  "workflow_run_id": 30950436854
+}
