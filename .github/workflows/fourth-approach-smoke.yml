@@ -37,6 +37,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+          sparse-checkout: |
+            /first-approach/
+            /second-approach/
+            /second-approach-2.0/
+            /third-approach/
+            /third-approach-2.0/
+            /fourth-approach/
+            /*.md
+            /*.txt
+          sparse-checkout-cone-mode: false
 
       - name: Create diagnostic directory first
         shell: bash
@@ -159,6 +169,9 @@ jobs:
         with:
           ref: main
           fetch-depth: 1
+          sparse-checkout: |
+            fourth-approach
+          sparse-checkout-cone-mode: true
 
       - name: Record the newest smoke result in the repository
         shell: bash
