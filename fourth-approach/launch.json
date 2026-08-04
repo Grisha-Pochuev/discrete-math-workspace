@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "enabled": false,
+  "run_index": 0,
+  "task": "stage0_source_inventory",
+  "spec_path": "fourth-approach/run-specs/run-000-stage0-source-inventory.json",
+  "jobs": 4,
+  "minimum_jobs": 4,
+  "runtime_seconds": 900,
+  "max_attempts": 0,
+  "nonce": "fourth-run-000-disabled-initial"
+}
