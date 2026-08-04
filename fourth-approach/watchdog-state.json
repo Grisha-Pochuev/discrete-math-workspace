@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "last_checked_at": null,
+  "last_observed_active_runs": [],
+  "last_action": "initialized_fourth_approach_tracking",
+  "last_action_commit": null,
+  "consecutive_technical_failures": 0,
+  "current_gate": "await_smoke_for_initial_code",
+  "notes": "The hourly tracking task must update this file only after a meaningful state transition."
+}
