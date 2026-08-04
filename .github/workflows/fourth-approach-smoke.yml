@@ -6,6 +6,7 @@ on:
     paths:
       - 'fourth-approach/schema.py'
       - 'fourth-approach/inventory.py'
+      - 'fourth-approach/canonicalize.py'
       - 'fourth-approach/runner.py'
       - 'fourth-approach/collect.py'
       - 'fourth-approach/verify_run.py'
@@ -20,13 +21,13 @@ permissions:
   actions: write
 
 concurrency:
-  group: fourth-approach-smoke-v5
+  group: fourth-approach-smoke-v6
   cancel-in-progress: true
 
 jobs:
   smoke:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 35
     env:
       PYTHONUNBUFFERED: '1'
       PYTHONDONTWRITEBYTECODE: '1'
@@ -35,7 +36,7 @@ jobs:
       MKL_NUM_THREADS: '1'
       NUMEXPR_NUM_THREADS: '1'
     steps:
-      - name: Blobless partial clone of current source tree
+      - name: Blobless sparse clone of current source tree
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -46,95 +47,90 @@ jobs:
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$TARGET_SHA"
           git sparse-checkout init --cone
-          git sparse-checkout set fourth-approach
+          git sparse-checkout set fourth-approach third-approach-2.0/runs
           git checkout --detach FETCH_HEAD
           test "$(git rev-parse HEAD)" = "$TARGET_SHA"
 
       - name: Create diagnostic directory first
-        shell: bash
         run: |
-          set -euo pipefail
           mkdir -p smoke/artifacts smoke/repo/fourth-approach
           date -u +%FT%TZ > smoke/launch-status.txt
           printf '%s\n' "$GITHUB_SHA" > smoke/source-sha.txt
-          {
-            uname -a
-            nproc
-            free -h
-            df -h .
-            python --version
-            git count-objects -vH
-          } > smoke/machine.txt
+          { uname -a; nproc; free -h; df -h .; python --version; git count-objects -vH; } > smoke/machine.txt
 
-      - name: Static checks and unit tests
+      - name: Static checks, ready-spec validation, and unit tests
         shell: bash
         run: |
           set -euo pipefail
           python -m py_compile \
             fourth-approach/schema.py \
             fourth-approach/inventory.py \
+            fourth-approach/canonicalize.py \
             fourth-approach/runner.py \
             fourth-approach/collect.py \
             fourth-approach/verify_run.py
           PYTHONPATH=fourth-approach python -m unittest discover \
             -s fourth-approach/tests -p 'test_*.py' -v | tee smoke/unit-tests.log
           PYTHONPATH=fourth-approach python - <<'PY' | tee smoke/config-validation.log
-          from schema import matrix_json, read_json, validate_launch, validate_spec
+          from schema import read_json, validate_launch, validate_spec
           launch = validate_launch(read_json('fourth-approach/launch.json'))
-          spec = validate_spec(read_json(launch['spec_path']), launch)
+          spec = validate_spec(read_json(launch['spec_path']), launch, require_ready=True)
           print(launch)
           print(spec['title'])
-          print(matrix_json(launch['jobs']))
           PY
 
-      - name: Real runner path for all initial shards
+      - name: Exercise real runner path on four bounded shards
         shell: bash
         run: |
-          set -uo pipefail
-          overall=0
+          set -euo pipefail
+          task="$(jq -r .task fourth-approach/launch.json)"
+          run_index="$(jq -r .run_index fourth-approach/launch.json)"
+          spec="$(jq -r .spec_path fourth-approach/launch.json)"
           for shard in 0 1 2 3; do
             out="smoke/artifacts/fourth-approach-data-${shard}"
             mkdir -p "$out"
-            printf '%s\n' "python fourth-approach/runner.py --task stage0_source_inventory --run-index 0 --shard-id ${shard} --shard-count 4 --source-ref HEAD" > "$out/command.txt"
+            printf '%s\n' "runner task=${task} run=${run_index} shard=${shard}/4 max_attempts=2" > "$out/command.txt"
             set +e
             PYTHONPATH=fourth-approach python fourth-approach/runner.py \
               --repo . \
-              --spec fourth-approach/run-specs/run-000-stage0-source-inventory.json \
-              --task stage0_source_inventory \
-              --run-index 0 \
+              --spec "$spec" \
+              --task "$task" \
+              --run-index "$run_index" \
               --shard-id "$shard" \
               --shard-count 4 \
-              --seconds 120 \
-              --max-attempts 1 \
+              --seconds 900 \
+              --max-attempts 2 \
               --source-ref HEAD \
               --output "$out" \
               > "$out/driver.log" 2>&1
             code=$?
             set -e
             printf '%s\n' "$code" > "$out/runner-exit-code.txt"
-            if [ "$code" -ne 0 ]; then overall=1; fi
+            test "$code" -eq 0
+            test -f "$out/manifest.json"
+            test -f "$out/records.json.gz"
           done
-          exit "$overall"
 
-      - name: Real collector and independent verifier path
+      - name: Exercise real collector and independent archive verifier
         shell: bash
         run: |
           set -euo pipefail
-          cp fourth-approach/control.json smoke/repo/fourth-approach/control.json
+          run_index="$(jq -r .run_index fourth-approach/launch.json)"
+          spec="$(jq -r .spec_path fourth-approach/launch.json)"
           PYTHONPATH=fourth-approach python fourth-approach/collect.py \
             --artifacts smoke/artifacts \
             --repo smoke/repo \
-            --run-id 90000000000 \
+            --run-id 90000000001 \
             --source-sha "$GITHUB_SHA" \
             --expected-jobs 4 \
             --minimum-jobs 4 \
-            --spec fourth-approach/run-specs/run-000-stage0-source-inventory.json \
-            | tee smoke/collector.log
+            --spec "$spec" \
+            --smoke | tee smoke/collector.log
+          run_dir="smoke/repo/fourth-approach/runs/run-$(printf '%03d' "$run_index")-90000000001"
           PYTHONPATH=fourth-approach python fourth-approach/verify_run.py \
-            smoke/repo/fourth-approach/runs/run-000-90000000000 \
-            --require-accepted | tee smoke/verifier.log
+            "$run_dir" --require-accepted | tee smoke/verifier.log
 
-      - name: Validate diagnostics and artifacts
+      - name: Validate mandatory diagnostics
         if: always()
         shell: bash
         run: |
@@ -144,15 +140,10 @@ jobs:
           test -f smoke/unit-tests.log
           for shard in 0 1 2 3; do
             out="smoke/artifacts/fourth-approach-data-${shard}"
-            test -f "$out/command.txt"
-            test -f "$out/driver.log"
-            test -f "$out/runner-exit-code.txt"
-            test -f "$out/launch-status.json"
-            test -f "$out/manifest.json"
-            test -f "$out/records.json.gz"
+            for name in command.txt driver.log runner-exit-code.txt launch-status.json manifest.json records.json.gz; do
+              test -f "$out/$name"
+            done
           done
-          test -f smoke/repo/fourth-approach/runs/run-000-90000000000/summary.json
-          test -f smoke/repo/fourth-approach/runs/run-000-90000000000/checksums.sha256
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -167,7 +158,7 @@ jobs:
     if: always()
     needs: smoke
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 18
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_REPO: ${{ github.repository }}
@@ -175,160 +166,100 @@ jobs:
       TESTED_SHA: ${{ github.sha }}
       SMOKE_RUN_ID: ${{ github.run_id }}
     steps:
-      - name: Blobless partial clone of current main state
+      - name: Blobless sparse clone of current main state
         shell: bash
         run: |
           set -euo pipefail
           git init .
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git -c protocol.version=2 fetch --no-tags --depth=20 --filter=blob:none origin main
+          git -c protocol.version=2 fetch --no-tags --depth=30 --filter=blob:none origin main
           git sparse-checkout init --cone
           git sparse-checkout set fourth-approach
           git checkout -B main FETCH_HEAD
 
-      - name: Record smoke result and atomically open one safe launch
+      - name: Record result, open one launch, and explicitly dispatch compute
         shell: bash
         run: |
           set -euo pipefail
-          active_compute="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-compute.yml --limit 20 \
-            --json status --jq '[.[] | select(.status != "completed")] | length' 2>/dev/null || echo 0)"
-          active_conflict="$(gh run list --repo "$GH_REPO" --limit 100 \
-            --json status,workflowName \
-            --jq '[.[] | select(.status != "completed"
-              and .workflowName != "Fourth approach real-path smoke"
-              and .workflowName != "Fourth approach watchdog"
-              and .workflowName != "Fourth approach compute")] | length' 2>/dev/null || echo 0)"
-
-          rm -f /tmp/dispatch-fourth-compute
-          pushed=0
+          active_compute="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-compute.yml --limit 20 --json status --jq '[.[] | select(.status != "completed")] | length')"
+          active_large="$(gh run list --repo "$GH_REPO" --limit 100 --json status,workflowName --jq '[.[] | select(.status != "completed" and (.workflowName == "Third approach 2.0 proof search" or .workflowName == "Third approach proof search" or .workflowName == "Second approach compute" or .workflowName == "Second approach 2.0 compute"))] | length')"
           for attempt in 1 2 3 4; do
-            git -c protocol.version=2 fetch --no-tags --depth=20 --filter=blob:none origin main
+            git -c protocol.version=2 fetch --no-tags --depth=30 --filter=blob:none origin main
             git reset --hard origin/main
-            ACTIVE_COMPUTE="$active_compute" ACTIVE_CONFLICT="$active_conflict" python - <<'PY'
-          import json
-          import os
+            ACTIVE_COMPUTE="$active_compute" ACTIVE_LARGE="$active_large" python - <<'PY'
+          import json, os
           from datetime import datetime, timezone
           from pathlib import Path
+          from sys import path
+          path.insert(0, 'fourth-approach')
+          from schema import read_json, validate_launch, validate_spec
 
+          root = Path('fourth-approach')
           now = datetime.now(timezone.utc).isoformat()
-          smoke_result = os.environ["SMOKE_RESULT"]
-          tested_sha = os.environ["TESTED_SHA"]
-          smoke_run_id = int(os.environ["SMOKE_RUN_ID"])
-          active_compute = int(os.environ["ACTIVE_COMPUTE"])
-          active_conflict = int(os.environ["ACTIVE_CONFLICT"])
-
-          root = Path("fourth-approach")
-          status_path = root / "smoke-status.json"
-          control_path = root / "control.json"
-          launch_path = root / "launch.json"
-          state_path = root / "watchdog-state.json"
-
-          current_status = {}
-          if status_path.exists():
-              try:
-                  current_status = json.loads(status_path.read_text(encoding="utf-8"))
-              except Exception:
-                  current_status = {}
-          if int(current_status.get("workflow_run_id", -1)) <= smoke_run_id:
-              status = {
-                  "schema_version": 1,
-                  "workflow": "Fourth approach real-path smoke",
-                  "workflow_run_id": smoke_run_id,
-                  "tested_sha": tested_sha,
-                  "result": smoke_result,
-                  "completed_at": now,
-              }
-              status_path.write_text(json.dumps(status, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-
-          control = json.loads(control_path.read_text(encoding="utf-8"))
-          launch = json.loads(launch_path.read_text(encoding="utf-8"))
-          state = json.loads(state_path.read_text(encoding="utf-8"))
-
-          state["last_checked_at"] = now
-          state["last_observed_active_runs"] = {
-              "compute": active_compute,
-              "conflicts": active_conflict,
+          result = os.environ['SMOKE_RESULT']
+          run_id = int(os.environ['SMOKE_RUN_ID'])
+          tested_sha = os.environ['TESTED_SHA']
+          control = read_json(root / 'control.json')
+          launch = validate_launch(read_json(root / 'launch.json'))
+          validate_spec(read_json(launch['spec_path']), launch, require_ready=True)
+          state = read_json(root / 'watchdog-state.json')
+          status = {
+              'schema_version': 1,
+              'workflow': 'Fourth approach real-path smoke',
+              'workflow_run_id': run_id,
+              'tested_sha': tested_sha,
+              'result': result,
+              'completed_at': now,
+              'run_index': launch['run_index'],
+              'task': launch['task'],
           }
-
-          dispatch = False
-          if smoke_result != "success":
-              launch["enabled"] = False
-              state["last_action"] = "recorded_failed_smoke"
-              state["current_gate"] = "smoke_failed_requires_repair"
-              state["consecutive_technical_failures"] = int(state.get("consecutive_technical_failures", 0)) + 1
+          (root / 'smoke-status.json').write_text(json.dumps(status, indent=2, sort_keys=True) + '\n')
+          state['last_checked_at'] = now
+          state['last_observed_active_runs'] = {'compute': int(os.environ['ACTIVE_COMPUTE']), 'large_conflicts': int(os.environ['ACTIVE_LARGE'])}
+          if result != 'success':
+              launch['enabled'] = False
+              control['smoke_required'] = True
+              state['last_action'] = 'recorded_failed_smoke'
+              state['current_gate'] = 'smoke_failed_requires_repair'
+              state['consecutive_technical_failures'] = int(state.get('consecutive_technical_failures', 0)) + 1
+          elif int(control['next_run_index']) != int(launch['run_index']):
+              launch['enabled'] = False
+              state['last_action'] = 'blocked_smoke_due_to_state_mismatch'
+              state['current_gate'] = 'repair_control_launch_alignment'
+          elif int(os.environ['ACTIVE_COMPUTE']) or int(os.environ['ACTIVE_LARGE']):
+              launch['enabled'] = False
+              control['smoke_required'] = False
+              control['smoke_verified_for_code_sha'] = tested_sha
+              state['last_action'] = 'green_smoke_compute_deferred_for_concurrency'
+              state['current_gate'] = 'await_free_concurrency'
+          elif control.get('last_run_index') is not None and int(control['last_run_index']) >= int(launch['run_index']):
+              launch['enabled'] = False
+              state['last_action'] = 'green_smoke_but_run_already_accepted'
+              state['current_gate'] = 'prepare_next_stage'
           else:
-              control["smoke_required"] = False
-              control["smoke_verified_for_code_sha"] = tested_sha
-              state["consecutive_technical_failures"] = 0
-              if (
-                  bool(control.get("tracking_enabled"))
-                  and bool(control.get("full_run_auto_launch_allowed"))
-                  and int(control.get("next_run_index", -1)) == int(launch.get("run_index", -2))
-                  and not bool(launch.get("enabled"))
-                  and active_compute == 0
-                  and active_conflict == 0
-              ):
-                  launch["enabled"] = True
-                  launch["nonce"] = f"fourth-run-{int(launch['run_index']):03d}-smoke-{smoke_run_id}"
-                  control["recommended_next_action"] = "run_000_enabled_and_dispatched_after_green_smoke"
-                  state["last_action"] = "enabled_next_run_after_green_smoke"
-                  state["current_gate"] = "compute_dispatch_requested"
-                  state["last_action_commit"] = tested_sha
-                  state["dispatch_requested_for_nonce"] = launch["nonce"]
-                  state["dispatch_requested_at"] = now
-                  dispatch = True
-              elif bool(launch.get("enabled")) and active_compute == 0 and active_conflict == 0:
-                  state["last_action"] = "green_smoke_found_existing_enabled_launch"
-                  state["current_gate"] = "compute_dispatch_requested"
-                  state["dispatch_requested_for_nonce"] = launch["nonce"]
-                  state["dispatch_requested_at"] = now
-                  dispatch = True
-              elif active_compute > 0:
-                  state["last_action"] = "green_smoke_compute_already_active"
-                  state["current_gate"] = "healthy_compute_active"
-              else:
-                  state["last_action"] = "green_smoke_waiting_for_concurrency"
-                  state["current_gate"] = "waiting_for_repository_concurrency"
-
-          control_path.write_text(json.dumps(control, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-          launch_path.write_text(json.dumps(launch, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-          state_path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-          if dispatch:
-              Path("/tmp/dispatch-fourth-compute").touch()
+              launch['enabled'] = True
+              launch['nonce'] = f"fourth-run-{int(launch['run_index']):03d}-smoke-{run_id}"
+              control['smoke_required'] = False
+              control['smoke_verified_for_code_sha'] = tested_sha
+              control['recommended_next_action'] = 'compute_dispatch_requested_after_green_smoke'
+              state['last_action'] = 'enabled_and_requested_compute_after_green_smoke'
+              state['current_gate'] = 'compute_dispatch_requested'
+              state['dispatch_requested_for_nonce'] = launch['nonce']
+              state['dispatch_requested_at'] = now
+              Path('/tmp/dispatch-fourth-compute').write_text('1')
+          (root / 'control.json').write_text(json.dumps(control, indent=2, sort_keys=True) + '\n')
+          (root / 'launch.json').write_text(json.dumps(launch, indent=2, sort_keys=True) + '\n')
+          (root / 'watchdog-state.json').write_text(json.dumps(state, indent=2, sort_keys=True) + '\n')
           PY
-
-            if [ -z "$(git status --porcelain -- fourth-approach/smoke-status.json fourth-approach/control.json fourth-approach/launch.json fourth-approach/watchdog-state.json)" ]; then
-              pushed=1
-              break
-            fi
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             git add fourth-approach/smoke-status.json fourth-approach/control.json fourth-approach/launch.json fourth-approach/watchdog-state.json
+            if git diff --cached --quiet; then break; fi
             git commit -m "record and gate Fourth approach smoke ${SMOKE_RUN_ID} ${SMOKE_RESULT}"
-            if git push origin HEAD:main; then
-              pushed=1
-              break
-            fi
-            if [ "$attempt" = 4 ]; then
-              echo 'failed to persist smoke state after four attempts' >&2
-              exit 1
-            fi
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
           done
-          test "$pushed" = 1
-
           if [ -f /tmp/dispatch-fourth-compute ]; then
-            sleep 2
-            active_compute="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-compute.yml --limit 20 \
-              --json status --jq '[.[] | select(.status != "completed")] | length' 2>/dev/null || echo 0)"
-            if [ "$active_compute" -eq 0 ]; then
-              gh workflow run fourth-approach-compute.yml --repo "$GH_REPO" --ref main
-              echo 'Dispatched Fourth approach compute after successful real-path smoke.' | tee -a "$GITHUB_STEP_SUMMARY"
-            else
-              echo 'Compute became active before dispatch; no duplicate created.' | tee -a "$GITHUB_STEP_SUMMARY"
-            fi
-          fi
-
-          if [ "$SMOKE_RESULT" != "success" ]; then
-            echo 'Smoke failed; launch remains disabled.' >&2
-            exit 1
+            gh workflow run fourth-approach-compute.yml --repo "$GH_REPO" --ref main
+            echo 'Explicitly dispatched Fourth approach compute after green smoke.' >> "$GITHUB_STEP_SUMMARY"
           fi
