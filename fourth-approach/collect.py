@@ -37,6 +37,13 @@ def discover_artifact_dirs(root: Path) -> list[Path]:
     return sorted({p.parent for p in root.rglob("manifest.json")})
 
 
+def record_content_id(record: dict[str, Any]) -> str:
+    value = record.get("content_id") or record.get("sha256")
+    if not value:
+        raise ValueError(f"record has no content identity: {record.get('path')}")
+    return str(value)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--artifacts", required=True)
@@ -92,7 +99,7 @@ def main() -> int:
         for record in payload.get("records", []):
             path = str(record["path"])
             previous = records_by_path.get(path)
-            if previous and previous.get("sha256") != record.get("sha256"):
+            if previous and record_content_id(previous) != record_content_id(record):
                 worker_errors.append({"collector_error": "conflicting record", "path": path})
             else:
                 records_by_path[path] = record
@@ -106,9 +113,10 @@ def main() -> int:
         and len(manifests) <= args.expected_jobs
     )
     records = [records_by_path[k] for k in sorted(records_by_path)]
-    hash_counts: dict[str, int] = {}
+    content_counts: dict[str, int] = {}
     for record in records:
-        hash_counts[record["sha256"]] = hash_counts.get(record["sha256"], 0) + 1
+        key = record_content_id(record)
+        content_counts[key] = content_counts.get(key, 0) + 1
 
     required_run = spec.get("source_commit_requirements", {}).get(
         "third_approach_2_0_last_accepted_run_id"
@@ -124,6 +132,7 @@ def main() -> int:
     source_manifest = {
         "schema_version": 1,
         "approach": APPROACH,
+        "identity_scheme": "immutable_commit_path_and_git_blob_oid",
         "run_id": args.run_id,
         "run_index": run_index,
         "task": task,
@@ -136,7 +145,7 @@ def main() -> int:
 
     metrics = {
         "files_inventoried": len(records),
-        "bytes_inventoried": sum(int(x.get("bytes", 0)) for x in records),
+        "bytes_referenced": sum(int(x.get("bytes", 0)) for x in records),
         "accepted_run_summaries": sum(
             1 for x in records if x.get("summary", {}).get("accepted") is True
         ),
@@ -153,7 +162,7 @@ def main() -> int:
             and x.get("kind") == "compressed_json_archive"
         ),
         "unreadable_files": len(unreadable),
-        "duplicate_content_hashes": sum(1 for n in hash_counts.values() if n > 1),
+        "duplicate_content_ids": sum(1 for n in content_counts.values() if n > 1),
         "required_third_2_0_run_found": found_required_run,
     }
     summary = {
@@ -176,7 +185,7 @@ def main() -> int:
     }
     atomic_json(run_dir / "summary.json", summary)
 
-    readme = f"""# Fourth approach run {run_index:03d}\n\n- GitHub Actions run: `{args.run_id}`\n- Task: `{task}`\n- Source commit: `{args.source_sha}`\n- Accepted: `{accepted}` ({completed}/{args.expected_jobs} successful shards)\n- Files inventoried: `{metrics['files_inventoried']}`\n- Accepted run summaries: `{metrics['accepted_run_summaries']}`\n- Third approach 2.0 exact archives: `{metrics['exact_certificate_archives']}`\n- Second approach candidate archives: `{metrics['second_approach_candidate_archives']}`\n- Required Third approach 2.0 run found: `{found_required_run}`\n\nThis archive is an immutable research-source inventory for later canonicalization and GPT-5.6 Sol handoff preparation. It is not a proof of the full conjecture.\n"""
+    readme = f"""# Fourth approach run {run_index:03d}\n\n- GitHub Actions run: `{args.run_id}`\n- Task: `{task}`\n- Source commit: `{args.source_sha}`\n- Accepted: `{accepted}` ({completed}/{args.expected_jobs} successful shards)\n- Files inventoried: `{metrics['files_inventoried']}`\n- Bytes referenced without bulk download: `{metrics['bytes_referenced']}`\n- Accepted run summaries: `{metrics['accepted_run_summaries']}`\n- Third approach 2.0 exact archives: `{metrics['exact_certificate_archives']}`\n- Second approach candidate archives: `{metrics['second_approach_candidate_archives']}`\n- Required Third approach 2.0 run found: `{found_required_run}`\n\nThis archive is an immutable research-source inventory for later canonicalization and GPT-5.6 Sol handoff preparation. It is not a proof of the full conjecture.\n"""
     (run_dir / "README.md").write_text(readme, encoding="utf-8")
 
     checksum_lines = []
