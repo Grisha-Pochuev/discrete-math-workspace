@@ -1,0 +1,93 @@
+name: Fourth approach watchdog
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-watchdog.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: fourth-approach-watchdog
+  cancel-in-progress: false
+
+jobs:
+  inspect-and-dispatch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Inspect durable state and dispatch one missing transition
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          get_file() {
+            local path="$1"
+            gh api "repos/${GH_REPO}/contents/${path}?ref=main" --jq '.content' 2>/dev/null \
+              | tr -d '\n' | base64 --decode 2>/dev/null || true
+          }
+
+          smoke_json="$(get_file fourth-approach/smoke-status.json)"
+          launch_json="$(get_file fourth-approach/launch.json)"
+          if [ -z "$launch_json" ]; then
+            echo 'fourth-approach/launch.json is unavailable' >&2
+            exit 1
+          fi
+
+          smoke_result="missing"
+          if [ -n "$smoke_json" ]; then
+            smoke_result="$(jq -r '.result // "missing"' <<<"$smoke_json")"
+          fi
+          launch_enabled="$(jq -r '.enabled // false' <<<"$launch_json")"
+
+          active_smoke="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-smoke.yml --limit 20 \
+            --json status --jq '[.[] | select(.status != "completed")] | length' 2>/dev/null || echo 0)"
+          active_compute="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-compute.yml --limit 20 \
+            --json status --jq '[.[] | select(.status != "completed")] | length' 2>/dev/null || echo 0)"
+          active_other="$(gh run list --repo "$GH_REPO" --limit 100 \
+            --json status,workflowName \
+            --jq '[.[] | select(.status != "completed" and .workflowName != "Fourth approach watchdog" and .workflowName != "Fourth approach real-path smoke" and .workflowName != "Fourth approach compute")] | length')"
+
+          {
+            echo "smoke_result=${smoke_result}"
+            echo "launch_enabled=${launch_enabled}"
+            echo "active_smoke=${active_smoke}"
+            echo "active_compute=${active_compute}"
+            echo "active_other=${active_other}"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+
+          if [ "$smoke_result" != 'success' ]; then
+            if [ "$active_smoke" -gt 0 ]; then
+              echo 'A Fourth approach smoke run is already active; no duplicate dispatch.'
+              exit 0
+            fi
+            gh workflow run fourth-approach-smoke.yml --repo "$GH_REPO" --ref main
+            echo 'Dispatched the missing Fourth approach real-path smoke.' | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          if [ "$launch_enabled" != 'true' ]; then
+            echo 'Smoke is successful, but the scientific launch gate remains disabled.'
+            exit 0
+          fi
+
+          if [ "$active_compute" -gt 0 ]; then
+            echo 'A Fourth approach compute run is already active; no duplicate dispatch.'
+            exit 0
+          fi
+
+          if [ "$active_other" -gt 0 ]; then
+            echo 'Another repository workflow is active; compute dispatch is deferred.'
+            exit 0
+          fi
+
+          gh workflow run fourth-approach-compute.yml --repo "$GH_REPO" --ref main
+          echo 'Dispatched the enabled Fourth approach compute workflow.' | tee -a "$GITHUB_STEP_SUMMARY"
