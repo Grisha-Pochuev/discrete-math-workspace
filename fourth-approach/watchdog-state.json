@@ -1,9 +1,11 @@
 {
   "consecutive_technical_failures": 0,
-  "current_gate": "waiting_for_repository_concurrency",
-  "last_action": "green_smoke_waiting_for_concurrency",
-  "last_action_commit": null,
-  "last_checked_at": "2026-08-04T21:40:40.517711+00:00",
+  "current_gate": "compute_dispatch_requested",
+  "dispatch_requested_at": "2026-08-04T22:00:37.083714+00:00",
+  "dispatch_requested_for_nonce": "fourth-run-000-watchdog-1785880837",
+  "last_action": "enabled_next_run_after_green_smoke",
+  "last_action_commit": "e517a9d16c27d8df67958d09e0880f3761a7c39d",
+  "last_checked_at": "2026-08-04T22:00:37.083714+00:00",
   "last_observed_active_runs": {
     "compute": 0,
     "conflicts": 1

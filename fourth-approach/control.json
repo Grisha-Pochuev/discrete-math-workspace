@@ -14,7 +14,7 @@
   "next_run_index": 0,
   "next_spec_path": "fourth-approach/run-specs/run-000-stage0-source-inventory.json",
   "next_task": "stage0_source_inventory",
-  "recommended_next_action": "complete_smoke_then_launch_run_000_once",
+  "recommended_next_action": "enabled_next_run_after_green_smoke",
   "schema_version": 1,
   "scientific_stopping_rule": "stop_or_pivot_after_two_accepted_runs_without_new_canonical_class_smaller_certificate_contrast_pair_coverage_gain_hard_survivor_or_transfer_evidence",
   "smoke_required": false,

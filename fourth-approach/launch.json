@@ -1,9 +1,9 @@
 {
-  "enabled": false,
+  "enabled": true,
   "jobs": 4,
   "max_attempts": 0,
   "minimum_jobs": 4,
-  "nonce": "fourth-run-000-disabled-initial",
+  "nonce": "fourth-run-000-watchdog-1785880837",
   "run_index": 0,
   "runtime_seconds": 900,
   "schema_version": 1,
