@@ -19,7 +19,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: fourth-approach-smoke
+  group: fourth-approach-smoke-v2
   cancel-in-progress: true
 
 jobs:
