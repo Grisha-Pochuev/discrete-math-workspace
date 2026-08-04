@@ -146,6 +146,10 @@ def main() -> int:
     metrics = {
         "files_inventoried": len(records),
         "bytes_referenced": sum(int(x.get("bytes", 0)) for x in records),
+        "summary_files_inventoried": sum(
+            1 for x in records if x.get("kind") == "run_summary"
+        ),
+        "parsed_run_summaries": sum(1 for x in records if "summary" in x),
         "accepted_run_summaries": sum(
             1 for x in records if x.get("summary", {}).get("accepted") is True
         ),
@@ -185,7 +189,7 @@ def main() -> int:
     }
     atomic_json(run_dir / "summary.json", summary)
 
-    readme = f"""# Fourth approach run {run_index:03d}\n\n- GitHub Actions run: `{args.run_id}`\n- Task: `{task}`\n- Source commit: `{args.source_sha}`\n- Accepted: `{accepted}` ({completed}/{args.expected_jobs} successful shards)\n- Files inventoried: `{metrics['files_inventoried']}`\n- Bytes referenced without bulk download: `{metrics['bytes_referenced']}`\n- Accepted run summaries: `{metrics['accepted_run_summaries']}`\n- Third approach 2.0 exact archives: `{metrics['exact_certificate_archives']}`\n- Second approach candidate archives: `{metrics['second_approach_candidate_archives']}`\n- Required Third approach 2.0 run found: `{found_required_run}`\n\nThis archive is an immutable research-source inventory for later canonicalization and GPT-5.6 Sol handoff preparation. It is not a proof of the full conjecture.\n"""
+    readme = f"""# Fourth approach run {run_index:03d}\n\n- GitHub Actions run: `{args.run_id}`\n- Task: `{task}`\n- Source commit: `{args.source_sha}`\n- Accepted: `{accepted}` ({completed}/{args.expected_jobs} successful shards)\n- Files inventoried: `{metrics['files_inventoried']}`\n- Bytes referenced without bulk download: `{metrics['bytes_referenced']}`\n- Summary files inventoried: `{metrics['summary_files_inventoried']}`\n- Summary files parsed now: `{metrics['parsed_run_summaries']}`\n- Third approach 2.0 exact archives: `{metrics['exact_certificate_archives']}`\n- Second approach candidate archives: `{metrics['second_approach_candidate_archives']}`\n- Required Third approach 2.0 run found: `{found_required_run}`\n\nThis archive is an immutable research-source inventory for later canonicalization and GPT-5.6 Sol handoff preparation. It is not a proof of the full conjecture.\n"""
     (run_dir / "README.md").write_text(readme, encoding="utf-8")
 
     checksum_lines = []
