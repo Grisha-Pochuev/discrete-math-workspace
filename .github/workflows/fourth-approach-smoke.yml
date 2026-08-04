@@ -16,7 +16,7 @@ on:
       - '.github/workflows/fourth-approach-rescue.yml'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: fourth-approach-smoke
@@ -148,3 +148,68 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
           compression-level: 6
+
+  record:
+    if: always()
+    needs: smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Record the newest smoke result in the repository
+        shell: bash
+        env:
+          SMOKE_RESULT: ${{ needs.smoke.result }}
+          TESTED_SHA: ${{ github.sha }}
+          SMOKE_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3 4; do
+            git fetch --no-tags origin main
+            git reset --hard origin/main
+            python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          path = Path('fourth-approach/smoke-status.json')
+          current = {}
+          if path.exists():
+              try:
+                  current = json.loads(path.read_text(encoding='utf-8'))
+              except Exception:
+                  current = {}
+          run_id = int(os.environ['SMOKE_RUN_ID'])
+          if int(current.get('workflow_run_id', -1)) > run_id:
+              print('A newer smoke result is already recorded; leaving it unchanged.')
+          else:
+              payload = {
+                  'schema_version': 1,
+                  'workflow': 'Fourth approach real-path smoke',
+                  'workflow_run_id': run_id,
+                  'tested_sha': os.environ['TESTED_SHA'],
+                  'result': os.environ['SMOKE_RESULT'],
+                  'completed_at': datetime.now(timezone.utc).isoformat(),
+              }
+              path.write_text(json.dumps(payload, indent=2, sort_keys=True) + '\n', encoding='utf-8')
+          PY
+            if git diff --quiet -- fourth-approach/smoke-status.json; then
+              exit 0
+            fi
+            git add fourth-approach/smoke-status.json
+            git commit -m "record Fourth approach smoke ${SMOKE_RUN_ID} ${SMOKE_RESULT}"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            if [ "$attempt" = 4 ]; then
+              echo 'failed to record smoke status after four attempts' >&2
+              exit 1
+            fi
+          done
