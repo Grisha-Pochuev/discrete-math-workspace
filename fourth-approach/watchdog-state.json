@@ -1,12 +1,12 @@
 {
-  "consecutive_technical_failures": 1,
+  "consecutive_technical_failures": 2,
   "current_gate": "smoke_failed_requires_repair",
   "last_action": "recorded_failed_smoke",
   "last_action_commit": null,
-  "last_checked_at": "2026-08-04T21:25:47.977496+00:00",
+  "last_checked_at": "2026-08-04T21:40:15.818975+00:00",
   "last_observed_active_runs": {
     "compute": 0,
-    "conflicts": 0
+    "conflicts": 1
   },
   "notes": "The hourly tracking task must update this file only after a meaningful state transition.",
   "schema_version": 1
