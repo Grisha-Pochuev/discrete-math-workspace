@@ -1,7 +1,7 @@
 {
-  "enabled": true,
+  "enabled": false,
   "source_run_id": 30859608967,
   "source_run_index": 2,
-  "reason": "preserve the completed run 2 computation without recomputation: all 20 source artifacts were uploaded, but the 360-minute job timeout cancelled most shutdown paths and the normal collector could not finish over oversized exact-candidate payloads. Recover with the bounded parallel streaming compactor after permanent timeout and retention fixes passed independent smoke run 30883489584.",
-  "nonce": "ta20-rescue-run-002-timeout-artifacts-2026-08-04T06-25-00Z"
+  "reason": "closed after accepted rescue archive commit 93b19a0fb53163f111ea1ffdeddfbddc002fec43; run 2 is preserved, accepted, and control advanced exactly once",
+  "nonce": "ta20-rescue-run-002-closed-2026-08-04T06-50-00Z"
 }
