@@ -1,0 +1,103 @@
+name: Apply Fourth approach run 001 upgrade
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'fourth-approach/tools/run001-upgrade.tar.gz.b64'
+      - '.github/workflows/fourth-approach-apply-run001-upgrade.yml'
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: fourth-approach-apply-run001-upgrade
+  cancel-in-progress: false
+
+jobs:
+  apply-verified-upgrade:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      EXPECTED_ARCHIVE_SHA256: '839a7861c03bc7dbd52f9b444bd73afd3911aa963cdbeb7db53d504a329e322f'
+    steps:
+      - name: Blobless sparse clone of the control and workflow trees
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach .github/workflows
+          git checkout -B main FETCH_HEAD
+
+      - name: Decode and verify the immutable upgrade payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 --decode fourth-approach/tools/run001-upgrade.tar.gz.b64 > /tmp/run001-upgrade.tar.gz
+          printf '%s  %s\n' "$EXPECTED_ARCHIVE_SHA256" /tmp/run001-upgrade.tar.gz | sha256sum --check --strict
+          tar -tzf /tmp/run001-upgrade.tar.gz > /tmp/upgrade-file-list.txt
+          test "$(wc -l < /tmp/upgrade-file-list.txt)" -eq 16
+          tar -xzf /tmp/run001-upgrade.tar.gz -C .
+
+      - name: Validate code, specifications, tests, and workflows before commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            fourth-approach/schema.py \
+            fourth-approach/inventory.py \
+            fourth-approach/canonicalize.py \
+            fourth-approach/runner.py \
+            fourth-approach/collect.py \
+            fourth-approach/verify_run.py
+          PYTHONPATH=fourth-approach python -m unittest discover \
+            -s fourth-approach/tests -p 'test_*.py' -v
+          PYTHONPATH=fourth-approach python - <<'PY'
+          from schema import read_json, validate_launch, validate_spec
+          launch = validate_launch(read_json('fourth-approach/launch.json'))
+          spec = validate_spec(read_json(launch['spec_path']), launch, require_ready=True)
+          assert launch['enabled'] is False
+          assert launch['run_index'] == 1
+          assert spec['task'] == 'stage1_canonicalize_verify'
+          PY
+          ruby -e 'require "yaml"; ARGV.each { |p| YAML.load_file(p); puts "YAML OK #{p}" }' \
+            .github/workflows/fourth-approach-compute.yml \
+            .github/workflows/fourth-approach-smoke.yml \
+            .github/workflows/fourth-approach-watchdog.yml \
+            .github/workflows/fourth-approach-rescue.yml
+
+      - name: Commit the complete upgrade atomically and remove bootstrap files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm -f \
+            fourth-approach/tools/run001-upgrade.tar.gz.b64 \
+            .github/workflows/fourth-approach-apply-run001-upgrade.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows fourth-approach
+          git commit -m 'implement Fourth approach run 001 and repair successor handoff'
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then
+              break
+            fi
+            if [ "$attempt" = 4 ]; then
+              echo 'failed to publish the verified upgrade after four attempts' >&2
+              exit 1
+            fi
+            git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+            git rebase origin/main
+          done
+
+      - name: Explicitly start the current real-path smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh workflow run fourth-approach-smoke.yml --repo "$GH_REPO" --ref main
+          echo 'Dispatched Fourth approach run-001 real-path smoke.' >> "$GITHUB_STEP_SUMMARY"
