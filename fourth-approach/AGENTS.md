@@ -4,215 +4,155 @@ These instructions are authoritative for all work under `fourth-approach/`.
 
 ## Mission
 
-The Fourth approach exists primarily to prepare mathematically useful evidence for GPT-5.6 Sol. It must transform large computational archives into compact exact objects from which a reasoning model can infer, test, refine, and possibly prove structural lemmas for the Krenn--Gu conjecture.
+Prepare compact, exact, contrastive mathematical evidence for GPT-5.6 Sol. Do not optimize for attempt volume, file count, or a smaller residual unless it produces new mathematical information.
 
-Do not optimize for the volume of attempts, the number of files, or a smaller floating-point score unless the change produces new mathematical information.
-
-## Central question
-
-Every action should help answer at least one of the following:
+Every action must help answer at least one of:
 
 1. What minimal structure forces impossibility?
-2. Which obstruction types recur across non-isomorphic supports?
-3. What single local change creates or destroys an obstruction?
-4. Why do the best Second approach candidates remain numerically close to feasibility?
+2. Which obstruction mechanisms recur across non-isomorphic supports?
+3. What one local edit creates or destroys an obstruction?
+4. Why are the best Second approach candidates numerically close to feasibility?
 5. Which strong candidates survive all known exact obstruction classes?
-6. Which `n=6` mechanisms persist or lift to larger even `n`?
-7. What concise lemma should GPT-5.6 Sol attempt to prove next?
+6. Which `n=6` mechanisms lift to larger even `n`?
+7. What concise lemma should GPT-5.6 Sol test next?
 
-## Non-interference rule
+## Repository is the source of truth
 
-Before any repository action, inspect all GitHub Actions runs with `queued`, `pending`, or `in_progress` status across every branch and workflow when the necessary access is available.
+Read `README.md`, `ROADMAP.md`, `TRACKING.md`, `control.json`, `launch.json`, `watchdog-state.json`, and the active run specification before acting. Do not reconstruct state from chat memory when the repository records it.
 
-Never cancel, modify, supersede, or duplicate a healthy running computation. In particular, do not touch an active Third approach 2.0 run or its launch configuration. Let its own collector commit its archive.
+Accepted run directories are immutable. Never rewrite an accepted archive. Reference upstream First, Second, and Third approach data by commit and path; do not edit their archives in place.
 
-Creating or editing Fourth approach research documents must not modify another approach's launch file.
+## Non-interference and concurrency
 
-## Launch policy
+Before any action, inspect all GitHub Actions runs with `queued`, `pending`, `waiting`, `requested`, or `in_progress` status across every branch and workflow when access is available.
 
-### Initial phase: manual scientific gate
+Never cancel, modify, supersede, or duplicate a healthy run. Another large matrix may consume the same account concurrency allowance. Do not launch a new large matrix while another large matrix is active or queued.
 
-Every full Fourth approach run requires explicit user approval after the previous result has been inspected. The monitoring task may:
+Never edit another approach's launch file.
 
-- inspect workflow health and concurrency;
-- diagnose technical failures;
-- preserve and collect already computed artifacts;
-- run or recommend a bounded smoke test;
-- prepare the next configuration without enabling it;
-- report whether the pre-registered success criteria were met.
+## Hourly guarded launch authority
 
-The monitoring task must **not** autonomously start the next full Fourth approach run during the initial phase.
+The user authorized an hourly managed mode. It is not open-ended blind continuation.
 
-This rule exists because Fourth approach runs are sequential experiments with different scientific questions, not interchangeable repetitions.
+One activation may perform at most one meaningful transition:
 
-### Later bounded automation
+- inspect and report a meaningful status change;
+- repair one confirmed technical defect;
+- run or trigger one smoke validation;
+- rescue one completed artifact set;
+- enable one scientifically registered run;
+- accept and advance one completed stage;
+- stop or pivot one stalled family.
 
-Automatic continuation may be enabled only for a user-approved finite batch when all of the following hold:
+A full run may be enabled only when:
 
-1. the workflow has passed a real-path smoke test;
-2. at least two preceding runs of the same family completed and collected without technical repair;
-3. the run family has fixed inputs, fixed metrics, and a finite count;
-4. every successor configuration is specified in advance;
-5. no other large matrix is active or queued;
-6. the automation stops on technical failure, rejected collection, unexpected data shape, or scientific stopping condition;
-7. the user explicitly approved that bounded batch.
+1. its run index equals `control.json.next_run_index`;
+2. its immutable run specification exists;
+3. it answers one scientific question;
+4. the real-path smoke workflow passed for the current execution code;
+5. no conflicting large run is active or queued;
+6. the previous accepted run has a committed immutable archive;
+7. the run index, nonce, source SHA, and artifact set are not duplicates;
+8. all input schemas and source commit requirements validate.
 
-Never create open-ended automatic continuation merely because the numerical score improved.
+To launch, update only `fourth-approach/launch.json`, set `enabled=true`, and use a unique nonce. Never advance merely because a residual improved.
+
+## Smoke and execution requirements
+
+A long run must never be the first test of new code.
+
+Required sequence:
+
+```text
+static validation
+-> unit tests
+-> real-path smoke
+-> inspect smoke artifacts
+-> full run
+-> always-upload artifacts
+-> collection
+-> independent verification
+-> immutable commit
+```
+
+The smoke must use the real `runner.py -> collect.py -> verify_run.py` path. Each shard repeats cheap configuration and syntax checks. Diagnostic directories and files must exist before computation starts.
+
+Do not classify success from a short list of exit codes. Classify using the manifest, required files, logs, signal/timeout context, and resource evidence. A mathematical non-result is not a technical failure; missing files, invalid options, syntax errors, assertion failures, unexplained signals, or corrupted artifacts are technical failures.
+
+## Failure handling
+
+Preserve partial artifacts with `if: always()` and `if-no-files-found: warn`. If computation completed but collection failed, use the rescue workflow instead of recomputing.
+
+On a technical failure:
+
+1. inspect steps and logs;
+2. preserve available artifacts;
+3. identify a confirmed cause;
+4. apply the smallest repair;
+5. rerun the real-path smoke;
+6. relaunch the same research index only with a new nonce;
+7. never advance the stage after a rejected run.
+
+Stop automatic continuation on any technical failure, rejected collection, unexpected data shape, inability to read/write the repository, or scientific stopping condition.
 
 ## One run, one scientific question
 
-Before enabling a full run, create a run specification containing:
+Every run specification must state:
 
 - research question;
-- source datasets and immutable commit identifiers;
+- immutable source commits and datasets;
 - exact transformation or search space;
-- control or comparison group;
-- pre-registered primary metrics;
-- acceptance criteria;
-- scientific stopping criteria;
+- control/comparison group where relevant;
+- primary metrics;
+- acceptance and stopping criteria;
 - expected output schema;
-- independent verification plan;
-- what result would change the next decision.
+- independent verification path;
+- which result changes the next decision.
 
-A run that mixes canonicalization, minimization, degree expansion, and broad random search without separable outputs is invalid.
+Do not mix canonicalization, minimization, degree expansion, and broad random search into one inseparable run.
 
-## Evidence and verification
+## Exact evidence
 
-A candidate marked exact must be checked as an exact symbolic identity. Floating-point proximity is not exactness.
+A candidate marked exact must be verified as an exact symbolic identity. For important certificates store normalized exact coefficients, full restricted system, support definition, source hashes, and precise scope. Verify important claims with both the production checker and an independently implemented checker.
 
-For important certificates:
+Never infer the full Krenn--Gu conjecture from a support-restricted `n=6,d=3` certificate.
 
-1. verify with the production verifier;
-2. verify with an independently implemented checker that does not reuse the same simplification code;
-3. store the normalized exact coefficients;
-4. store the complete restricted system and support definition;
-5. store hashes of all source inputs;
-6. record the precise scope of what the certificate proves.
+## Canonicalization and minimality
 
-Never infer a statement about all admissible graphs from a certificate for a support-restricted `n=6,d=3` subsystem.
+Before counting an object as new, canonicalize at least under vertex permutations, color permutations, edge-end ordering, polynomial term ordering, and rational scaling/sign. Report raw and canonical counts separately and store the transformation to the canonical representative.
 
-## Canonicalization requirements
+When minimizing, distinguish inclusion-minimal, minimum-cardinality, minimum-degree, and minimum-description-length. Test support variables, edge-color types, equations, multiplier monomials, polynomial terms, nonzero coefficients, degree, and rational complexity.
 
-Before counting a support or certificate as new, canonicalize under all symmetries explicitly allowed by the representation, including at minimum:
+## Contrast pairs and Second approach bridge
 
-- vertex permutations;
-- color permutations;
-- normalization of edge-end ordering;
-- normalization of polynomial terms;
-- normalization of rational certificate scaling and sign.
+Prefer one-edit pairs with exact edit, exact or numerical status on both sides, appearing/disappearing obstruction, and controlled confounders.
 
-Record both the canonical identifier and the transformation from the original object. Report raw counts and canonical counts separately.
+Keep old-basin and independently originated Second approach candidates separate. For each bridged candidate record numerical rank/residual, origin, canonical support, obstruction class, minimal certificate, highest tested degree if unresolved, nearest contrast pair, and status.
 
-## Minimality requirements
+Absence of a searched certificate is not evidence of feasibility unless the searched class and limitations are explicit.
 
-When minimizing an obstruction, test removal or simplification of:
+## Primary metrics
 
-- support variables or edge-color types;
-- selected GHZ equations;
-- multiplier monomials;
-- polynomial terms;
-- nonzero certificate coefficients;
-- multiplier degree;
-- numerator and denominator complexity.
-
-Do not call a certificate minimal without stating the tested notion of minimality. Inclusion-minimal, minimum-cardinality, minimum-degree, and minimum-description-length are different claims.
-
-## Contrast-pair requirements
-
-A contrast pair must contain:
-
-- canonical parent and child identifiers;
-- the exact edit between them;
-- exact status for each side when known;
-- best numerical status when exact status is unknown;
-- which obstruction appears or disappears;
-- all confounders controlled by construction.
-
-Prefer one-edit pairs. Multi-edit pairs must state why a one-edit decomposition was unavailable.
-
-## Bridge to Second approach
-
-Keep old-basin and independently originated Second approach candidates as separate lineages. Never merge their statistics before reporting them separately.
-
-For every bridged candidate record:
-
-- numerical rank and residual;
-- origin and lineage;
-- canonical support identifier;
-- known exact obstruction class;
-- minimal certificate if found;
-- highest tested certificate degree if not found;
-- nearest exact contrast pair;
-- status: closed, unresolved, or technically untested.
-
-Absence of a certificate is not evidence of feasibility unless the searched certificate class and its limitations are stated.
-
-## Metrics
-
-Primary metrics, in order of importance:
+In order:
 
 1. independently verified new canonical obstruction classes;
-2. reduction in certificate description length;
+2. reduced certificate description length;
 3. high-quality one-edit contrast pairs;
 4. coverage of top Second approach candidates;
-5. number and quality of hard survivors;
-6. transfer of a mechanism to larger `n`;
-7. only then numerical residual improvement.
+5. hard survivors;
+6. transfer to larger `n`;
+7. only then residual improvement.
 
-Do not use attempt count as a scientific success metric by itself.
+Attempt count alone is not scientific success.
 
-## Run acceptance
+## Stopping and pivot
 
-A run is accepted only when:
+Stop repeating a family after two consecutive accepted runs produce none of: a new canonical class, materially smaller certificate, new contrast pair, increased important-candidate coverage, new hard survivor, or transfer evidence. Change the mathematical target or formulation; do not merely change the seed.
 
-- its preflight and real-path smoke test passed;
-- the expected jobs and artifacts are present;
-- technical failures are distinguished from mathematical non-results;
-- all summaries reproduce from immutable raw artifacts;
-- exact claims pass their declared verification path;
-- canonical counts are reproducible;
-- the archive is committed with source commit identifiers and checksums.
+## GPT-5.6 Sol handoff
 
-Preserve partial artifacts after failure. Do not relabel a technical failure as a mathematical non-result.
+Surface the full problem, scope limitations, canonical obstruction taxonomy, simplest representative certificates, contrast pairs, strongest survivors, old-versus-independent comparison, candidate lemmas ranked by evidence, falsification tests, transfer evidence, and independent verifier instructions.
 
-## GPT-5.6 Sol handoff standard
+Do not make thousands of near-duplicate certificates the primary input. Bulk data belongs in machine-readable appendices.
 
-The handoff must be answer-oriented, compact, and auditable. It should contain:
-
-1. the exact full problem and the limited scope of current computations;
-2. a taxonomy of canonical obstruction mechanisms;
-3. the simplest representative certificate of each mechanism;
-4. contrast pairs that support or falsify candidate lemmas;
-5. the strongest unresolved supports;
-6. old-basin versus independent-lineage comparison;
-7. proposed general lemmas ranked by evidence;
-8. explicit falsification tests for each proposed lemma;
-9. transfer evidence for larger `n` when available;
-10. independent verifier instructions.
-
-Do not give Sol thousands of near-duplicate certificates as the primary input. Put bulk data in appendices or machine-readable files and surface the smallest diverse representatives.
-
-## Scientific stopping and pivot rules
-
-Stop repeating a run family when two consecutive accepted runs produce none of:
-
-- a new canonical obstruction class;
-- a materially smaller certificate;
-- a new high-quality contrast pair;
-- increased coverage of important Second approach candidates;
-- a new hard survivor;
-- transfer evidence to larger `n`.
-
-A lower residual alone does not override this stopping rule.
-
-When a family stalls, change the mathematical search space, exact formulation, or target set. Do not merely change the random seed and continue indefinitely.
-
-## Repository discipline
-
-- Store all Fourth approach materials under `fourth-approach/` except the dedicated workflow file when one is eventually created under `.github/workflows/`.
-- Do not edit First, Second, or Third approach archives in place.
-- Reference upstream data by commit and path; copy only normalized derived data needed for reproducibility.
-- Use immutable per-run directories.
-- Keep a human-readable summary next to every machine-readable result.
-- Record confirmed facts, inferences, and hypotheses separately.
-- Never claim that the prize problem is solved without a full exact proof or independently checkable exact counterexample for the original admissible class.
+Never claim the prize problem is solved without a full exact proof or independently checkable exact counterexample for the original admissible class.
