@@ -67,7 +67,6 @@ def _git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProc
 
 
 def git_tree_entries(repo: Path, ref: str = "HEAD") -> list[dict[str, Any]]:
-    """Return blob metadata without materializing file contents."""
     result = _git(repo, "ls-tree", "-r", "-l", "-z", ref)
     entries: list[dict[str, Any]] = []
     for raw in result.stdout.split(b"\0"):
@@ -102,6 +101,20 @@ def parse_summary_bytes(raw: bytes) -> dict[str, Any] | None:
     return {key: value.get(key) for key in sorted(SUMMARY_KEYS) if key in value}
 
 
+def should_parse_summary(spec: dict[str, Any], path: str) -> bool:
+    if not path.endswith("/summary.json"):
+        return False
+    policy = str(spec.get("parse_summary_policy", "all"))
+    if policy == "none":
+        return False
+    if policy == "required_latest_only":
+        required_run = spec.get("source_commit_requirements", {}).get(
+            "third_approach_2_0_last_accepted_run_id"
+        )
+        return required_run is not None and f"-{required_run}/summary.json" in path
+    return bool(spec.get("parse_summary_json", True))
+
+
 def inventory_git_tree_shard(
     repo: Path,
     spec: dict[str, Any],
@@ -132,7 +145,7 @@ def inventory_git_tree_shard(
             "content_id": f"git-blob:{oid}",
             "kind": classify(rel),
         }
-        if spec.get("parse_summary_json", True) and rel.endswith("/summary.json"):
+        if should_parse_summary(spec, rel):
             try:
                 summary = parse_summary_bytes(git_read_blob(repo, ref, rel))
                 if summary is None:
@@ -165,6 +178,10 @@ def inventory_git_tree_shard(
         "metrics": {
             "files_inventoried": len(records),
             "bytes_referenced": sum(int(x["bytes"]) for x in records),
+            "summary_files_inventoried": sum(
+                1 for x in records if x["kind"] == "run_summary"
+            ),
+            "parsed_run_summaries": sum(1 for x in records if "summary" in x),
             "accepted_run_summaries": sum(
                 1 for x in records if x.get("summary", {}).get("accepted") is True
             ),
