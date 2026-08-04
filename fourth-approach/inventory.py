@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Deterministic source inventory for Fourth approach run 000."""
+"""Deterministic Git-tree source inventory for Fourth approach run 000."""
 from __future__ import annotations
 
 import fnmatch
 import gzip
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -28,14 +29,6 @@ SUMMARY_KEYS = {
     "strategy_profile",
     "worker_errors",
 }
-
-
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(block)
-    return digest.hexdigest()
 
 
 def matches_any(path: str, patterns: Iterable[str]) -> bool:
@@ -64,28 +57,66 @@ def classify(path: str) -> str:
     return "other"
 
 
-def parse_summary(path: Path) -> dict[str, Any] | None:
-    if path.name != "summary.json":
-        return None
+def _git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProcess[bytes]:
+    return subprocess.run(
+        ["git", "-C", str(repo), *args],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        check=check,
+    )
+
+
+def git_tree_entries(repo: Path, ref: str = "HEAD") -> list[dict[str, Any]]:
+    """Return blob metadata without materializing file contents."""
+    result = _git(repo, "ls-tree", "-r", "-l", "-z", ref)
+    entries: list[dict[str, Any]] = []
+    for raw in result.stdout.split(b"\0"):
+        if not raw:
+            continue
+        metadata, raw_path = raw.split(b"\t", 1)
+        mode, object_type, oid, raw_size = metadata.decode("ascii").split()
+        if object_type != "blob":
+            continue
+        entries.append(
+            {
+                "path": raw_path.decode("utf-8", errors="surrogateescape"),
+                "mode": mode,
+                "git_blob_oid": oid,
+                "bytes": int(raw_size),
+            }
+        )
+    return entries
+
+
+def git_read_blob(repo: Path, ref: str, path: str) -> bytes:
+    return _git(repo, "show", f"{ref}:{path}").stdout
+
+
+def parse_summary_bytes(raw: bytes) -> dict[str, Any] | None:
     try:
-        raw = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        value = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
         return None
-    if not isinstance(raw, dict):
+    if not isinstance(value, dict):
         return None
-    return {key: raw.get(key) for key in sorted(SUMMARY_KEYS) if key in raw}
+    return {key: value.get(key) for key in sorted(SUMMARY_KEYS) if key in value}
 
 
-def inventory_shard(repo: Path, spec: dict[str, Any], shard_id: int, shard_count: int) -> dict[str, Any]:
+def inventory_git_tree_shard(
+    repo: Path,
+    spec: dict[str, Any],
+    shard_id: int,
+    shard_count: int,
+    *,
+    ref: str = "HEAD",
+) -> dict[str, Any]:
     include = [str(x) for x in spec.get("include_globs", [])]
     exclude = [str(x) for x in spec.get("exclude_globs", [])]
     records: list[dict[str, Any]] = []
     unreadable: list[dict[str, str]] = []
 
-    for path in sorted(repo.rglob("*")):
-        if not path.is_file():
-            continue
-        rel = path.relative_to(repo).as_posix()
+    for entry in git_tree_entries(repo, ref):
+        rel = str(entry["path"])
         if include and not matches_any(rel, include):
             continue
         if exclude and matches_any(rel, exclude):
@@ -93,36 +124,47 @@ def inventory_shard(repo: Path, spec: dict[str, Any], shard_id: int, shard_count
         bucket = int(hashlib.sha256(rel.encode("utf-8")).hexdigest()[:16], 16) % shard_count
         if bucket != shard_id:
             continue
-        try:
-            size = path.stat().st_size
-            digest = sha256_file(path)
-            record: dict[str, Any] = {
-                "path": rel,
-                "bytes": size,
-                "sha256": digest,
-                "kind": classify(rel),
-            }
-            summary = parse_summary(path) if spec.get("parse_summary_json", True) else None
-            if summary is not None:
-                record["summary"] = summary
-            records.append(record)
-        except OSError as exc:
-            unreadable.append({"path": rel, "error": str(exc)})
+        oid = str(entry["git_blob_oid"])
+        record: dict[str, Any] = {
+            "path": rel,
+            "bytes": int(entry["bytes"]),
+            "git_blob_oid": oid,
+            "content_id": f"git-blob:{oid}",
+            "kind": classify(rel),
+        }
+        if spec.get("parse_summary_json", True) and rel.endswith("/summary.json"):
+            try:
+                summary = parse_summary_bytes(git_read_blob(repo, ref, rel))
+                if summary is None:
+                    unreadable.append({"path": rel, "error": "invalid summary JSON"})
+                else:
+                    record["summary"] = summary
+            except subprocess.CalledProcessError as exc:
+                unreadable.append(
+                    {
+                        "path": rel,
+                        "error": exc.stderr.decode("utf-8", errors="replace")[-2000:],
+                    }
+                )
+        records.append(record)
 
-    hashes: dict[str, int] = {}
+    content_counts: dict[str, int] = {}
     for record in records:
-        hashes[record["sha256"]] = hashes.get(record["sha256"], 0) + 1
+        key = str(record["content_id"])
+        content_counts[key] = content_counts.get(key, 0) + 1
 
     return {
         "schema_version": 1,
         "task": "stage0_source_inventory",
+        "source_ref": ref,
+        "identity_scheme": "immutable_commit_path_and_git_blob_oid",
         "shard_id": shard_id,
         "shard_count": shard_count,
         "records": records,
         "unreadable": unreadable,
         "metrics": {
             "files_inventoried": len(records),
-            "bytes_inventoried": sum(int(x["bytes"]) for x in records),
+            "bytes_referenced": sum(int(x["bytes"]) for x in records),
             "accepted_run_summaries": sum(
                 1 for x in records if x.get("summary", {}).get("accepted") is True
             ),
@@ -139,7 +181,9 @@ def inventory_shard(repo: Path, spec: dict[str, Any], shard_id: int, shard_count
                 and x["kind"] == "compressed_json_archive"
             ),
             "unreadable_files": len(unreadable),
-            "duplicate_content_hashes_within_shard": sum(1 for n in hashes.values() if n > 1),
+            "duplicate_content_ids_within_shard": sum(
+                1 for count in content_counts.values() if count > 1
+            ),
         },
     }
 
