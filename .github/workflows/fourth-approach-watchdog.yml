@@ -8,8 +8,8 @@ on:
     workflows:
       - 'Fourth approach real-path smoke'
       - 'Fourth approach compute'
-    types:
-      - completed
+      - 'Rescue Fourth approach collection'
+    types: [completed]
   push:
     paths:
       - '.github/workflows/fourth-approach-watchdog.yml'
@@ -23,210 +23,161 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  inspect-and-dispatch:
+  inspect-and-recover:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 18
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_REPO: ${{ github.repository }}
     steps:
-      - name: Inspect durable state and perform one missing transition
+      - name: Clone only the control plane
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
+
+      - name: Inspect state and perform at most one missing transition
         shell: bash
         run: |
           set -euo pipefail
 
-          get_file() {
-            local path="$1"
-            gh api "repos/${GH_REPO}/contents/${path}?ref=main" --jq '.content' 2>/dev/null \
-              | tr -d '\n' | base64 --decode 2>/dev/null || true
-          }
+          active_smoke="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-smoke.yml --limit 30 --json status --jq '[.[] | select(.status != "completed")] | length')"
+          active_compute="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-compute.yml --limit 30 --json status --jq '[.[] | select(.status != "completed")] | length')"
+          active_rescue="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-rescue.yml --limit 30 --json status --jq '[.[] | select(.status != "completed")] | length')"
+          active_large="$(gh run list --repo "$GH_REPO" --limit 100 --json status,workflowName --jq '[.[] | select(.status != "completed" and (.workflowName == "Third approach 2.0 proof search" or .workflowName == "Third approach proof search" or .workflowName == "Second approach compute" or .workflowName == "Second approach 2.0 compute"))] | length')"
 
-          smoke_json="$(get_file fourth-approach/smoke-status.json)"
-          launch_json="$(get_file fourth-approach/launch.json)"
-          control_json="$(get_file fourth-approach/control.json)"
-          if [ -z "$launch_json" ] || [ -z "$control_json" ]; then
-            echo 'Fourth approach control files are unavailable.' >&2
-            exit 1
-          fi
+          export ACTIVE_SMOKE="$active_smoke" ACTIVE_COMPUTE="$active_compute" ACTIVE_RESCUE="$active_rescue" ACTIVE_LARGE="$active_large"
+          decision="$(PYTHONPATH=fourth-approach python - <<'PY'
+          import json, os
+          from pathlib import Path
+          from schema import launch_from_spec, read_json, validate_launch, validate_spec
 
-          smoke_result="missing"
-          smoke_completed_at=""
-          if [ -n "$smoke_json" ]; then
-            smoke_result="$(jq -r '.result // "missing"' <<<"$smoke_json")"
-            smoke_completed_at="$(jq -r '.completed_at // ""' <<<"$smoke_json")"
-          fi
-          launch_enabled="$(jq -r '.enabled // false' <<<"$launch_json")"
-          next_run_index="$(jq -r '.next_run_index // -1' <<<"$control_json")"
-          launch_run_index="$(jq -r '.run_index // -2' <<<"$launch_json")"
-          auto_allowed="$(jq -r '.full_run_auto_launch_allowed // false' <<<"$control_json")"
+          root = Path('fourth-approach')
+          control = read_json(root / 'control.json')
+          launch = validate_launch(read_json(root / 'launch.json'))
+          state = read_json(root / 'watchdog-state.json')
+          next_index = int(control.get('next_run_index', -1))
+          next_spec_path = str(control.get('next_spec_path', ''))
+          mismatch = int(launch['run_index']) != next_index or str(launch['spec_path']) != next_spec_path
 
-          active_smoke="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-smoke.yml --limit 20 \
-            --json status --jq '[.[] | select(.status != "completed")] | length' 2>/dev/null || echo 0)"
-          active_compute="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-compute.yml --limit 20 \
-            --json status --jq '[.[] | select(.status != "completed")] | length' 2>/dev/null || echo 0)"
+          if mismatch:
+              if not next_spec_path:
+                  print('HALT_MISSING_NEXT_SPEC')
+                  raise SystemExit
+              spec = validate_spec(read_json(next_spec_path))
+              repaired = launch_from_spec(next_spec_path, spec, enabled=False, nonce=f"fourth-run-{int(spec['run_index']):03d}-disabled-watchdog-repair")
+              (root / 'launch.json').write_text(json.dumps(repaired, indent=2, sort_keys=True) + '\n')
+              state.update(last_action='repaired_control_launch_alignment', current_gate=('await_smoke_for_next_stage' if spec.get('implementation_status') == 'ready' else 'await_next_stage_implementation'), last_observed_active_runs={'smoke': int(os.environ['ACTIVE_SMOKE']), 'compute': int(os.environ['ACTIVE_COMPUTE']), 'rescue': int(os.environ['ACTIVE_RESCUE']), 'large_conflicts': int(os.environ['ACTIVE_LARGE'])})
+              (root / 'watchdog-state.json').write_text(json.dumps(state, indent=2, sort_keys=True) + '\n')
+              print('COMMIT_REPAIR')
+              raise SystemExit
 
-          # Only a genuinely large competing computation should block this run.
-          # The previous implementation counted every short service workflow as a
-          # conflict, which could leave a successful smoke isolated indefinitely.
-          active_conflict=0
-          while IFS=$'\t' read -r run_id workflow_name; do
-            if [ -z "$run_id" ]; then
-              continue
-            fi
-            case "$workflow_name" in
-              'Fourth approach watchdog'|'Fourth approach real-path smoke'|'Fourth approach compute')
-                continue
-                ;;
-            esac
+          spec = validate_spec(read_json(launch['spec_path']))
+          if spec.get('implementation_status') != 'ready':
+              print('WAIT_IMPLEMENTATION')
+              raise SystemExit
+          validate_spec(spec, launch, require_ready=True)
 
-            run_path="$(gh api "repos/${GH_REPO}/actions/runs/${run_id}" --jq '.path // ""' 2>/dev/null || true)"
-            job_count="$(gh api "repos/${GH_REPO}/actions/runs/${run_id}/jobs?per_page=1" --jq '.total_count // 0' 2>/dev/null || echo 0)"
-            is_large=false
-            case "$run_path" in
-              '.github/workflows/second-approach-compute.yml'|\
-              '.github/workflows/second-approach-2-compute.yml'|\
-              '.github/workflows/third-approach-compute.yml'|\
-              '.github/workflows/third-approach-2.0-compute.yml'|\
-              '.github/workflows/run-frontier3.yml'|\
-              '.github/workflows/run.yml')
-                is_large=true
-                ;;
-            esac
-            if [ "${job_count:-0}" -ge 10 ]; then
-              is_large=true
-            fi
+          if int(os.environ['ACTIVE_COMPUTE']) or int(os.environ['ACTIVE_RESCUE']):
+              print('WAIT_ACTIVE_COMPUTE_OR_RESCUE')
+              raise SystemExit
+          if int(os.environ['ACTIVE_LARGE']):
+              print('WAIT_LARGE_CONFLICT')
+              raise SystemExit
 
-            if [ "$is_large" = true ]; then
-              active_conflict=$((active_conflict + 1))
-              echo "Blocking large workflow: ${workflow_name} run ${run_id}, path=${run_path}, jobs=${job_count}" \
-                | tee -a "$GITHUB_STEP_SUMMARY"
-            else
-              echo "Ignoring short service workflow: ${workflow_name} run ${run_id}, path=${run_path}, jobs=${job_count}" \
-                | tee -a "$GITHUB_STEP_SUMMARY"
-            fi
-          done < <(gh run list --repo "$GH_REPO" --limit 100 \
-            --json databaseId,status,workflowName \
-            --jq '.[] | select(.status != "completed") | [.databaseId, .workflowName] | @tsv' 2>/dev/null || true)
+          smoke_path = root / 'smoke-status.json'
+          smoke = read_json(smoke_path) if smoke_path.exists() else {}
+          smoke_matches = smoke.get('result') == 'success' and int(smoke.get('run_index', -1)) == int(launch['run_index']) and str(smoke.get('task', '')) == str(launch['task'])
+          if not smoke_matches or bool(control.get('smoke_required', True)):
+              print('DISPATCH_SMOKE' if not int(os.environ['ACTIVE_SMOKE']) else 'WAIT_ACTIVE_SMOKE')
+              raise SystemExit
+          if not launch['enabled']:
+              print('ENABLE_AND_DISPATCH_COMPUTE')
+              raise SystemExit
+          print('CHECK_EXISTING_COMPUTE')
+          PY
+          )"
 
           {
-            echo "smoke_result=${smoke_result}"
-            echo "launch_enabled=${launch_enabled}"
-            echo "next_run_index=${next_run_index}"
-            echo "launch_run_index=${launch_run_index}"
+            echo "decision=${decision}"
             echo "active_smoke=${active_smoke}"
             echo "active_compute=${active_compute}"
-            echo "active_large_conflict=${active_conflict}"
+            echo "active_rescue=${active_rescue}"
+            echo "active_large=${active_large}"
           } | tee -a "$GITHUB_STEP_SUMMARY"
 
-          if [ "$smoke_result" != 'success' ]; then
-            if [ "$active_smoke" -gt 0 ]; then
-              echo 'A smoke run is already active; no duplicate dispatch.'
-              exit 0
-            fi
-            gh workflow run fourth-approach-smoke.yml --repo "$GH_REPO" --ref main
-            echo 'Dispatched the missing or failed Fourth approach smoke.' | tee -a "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-
-          if [ "$active_compute" -gt 0 ]; then
-            echo 'A healthy Fourth approach compute run is already active.'
-            exit 0
-          fi
-
-          if [ "$active_conflict" -gt 0 ]; then
-            echo 'Another large repository computation is active; Fourth approach compute is deferred.'
-            exit 0
-          fi
-
-          if [ "$launch_enabled" != 'true' ]; then
-            if [ "$auto_allowed" != 'true' ] || [ "$next_run_index" != "$launch_run_index" ]; then
-              echo 'Scientific state does not authorize the configured launch.' >&2
-              exit 1
-            fi
-
-            rm -rf repo
-            mkdir repo
-            cd repo
-            git init .
-            git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-            git -c protocol.version=2 fetch --no-tags --depth=20 --filter=blob:none origin main
-            git sparse-checkout init --cone
-            git sparse-checkout set fourth-approach
-            git checkout -B main FETCH_HEAD
-
-            for attempt in 1 2 3 4; do
-              git -c protocol.version=2 fetch --no-tags --depth=20 --filter=blob:none origin main
-              git reset --hard origin/main
+          case "$decision" in
+            COMMIT_REPAIR)
+              git config user.name 'github-actions[bot]'
+              git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+              git add fourth-approach/launch.json fourth-approach/watchdog-state.json
+              git commit -m 'repair Fourth approach successor state after accepted run'
+              for attempt in 1 2 3 4; do
+                if git push origin HEAD:main; then exit 0; fi
+                if [ "$attempt" = 4 ]; then exit 1; fi
+                git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+                git rebase origin/main
+              done
+              ;;
+            DISPATCH_SMOKE)
+              gh workflow run fourth-approach-smoke.yml --repo "$GH_REPO" --ref main
+              echo 'Dispatched exactly one missing real-path smoke.' | tee -a "$GITHUB_STEP_SUMMARY"
+              ;;
+            ENABLE_AND_DISPATCH_COMPUTE)
               python - <<'PY'
           import json
           from datetime import datetime, timezone
           from pathlib import Path
-
-          root = Path("fourth-approach")
-          smoke = json.loads((root / "smoke-status.json").read_text(encoding="utf-8"))
-          control = json.loads((root / "control.json").read_text(encoding="utf-8"))
-          launch = json.loads((root / "launch.json").read_text(encoding="utf-8"))
-          state = json.loads((root / "watchdog-state.json").read_text(encoding="utf-8"))
-
-          if smoke.get("result") != "success":
-              raise SystemExit("durable smoke is not successful")
-          if not control.get("tracking_enabled") or not control.get("full_run_auto_launch_allowed"):
-              raise SystemExit("automatic launch is not authorized")
-          if int(control.get("next_run_index", -1)) != int(launch.get("run_index", -2)):
-              raise SystemExit("control and launch run indices disagree")
-
-          now = datetime.now(timezone.utc).isoformat()
-          launch["enabled"] = True
-          launch["nonce"] = f"fourth-run-{int(launch['run_index']):03d}-watchdog-{int(datetime.now(timezone.utc).timestamp())}"
-          control["smoke_required"] = False
-          control["smoke_verified_for_code_sha"] = smoke.get("tested_sha")
-          control["recommended_next_action"] = "enabled_next_run_after_green_smoke"
-          state["last_checked_at"] = now
-          state["last_action"] = "enabled_next_run_after_green_smoke"
-          state["current_gate"] = "compute_dispatch_requested"
-          state["last_action_commit"] = smoke.get("tested_sha")
-          state["dispatch_requested_for_nonce"] = launch["nonce"]
-          state["dispatch_requested_at"] = now
-
-          (root / "launch.json").write_text(json.dumps(launch, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-          (root / "control.json").write_text(json.dumps(control, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-          (root / "watchdog-state.json").write_text(json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+          root = Path('fourth-approach')
+          launch = json.loads((root / 'launch.json').read_text())
+          control = json.loads((root / 'control.json').read_text())
+          state = json.loads((root / 'watchdog-state.json').read_text())
+          if int(launch['run_index']) != int(control['next_run_index']): raise SystemExit('launch/control mismatch')
+          launch['enabled'] = True
+          launch['nonce'] = f"fourth-run-{int(launch['run_index']):03d}-watchdog-{int(datetime.now(timezone.utc).timestamp())}"
+          state['last_action'] = 'enabled_and_requested_compute_after_green_smoke'
+          state['current_gate'] = 'compute_dispatch_requested'
+          state['dispatch_requested_for_nonce'] = launch['nonce']
+          state['dispatch_requested_at'] = datetime.now(timezone.utc).isoformat()
+          (root / 'launch.json').write_text(json.dumps(launch, indent=2, sort_keys=True) + '\n')
+          (root / 'watchdog-state.json').write_text(json.dumps(state, indent=2, sort_keys=True) + '\n')
           PY
               git config user.name 'github-actions[bot]'
               git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-              git add fourth-approach/launch.json fourth-approach/control.json fourth-approach/watchdog-state.json
-              if git diff --cached --quiet; then
-                break
+              git add fourth-approach/launch.json fourth-approach/watchdog-state.json
+              git commit -m 'enable one Fourth approach run after verified smoke'
+              for attempt in 1 2 3 4; do
+                if git push origin HEAD:main; then break; fi
+                if [ "$attempt" = 4 ]; then exit 1; fi
+                git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+                git rebase origin/main
+              done
+              gh workflow run fourth-approach-compute.yml --repo "$GH_REPO" --ref main
+              echo 'Enabled and dispatched exactly one compute run.' | tee -a "$GITHUB_STEP_SUMMARY"
+              ;;
+            CHECK_EXISTING_COMPUTE)
+              smoke_time="$(jq -r '.completed_at // ""' fourth-approach/smoke-status.json)"
+              recent="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-compute.yml --limit 30 --json databaseId,status,conclusion,createdAt --jq --arg t "$smoke_time" '[.[] | select(.createdAt >= $t)]')"
+              count="$(jq 'length' <<<"$recent")"
+              if [ "$count" -eq 0 ]; then
+                gh workflow run fourth-approach-compute.yml --repo "$GH_REPO" --ref main
+                echo 'Recovered a missing compute dispatch for an enabled launch.' | tee -a "$GITHUB_STEP_SUMMARY"
+              else
+                latest_status="$(jq -r 'sort_by(.createdAt) | last | .status' <<<"$recent")"
+                latest_conclusion="$(jq -r 'sort_by(.createdAt) | last | .conclusion // ""' <<<"$recent")"
+                latest_id="$(jq -r 'sort_by(.createdAt) | last | .databaseId' <<<"$recent")"
+                if [ "$latest_status" = 'completed' ]; then
+                  echo "Compute ${latest_id} completed (${latest_conclusion}) but successor state did not advance. Do not recompute; inspect collection and use rescue if needed." | tee -a "$GITHUB_STEP_SUMMARY"
+                  exit 1
+                fi
               fi
-              git commit -m 'enable guarded Fourth approach run after green smoke'
-              if git push origin HEAD:main; then
-                break
-              fi
-              if [ "$attempt" = 4 ]; then
-                echo 'failed to enable Fourth approach launch after four attempts' >&2
-                exit 1
-              fi
-            done
-            cd ..
-            launch_json="$(get_file fourth-approach/launch.json)"
-            launch_enabled="$(jq -r '.enabled // false' <<<"$launch_json")"
-          fi
-
-          if [ "$launch_enabled" != 'true' ]; then
-            echo 'Launch is still disabled after the guarded transition.' >&2
-            exit 1
-          fi
-
-          recent_for_smoke=0
-          if [ -n "$smoke_completed_at" ]; then
-            recent_for_smoke="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-compute.yml --limit 30 \
-              --json createdAt \
-              --jq --arg t "$smoke_completed_at" '[.[] | select(.createdAt >= $t)] | length' 2>/dev/null || echo 0)"
-          fi
-          if [ "$recent_for_smoke" -gt 0 ]; then
-            echo 'A compute workflow was already created for this smoke frontier; no duplicate dispatch.'
-            exit 0
-          fi
-
-          gh workflow run fourth-approach-compute.yml --repo "$GH_REPO" --ref main
-          echo 'Dispatched the enabled Fourth approach compute workflow.' | tee -a "$GITHUB_STEP_SUMMARY"
+              ;;
+            WAIT_*|HALT_*|WAIT_IMPLEMENTATION)
+              ;;
+            *) echo "Unknown watchdog decision: $decision" >&2; exit 2 ;;
+          esac
