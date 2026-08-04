@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'fourth-approach/tools/run001-upgrade.tar.gz.b64'
+      - 'fourth-approach/tools/run001-upgrade.part*'
       - '.github/workflows/fourth-approach-apply-run001-upgrade.yml'
 
 permissions:
@@ -35,12 +35,17 @@ jobs:
           git sparse-checkout set fourth-approach .github/workflows
           git checkout -B main FETCH_HEAD
 
-      - name: Decode and verify the immutable upgrade payload
+      - name: Reassemble and verify the immutable upgrade payload
         shell: bash
         run: |
           set -euo pipefail
-          base64 --decode fourth-approach/tools/run001-upgrade.tar.gz.b64 > /tmp/run001-upgrade.tar.gz
-          printf '%s  %s\n' "$EXPECTED_ARCHIVE_SHA256" /tmp/run001-upgrade.tar.gz | sha256sum --check --strict
+          for part in fourth-approach/tools/run001-upgrade.part{00..08}; do
+            test -s "$part"
+          done
+          cat fourth-approach/tools/run001-upgrade.part{00..08} \
+            | base64 --decode > /tmp/run001-upgrade.tar.gz
+          printf '%s  %s\n' "$EXPECTED_ARCHIVE_SHA256" /tmp/run001-upgrade.tar.gz \
+            | sha256sum --check --strict
           tar -tzf /tmp/run001-upgrade.tar.gz > /tmp/upgrade-file-list.txt
           test "$(wc -l < /tmp/upgrade-file-list.txt)" -eq 16
           tar -xzf /tmp/run001-upgrade.tar.gz -C .
@@ -76,9 +81,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git rm -f \
-            fourth-approach/tools/run001-upgrade.tar.gz.b64 \
-            .github/workflows/fourth-approach-apply-run001-upgrade.yml
+          git rm -f fourth-approach/tools/run001-upgrade.tar.gz.b64
+          git rm -f fourth-approach/tools/run001-upgrade.part{00..08}
+          git rm -f .github/workflows/fourth-approach-apply-run001-upgrade.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add .github/workflows fourth-approach
