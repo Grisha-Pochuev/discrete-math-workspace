@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "implementation_status": "draft_not_supported_by_current_runner",
+  "run_index": 1,
+  "task": "stage1_canonicalize_verify",
+  "title": "Canonicalize supports and independently verify exact restricted certificates",
+  "research_question": "How many non-isomorphic exact obstruction classes remain after all declared symmetries and duplicate certificate representations are removed?",
+  "source_requirement": "accepted Fourth approach run 000 source manifest",
+  "primary_metrics": [
+    "raw_certificates",
+    "canonical_support_classes",
+    "canonical_certificate_signatures",
+    "independently_verified_classes",
+    "rejected_certificates",
+    "ambiguous_inputs"
+  ],
+  "acceptance_criteria": {
+    "production_and_independent_verifiers_agree": true,
+    "raw_and_canonical_counts_reported_separately": true,
+    "all_transformations_to_canonical_form_recorded": true
+  },
+  "scientific_output": "A reproducible taxonomy of exact restricted obstruction classes for minimization and GPT-5.6 Sol reasoning.",
+  "next_decision": "Select diverse verified representatives for certificate minimization."
+}
