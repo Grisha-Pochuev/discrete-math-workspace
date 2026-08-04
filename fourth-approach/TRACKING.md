@@ -71,6 +71,18 @@ If computation completed but collection failed, prefer the rescue collector. Do 
 
 Do not continue merely because a floating-point residual improved.
 
+## Required workflow handoff rules
+
+A successful smoke must not end as an isolated green check. It must atomically record `smoke-status.json`, update the guarded state, enable at most one authorized `launch.json`, and explicitly dispatch the compute workflow when concurrency is free.
+
+Never use `git diff --quiet` alone to detect creation of a new status file: it ignores untracked files. Use `git status --porcelain` or add the file before checking staged changes.
+
+A commit pushed by a workflow using the repository `GITHUB_TOKEN` must not be relied upon to trigger the next workflow through a `push` event. The smoke or watchdog must explicitly call `gh workflow run` after persisting the launch state. The watchdog is also triggered by `workflow_run` completion and every 15 minutes as a recovery path.
+
+## Resolved incident: smoke completed but compute did not start
+
+On 2026-08-04 the initial smoke handoff could stop because `smoke-status.json` was new and therefore invisible to `git diff --quiet`. The status was not committed, `launch.json` stayed disabled, and the compute workflow was never explicitly dispatched. The permanent repair is implemented in commits `05d627e9b48298123cff8d6d2be76553832d7da1` and `c23241404e791af3575f5600d1abc48a68dd1264`.
+
 ## Notifications
 
 Notify the user only for:
