@@ -1,0 +1,150 @@
+name: Fourth approach real-path smoke
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'fourth-approach/schema.py'
+      - 'fourth-approach/inventory.py'
+      - 'fourth-approach/runner.py'
+      - 'fourth-approach/collect.py'
+      - 'fourth-approach/verify_run.py'
+      - 'fourth-approach/tests/**'
+      - 'fourth-approach/run-specs/**'
+      - '.github/workflows/fourth-approach-smoke.yml'
+      - '.github/workflows/fourth-approach-compute.yml'
+      - '.github/workflows/fourth-approach-rescue.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fourth-approach-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      PYTHONUNBUFFERED: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create diagnostic directory first
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p smoke/artifacts smoke/repo/fourth-approach
+          date -u +%FT%TZ > smoke/launch-status.txt
+          printf '%s\n' "$GITHUB_SHA" > smoke/source-sha.txt
+          {
+            uname -a
+            nproc
+            free -h
+            df -h .
+            python --version
+          } > smoke/machine.txt
+
+      - name: Static checks and unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            fourth-approach/schema.py \
+            fourth-approach/inventory.py \
+            fourth-approach/runner.py \
+            fourth-approach/collect.py \
+            fourth-approach/verify_run.py
+          PYTHONPATH=fourth-approach python -m unittest discover \
+            -s fourth-approach/tests -p 'test_*.py' -v | tee smoke/unit-tests.log
+          PYTHONPATH=fourth-approach python - <<'PY' | tee smoke/config-validation.log
+          from schema import matrix_json, read_json, validate_launch, validate_spec
+          launch = validate_launch(read_json('fourth-approach/launch.json'))
+          spec = validate_spec(read_json(launch['spec_path']), launch)
+          print(launch)
+          print(spec['title'])
+          print(matrix_json(launch['jobs']))
+          PY
+
+      - name: Real runner path for all initial shards
+        shell: bash
+        run: |
+          set -uo pipefail
+          overall=0
+          for shard in 0 1 2 3; do
+            out="smoke/artifacts/fourth-approach-data-${shard}"
+            mkdir -p "$out"
+            printf '%s\n' "python fourth-approach/runner.py --task stage0_source_inventory --run-index 0 --shard-id ${shard} --shard-count 4" > "$out/command.txt"
+            set +e
+            PYTHONPATH=fourth-approach python fourth-approach/runner.py \
+              --repo . \
+              --spec fourth-approach/run-specs/run-000-stage0-source-inventory.json \
+              --task stage0_source_inventory \
+              --run-index 0 \
+              --shard-id "$shard" \
+              --shard-count 4 \
+              --seconds 120 \
+              --max-attempts 1 \
+              --output "$out" \
+              > "$out/driver.log" 2>&1
+            code=$?
+            set -e
+            printf '%s\n' "$code" > "$out/runner-exit-code.txt"
+            if [ "$code" -ne 0 ]; then overall=1; fi
+          done
+          exit "$overall"
+
+      - name: Real collector and independent verifier path
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp fourth-approach/control.json smoke/repo/fourth-approach/control.json
+          PYTHONPATH=fourth-approach python fourth-approach/collect.py \
+            --artifacts smoke/artifacts \
+            --repo smoke/repo \
+            --run-id 90000000000 \
+            --source-sha "$GITHUB_SHA" \
+            --expected-jobs 4 \
+            --minimum-jobs 4 \
+            --spec fourth-approach/run-specs/run-000-stage0-source-inventory.json \
+            | tee smoke/collector.log
+          PYTHONPATH=fourth-approach python fourth-approach/verify_run.py \
+            smoke/repo/fourth-approach/runs/run-000-90000000000 \
+            --require-accepted | tee smoke/verifier.log
+
+      - name: Validate diagnostics and artifacts
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f smoke/launch-status.txt
+          test -f smoke/machine.txt
+          test -f smoke/unit-tests.log
+          for shard in 0 1 2 3; do
+            out="smoke/artifacts/fourth-approach-data-${shard}"
+            test -f "$out/command.txt"
+            test -f "$out/driver.log"
+            test -f "$out/runner-exit-code.txt"
+            test -f "$out/launch-status.json"
+            test -f "$out/manifest.json"
+            test -f "$out/records.json.gz"
+          done
+          test -f smoke/repo/fourth-approach/runs/run-000-90000000000/summary.json
+          test -f smoke/repo/fourth-approach/runs/run-000-90000000000/checksums.sha256
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-smoke-${{ github.run_id }}
+          path: smoke/
+          if-no-files-found: warn
+          retention-days: 14
+          compression-level: 6
