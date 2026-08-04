@@ -1,0 +1,293 @@
+name: Fourth approach compute
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'fourth-approach/launch.json'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: fourth-approach-compute
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      enabled: ${{ steps.plan.outputs.enabled }}
+      run_index: ${{ steps.plan.outputs.run_index }}
+      task: ${{ steps.plan.outputs.task }}
+      spec_path: ${{ steps.plan.outputs.spec_path }}
+      jobs: ${{ steps.plan.outputs.jobs }}
+      minimum_jobs: ${{ steps.plan.outputs.minimum_jobs }}
+      runtime_seconds: ${{ steps.plan.outputs.runtime_seconds }}
+      max_attempts: ${{ steps.plan.outputs.max_attempts }}
+      nonce: ${{ steps.plan.outputs.nonce }}
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: plan
+        name: Validate launch, specification, code, and tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p plan-diagnostics
+          python -m py_compile \
+            fourth-approach/schema.py \
+            fourth-approach/inventory.py \
+            fourth-approach/runner.py \
+            fourth-approach/collect.py \
+            fourth-approach/verify_run.py
+          PYTHONPATH=fourth-approach python -m unittest discover \
+            -s fourth-approach/tests -p 'test_*.py' -v \
+            > plan-diagnostics/unit-tests.log 2>&1
+          PYTHONPATH=fourth-approach python - <<'PY' >> "$GITHUB_OUTPUT"
+          from schema import matrix_json, read_json, validate_launch, validate_spec
+          launch = validate_launch(read_json('fourth-approach/launch.json'))
+          validate_spec(read_json(launch['spec_path']), launch)
+          print(f"enabled={'true' if launch['enabled'] else 'false'}")
+          print(f"run_index={launch['run_index']}")
+          print(f"task={launch['task']}")
+          print(f"spec_path={launch['spec_path']}")
+          print(f"jobs={launch['jobs']}")
+          print(f"minimum_jobs={launch['minimum_jobs']}")
+          print(f"runtime_seconds={launch['runtime_seconds']}")
+          print(f"max_attempts={launch['max_attempts']}")
+          print(f"nonce={launch['nonce']}")
+          print(f"matrix={matrix_json(launch['jobs'])}")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-plan-${{ github.run_id }}
+          path: plan-diagnostics/
+          if-no-files-found: warn
+          retention-days: 14
+
+  compute:
+    needs: plan
+    if: needs.plan.outputs.enabled == 'true'
+    name: fourth-${{ needs.plan.outputs.run_index }}-${{ matrix.id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    env:
+      PYTHONUNBUFFERED: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create mandatory diagnostic files before computation
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          date -u +%FT%TZ > out/started-at.txt
+          printf '%s\n' "$GITHUB_SHA" > out/source-sha.txt
+          printf '%s\n' "${{ needs.plan.outputs.nonce }}" > out/nonce.txt
+          cat > out/command.txt <<CMD
+          PYTHONPATH=fourth-approach python fourth-approach/runner.py --repo . --spec '${{ needs.plan.outputs.spec_path }}' --task '${{ needs.plan.outputs.task }}' --run-index '${{ needs.plan.outputs.run_index }}' --shard-id '${{ matrix.id }}' --shard-count '${{ needs.plan.outputs.jobs }}' --seconds '${{ needs.plan.outputs.runtime_seconds }}' --max-attempts '${{ needs.plan.outputs.max_attempts }}' --output out
+          CMD
+          {
+            uname -a
+            nproc
+            lscpu
+            free -h
+            cat /proc/meminfo
+            swapon --show || true
+            df -h .
+            ulimit -a
+            python --version
+          } > out/machine.txt
+          python -m py_compile \
+            fourth-approach/schema.py \
+            fourth-approach/inventory.py \
+            fourth-approach/runner.py
+          PYTHONPATH=fourth-approach python - <<'PY'
+          from schema import read_json, validate_launch, validate_spec
+          launch = validate_launch(read_json('fourth-approach/launch.json'))
+          validate_spec(read_json(launch['spec_path']), launch)
+          assert launch['enabled'] is True
+          assert launch['run_index'] == int('${{ needs.plan.outputs.run_index }}')
+          assert launch['nonce'] == '${{ needs.plan.outputs.nonce }}'
+          PY
+
+      - name: Run checkpointed task with resource monitor
+        shell: bash
+        run: |
+          set -uo pipefail
+          bash fourth-approach/tools/monitor_resources.sh out/resource-monitor.log 30 &
+          monitor_pid=$!
+          set +e
+          timeout --signal=TERM --kill-after=30s \
+            "$(( ${{ needs.plan.outputs.runtime_seconds }} + 90 ))s" \
+            env PYTHONPATH=fourth-approach python fourth-approach/runner.py \
+              --repo . \
+              --spec '${{ needs.plan.outputs.spec_path }}' \
+              --task '${{ needs.plan.outputs.task }}' \
+              --run-index '${{ needs.plan.outputs.run_index }}' \
+              --shard-id '${{ matrix.id }}' \
+              --shard-count '${{ needs.plan.outputs.jobs }}' \
+              --seconds '${{ needs.plan.outputs.runtime_seconds }}' \
+              --max-attempts '${{ needs.plan.outputs.max_attempts }}' \
+              --output out \
+              > out/driver.log 2>&1
+          code=$?
+          set -e
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          printf '%s\n' "$code" > out/runner-exit-code.txt
+          date -u +%FT%TZ > out/finished-at.txt
+          exit 0
+
+      - name: Classify technical result from manifest, not a short exit-code list
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f out/started-at.txt
+          test -f out/source-sha.txt
+          test -f out/nonce.txt
+          test -f out/command.txt
+          test -f out/machine.txt
+          test -f out/resource-monitor.log
+          test -f out/driver.log
+          test -f out/runner-exit-code.txt
+          test -f out/launch-status.json
+          test -f out/manifest.json
+          PYTHONPATH=fourth-approach python - <<'PY'
+          import json
+          manifest = json.load(open('out/manifest.json'))
+          assert manifest['approach'] == 'fourth-approach-obstruction-guided-exact-synthesis'
+          assert manifest['run_index'] == int('${{ needs.plan.outputs.run_index }}')
+          assert manifest['shard_id'] == int('${{ matrix.id }}')
+          assert manifest['shard_count'] == int('${{ needs.plan.outputs.jobs }}')
+          assert manifest['status'] == 'SUCCESS', manifest
+          assert manifest['result_file']
+          PY
+          test -f out/records.json.gz
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-data-${{ matrix.id }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 21
+          compression-level: 6
+
+  collect:
+    needs: [plan, compute]
+    if: ${{ always() && needs.plan.outputs.enabled == 'true' && needs.compute.result != 'skipped' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Prepare collection directory before download
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p work/artifacts
+          date -u +%FT%TZ > work/collection-started-at.txt
+
+      - name: Download every available shard artifact
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          pattern: fourth-approach-data-*
+          path: work/artifacts
+          merge-multiple: false
+
+      - name: Aggregate, independently verify, and retain rejection diagnostics
+        id: aggregate
+        shell: bash
+        run: |
+          set -uo pipefail
+          set +e
+          PYTHONPATH=fourth-approach python fourth-approach/collect.py \
+            --artifacts work/artifacts \
+            --repo . \
+            --run-id "$GITHUB_RUN_ID" \
+            --source-sha '${{ github.sha }}' \
+            --expected-jobs '${{ needs.plan.outputs.jobs }}' \
+            --minimum-jobs '${{ needs.plan.outputs.minimum_jobs }}' \
+            --spec '${{ needs.plan.outputs.spec_path }}' \
+            > work/collector.log 2>&1
+          code=$?
+          set -e
+          printf '%s\n' "$code" > work/collector-exit-code.txt
+          run_dir="fourth-approach/runs/run-$(printf '%03d' '${{ needs.plan.outputs.run_index }}')-${GITHUB_RUN_ID}"
+          if [ -d "$run_dir" ]; then
+            PYTHONPATH=fourth-approach python fourth-approach/verify_run.py "$run_dir" \
+              > work/verifier.log 2>&1 || code=4
+          else
+            printf '%s\n' 'collector did not create a run directory' > work/verifier.log
+            code=5
+          fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Commit immutable archive and control state with rebase retries
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach/runs fourth-approach/control.json
+          if git diff --cached --quiet; then
+            echo 'No new archive changes; this may be an idempotent collector retry.'
+          else
+            git commit -m "save fourth-approach run from ${GITHUB_RUN_ID}"
+            for attempt in 1 2 3 4; do
+              if git push origin HEAD:main; then
+                break
+              fi
+              if [ "$attempt" = 4 ]; then
+                echo 'failed to push archive after four attempts' >&2
+                exit 1
+              fi
+              git pull --rebase origin main
+            done
+          fi
+
+      - name: Mark rejected collection as failed only after preserving and committing it
+        shell: bash
+        run: |
+          set -euo pipefail
+          code='${{ steps.aggregate.outputs.code }}'
+          if [ "$code" != '0' ]; then
+            echo "collector/verifier classified this run as rejected (code $code)" >&2
+            exit "$code"
+          fi
+          run_dir="fourth-approach/runs/run-$(printf '%03d' '${{ needs.plan.outputs.run_index }}')-${GITHUB_RUN_ID}"
+          PYTHONPATH=fourth-approach python fourth-approach/verify_run.py "$run_dir" --require-accepted
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-collection-${{ github.run_id }}
+          path: work/
+          if-no-files-found: warn
+          retention-days: 21
