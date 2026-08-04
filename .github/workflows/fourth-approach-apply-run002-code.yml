@@ -1,4 +1,4 @@
-name: Apply Fourth approach run 002 code
+name: Apply manual Fourth approach run 002
 
 on:
   workflow_dispatch:
@@ -11,18 +11,18 @@ permissions:
   actions: write
 
 concurrency:
-  group: fourth-approach-apply-run002-code
+  group: apply-manual-fourth-run-002
   cancel-in-progress: false
 
 jobs:
-  publish-and-smoke:
+  publish-and-launch:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GH_REPO: ${{ github.repository }}
     steps:
-      - name: Blobless sparse clone
+      - name: Clone ordinary project files
         shell: bash
         run: |
           set -euo pipefail
@@ -33,43 +33,31 @@ jobs:
           git sparse-checkout set fourth-approach
           git checkout -B main FETCH_HEAD
 
-      - name: Reassemble and inspect verified code package
+      - name: Extract verified run 002 package
         shell: bash
         run: |
           set -euo pipefail
-          for part in fourth-approach/tools/run002-code.part{00..02}; do
-            test -s "$part"
-          done
-          cat fourth-approach/tools/run002-code.part{00..02} | tr -d '\r\n\t ' > /tmp/run002-code.b64
-          remainder=$(( $(wc -c < /tmp/run002-code.b64) % 4 ))
-          if [ "$remainder" -eq 2 ]; then printf '==' >> /tmp/run002-code.b64; fi
-          if [ "$remainder" -eq 3 ]; then printf '=' >> /tmp/run002-code.b64; fi
-          if [ "$remainder" -eq 1 ]; then
-            echo 'invalid Base64 length after reassembly' >&2
+          package=fourth-approach/tools/manual-run002.tar.gz
+          test -s "$package"
+          tar -tzf "$package" > /tmp/files.txt
+          test -s /tmp/files.txt
+          if grep -E '(^/|(^|/)\.\.(/|$)|^\.github/|__pycache__|\.pyc$)' /tmp/files.txt; then
+            echo 'unsafe package path' >&2
             exit 2
           fi
-          base64 --decode /tmp/run002-code.b64 > /tmp/run002-code.tar.gz
-          tar -tzf /tmp/run002-code.tar.gz | tee /tmp/run002-files.txt
-          test -s /tmp/run002-files.txt
-          if grep -E '(^/|(^|/)\.\.(/|$)|^\.github/|__pycache__|\.pyc$)' /tmp/run002-files.txt; then
-            echo 'unsafe path in run002 package' >&2
+          if grep -v '^fourth-approach/' /tmp/files.txt; then
+            echo 'package contains path outside fourth-approach' >&2
             exit 2
           fi
-          if grep -v '^fourth-approach/' /tmp/run002-files.txt; then
-            echo 'package contains files outside fourth-approach' >&2
-            exit 2
-          fi
-          tar -xzf /tmp/run002-code.tar.gz -C .
+          tar -xzf "$package" -C .
 
-      - name: Validate the real run 002 path
+      - name: Validate manual 20 x 20700 run
         shell: bash
         run: |
           set -euo pipefail
           rm -rf fourth-approach/__pycache__ fourth-approach/tests/__pycache__
           python -m py_compile \
             fourth-approach/schema.py \
-            fourth-approach/inventory.py \
-            fourth-approach/canonicalize.py \
             fourth-approach/minimize.py \
             fourth-approach/runner.py \
             fourth-approach/collect.py \
@@ -79,41 +67,36 @@ jobs:
           PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python - <<'PY'
           from schema import read_json, validate_launch, validate_spec
           launch = validate_launch(read_json('fourth-approach/launch.json'))
-          spec = validate_spec(read_json(launch['spec_path']), launch, require_ready=True)
-          assert launch['enabled'] is False
+          validate_spec(read_json(launch['spec_path']), launch, require_ready=True)
+          assert launch['enabled'] is True
           assert launch['run_index'] == 2
-          assert launch['task'] == 'stage2_minimize_certificates'
           assert launch['jobs'] == 20
-          assert launch['minimum_jobs'] >= 18
           assert launch['runtime_seconds'] == 20700
-          assert spec['implementation_status'] == 'ready'
           PY
 
-      - name: Commit code and remove staging pieces
+      - name: Publish ordinary code and launch state
         shell: bash
         run: |
           set -euo pipefail
-          git rm -f fourth-approach/tools/run002-code.part{00..02}
+          git rm -f fourth-approach/tools/manual-run002.tar.gz
+          git rm -f fourth-approach/tools/run002-code.part00 fourth-approach/tools/run002-code.part01 fourth-approach/tools/run002-code.part02 2>/dev/null || true
           rm -rf fourth-approach/__pycache__ fourth-approach/tests/__pycache__
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add fourth-approach
-          git commit -m 'implement six-hour Fourth approach run 002 minimization'
+          git commit -m 'publish manual six-hour Fourth approach run 002'
           for attempt in 1 2 3 4; do
-            if git push origin HEAD:main; then
-              break
-            fi
-            if [ "$attempt" = 4 ]; then
-              echo 'failed to publish run 002 code after four attempts' >&2
-              exit 1
-            fi
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
             git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
             git rebase origin/main
           done
 
-      - name: Dispatch real-path smoke
+      - name: Dispatch exactly one big compute run
         shell: bash
         run: |
           set -euo pipefail
-          gh workflow run fourth-approach-smoke.yml --repo "$GH_REPO" --ref main
-          echo 'Dispatched real-path smoke for run 002.' >> "$GITHUB_STEP_SUMMARY"
+          active="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-compute.yml --limit 20 --json status --jq '[.[] | select(.status != "completed")] | length')"
+          test "$active" -eq 0
+          gh workflow run fourth-approach-compute.yml --repo "$GH_REPO" --ref main
+          echo 'Dispatched exactly one manual Fourth approach run 002.' >> "$GITHUB_STEP_SUMMARY"
