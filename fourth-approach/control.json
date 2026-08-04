@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+  "tracking_enabled": true,
+  "automation_mode": "hourly_guarded_one_transition",
+  "current_stage": 0,
+  "current_stage_name": "source_inventory",
+  "completed_runs": 0,
+  "last_run_id": null,
+  "last_run_index": null,
+  "last_run_accepted": null,
+  "next_run_index": 0,
+  "next_task": "stage0_source_inventory",
+  "next_spec_path": "fourth-approach/run-specs/run-000-stage0-source-inventory.json",
+  "smoke_required": true,
+  "smoke_verified_for_code_sha": null,
+  "full_run_auto_launch_allowed": true,
+  "max_one_transition_per_watch": true,
+  "stop_on_any_technical_failure": true,
+  "stop_on_rejected_collection": true,
+  "stop_on_unexpected_schema": true,
+  "large_matrix_concurrency_guard": true,
+  "minimum_free_concurrency_slots": 20,
+  "scientific_stopping_rule": "stop_or_pivot_after_two_accepted_runs_without_new_canonical_class_smaller_certificate_contrast_pair_coverage_gain_hard_survivor_or_transfer_evidence",
+  "recommended_next_action": "complete_smoke_then_launch_run_000_once",
+  "source_frontier": {
+    "third_approach_2_0_last_accepted_run_id": 30911346279,
+    "third_approach_2_0_last_accepted_commit": "ae97833ea31d9aa359939b2a540aeac3d391cad8"
+  }
+}
