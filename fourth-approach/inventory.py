@@ -67,13 +67,18 @@ def _git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProc
 
 
 def git_tree_entries(repo: Path, ref: str = "HEAD") -> list[dict[str, Any]]:
-    result = _git(repo, "ls-tree", "-r", "-l", "-z", ref)
+    # Do not use `git ls-tree -l` in a blobless partial clone. Asking Git for
+    # blob sizes causes lazy retrieval of the repository's multi-gigabyte bulk
+    # archives, which turned a smoke test into a 25-minute cancelled download.
+    # The immutable blob OID is sufficient for this source-frontier inventory;
+    # sizes remain explicitly unknown until a later targeted materialization.
+    result = _git(repo, "ls-tree", "-r", "-z", ref)
     entries: list[dict[str, Any]] = []
     for raw in result.stdout.split(b"\0"):
         if not raw:
             continue
         metadata, raw_path = raw.split(b"\t", 1)
-        mode, object_type, oid, raw_size = metadata.decode("ascii").split()
+        mode, object_type, oid = metadata.decode("ascii").split()
         if object_type != "blob":
             continue
         entries.append(
@@ -81,7 +86,8 @@ def git_tree_entries(repo: Path, ref: str = "HEAD") -> list[dict[str, Any]]:
                 "path": raw_path.decode("utf-8", errors="surrogateescape"),
                 "mode": mode,
                 "git_blob_oid": oid,
-                "bytes": int(raw_size),
+                "bytes": 0,
+                "bytes_known": False,
             }
         )
     return entries
@@ -141,6 +147,7 @@ def inventory_git_tree_shard(
         record: dict[str, Any] = {
             "path": rel,
             "bytes": int(entry["bytes"]),
+            "bytes_known": bool(entry.get("bytes_known", True)),
             "git_blob_oid": oid,
             "content_id": f"git-blob:{oid}",
             "kind": classify(rel),
@@ -171,6 +178,7 @@ def inventory_git_tree_shard(
         "task": "stage0_source_inventory",
         "source_ref": ref,
         "identity_scheme": "immutable_commit_path_and_git_blob_oid",
+        "blob_size_policy": "not_materialized_in_blobless_inventory",
         "shard_id": shard_id,
         "shard_count": shard_count,
         "records": records,
@@ -178,6 +186,7 @@ def inventory_git_tree_shard(
         "metrics": {
             "files_inventoried": len(records),
             "bytes_referenced": sum(int(x["bytes"]) for x in records),
+            "files_with_known_size": sum(1 for x in records if x.get("bytes_known") is True),
             "summary_files_inventoried": sum(
                 1 for x in records if x["kind"] == "run_summary"
             ),
