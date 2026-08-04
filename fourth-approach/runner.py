@@ -11,7 +11,7 @@ import time
 import traceback
 from pathlib import Path
 
-from inventory import inventory_shard, write_gzip_json
+from inventory import inventory_git_tree_shard, write_gzip_json
 from schema import APPROACH, read_json, validate_spec
 
 
@@ -33,6 +33,7 @@ def main() -> int:
     parser.add_argument("--seconds", type=int, required=True)
     parser.add_argument("--max-attempts", type=int, default=0)
     parser.add_argument("--output", required=True)
+    parser.add_argument("--source-ref", default="HEAD")
     args = parser.parse_args()
 
     started = time.time()
@@ -52,6 +53,7 @@ def main() -> int:
         "run_index": args.run_index,
         "shard_id": args.shard_id,
         "shard_count": args.shard_count,
+        "source_ref": args.source_ref,
         "started_at": started,
         "pid": os.getpid(),
         "python": sys.version,
@@ -69,7 +71,13 @@ def main() -> int:
             raise ValueError("seconds must be at least 30")
 
         if args.task == "stage0_source_inventory":
-            result = inventory_shard(repo, spec, args.shard_id, args.shard_count)
+            result = inventory_git_tree_shard(
+                repo,
+                spec,
+                args.shard_id,
+                args.shard_count,
+                ref=args.source_ref,
+            )
         else:
             raise ValueError(f"unsupported task: {args.task}")
         write_gzip_json(result_path, result)
@@ -87,6 +95,7 @@ def main() -> int:
             "run_index": args.run_index,
             "shard_id": args.shard_id,
             "shard_count": args.shard_count,
+            "source_ref": args.source_ref,
             "status": status,
             "controlled_non_result": False,
             "errors": errors,
