@@ -1,9 +1,9 @@
 {
-  "enabled": false,
+  "enabled": true,
   "jobs": 20,
   "max_attempts": 0,
   "minimum_jobs": 20,
-  "nonce": "fourth-run-001-disabled-after-repair",
+  "nonce": "fourth-run-001-smoke-30957687230",
   "run_index": 1,
   "runtime_seconds": 20700,
   "schema_version": 1,

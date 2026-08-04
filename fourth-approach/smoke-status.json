@@ -1,8 +1,10 @@
 {
-  "completed_at": "2026-08-04T22:47:05.792968+00:00",
-  "result": "failure",
+  "completed_at": "2026-08-04T22:47:46.754028+00:00",
+  "result": "success",
+  "run_index": 1,
   "schema_version": 1,
-  "tested_sha": "995b9b0c9f566d7bdac6d3f0bd95e70f031ae370",
+  "task": "stage1_canonicalize_verify",
+  "tested_sha": "e4baca94675347d848a5fab32a0281bd1e3b9054",
   "workflow": "Fourth approach real-path smoke",
-  "workflow_run_id": 30957661953
+  "workflow_run_id": 30957687230
 }

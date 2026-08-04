@@ -14,7 +14,7 @@
   "next_run_index": 1,
   "next_spec_path": "fourth-approach/run-specs/run-001-stage1-canonicalize-verify.json",
   "next_task": "stage1_canonicalize_verify",
-  "recommended_next_action": "run_stage1_real_path_smoke_then_launch_once",
+  "recommended_next_action": "compute_dispatch_requested_after_green_smoke",
   "run_history": [
     {
       "accepted": true,
@@ -38,8 +38,8 @@
   ],
   "schema_version": 1,
   "scientific_stopping_rule": "stop_or_pivot_after_two_accepted_runs_without_new_canonical_class_smaller_certificate_contrast_pair_coverage_gain_hard_survivor_or_transfer_evidence",
-  "smoke_required": true,
-  "smoke_verified_for_code_sha": null,
+  "smoke_required": false,
+  "smoke_verified_for_code_sha": "e4baca94675347d848a5fab32a0281bd1e3b9054",
   "source_frontier": {
     "third_approach_2_0_last_accepted_commit": "ae97833ea31d9aa359939b2a540aeac3d391cad8",
     "third_approach_2_0_last_accepted_run_id": 30911346279
