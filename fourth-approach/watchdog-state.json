@@ -1,15 +1,10 @@
 {
+  "schema_version": 1,
+  "last_checked_at": null,
+  "last_observed_active_runs": [],
+  "last_action": "repaired_stale_launch_and_implemented_run_001",
+  "last_action_commit": null,
   "consecutive_technical_failures": 0,
-  "current_gate": "compute_dispatch_requested",
-  "dispatch_requested_at": "2026-08-04T22:00:37.083714+00:00",
-  "dispatch_requested_for_nonce": "fourth-run-000-watchdog-1785880837",
-  "last_action": "enabled_next_run_after_green_smoke",
-  "last_action_commit": "e517a9d16c27d8df67958d09e0880f3761a7c39d",
-  "last_checked_at": "2026-08-04T22:00:37.083714+00:00",
-  "last_observed_active_runs": {
-    "compute": 0,
-    "conflicts": 1
-  },
-  "notes": "The hourly tracking task must update this file only after a meaningful state transition.",
-  "schema_version": 1
+  "current_gate": "await_stage1_real_path_smoke",
+  "notes": "Accepted run 000 is archived. Launch is aligned to run 001 and disabled until a green smoke for the current code."
 }

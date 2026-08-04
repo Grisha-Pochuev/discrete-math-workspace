@@ -7,7 +7,15 @@ from pathlib import Path
 from typing import Any
 
 APPROACH = "fourth-approach-obstruction-guided-exact-synthesis"
-SUPPORTED_TASKS = {"stage0_source_inventory"}
+SUPPORTED_TASKS = {
+    "stage0_source_inventory",
+    "stage1_canonicalize_verify",
+    "stage2_minimize_certificates",
+}
+IMPLEMENTED_TASKS = {
+    "stage0_source_inventory",
+    "stage1_canonicalize_verify",
+}
 MAX_JOBS = 20
 MAX_RUNTIME_SECONDS = 20_700
 
@@ -74,7 +82,12 @@ def validate_launch(data: dict[str, Any]) -> dict[str, Any]:
     return normalized
 
 
-def validate_spec(data: dict[str, Any], launch: dict[str, Any] | None = None) -> dict[str, Any]:
+def validate_spec(
+    data: dict[str, Any],
+    launch: dict[str, Any] | None = None,
+    *,
+    require_ready: bool = False,
+) -> dict[str, Any]:
     if int(data.get("schema_version", 0)) != 1:
         raise ValidationError("spec schema_version must be 1")
     run_index = int(data.get("run_index", -1))
@@ -84,10 +97,67 @@ def validate_spec(data: dict[str, Any], launch: dict[str, Any] | None = None) ->
     for key in ("title", "research_question", "scientific_output", "next_decision"):
         if not str(data.get(key, "")).strip():
             raise ValidationError(f"spec.{key} is required")
+    status = str(data.get("implementation_status", "ready" if task == "stage0_source_inventory" else ""))
+    if require_ready:
+        if status != "ready":
+            raise ValidationError(f"spec is not implementation-ready: {status or 'missing'}")
+        if task not in IMPLEMENTED_TASKS:
+            raise ValidationError(f"runner does not implement task: {task}")
+    execution = data.get("execution")
+    if execution is not None:
+        if not isinstance(execution, dict):
+            raise ValidationError("spec.execution must be an object")
+        jobs = int(execution.get("jobs", 0))
+        minimum_jobs = int(execution.get("minimum_jobs", 0))
+        runtime = int(execution.get("runtime_seconds", 0))
+        attempts = int(execution.get("max_attempts", -1))
+        if not 1 <= jobs <= MAX_JOBS:
+            raise ValidationError("spec.execution.jobs is invalid")
+        if not 1 <= minimum_jobs <= jobs:
+            raise ValidationError("spec.execution.minimum_jobs is invalid")
+        if not 30 <= runtime <= MAX_RUNTIME_SECONDS:
+            raise ValidationError("spec.execution.runtime_seconds is invalid")
+        if attempts < 0:
+            raise ValidationError("spec.execution.max_attempts is invalid")
+    if task == "stage1_canonicalize_verify" and status == "ready":
+        archives = data.get("candidate_archives")
+        if not isinstance(archives, list) or not archives:
+            raise ValidationError("ready stage1 spec requires candidate_archives")
+        for source in archives:
+            if not isinstance(source, dict) or not str(source.get("path", "")).endswith(".json.gz"):
+                raise ValidationError("invalid stage1 candidate archive declaration")
     if launch is not None:
         if run_index != launch["run_index"] or task != launch["task"]:
             raise ValidationError("launch and spec disagree on run_index/task")
-    return dict(data)
+        if execution is not None:
+            for key in ("jobs", "minimum_jobs", "runtime_seconds", "max_attempts"):
+                if int(execution[key]) != int(launch[key]):
+                    raise ValidationError(f"launch and spec.execution disagree on {key}")
+    normalized = dict(data)
+    normalized["run_index"] = run_index
+    normalized["task"] = task
+    normalized["implementation_status"] = status
+    return normalized
+
+
+def launch_from_spec(spec_path: str, spec: dict[str, Any], *, enabled: bool = False, nonce: str) -> dict[str, Any]:
+    execution = spec.get("execution")
+    if not isinstance(execution, dict):
+        raise ValidationError("next spec has no execution block")
+    return validate_launch(
+        {
+            "schema_version": 1,
+            "enabled": enabled,
+            "run_index": int(spec["run_index"]),
+            "task": str(spec["task"]),
+            "spec_path": spec_path,
+            "jobs": int(execution["jobs"]),
+            "minimum_jobs": int(execution["minimum_jobs"]),
+            "runtime_seconds": int(execution["runtime_seconds"]),
+            "max_attempts": int(execution["max_attempts"]),
+            "nonce": nonce,
+        }
+    )
 
 
 def matrix_json(jobs: int) -> str:

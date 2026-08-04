@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "implementation_status": "draft_not_supported_by_current_runner",
+  "stage_name": "certificate_minimization",
+  "run_index": 2,
+  "task": "stage2_minimize_certificates",
+  "title": "Minimize independently verified canonical obstruction certificates",
+  "research_question": "What is the smallest exact support, equation set, multiplier set, and rational coefficient description that preserves each canonical obstruction mechanism?",
+  "source_requirement": "accepted Fourth approach run 001 canonical classes and verification results",
+  "primary_metrics": [
+    "classes_attempted",
+    "classes_with_smaller_certificate",
+    "support_variables_removed",
+    "equations_removed",
+    "multiplier_terms_removed",
+    "coefficient_height_reduction",
+    "independently_reverified_minimal_candidates"
+  ],
+  "acceptance_criteria": {
+    "every_reduction_independently_exactly_verified": true,
+    "minimality_notions_reported_separately": true,
+    "original_representatives_preserved": true
+  },
+  "execution": {
+    "jobs": 20,
+    "minimum_jobs": 18,
+    "runtime_seconds": 20700,
+    "max_attempts": 0
+  },
+  "scientific_output": "A compact library of simple exact obstruction cores that GPT-5.6 Sol can inspect and attempt to generalize.",
+  "next_spec_path": "fourth-approach/run-specs/run-003-stage3-deletion-contrasts.json",
+  "next_decision": "Build one-edit deletion contrasts from the minimized obstruction cores."
+}

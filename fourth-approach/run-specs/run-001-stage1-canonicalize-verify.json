@@ -1,24 +1,65 @@
 {
   "schema_version": 1,
-  "implementation_status": "draft_not_supported_by_current_runner",
+  "implementation_status": "ready",
+  "stage_name": "canonicalization_and_independent_verification",
   "run_index": 1,
   "task": "stage1_canonicalize_verify",
   "title": "Canonicalize supports and independently verify exact restricted certificates",
-  "research_question": "How many non-isomorphic exact obstruction classes remain after all declared symmetries and duplicate certificate representations are removed?",
-  "source_requirement": "accepted Fourth approach run 000 source manifest",
+  "research_question": "How many non-isomorphic exact obstruction classes remain after all declared vertex and global-color symmetries and duplicate certificate representations are removed?",
+  "source_requirement": "accepted Fourth approach run 000 source manifest and accepted Third approach 2.0 top-candidate archives",
+  "source_inventory": "fourth-approach/runs/run-000-30954702268/source-manifest.json",
+  "candidate_archives": [
+    {
+      "path": "third-approach-2.0/runs/run-000-30771199582/top-candidates.json.gz",
+      "run_id": 30771199582,
+      "run_index": 0
+    },
+    {
+      "path": "third-approach-2.0/runs/run-001-30816078194/top-candidates.json.gz",
+      "run_id": 30816078194,
+      "run_index": 1
+    },
+    {
+      "path": "third-approach-2.0/runs/run-002-30859608967/top-candidates.json.gz",
+      "run_id": 30859608967,
+      "run_index": 2
+    },
+    {
+      "path": "third-approach-2.0/runs/run-003-30885477934/top-candidates.json.gz",
+      "run_id": 30885477934,
+      "run_index": 3
+    },
+    {
+      "path": "third-approach-2.0/runs/run-004-30911346279/top-candidates.json.gz",
+      "run_id": 30911346279,
+      "run_index": 4
+    }
+  ],
+  "exact_only": true,
+  "symmetry_group": "S6 vertex permutations times one global S3 color permutation",
+  "independent_verifier": "fourth-approach/canonicalize.py; does not import Third approach certificate code",
   "primary_metrics": [
-    "raw_certificates",
+    "raw_exact_certificates",
     "canonical_support_classes",
     "canonical_certificate_signatures",
-    "independently_verified_classes",
+    "independently_verified_certificates",
     "rejected_certificates",
-    "ambiguous_inputs"
+    "duplicate_exact_certificates_removed"
   ],
   "acceptance_criteria": {
+    "minimum_completed_jobs": 20,
     "production_and_independent_verifiers_agree": true,
     "raw_and_canonical_counts_reported_separately": true,
-    "all_transformations_to_canonical_form_recorded": true
+    "all_transformations_to_canonical_form_recorded": true,
+    "all_declared_exact_candidates_covered_once": true
   },
-  "scientific_output": "A reproducible taxonomy of exact restricted obstruction classes for minimization and GPT-5.6 Sol reasoning.",
-  "next_decision": "Select diverse verified representatives for certificate minimization."
+  "execution": {
+    "jobs": 20,
+    "minimum_jobs": 20,
+    "runtime_seconds": 20700,
+    "max_attempts": 0
+  },
+  "scientific_output": "A reproducible taxonomy of independently verified exact restricted obstruction classes, with diverse representatives and duplicate counts, prepared for minimization and GPT-5.6 Sol reasoning.",
+  "next_spec_path": "fourth-approach/run-specs/run-002-stage2-minimize-certificates.json",
+  "next_decision": "Select the simplest diverse verified representative of each canonical class and implement exact certificate minimization."
 }

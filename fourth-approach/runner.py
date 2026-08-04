@@ -11,7 +11,8 @@ import time
 import traceback
 from pathlib import Path
 
-from inventory import inventory_git_tree_shard, write_gzip_json
+from canonicalize import process_stage1_shard, write_gzip_json
+from inventory import inventory_git_tree_shard
 from schema import APPROACH, read_json, validate_spec
 
 
@@ -45,6 +46,7 @@ def main() -> int:
     status = "TECHNICAL_FAILURE"
     errors: list[str] = []
     metrics: dict = {}
+    controlled_non_result = False
 
     launch_status = {
         "schema_version": 1,
@@ -54,6 +56,8 @@ def main() -> int:
         "shard_id": args.shard_id,
         "shard_count": args.shard_count,
         "source_ref": args.source_ref,
+        "seconds": args.seconds,
+        "max_attempts": args.max_attempts,
         "started_at": started,
         "pid": os.getpid(),
         "python": sys.version,
@@ -62,7 +66,7 @@ def main() -> int:
     atomic_json(out / "launch-status.json", launch_status)
 
     try:
-        spec = validate_spec(read_json(args.spec))
+        spec = validate_spec(read_json(args.spec), require_ready=True)
         if spec["task"] != args.task or int(spec["run_index"]) != args.run_index:
             raise ValueError("runner arguments disagree with run specification")
         if not 0 <= args.shard_id < args.shard_count:
@@ -78,11 +82,21 @@ def main() -> int:
                 args.shard_count,
                 ref=args.source_ref,
             )
+        elif args.task == "stage1_canonicalize_verify":
+            result = process_stage1_shard(
+                repo,
+                spec,
+                args.shard_id,
+                args.shard_count,
+                seconds=args.seconds,
+                max_attempts=args.max_attempts,
+            )
+            controlled_non_result = not bool(result.get("complete", False))
         else:
             raise ValueError(f"unsupported task: {args.task}")
         write_gzip_json(result_path, result)
         metrics = dict(result.get("metrics", {}))
-        status = "SUCCESS"
+        status = "SUCCESS" if not controlled_non_result else "BOUNDED_INCOMPLETE"
     except Exception as exc:
         errors.append(f"{type(exc).__name__}: {exc}")
         (out / "traceback.txt").write_text(traceback.format_exc(), encoding="utf-8")
@@ -97,7 +111,7 @@ def main() -> int:
             "shard_count": args.shard_count,
             "source_ref": args.source_ref,
             "status": status,
-            "controlled_non_result": False,
+            "controlled_non_result": controlled_non_result,
             "errors": errors,
             "metrics": metrics,
             "started_at": started,
@@ -107,7 +121,7 @@ def main() -> int:
             "result_bytes": result_path.stat().st_size if result_path.exists() else 0,
         }
         atomic_json(manifest_path, manifest)
-    return 0 if status == "SUCCESS" else 2
+    return 0 if status in {"SUCCESS", "BOUNDED_INCOMPLETE"} else 2
 
 
 if __name__ == "__main__":
