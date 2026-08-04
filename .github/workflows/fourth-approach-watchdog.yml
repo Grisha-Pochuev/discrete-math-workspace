@@ -64,12 +64,49 @@ jobs:
             --json status --jq '[.[] | select(.status != "completed")] | length' 2>/dev/null || echo 0)"
           active_compute="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-compute.yml --limit 20 \
             --json status --jq '[.[] | select(.status != "completed")] | length' 2>/dev/null || echo 0)"
-          active_conflict="$(gh run list --repo "$GH_REPO" --limit 100 \
-            --json status,workflowName \
-            --jq '[.[] | select(.status != "completed"
-              and .workflowName != "Fourth approach watchdog"
-              and .workflowName != "Fourth approach real-path smoke"
-              and .workflowName != "Fourth approach compute")] | length' 2>/dev/null || echo 0)"
+
+          # Only a genuinely large competing computation should block this run.
+          # The previous implementation counted every short service workflow as a
+          # conflict, which could leave a successful smoke isolated indefinitely.
+          active_conflict=0
+          while IFS=$'\t' read -r run_id workflow_name; do
+            if [ -z "$run_id" ]; then
+              continue
+            fi
+            case "$workflow_name" in
+              'Fourth approach watchdog'|'Fourth approach real-path smoke'|'Fourth approach compute')
+                continue
+                ;;
+            esac
+
+            run_path="$(gh api "repos/${GH_REPO}/actions/runs/${run_id}" --jq '.path // ""' 2>/dev/null || true)"
+            job_count="$(gh api "repos/${GH_REPO}/actions/runs/${run_id}/jobs?per_page=1" --jq '.total_count // 0' 2>/dev/null || echo 0)"
+            is_large=false
+            case "$run_path" in
+              '.github/workflows/second-approach-compute.yml'|\
+              '.github/workflows/second-approach-2-compute.yml'|\
+              '.github/workflows/third-approach-compute.yml'|\
+              '.github/workflows/third-approach-2.0-compute.yml'|\
+              '.github/workflows/run-frontier3.yml'|\
+              '.github/workflows/run.yml')
+                is_large=true
+                ;;
+            esac
+            if [ "${job_count:-0}" -ge 10 ]; then
+              is_large=true
+            fi
+
+            if [ "$is_large" = true ]; then
+              active_conflict=$((active_conflict + 1))
+              echo "Blocking large workflow: ${workflow_name} run ${run_id}, path=${run_path}, jobs=${job_count}" \
+                | tee -a "$GITHUB_STEP_SUMMARY"
+            else
+              echo "Ignoring short service workflow: ${workflow_name} run ${run_id}, path=${run_path}, jobs=${job_count}" \
+                | tee -a "$GITHUB_STEP_SUMMARY"
+            fi
+          done < <(gh run list --repo "$GH_REPO" --limit 100 \
+            --json databaseId,status,workflowName \
+            --jq '.[] | select(.status != "completed") | [.databaseId, .workflowName] | @tsv' 2>/dev/null || true)
 
           {
             echo "smoke_result=${smoke_result}"
@@ -78,7 +115,7 @@ jobs:
             echo "launch_run_index=${launch_run_index}"
             echo "active_smoke=${active_smoke}"
             echo "active_compute=${active_compute}"
-            echo "active_conflict=${active_conflict}"
+            echo "active_large_conflict=${active_conflict}"
           } | tee -a "$GITHUB_STEP_SUMMARY"
 
           if [ "$smoke_result" != 'success' ]; then
@@ -97,7 +134,7 @@ jobs:
           fi
 
           if [ "$active_conflict" -gt 0 ]; then
-            echo 'Another repository workflow is active; Fourth approach compute is deferred.'
+            echo 'Another large repository computation is active; Fourth approach compute is deferred.'
             exit 0
           fi
 
