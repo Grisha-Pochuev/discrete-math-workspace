@@ -204,6 +204,9 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          sparse-checkout: |
+            fourth-approach
+          sparse-checkout-cone-mode: true
 
       - name: Prepare collection directory before download
         shell: bash
