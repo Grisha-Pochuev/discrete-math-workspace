@@ -40,7 +40,15 @@ jobs:
           for part in fourth-approach/tools/run002-code.part{00..02}; do
             test -s "$part"
           done
-          cat fourth-approach/tools/run002-code.part{00..02} | base64 --decode > /tmp/run002-code.tar.gz
+          cat fourth-approach/tools/run002-code.part{00..02} | tr -d '\r\n\t ' > /tmp/run002-code.b64
+          remainder=$(( $(wc -c < /tmp/run002-code.b64) % 4 ))
+          if [ "$remainder" -eq 2 ]; then printf '==' >> /tmp/run002-code.b64; fi
+          if [ "$remainder" -eq 3 ]; then printf '=' >> /tmp/run002-code.b64; fi
+          if [ "$remainder" -eq 1 ]; then
+            echo 'invalid Base64 length after reassembly' >&2
+            exit 2
+          fi
+          base64 --decode /tmp/run002-code.b64 > /tmp/run002-code.tar.gz
           tar -tzf /tmp/run002-code.tar.gz | tee /tmp/run002-files.txt
           test -s /tmp/run002-files.txt
           if grep -E '(^/|(^|/)\.\.(/|$)|^\.github/|__pycache__|\.pyc$)' /tmp/run002-files.txt; then
