@@ -30,19 +30,20 @@ jobs:
       nonce: ${{ steps.plan.outputs.nonce }}
       matrix: ${{ steps.plan.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          sparse-checkout: |
-            /first-approach/
-            /second-approach/
-            /second-approach-2.0/
-            /third-approach/
-            /third-approach-2.0/
-            /fourth-approach/
-            /*.md
-            /*.txt
-          sparse-checkout-cone-mode: false
+      - name: Blobless partial clone of launch commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$TARGET_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
 
       - id: plan
         name: Validate launch, specification, code, and tests
@@ -101,19 +102,20 @@ jobs:
       MKL_NUM_THREADS: '1'
       NUMEXPR_NUM_THREADS: '1'
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          sparse-checkout: |
-            /first-approach/
-            /second-approach/
-            /second-approach-2.0/
-            /third-approach/
-            /third-approach-2.0/
-            /fourth-approach/
-            /*.md
-            /*.txt
-          sparse-checkout-cone-mode: false
+      - name: Blobless partial clone of launch commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$TARGET_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
 
       - name: Create mandatory diagnostic files before computation
         shell: bash
@@ -124,7 +126,7 @@ jobs:
           printf '%s\n' "$GITHUB_SHA" > out/source-sha.txt
           printf '%s\n' "${{ needs.plan.outputs.nonce }}" > out/nonce.txt
           cat > out/command.txt <<CMD
-          PYTHONPATH=fourth-approach python fourth-approach/runner.py --repo . --spec '${{ needs.plan.outputs.spec_path }}' --task '${{ needs.plan.outputs.task }}' --run-index '${{ needs.plan.outputs.run_index }}' --shard-id '${{ matrix.id }}' --shard-count '${{ needs.plan.outputs.jobs }}' --seconds '${{ needs.plan.outputs.runtime_seconds }}' --max-attempts '${{ needs.plan.outputs.max_attempts }}' --output out
+          PYTHONPATH=fourth-approach python fourth-approach/runner.py --repo . --spec '${{ needs.plan.outputs.spec_path }}' --task '${{ needs.plan.outputs.task }}' --run-index '${{ needs.plan.outputs.run_index }}' --shard-id '${{ matrix.id }}' --shard-count '${{ needs.plan.outputs.jobs }}' --seconds '${{ needs.plan.outputs.runtime_seconds }}' --max-attempts '${{ needs.plan.outputs.max_attempts }}' --source-ref HEAD --output out
           CMD
           {
             uname -a
@@ -136,6 +138,7 @@ jobs:
             df -h .
             ulimit -a
             python --version
+            git count-objects -vH
           } > out/machine.txt
           python -m py_compile \
             fourth-approach/schema.py \
@@ -168,6 +171,7 @@ jobs:
               --shard-count '${{ needs.plan.outputs.jobs }}' \
               --seconds '${{ needs.plan.outputs.runtime_seconds }}' \
               --max-attempts '${{ needs.plan.outputs.max_attempts }}' \
+              --source-ref HEAD \
               --output out \
               > out/driver.log 2>&1
           code=$?
@@ -220,13 +224,18 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-          sparse-checkout: |
-            fourth-approach
-          sparse-checkout-cone-mode: true
+      - name: Blobless partial clone of current main state
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
 
       - name: Prepare collection directory before download
         shell: bash
@@ -291,7 +300,8 @@ jobs:
                 echo 'failed to push archive after four attempts' >&2
                 exit 1
               fi
-              git pull --rebase origin main
+              git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+              git rebase origin/main
             done
           fi
 
