@@ -19,7 +19,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: fourth-approach-smoke-v3
+  group: fourth-approach-smoke-v4
   cancel-in-progress: true
 
 jobs:
@@ -34,19 +34,20 @@ jobs:
       MKL_NUM_THREADS: '1'
       NUMEXPR_NUM_THREADS: '1'
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          sparse-checkout: |
-            /first-approach/
-            /second-approach/
-            /second-approach-2.0/
-            /third-approach/
-            /third-approach-2.0/
-            /fourth-approach/
-            /*.md
-            /*.txt
-          sparse-checkout-cone-mode: false
+      - name: Blobless partial clone of current source tree
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$TARGET_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$TARGET_SHA"
 
       - name: Create diagnostic directory first
         shell: bash
@@ -61,6 +62,7 @@ jobs:
             free -h
             df -h .
             python --version
+            git count-objects -vH
           } > smoke/machine.txt
 
       - name: Static checks and unit tests
@@ -92,7 +94,7 @@ jobs:
           for shard in 0 1 2 3; do
             out="smoke/artifacts/fourth-approach-data-${shard}"
             mkdir -p "$out"
-            printf '%s\n' "python fourth-approach/runner.py --task stage0_source_inventory --run-index 0 --shard-id ${shard} --shard-count 4" > "$out/command.txt"
+            printf '%s\n' "python fourth-approach/runner.py --task stage0_source_inventory --run-index 0 --shard-id ${shard} --shard-count 4 --source-ref HEAD" > "$out/command.txt"
             set +e
             PYTHONPATH=fourth-approach python fourth-approach/runner.py \
               --repo . \
@@ -103,6 +105,7 @@ jobs:
               --shard-count 4 \
               --seconds 120 \
               --max-attempts 1 \
+              --source-ref HEAD \
               --output "$out" \
               > "$out/driver.log" 2>&1
             code=$?
@@ -165,13 +168,18 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 1
-          sparse-checkout: |
-            fourth-approach
-          sparse-checkout-cone-mode: true
+      - name: Blobless partial clone of current main state
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=10 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
 
       - name: Record the newest smoke result in the repository
         shell: bash
@@ -184,7 +192,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           for attempt in 1 2 3 4; do
-            git fetch --no-tags --depth=1 origin main
+            git -c protocol.version=2 fetch --no-tags --depth=10 --filter=blob:none origin main
             git reset --hard origin/main
             python - <<'PY'
           import json
