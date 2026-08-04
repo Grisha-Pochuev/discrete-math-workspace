@@ -18,17 +18,14 @@ on:
       spec_path:
         description: 'Immutable run specification path'
         required: true
-        default: 'fourth-approach/run-specs/run-000-stage0-source-inventory.json'
         type: string
       expected_jobs:
         description: 'Expected shard count'
         required: true
-        default: '4'
         type: string
       minimum_jobs:
         description: 'Minimum acceptable completed shards'
         required: true
-        default: '4'
         type: string
 
 permissions:
@@ -44,7 +41,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     steps:
-      - name: Blobless partial clone of current main state
+      - name: Blobless sparse clone of current main state
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -52,25 +49,24 @@ jobs:
           set -euo pipefail
           git init .
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+          git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
           git sparse-checkout init --cone
           git sparse-checkout set fourth-approach
           git checkout -B main FETCH_HEAD
 
-      - name: Validate rescue inputs and create diagnostics first
+      - name: Validate inputs and create diagnostics first
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p work/artifacts
+          for value in '${{ inputs.source_run_id }}' '${{ inputs.run_index }}' '${{ inputs.expected_jobs }}' '${{ inputs.minimum_jobs }}'; do
+            case "$value" in (*[!0-9]*|'') exit 2;; esac
+          done
           printf '%s\n' '${{ inputs.source_run_id }}' > work/source-run-id.txt
           printf '%s\n' '${{ inputs.source_sha }}' > work/source-sha.txt
-          case '${{ inputs.source_run_id }}' in (*[!0-9]*|'') exit 2;; esac
-          case '${{ inputs.run_index }}' in (*[!0-9]*|'') exit 2;; esac
-          case '${{ inputs.expected_jobs }}' in (*[!0-9]*|'') exit 2;; esac
-          case '${{ inputs.minimum_jobs }}' in (*[!0-9]*|'') exit 2;; esac
           PYTHONPATH=fourth-approach python - <<'PY'
           from schema import read_json, validate_spec
-          spec = validate_spec(read_json('${{ inputs.spec_path }}'))
+          spec = validate_spec(read_json('${{ inputs.spec_path }}'), require_ready=True)
           assert spec['run_index'] == int('${{ inputs.run_index }}')
           PY
 
@@ -107,19 +103,23 @@ jobs:
             PYTHONPATH=fourth-approach python fourth-approach/verify_run.py "$run_dir" \
               > work/verifier.log 2>&1 || code=4
           else
-            printf '%s\n' 'collector did not create a run directory' > work/verifier.log
+            echo 'collector did not create a run directory' > work/verifier.log
             code=5
           fi
           echo "code=$code" >> "$GITHUB_OUTPUT"
           exit 0
 
-      - name: Commit rescued immutable archive with rebase retries
+      - name: Commit rescued archive and atomically prepared successor state
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add fourth-approach/runs fourth-approach/control.json
+          git add \
+            fourth-approach/runs \
+            fourth-approach/control.json \
+            fourth-approach/launch.json \
+            fourth-approach/watchdog-state.json
           if git diff --cached --quiet; then
             echo 'No new changes; archive may already have been rescued.'
           else
@@ -127,7 +127,7 @@ jobs:
             for attempt in 1 2 3 4; do
               if git push origin HEAD:main; then break; fi
               if [ "$attempt" = 4 ]; then exit 1; fi
-              git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+              git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
               git rebase origin/main
             done
           fi
