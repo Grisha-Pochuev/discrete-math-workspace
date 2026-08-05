@@ -1,46 +1,46 @@
 {
-  "schema_version": 1,
   "approach": "fourth-approach-obstruction-guided-exact-synthesis",
   "automation_mode": "manual_single_run",
-  "tracking_enabled": false,
-  "completed_runs": 2,
+  "completed_runs": 3,
   "current_stage": 2,
   "current_stage_name": "certificate_minimization",
-  "last_run_id": 30957731562,
-  "last_run_index": 1,
-  "last_run_accepted": true,
-  "next_run_index": 2,
-  "next_task": "stage2_minimize_certificates",
-  "next_spec_path": "fourth-approach/run-specs/run-002-stage2-minimize-certificates.json",
-  "smoke_required": false,
-  "smoke_verified_for_code_sha": null,
   "full_run_auto_launch_allowed": false,
   "large_matrix_concurrency_guard": true,
+  "last_run_accepted": true,
+  "last_run_id": 30960392864,
+  "last_run_index": 2,
   "minimum_free_concurrency_slots": 20,
-  "recommended_next_action": "manual_run_002_launched_once_no_automatic_successor",
-  "scientific_stopping_rule": "manual review after run 002",
-  "source_frontier": {
-    "third_approach_2_0_last_accepted_run_id": 30911346279,
-    "third_approach_2_0_last_accepted_commit": "ae97833ea31d9aa359939b2a540aeac3d391cad8"
-  },
+  "next_run_index": 3,
+  "next_spec_path": "fourth-approach/run-specs/run-002-stage2-minimize-certificates.json",
+  "next_task": "stage3_deletion_contrasts",
+  "recommended_next_action": "manual_review_run_002_before_any_next_run",
   "run_history": [
     {
+      "accepted": true,
       "run_id": 30954702268,
       "run_index": 0,
-      "task": "stage0_source_inventory",
-      "accepted": true
+      "task": "stage0_source_inventory"
     },
     {
-      "run_id": 30957731562,
-      "run_index": 1,
-      "task": "stage1_canonicalize_verify",
       "accepted": true,
       "metrics": {
         "canonical_support_classes": 2594,
+        "completed_jobs": 20,
         "independently_verified_certificates": 2594,
-        "rejected_certificates": 0,
-        "completed_jobs": 20
-      }
+        "rejected_certificates": 0
+      },
+      "run_id": 30957731562,
+      "run_index": 1,
+      "task": "stage1_canonicalize_verify"
     }
-  ]
+  ],
+  "schema_version": 1,
+  "scientific_stopping_rule": "manual review after run 002",
+  "smoke_required": false,
+  "smoke_verified_for_code_sha": null,
+  "source_frontier": {
+    "third_approach_2_0_last_accepted_commit": "ae97833ea31d9aa359939b2a540aeac3d391cad8",
+    "third_approach_2_0_last_accepted_run_id": 30911346279
+  },
+  "tracking_enabled": false
 }

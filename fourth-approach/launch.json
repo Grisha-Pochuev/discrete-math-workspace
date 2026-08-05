@@ -1,12 +1,12 @@
 {
-  "schema_version": 1,
-  "enabled": true,
-  "run_index": 2,
-  "task": "stage2_minimize_certificates",
-  "spec_path": "fourth-approach/run-specs/run-002-stage2-minimize-certificates.json",
+  "enabled": false,
   "jobs": 20,
-  "minimum_jobs": 18,
-  "runtime_seconds": 20700,
   "max_attempts": 0,
-  "nonce": "manual-fourth-run-002-20260805-0205"
+  "minimum_jobs": 18,
+  "nonce": "fourth-run-002-completed-30960392864",
+  "run_index": 2,
+  "runtime_seconds": 20700,
+  "schema_version": 1,
+  "spec_path": "fourth-approach/run-specs/run-002-stage2-minimize-certificates.json",
+  "task": "stage2_minimize_certificates"
 }
