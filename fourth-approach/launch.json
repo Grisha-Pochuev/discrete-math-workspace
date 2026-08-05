@@ -1,12 +1,12 @@
 {
   "enabled": false,
-  "jobs": 20,
+  "jobs": 4,
   "max_attempts": 0,
-  "minimum_jobs": 18,
-  "nonce": "fourth-run-002-completed-30960392864",
-  "run_index": 2,
-  "runtime_seconds": 20700,
+  "minimum_jobs": 4,
+  "nonce": "fourth-run-003-completed-31001850059",
+  "run_index": 3,
+  "runtime_seconds": 900,
   "schema_version": 1,
-  "spec_path": "fourth-approach/run-specs/run-002-stage2-minimize-certificates.json",
-  "task": "stage2_minimize_certificates"
+  "spec_path": "fourth-approach/run-specs/run-003-stage3-deletion-contrasts.json",
+  "task": "stage3_deletion_contrasts"
 }
