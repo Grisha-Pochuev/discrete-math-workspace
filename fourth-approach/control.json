@@ -1,19 +1,19 @@
 {
   "approach": "fourth-approach-obstruction-guided-exact-synthesis",
   "automation_mode": "manual_single_run",
-  "completed_runs": 4,
-  "current_stage": 4,
-  "current_stage_name": "fixed_support_certificate_minimization",
+  "completed_runs": 5,
+  "current_stage": 5,
+  "current_stage_name": "bridge_fixed_support_certificates_to_second_approach",
   "full_run_auto_launch_allowed": false,
   "large_matrix_concurrency_guard": true,
   "last_run_accepted": true,
-  "last_run_id": 31001850059,
-  "last_run_index": 3,
+  "last_run_id": 31003259020,
+  "last_run_index": 4,
   "minimum_free_concurrency_slots": 20,
-  "next_run_index": 4,
-  "next_spec_path": "fourth-approach/run-specs/run-004-stage4-fixed-support-minimization.json",
-  "next_task": "stage4_fixed_support_certificate_minimization",
-  "recommended_next_action": "manual_run_004_launched_once_no_automatic_successor",
+  "next_run_index": 5,
+  "next_spec_path": "fourth-approach/run-specs/run-005-stage5-bridge-second-approach.json",
+  "next_task": "stage5_bridge_second_approach",
+  "recommended_next_action": "design_bridge_to_old_and_independent_second_approach_pools",
   "run_history": [
     {
       "accepted": true,
@@ -60,10 +60,32 @@
       "run_id": 31001850059,
       "run_index": 3,
       "task": "stage3_deletion_contrasts"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "certificate_terms_removed": 12783,
+        "certificates_improved": 2560,
+        "complete_shards": 20,
+        "completed_jobs": 20,
+        "independently_reverified": 2594,
+        "minimized_nonzero_terms": 7782,
+        "original_nonzero_terms": 20565,
+        "source_support_classes": 2594,
+        "supports_changed": 0,
+        "supports_missing_monochromatic_target": 0,
+        "term_count_distribution": {
+          "3": 2594
+        },
+        "total_optimization_attempts": 109430425
+      },
+      "run_id": 31003259020,
+      "run_index": 4,
+      "task": "stage4_fixed_support_certificate_minimization"
     }
   ],
   "schema_version": 1,
-  "scientific_stopping_rule": "keep original supports fixed; do not count target_zero sub-support collapse as explanation",
+  "scientific_stopping_rule": "do not infer the full conjecture from support-restricted n=6 certificates",
   "smoke_required": false,
   "smoke_verified_for_code_sha": null,
   "source_frontier": {

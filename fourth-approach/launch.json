@@ -1,12 +1,12 @@
 {
   "enabled": false,
-  "jobs": 4,
+  "jobs": 20,
   "max_attempts": 0,
-  "minimum_jobs": 4,
-  "nonce": "fourth-run-003-completed-31001850059",
-  "run_index": 3,
-  "runtime_seconds": 900,
+  "minimum_jobs": 18,
+  "nonce": "fourth-run-004-completed-31003259020",
+  "run_index": 4,
+  "runtime_seconds": 20700,
   "schema_version": 1,
-  "spec_path": "fourth-approach/run-specs/run-003-stage3-deletion-contrasts.json",
-  "task": "stage3_deletion_contrasts"
+  "spec_path": "fourth-approach/run-specs/run-004-stage4-fixed-support-minimization.json",
+  "task": "stage4_fixed_support_certificate_minimization"
 }
