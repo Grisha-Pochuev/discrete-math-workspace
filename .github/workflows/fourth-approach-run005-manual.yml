@@ -1,0 +1,329 @@
+name: Fourth approach Run 005 bridge Second approach
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-run005-manual.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: fourth-approach-run-005-manual-only
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Blobless sparse checkout of exact commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Static checks and exact self-test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile fourth-approach/bridge_second.py fourth-approach/run005_collect.py
+          PYTHONDONTWRITEBYTECODE=1 python fourth-approach/bridge_second.py self-test
+          python - <<'PY'
+          import json
+          spec=json.load(open('fourth-approach/run-specs/run-005-stage5-bridge-second-approach.json'))
+          assert spec['implementation_status']=='ready'
+          assert spec['execution']['jobs']==20
+          assert spec['execution']['workers_per_job']==4
+          assert spec['execution']['runtime_seconds']==20700
+          assert spec['acceptance_criteria']['require_all_80_workers'] is True
+          PY
+
+  prepare:
+    needs: validate
+    name: prepare-mechanisms-${{ matrix.id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - name: Blobless sparse checkout of exact commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout --detach FETCH_HEAD
+      - name: Canonicalize assigned Run-004 exact mechanisms
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p prepared
+          PYTHONDONTWRITEBYTECODE=1 python fourth-approach/bridge_second.py prepare \
+            --run004 fourth-approach/runs/run-004-31003259020/fixed-support-certificates.json.gz \
+            --run001-classes fourth-approach/runs/run-001-30957731562/canonical-classes.json \
+            --shard-id '${{ matrix.id }}' --shard-count 20 \
+            --output 'prepared/mechanisms-part-${{ matrix.id }}.json.gz' \
+            > prepared/prepare.log 2>&1
+          test -s 'prepared/mechanisms-part-${{ matrix.id }}.json.gz'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-run005-mechanisms-${{ matrix.id }}
+          path: prepared/
+          if-no-files-found: error
+          retention-days: 21
+          compression-level: 6
+
+  merge-mechanisms:
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Blobless sparse checkout of exact commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout --detach FETCH_HEAD
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: fourth-approach-run005-mechanisms-*
+          path: work/parts
+          merge-multiple: true
+      - name: Merge and validate the complete exact mechanism library
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p prepared
+          PYTHONDONTWRITEBYTECODE=1 python fourth-approach/bridge_second.py merge-mechanisms \
+            --parts work/parts --output prepared/mechanisms.json.gz \
+            > prepared/merge.log 2>&1
+          python - <<'PY'
+          import gzip,json
+          with gzip.open('prepared/mechanisms.json.gz','rt') as f: data=json.load(f)
+          assert data['source_run004_records']==2594, data
+          assert data['support_classes']==2594, data
+          assert data['canonical_mechanism_classes']>0, data
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fourth-approach-run005-prepared
+          path: prepared/
+          if-no-files-found: error
+          retention-days: 21
+          compression-level: 6
+
+  compute:
+    needs: merge-mechanisms
+    name: fourth-5-${{ matrix.id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      PYTHONUNBUFFERED: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Blobless sparse checkout of exact commit and both numerical banks
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach second-approach second-approach-2.0
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - uses: actions/download-artifact@v4
+        with:
+          name: fourth-approach-run005-prepared
+          path: prepared
+      - name: Create mandatory diagnostics before computation
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          date -u +%FT%TZ > out/started-at.txt
+          printf '%s\n' "$GITHUB_SHA" > out/source-sha.txt
+          printf '%s\n' "Run 005 job ${{ matrix.id }}/20; four workers; 20700 seconds" > out/command.txt
+          { uname -a; nproc; lscpu; free -h; cat /proc/meminfo; swapon --show || true; df -h .; ulimit -a; python --version; } > out/machine.txt
+      - name: Run four checkpointed bridge workers
+        shell: bash
+        run: |
+          set -uo pipefail
+          bash fourth-approach/tools/monitor_resources.sh out/resource-monitor.log 30 &
+          monitor_pid=$!
+          pids=()
+          for worker in 0 1 2 3; do
+            (
+              set +e
+              timeout --signal=TERM --kill-after=30s 20790s \
+                python fourth-approach/bridge_second.py analyze \
+                  --mechanisms prepared/mechanisms.json.gz \
+                  --old-bank second-approach/candidates/seed-bank.json.gz \
+                  --second20-bank second-approach-2.0/candidates/bank.json.gz \
+                  --job-id '${{ matrix.id }}' --worker-id "$worker" \
+                  --jobs 20 --workers-per-job 4 --seconds 20700 \
+                  --output "out/worker-${worker}.json.gz" \
+                  > "out/worker-${worker}.log" 2>&1
+              printf '%s\n' "$?" > "out/worker-${worker}.exit-code.txt"
+            ) &
+            pids+=("$!")
+          done
+          for pid in "${pids[@]}"; do wait "$pid" || true; done
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          test -f out/resource-monitor.log
+          date -u +%FT%TZ > out/finished-at.txt
+          python - <<'PY'
+          import gzip,json
+          status='SUCCESS'
+          workers=[]
+          for worker in range(4):
+              path=f'out/worker-{worker}.json.gz'
+              try:
+                  with gzip.open(path,'rt') as f: payload=json.load(f)
+                  ok=payload.get('baseline_complete') is True and payload.get('assigned_candidates')==len(payload.get('records',[]))
+                  workers.append({'worker':worker,'ok':ok,'assigned':payload.get('assigned_candidates'),'records':len(payload.get('records',[]))})
+                  if not ok: status='TECHNICAL_FAILURE'
+              except Exception as exc:
+                  workers.append({'worker':worker,'ok':False,'error':str(exc)})
+                  status='TECHNICAL_FAILURE'
+          json.dump({'schema_version':1,'run_index':5,'job_id':${{ matrix.id }},'status':status,'workers':workers},open('out/manifest.json','w'),indent=2,sort_keys=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-run005-data-${{ matrix.id }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 21
+          compression-level: 6
+      - name: Validate baseline after preservation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          data=json.load(open('out/manifest.json'))
+          assert data['status']=='SUCCESS', data
+          assert len(data['workers'])==4
+          assert all(item['ok'] for item in data['workers'])
+          PY
+
+  collect:
+    needs: [merge-mechanisms, compute]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Blobless sparse checkout of current main
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
+      - uses: actions/download-artifact@v4
+        with:
+          name: fourth-approach-run005-prepared
+          path: work/prepared
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: fourth-approach-run005-data-*
+          path: work/artifacts
+          merge-multiple: false
+      - name: Aggregate, validate, and preserve the bridge result
+        id: aggregate
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p work
+          set +e
+          PYTHONDONTWRITEBYTECODE=1 python fourth-approach/run005_collect.py \
+            --artifacts work/artifacts \
+            --prepared work/prepared/mechanisms.json.gz \
+            --repo . --run-id "$GITHUB_RUN_ID" --source-sha "$GITHUB_SHA" \
+            --expected-workers 80 \
+            > work/collector.log 2>&1
+          code=$?
+          set -e
+          printf '%s\n' "$code" > work/collector-exit-code.txt
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Commit immutable archive and control state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach/runs fourth-approach/control.json fourth-approach/launch.json
+          if ! git diff --cached --quiet; then
+            git commit -m "save Fourth approach run 005 from ${GITHUB_RUN_ID}"
+            for attempt in 1 2 3 4; do
+              if git push origin HEAD:main; then break; fi
+              if [ "$attempt" = 4 ]; then exit 1; fi
+              git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+              git rebase origin/main
+            done
+          fi
+      - name: Require accepted result only after preservation
+        shell: bash
+        run: |
+          set -euo pipefail
+          code='${{ steps.aggregate.outputs.code }}'
+          if [ "$code" != 0 ]; then exit "$code"; fi
+          python - <<PY
+          import json
+          summary=json.load(open('fourth-approach/runs/run-005-${GITHUB_RUN_ID}/summary.json'))
+          assert summary['accepted'] is True, summary
+          assert summary['metrics']['full_candidate_coverage'] is True
+          assert summary['metrics']['workers_present']==80
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-run005-collection-${{ github.run_id }}
+          path: work/
+          if-no-files-found: warn
+          retention-days: 21
