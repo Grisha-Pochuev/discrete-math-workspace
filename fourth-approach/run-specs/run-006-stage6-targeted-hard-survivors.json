@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "implementation_status": "draft_requires_run_005_result",
+  "run_index": 6,
+  "stage_name": "targeted_hard_survivor_exact_tests",
+  "task": "stage6_targeted_hard_survivors",
+  "title": "Targeted higher-degree exact tests on Run-005 hard survivors",
+  "research_question": "Which strongest old-pool and independent candidates remain after compact exact coverage, and do higher-degree or expanded descriptor certificates close them?",
+  "source_run_005": "to-be-filled-after-run-005",
+  "execution": {
+    "jobs": 20,
+    "minimum_jobs": 18,
+    "runtime_seconds": 20700,
+    "max_attempts": 0
+  },
+  "scientific_output": "A small independently checked table of newly closed cases, bounded incomplete tests, and genuine survivors relative to a precisely stated higher-degree certificate class.",
+  "next_decision": "Prepare the smallest contrast pairs and survivors for GPT-5.6 Sol, or pivot to n=8 transfer if a common exact template emerges."
+}

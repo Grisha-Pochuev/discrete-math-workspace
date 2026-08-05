@@ -1,18 +1,34 @@
 {
   "schema_version": 1,
-  "implementation_status": "draft_requires_run_004_result",
+  "implementation_status": "ready",
   "run_index": 5,
   "stage_name": "bridge_to_second_approach",
   "task": "stage5_bridge_second_approach",
-  "title": "Map fixed-support exact mechanisms onto old-basin and independent numerical candidates",
-  "research_question": "Which compact exact obstruction mechanisms explain the strongest numerical candidates, and which candidates remain genuine hard survivors?",
-  "source_run_004": "to-be-filled-after-run-004",
+  "title": "Map compact exact Run-004 mechanisms onto old and independent Second approach candidates",
+  "research_question": "Which strongest numerical candidates are exactly closed by the compact fixed-support certificate library, how far are the remaining candidates from that exact frontier under S6 x S3, and which small survivor set should GPT-5.6 Sol study?",
+  "sources": {
+    "run_004_certificates": "fourth-approach/runs/run-004-31003259020/fixed-support-certificates.json.gz",
+    "run_001_canonical_classes": "fourth-approach/runs/run-001-30957731562/canonical-classes.json",
+    "old_second_approach_bank": "second-approach/candidates/seed-bank.json.gz",
+    "second_approach_2_0_bank": "second-approach-2.0/candidates/bank.json.gz"
+  },
   "execution": {
     "jobs": 20,
-    "minimum_jobs": 18,
+    "workers_per_job": 4,
+    "total_workers": 80,
+    "minimum_workers": 80,
     "runtime_seconds": 20700,
     "max_attempts": 0
   },
-  "scientific_output": "Separate coverage tables for the old basin and independent lineages, nearest exact mechanisms, and a small hard-survivor set for GPT-5.6 Sol.",
-  "next_decision": "Use the hard survivors and contrast pairs to formulate and falsify candidate general lemmas."
+  "exact_coverage_rule": "A candidate is covered only when a rational Run-004 certificate is re-verified exactly on that candidate support, possibly after an explicit S6 x S3 transformation.",
+  "hard_survivor_rule": "Not covered by the tested compact certificate library and completed support-neighborhood searches. This is not a counterexample and not evidence that the full polynomial system is solvable.",
+  "acceptance_criteria": {
+    "require_all_80_workers": true,
+    "require_full_candidate_baseline_coverage": true,
+    "require_2594_run004_support_classes": true,
+    "separate_old_legacy_and_independent_statistics": true,
+    "reject_on_conflicting_or_unreadable_records": true
+  },
+  "scientific_output": "Exact coverage tables split into old pool, legacy 2.0, and independent 2.0; symmetry-aware nearest mechanisms; one-edit and sampled two-edit frontier hits; and a compact hard-survivor handoff for GPT-5.6 Sol.",
+  "next_decision": "Use the strongest separately reported hard survivors for targeted higher-degree exact tests and a compact GPT-5.6 Sol reasoning cycle."
 }
