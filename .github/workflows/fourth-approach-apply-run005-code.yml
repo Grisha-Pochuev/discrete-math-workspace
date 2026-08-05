@@ -80,7 +80,7 @@ jobs:
           assert spec['run_index']==5
           assert spec['execution']['jobs']==20
           assert spec['execution']['runtime_seconds']==20700
-          assert spec['source_run_004']=='fourth-approach/runs/run-004-31003259020/fixed-support-certificates.json.gz'
+          assert spec['sources']['run_004_certificates']=='fourth-approach/runs/run-004-31003259020/fixed-support-certificates.json.gz'
           assert nxt['run_index']==6
           PY
 
