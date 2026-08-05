@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "implementation_status": "draft_requires_run_004_result",
+  "run_index": 5,
+  "stage_name": "bridge_to_second_approach",
+  "task": "stage5_bridge_second_approach",
+  "title": "Map fixed-support exact mechanisms onto old-basin and independent numerical candidates",
+  "research_question": "Which compact exact obstruction mechanisms explain the strongest numerical candidates, and which candidates remain genuine hard survivors?",
+  "source_run_004": "to-be-filled-after-run-004",
+  "execution": {
+    "jobs": 20,
+    "minimum_jobs": 18,
+    "runtime_seconds": 20700,
+    "max_attempts": 0
+  },
+  "scientific_output": "Separate coverage tables for the old basin and independent lineages, nearest exact mechanisms, and a small hard-survivor set for GPT-5.6 Sol.",
+  "next_decision": "Use the hard survivors and contrast pairs to formulate and falsify candidate general lemmas."
+}

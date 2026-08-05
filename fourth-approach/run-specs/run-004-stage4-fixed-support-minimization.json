@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "implementation_status": "ready",
+  "run_index": 4,
+  "stage_name": "fixed_support_certificate_minimization",
+  "task": "stage4_fixed_support_certificate_minimization",
+  "title": "Exact certificate minimization without changing the original support",
+  "research_question": "How small can each exact certificate become while remaining an identity for the same original support-restricted n=6,d=3 system?",
+  "source_index": "fourth-approach/runs/run-002-30960392864/minimized-certificates.json.gz",
+  "source_run_003": "fourth-approach/runs/run-003-31001850059/summary.json",
+  "execution": {
+    "jobs": 20,
+    "minimum_jobs": 18,
+    "runtime_seconds": 20700,
+    "max_attempts": 0
+  },
+  "invariants": {
+    "support_must_remain_unchanged": true,
+    "all_three_monochromatic_matching_counts_must_be_positive": true,
+    "every_output_certificate_must_be_independently_verified_exact": true
+  },
+  "scientific_output": "A compact exact certificate for each original canonical support, preserving the same system and excluding the Run-002 target-zero collapse.",
+  "next_decision": "Canonicalize the fixed-support mechanisms and bridge them to the strongest Second approach candidates."
+}
