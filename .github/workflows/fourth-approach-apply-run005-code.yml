@@ -1,0 +1,107 @@
+name: Apply Fourth approach Run 005 code
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-apply-run005-code.yml'
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: fourth-approach-apply-run005-code
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      EXPECTED_SHA256: '679971fb4bea6d014cb7ece762868881ab3d4708ca201eb0ec4ef28be81a50a0'
+    steps:
+      - name: Blobless sparse clone
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
+
+      - name: Reassemble and verify immutable payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          for part in fourth-approach/tools/run005-code.part{00..02}; do
+            test -s "$part"
+          done
+          cat fourth-approach/tools/run005-code.part{00..02} | tr -d '\r\n\t ' > /tmp/run005-code.b64
+          remainder=$(( $(wc -c < /tmp/run005-code.b64) % 4 ))
+          if [ "$remainder" -eq 2 ]; then printf '==' >> /tmp/run005-code.b64; fi
+          if [ "$remainder" -eq 3 ]; then printf '=' >> /tmp/run005-code.b64; fi
+          if [ "$remainder" -eq 1 ]; then
+            echo 'invalid Base64 length after reassembly' >&2
+            exit 2
+          fi
+          base64 --decode /tmp/run005-code.b64 > /tmp/run005-code.tar.gz
+          printf '%s  %s\n' "$EXPECTED_SHA256" /tmp/run005-code.tar.gz | sha256sum --check --strict
+          tar -tzf /tmp/run005-code.tar.gz | tee /tmp/run005-files.txt
+          test -s /tmp/run005-files.txt
+          if grep -E '(^/|(^|/)\.\.(/|$)|^\.github/|__pycache__|\.pyc$)' /tmp/run005-files.txt; then
+            echo 'unsafe path in run005 package' >&2
+            exit 2
+          fi
+          if grep -v '^fourth-approach/' /tmp/run005-files.txt; then
+            echo 'package contains files outside fourth-approach' >&2
+            exit 2
+          fi
+          tar -xzf /tmp/run005-code.tar.gz -C .
+
+      - name: Validate Run 005 code and specifications
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf fourth-approach/__pycache__ fourth-approach/tests/__pycache__
+          python -m py_compile \
+            fourth-approach/bridge_second.py \
+            fourth-approach/run005_collect.py
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach \
+            python fourth-approach/bridge_second.py --self-test
+          python - <<'PY'
+          import json
+          spec=json.load(open('fourth-approach/run-specs/run-005-stage5-bridge-second-approach.json'))
+          nxt=json.load(open('fourth-approach/run-specs/run-006-stage6-targeted-hard-survivors.json'))
+          assert spec['implementation_status']=='ready'
+          assert spec['run_index']==5
+          assert spec['execution']['jobs']==20
+          assert spec['execution']['runtime_seconds']==20700
+          assert spec['source_run_004']=='fourth-approach/runs/run-004-31003259020/fixed-support-certificates.json.gz'
+          assert nxt['run_index']==6
+          PY
+
+      - name: Commit verified code and remove transport pieces
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm -f fourth-approach/tools/run005-code.part{00..02}
+          rm -rf fourth-approach/__pycache__ fourth-approach/tests/__pycache__
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach
+          git commit -m 'implement Fourth approach Run 005 bridge to Second approach'
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then
+              break
+            fi
+            if [ "$attempt" = 4 ]; then
+              echo 'failed to publish Run 005 code after four attempts' >&2
+              exit 1
+            fi
+            git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+            git rebase origin/main
+          done
