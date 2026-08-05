@@ -1,0 +1,156 @@
+name: Fourth approach Run 003 exact deletion contrasts
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-run003-manual.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: fourth-approach-run-003-manual-only
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Validate exact finite analysis
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile fourth-approach/deletion_contrasts.py fourth-approach/run003_collect.py
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python fourth-approach/deletion_contrasts.py --self-test
+          test -f fourth-approach/runs/run-002-30960392864/minimized-certificates.json.gz
+          python - <<'PY'
+          import json
+          spec=json.load(open('fourth-approach/run-specs/run-003-stage3-deletion-contrasts.json'))
+          assert spec['implementation_status']=='ready'
+          assert spec['execution']['jobs']==4
+          assert spec['execution']['runtime_seconds']==900
+          PY
+
+  compute:
+    needs: validate
+    name: fourth-3-${{ matrix.id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        id: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Create diagnostics first
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          date -u +%FT%TZ > out/started-at.txt
+          printf '%s\n' "$GITHUB_SHA" > out/source-sha.txt
+          printf '%s\n' "Run 003 shard ${{ matrix.id }}/4" > out/command.txt
+          { uname -a; nproc; lscpu; free -h; df -h .; python --version; } > out/machine.txt
+      - name: Classify exact deletion contrasts
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python fourth-approach/deletion_contrasts.py \
+            --source fourth-approach/runs/run-002-30960392864/minimized-certificates.json.gz \
+            --shard-id '${{ matrix.id }}' --shard-count 4 \
+            --output out/records.json.gz > out/driver.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > out/runner-exit-code.txt
+          python - <<'PY'
+          import gzip,json
+          with gzip.open('out/records.json.gz','rt') as f: payload=json.load(f)
+          assert payload['complete'] is True
+          assert payload['metrics']['rejected_parents']==0
+          assert payload['metrics']['rejected_children']==0
+          PY
+          cat > out/manifest.json <<JSON
+          {"schema_version":1,"approach":"fourth-approach-obstruction-guided-exact-synthesis","task":"stage3_deletion_contrasts","run_index":3,"shard_id":${{ matrix.id }},"shard_count":4,"status":"SUCCESS","result_file":"records.json.gz"}
+          JSON
+          date -u +%FT%TZ > out/finished-at.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-run003-data-${{ matrix.id }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 21
+
+  collect:
+    needs: [validate, compute]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout current main
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
+      - name: Download all shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: fourth-approach-run003-data-*
+          path: work/artifacts
+          merge-multiple: false
+      - name: Aggregate and independently verify
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p work
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python fourth-approach/run003_collect.py \
+            --artifacts work/artifacts --repo . --run-id "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA" --expected-jobs 4 \
+            > work/collector.log 2>&1
+          run_dir="fourth-approach/runs/run-003-${GITHUB_RUN_ID}"
+          test -f "$run_dir/summary.json"
+          python - <<PY
+          import json
+          s=json.load(open('$run_dir/summary.json'))
+          assert s['accepted'] is True, s
+          assert s['metrics']['canonical_minimized_parent_classes']==1
+          assert s['metrics']['canonical_deletion_child_classes']==1
+          assert s['metrics']['target_zero_children']==7782
+          PY
+      - name: Commit immutable archive and state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach/runs fourth-approach/control.json fourth-approach/launch.json
+          git commit -m "save Fourth approach run 003 from ${GITHUB_RUN_ID}"
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
+            git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+            git rebase origin/main
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-run003-collection-${{ github.run_id }}
+          path: work/
+          if-no-files-found: warn
+          retention-days: 21
