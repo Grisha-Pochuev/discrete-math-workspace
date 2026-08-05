@@ -71,7 +71,7 @@ jobs:
             fourth-approach/bridge_second.py \
             fourth-approach/run005_collect.py
           PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach \
-            python fourth-approach/bridge_second.py --self-test
+            python fourth-approach/bridge_second.py self-test
           python - <<'PY'
           import json
           spec=json.load(open('fourth-approach/run-specs/run-005-stage5-bridge-second-approach.json'))
