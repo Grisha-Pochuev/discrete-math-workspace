@@ -1,0 +1,43 @@
+name: Restart Fourth approach Run 006 after infrastructure failure
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-restart-run006-after-infra.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: fourth-approach-restart-run006-after-infra
+  cancel-in-progress: false
+
+jobs:
+  restart:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Cancel dead attempt and dispatch repaired Run 006
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEAD_RUN_ID: '31116848865'
+        run: |
+          set -euo pipefail
+          gh api --method POST "/repos/${GITHUB_REPOSITORY}/actions/runs/${DEAD_RUN_ID}/cancel" || true
+          for attempt in $(seq 1 30); do
+            status="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${DEAD_RUN_ID}" --jq .status)"
+            if [ "$status" = completed ]; then
+              break
+            fi
+            sleep 2
+          done
+          status="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${DEAD_RUN_ID}" --jq .status)"
+          test "$status" = completed
+          gh api \
+            --method POST \
+            -H 'Accept: application/vnd.github+json' \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/fourth-approach-run006-manual.yml/dispatches" \
+            -f ref=main
