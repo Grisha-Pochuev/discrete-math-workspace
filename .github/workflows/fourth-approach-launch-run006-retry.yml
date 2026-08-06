@@ -1,0 +1,32 @@
+name: Launch repaired Fourth approach Run 006
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-launch-run006-retry.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: fourth-approach-launch-run006-retry
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Dispatch repaired Run 006 from current main
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh api \
+            --method POST \
+            -H 'Accept: application/vnd.github+json' \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/fourth-approach-run006-manual.yml/dispatches" \
+            -f ref=main
