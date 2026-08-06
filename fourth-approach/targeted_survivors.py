@@ -133,6 +133,18 @@ def prepare_selection(
     else:
         hard = json.loads(hard_survivors.read_text(encoding="utf-8"))
     survivors = list(hard.get("records", hard.get("survivors", [])))
+    group_sizes = {
+        group: sum(str(item.get("group", "")) == group for item in survivors)
+        for group in GROUP_LIMITS
+    }
+    if any(group_sizes[group] < limit for group, limit in GROUP_LIMITS.items()):
+        full_records_path = hard_survivors.with_name("bridge-records.json.gz")
+        if not full_records_path.exists():
+            raise ValueError(
+                f"compact survivor display is incomplete {group_sizes} and full records are missing: {full_records_path}"
+            )
+        full_document = read_gzip_json(full_records_path)
+        survivors = list(full_document.get("records", []))
     old_map = raw_bank_map(old_bank, "old_seed_bank")
     second_map = raw_bank_map(second20_bank, "second_approach_2_0")
     full_map = {**old_map, **second_map}
