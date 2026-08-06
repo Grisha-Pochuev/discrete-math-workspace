@@ -67,6 +67,8 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf fourth-approach/__pycache__ fourth-approach/tests/__pycache__
+          python -m pip install --disable-pip-version-check -q \
+            'numpy>=1.26,<3' 'scipy>=1.11,<2'
           python -m py_compile \
             fourth-approach/targeted_survivors.py \
             fourth-approach/run006_collect.py
