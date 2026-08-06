@@ -1,0 +1,113 @@
+name: Apply Fourth approach Run 006 code
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-apply-run006-code.yml'
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: fourth-approach-apply-run006-code
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      EXPECTED_SHA256: 'bd0efb3d77bbc97bffbd091d8371dfe56636457ef01380b6d767ff3279d0c207'
+    steps:
+      - name: Blobless sparse clone
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
+
+      - name: Reassemble and verify immutable payload
+        shell: bash
+        run: |
+          set -euo pipefail
+          for part in fourth-approach/tools/run006-code.part{00..01}; do
+            test -s "$part"
+          done
+          cat fourth-approach/tools/run006-code.part{00..01} | tr -d '\r\n\t ' > /tmp/run006-code.b64
+          remainder=$(( $(wc -c < /tmp/run006-code.b64) % 4 ))
+          if [ "$remainder" -eq 2 ]; then printf '==' >> /tmp/run006-code.b64; fi
+          if [ "$remainder" -eq 3 ]; then printf '=' >> /tmp/run006-code.b64; fi
+          if [ "$remainder" -eq 1 ]; then
+            echo 'invalid Base64 length after reassembly' >&2
+            exit 2
+          fi
+          base64 --decode /tmp/run006-code.b64 > /tmp/run006-code.tar.gz
+          printf '%s  %s\n' "$EXPECTED_SHA256" /tmp/run006-code.tar.gz | sha256sum --check --strict
+          tar -tzf /tmp/run006-code.tar.gz | tee /tmp/run006-files.txt
+          test -s /tmp/run006-files.txt
+          if grep -E '(^/|(^|/)\.\.(/|$)|^\.github/|__pycache__|\.pyc$)' /tmp/run006-files.txt; then
+            echo 'unsafe path in run006 package' >&2
+            exit 2
+          fi
+          if grep -v '^fourth-approach/' /tmp/run006-files.txt; then
+            echo 'package contains files outside fourth-approach' >&2
+            exit 2
+          fi
+          tar -xzf /tmp/run006-code.tar.gz -C .
+
+      - name: Validate Run 006 code and specifications
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf fourth-approach/__pycache__ fourth-approach/tests/__pycache__
+          python -m py_compile \
+            fourth-approach/targeted_survivors.py \
+            fourth-approach/run006_collect.py
+          PYTHONDONTWRITEBYTECODE=1 python fourth-approach/targeted_survivors.py self-test
+          python - <<'PY'
+          import json
+          spec=json.load(open('fourth-approach/run-specs/run-006-stage6-targeted-hard-survivors.json'))
+          nxt=json.load(open('fourth-approach/run-specs/run-007-stage7-gpt-sol-handoff.json'))
+          launch=json.load(open('fourth-approach/launch.json'))
+          assert spec['implementation_status']=='ready'
+          assert spec['run_index']==6
+          assert spec['execution']['jobs']==15
+          assert spec['execution']['workers']==60
+          assert spec['execution']['github_concurrency_slots_reserved_for_other_work']==5
+          assert spec['execution']['runtime_seconds']==20400
+          assert nxt['run_index']==7
+          assert launch['enabled'] is True
+          assert launch['run_index']==6
+          assert launch['jobs']==15
+          assert launch['minimum_jobs']==15
+          assert launch['runtime_seconds']==20400
+          PY
+
+      - name: Commit verified code and remove transport pieces
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm -f fourth-approach/tools/run006-code.part{00..01}
+          rm -rf fourth-approach/__pycache__ fourth-approach/tests/__pycache__
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach
+          git commit -m 'implement Fourth approach Run 006 on fifteen GitHub machines'
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then
+              break
+            fi
+            if [ "$attempt" = 4 ]; then
+              echo 'failed to publish Run 006 code after four attempts' >&2
+              exit 1
+            fi
+            git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+            git rebase origin/main
+          done
