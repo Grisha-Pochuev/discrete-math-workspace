@@ -1,0 +1,363 @@
+name: Fourth approach Run 006 targeted hard survivors
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-run006-manual.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: fourth-approach-run-006-manual-only
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Blobless sparse checkout of exact commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Static validation and self-test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q \
+            'numpy>=1.26,<3' 'scipy>=1.11,<2'
+          python -m py_compile \
+            fourth-approach/targeted_survivors.py \
+            fourth-approach/run006_collect.py
+          python fourth-approach/targeted_survivors.py self-test
+          python - <<'PY'
+          import json
+          spec=json.load(open('fourth-approach/run-specs/run-006-stage6-targeted-hard-survivors.json'))
+          assert spec['implementation_status']=='ready'
+          assert spec['execution']['jobs']==15
+          assert spec['execution']['workers']==60
+          assert spec['execution']['github_concurrency_slots_reserved_for_other_work']==5
+          assert spec['execution']['runtime_seconds']==20400
+          PY
+
+  prepare:
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Fetch exact code, Run-005 evidence, and only the two bank blobs
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --no-cone
+          git sparse-checkout set \
+            '/fourth-approach/' \
+            '/third-approach-2.0/certificate.py' \
+            '/third-approach-2.0/requirements.txt'
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          mkdir -p second-approach/candidates second-approach-2.0/candidates
+          git show "$GITHUB_SHA:second-approach/candidates/seed-bank.json.gz" \
+            > second-approach/candidates/seed-bank.json.gz
+          git show "$GITHUB_SHA:second-approach-2.0/candidates/bank.json.gz" \
+            > second-approach-2.0/candidates/bank.json.gz
+          test -s second-approach/candidates/seed-bank.json.gz
+          test -s second-approach-2.0/candidates/bank.json.gz
+      - name: Install numerical requirements
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q \
+            -r third-approach-2.0/requirements.txt
+      - name: Build diversity-aware 60-candidate selection
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p prepared
+          PYTHONDONTWRITEBYTECODE=1 python fourth-approach/targeted_survivors.py prepare \
+            --repo . \
+            --hard-survivors fourth-approach/runs/run-005-31034878944/hard-survivors.json \
+            --old-bank second-approach/candidates/seed-bank.json.gz \
+            --second20-bank second-approach-2.0/candidates/bank.json.gz \
+            --output prepared/selected-survivors.json.gz \
+            > prepared/selection.log 2>&1
+          python - <<'PY'
+          import gzip,json
+          with gzip.open('prepared/selected-survivors.json.gz','rt') as f:
+              data=json.load(f)
+          assert data['selected_count']==60, data
+          assert data['group_counts']=={
+              'old_pool':10,
+              'legacy_2_0':20,
+              'independent_2_0':30,
+          }, data
+          assert len({item['slot'] for item in data['selected']})==60
+          PY
+      - name: Real-path bounded smoke on the strongest old-pool survivor
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONDONTWRITEBYTECODE=1 python fourth-approach/targeted_survivors.py worker \
+            --repo . \
+            --selection prepared/selected-survivors.json.gz \
+            --slot 0 --seconds 900 --max-attempts 1 \
+            --output prepared/smoke-worker-0.json.gz \
+            > prepared/smoke.log 2>&1
+          python - <<'PY'
+          import gzip,json
+          with gzip.open('prepared/smoke-worker-0.json.gz','rt') as f:
+              data=json.load(f)
+          assert data['baseline_complete'] is True, data
+          assert data['attempts']==1, data
+          assert data['selected']['group']=='old_pool', data
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fourth-approach-run006-selected
+          path: prepared/
+          if-no-files-found: error
+          retention-days: 21
+          compression-level: 6
+
+  compute:
+    needs: prepare
+    name: fourth-6-${{ matrix.id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    env:
+      PYTHONUNBUFFERED: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Fetch only Run-006 code and certificate engine
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --no-cone
+          git sparse-checkout set \
+            '/fourth-approach/' \
+            '/third-approach-2.0/certificate.py' \
+            '/third-approach-2.0/requirements.txt'
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Install numerical requirements
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -q \
+            -r third-approach-2.0/requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: fourth-approach-run006-selected
+          path: prepared
+      - name: Create mandatory diagnostics
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          date -u +%FT%TZ > out/started-at.txt
+          printf '%s\n' "$GITHUB_SHA" > out/source-sha.txt
+          printf '%s\n' \
+            "Run 006 job ${{ matrix.id }}/15; four workers; 20400 seconds; five GitHub slots reserved" \
+            > out/command.txt
+          {
+            uname -a
+            nproc
+            lscpu
+            free -h
+            cat /proc/meminfo
+            swapon --show || true
+            df -h .
+            ulimit -a
+            python --version
+          } > out/machine.txt
+      - name: Run four fixed-support targeted certificate workers
+        shell: bash
+        run: |
+          set -uo pipefail
+          bash fourth-approach/tools/monitor_resources.sh out/resource-monitor.log 30 &
+          monitor_pid=$!
+          pids=()
+          for worker in 0 1 2 3; do
+            slot=$(( ${{ matrix.id }} * 4 + worker ))
+            (
+              set +e
+              timeout --signal=TERM --kill-after=30s 20490s \
+                python fourth-approach/targeted_survivors.py worker \
+                  --repo . \
+                  --selection prepared/selected-survivors.json.gz \
+                  --slot "$slot" --seconds 20400 --max-attempts 0 \
+                  --output "out/worker-${worker}.json.gz" \
+                  > "out/worker-${worker}.log" 2>&1
+              printf '%s\n' "$?" > "out/worker-${worker}.exit-code.txt"
+            ) &
+            pids+=("$!")
+          done
+          for pid in "${pids[@]}"; do wait "$pid" || true; done
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          date -u +%FT%TZ > out/finished-at.txt
+          python - <<'PY'
+          import gzip,json
+          workers=[]
+          status='SUCCESS'
+          for worker in range(4):
+              path=f'out/worker-{worker}.json.gz'
+              try:
+                  with gzip.open(path,'rt') as f:
+                      data=json.load(f)
+                  ok=data.get('baseline_complete') is True and data.get('attempts',0)>0
+                  workers.append({
+                      'worker':worker,
+                      'slot':data.get('slot'),
+                      'ok':ok,
+                      'attempts':data.get('attempts'),
+                      'exact':data.get('exact') is not None,
+                  })
+                  if not ok:
+                      status='TECHNICAL_FAILURE'
+              except Exception as exc:
+                  workers.append({'worker':worker,'ok':False,'error':str(exc)})
+                  status='TECHNICAL_FAILURE'
+          with open('out/manifest.json','w') as f:
+              json.dump({
+                  'schema_version':1,
+                  'run_index':6,
+                  'job_id':${{ matrix.id }},
+                  'status':status,
+                  'workers':workers,
+              },f,indent=2,sort_keys=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-run006-data-${{ matrix.id }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 21
+          compression-level: 6
+      - name: Validate all four worker checkpoints after preservation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json
+          data=json.load(open('out/manifest.json'))
+          assert data['status']=='SUCCESS', data
+          assert len(data['workers'])==4
+          assert all(item['ok'] for item in data['workers'])
+          PY
+
+  collect:
+    needs: [prepare, compute]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Blobless sparse checkout of current main
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
+      - uses: actions/download-artifact@v4
+        with:
+          name: fourth-approach-run006-selected
+          path: work/selected
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: fourth-approach-run006-data-*
+          path: work/artifacts
+          merge-multiple: false
+      - name: Aggregate and independently verify exact closures
+        id: aggregate
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p work
+          set +e
+          PYTHONDONTWRITEBYTECODE=1 python fourth-approach/run006_collect.py \
+            --repo . \
+            --artifacts work/artifacts \
+            --selection work/selected/selected-survivors.json.gz \
+            --run-id "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA" \
+            > work/collector.log 2>&1
+          code=$?
+          set -e
+          printf '%s\n' "$code" > work/collector-exit-code.txt
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Commit immutable archive and state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach/runs fourth-approach/control.json fourth-approach/launch.json
+          if ! git diff --cached --quiet; then
+            git commit -m "save Fourth approach run 006 from ${GITHUB_RUN_ID}"
+            for attempt in 1 2 3 4; do
+              if git push origin HEAD:main; then break; fi
+              if [ "$attempt" = 4 ]; then exit 1; fi
+              git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+              git rebase origin/main
+            done
+          fi
+      - name: Require accepted result only after preservation
+        shell: bash
+        run: |
+          set -euo pipefail
+          code='${{ steps.aggregate.outputs.code }}'
+          if [ "$code" != 0 ]; then exit "$code"; fi
+          python - <<PY
+          import json
+          summary=json.load(open('fourth-approach/runs/run-006-${GITHUB_RUN_ID}/summary.json'))
+          assert summary['accepted'] is True, summary
+          assert summary['metrics']['jobs_configured']==15
+          assert summary['metrics']['workers_present']==60
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-run006-collection-${{ github.run_id }}
+          path: work/
+          if-no-files-found: warn
+          retention-days: 21
