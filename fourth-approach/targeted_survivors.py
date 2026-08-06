@@ -128,8 +128,11 @@ def prepare_selection(
     second20_bank: Path,
 ) -> dict[str, Any]:
     _cert, bridge = modules(repo)
-    hard = json.loads(hard_survivors.read_text(encoding="utf-8"))
-    survivors = list(hard.get("survivors", []))
+    if hard_survivors.suffix == ".gz":
+        hard = read_gzip_json(hard_survivors)
+    else:
+        hard = json.loads(hard_survivors.read_text(encoding="utf-8"))
+    survivors = list(hard.get("records", hard.get("survivors", [])))
     old_map = raw_bank_map(old_bank, "old_seed_bank")
     second_map = raw_bank_map(second20_bank, "second_approach_2_0")
     full_map = {**old_map, **second_map}

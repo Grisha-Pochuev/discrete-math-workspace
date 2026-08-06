@@ -43,12 +43,13 @@
     "legacy_2_0": 20,
     "old_pool": 10,
     "policy": "best residual first with canonical-support and lineage diversity before score-only fill",
+    "source_policy": "select from all 1300 Run-005 hard survivors; hard-survivors.json is only a compact 200-row display",
     "total": 60
   },
   "sources": {
     "certificate_engine": "third-approach-2.0/certificate.py",
     "old_pool_bank": "second-approach/candidates/seed-bank.json.gz",
-    "run_005_hard_survivors": "fourth-approach/runs/run-005-31034878944/hard-survivors.json",
+    "run_005_full_bridge_records": "fourth-approach/runs/run-005-31034878944/bridge-records.json.gz",
     "run_005_summary": "fourth-approach/runs/run-005-31034878944/summary.json",
     "second_approach_2_0_bank": "second-approach-2.0/candidates/bank.json.gz"
   },
