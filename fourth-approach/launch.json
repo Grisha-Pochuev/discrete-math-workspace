@@ -2,11 +2,11 @@
   "enabled": false,
   "jobs": 20,
   "max_attempts": 0,
-  "minimum_jobs": 18,
-  "nonce": "fourth-run-004-completed-31003259020",
-  "run_index": 4,
+  "minimum_jobs": 20,
+  "nonce": "fourth-run-005-completed-31034878944",
+  "run_index": 5,
   "runtime_seconds": 20700,
   "schema_version": 1,
-  "spec_path": "fourth-approach/run-specs/run-004-stage4-fixed-support-minimization.json",
-  "task": "stage4_fixed_support_certificate_minimization"
+  "spec_path": "fourth-approach/run-specs/run-005-stage5-bridge-second-approach.json",
+  "task": "stage5_bridge_second_approach"
 }
