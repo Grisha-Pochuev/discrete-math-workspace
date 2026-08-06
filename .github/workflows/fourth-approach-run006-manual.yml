@@ -93,11 +93,11 @@ jobs:
           mkdir -p prepared
           PYTHONDONTWRITEBYTECODE=1 python fourth-approach/targeted_survivors.py prepare \
             --repo . \
-            --hard-survivors fourth-approach/runs/run-005-31034878944/hard-survivors.json \
+            --hard-survivors fourth-approach/runs/run-005-31034878944/bridge-records.json.gz \
             --old-bank second-approach/candidates/seed-bank.json.gz \
             --second20-bank second-approach-2.0/candidates/bank.json.gz \
             --output prepared/selected-survivors.json.gz \
-            > prepared/selection.log 2>&1
+            2>&1 | tee prepared/selection.log
           python - <<'PY'
           import gzip,json
           with gzip.open('prepared/selected-survivors.json.gz','rt') as f:
@@ -110,7 +110,7 @@ jobs:
           }, data
           assert len({item['slot'] for item in data['selected']})==60
           PY
-      - name: Real-path bounded smoke on the strongest old-pool survivor
+      - name: Real-path bounded smoke on strongest old-pool survivor
         shell: bash
         run: |
           set -euo pipefail
@@ -119,7 +119,7 @@ jobs:
             --selection prepared/selected-survivors.json.gz \
             --slot 0 --seconds 900 --max-attempts 1 \
             --output prepared/smoke-worker-0.json.gz \
-            > prepared/smoke.log 2>&1
+            2>&1 | tee prepared/smoke.log
           python - <<'PY'
           import gzip,json
           with gzip.open('prepared/smoke-worker-0.json.gz','rt') as f:
