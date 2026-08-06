@@ -1,0 +1,42 @@
+name: Force restart repaired Fourth approach Run 006
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-force-restart-run006.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: fourth-approach-force-restart-run006
+  cancel-in-progress: false
+
+jobs:
+  restart:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Force-cancel dead attempt and dispatch current main
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEAD_RUN_ID: '31116848865'
+        run: |
+          set -euo pipefail
+          gh api --method POST "/repos/${GITHUB_REPOSITORY}/actions/runs/${DEAD_RUN_ID}/force-cancel"
+          for attempt in $(seq 1 30); do
+            status="$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${DEAD_RUN_ID}" --jq .status)"
+            if [ "$status" = completed ]; then
+              break
+            fi
+            sleep 2
+          done
+          test "$(gh api "/repos/${GITHUB_REPOSITORY}/actions/runs/${DEAD_RUN_ID}" --jq .status)" = completed
+          gh api \
+            --method POST \
+            -H 'Accept: application/vnd.github+json' \
+            "/repos/${GITHUB_REPOSITORY}/actions/workflows/fourth-approach-run006-manual.yml/dispatches" \
+            -f ref=main
