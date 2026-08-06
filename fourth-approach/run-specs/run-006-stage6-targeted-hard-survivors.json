@@ -1,18 +1,58 @@
 {
-  "schema_version": 1,
-  "implementation_status": "draft_requires_run_005_result",
+  "acceptance_criteria": {
+    "allow_numerical_result_to_count_as_proof": false,
+    "require_all_15_jobs": true,
+    "require_all_60_workers": true,
+    "require_independent_verification_of_every_exact_closure": true,
+    "require_selection_digest_match": true
+  },
+  "certificate_class": {
+    "equations": "randomized active support-restricted GHZ equation subsets including all three monochromatic target equations",
+    "exactness": "numerical LSQR is only a lead; closure requires rational reconstruction and independent exact polynomial identity verification",
+    "multiplier_degrees": [
+      3,
+      4,
+      5
+    ],
+    "profiles": [
+      "degree3_expanded",
+      "degree4_sparse",
+      "degree4_wide",
+      "degree5_sparse"
+    ],
+    "support": "unchanged selected numerical candidate support"
+  },
+  "execution": {
+    "github_concurrency_slots_reserved_for_other_work": 5,
+    "jobs": 15,
+    "max_attempts": 0,
+    "minimum_jobs": 15,
+    "runtime_seconds": 20400,
+    "workers": 60,
+    "workers_per_job": 4
+  },
+  "implementation_status": "ready",
+  "next_decision": "Review the compact GPT-5.6 Sol handoff before any further long run; pivot to n=8 only if the evidence supports a transferable exact template.",
+  "next_spec_path": "fourth-approach/run-specs/run-007-stage7-gpt-sol-handoff.json",
+  "research_question": "Do expanded fixed-support coefficient-space certificate classes close the strongest old-pool, legacy-2.0, and independent-2.0 survivors?",
   "run_index": 6,
+  "schema_version": 1,
+  "scientific_output": "A compact independently checked table of exact closures and bounded survivors, separated by old_pool, legacy_2_0, and independent_2_0, plus a GPT-5.6 Sol handoff.",
+  "selection": {
+    "independent_2_0": 30,
+    "legacy_2_0": 20,
+    "old_pool": 10,
+    "policy": "best residual first with canonical-support and lineage diversity before score-only fill",
+    "total": 60
+  },
+  "sources": {
+    "certificate_engine": "third-approach-2.0/certificate.py",
+    "old_pool_bank": "second-approach/candidates/seed-bank.json.gz",
+    "run_005_hard_survivors": "fourth-approach/runs/run-005-31034878944/hard-survivors.json",
+    "run_005_summary": "fourth-approach/runs/run-005-31034878944/summary.json",
+    "second_approach_2_0_bank": "second-approach-2.0/candidates/bank.json.gz"
+  },
   "stage_name": "targeted_hard_survivor_exact_tests",
   "task": "stage6_targeted_hard_survivors",
-  "title": "Targeted higher-degree exact tests on Run-005 hard survivors",
-  "research_question": "Which strongest old-pool and independent candidates remain after compact exact coverage, and do higher-degree or expanded descriptor certificates close them?",
-  "source_run_005": "to-be-filled-after-run-005",
-  "execution": {
-    "jobs": 20,
-    "minimum_jobs": 18,
-    "runtime_seconds": 20700,
-    "max_attempts": 0
-  },
-  "scientific_output": "A small independently checked table of newly closed cases, bounded incomplete tests, and genuine survivors relative to a precisely stated higher-degree certificate class.",
-  "next_decision": "Prepare the smallest contrast pairs and survivors for GPT-5.6 Sol, or pivot to n=8 transfer if a common exact template emerges."
+  "title": "Targeted degree-3/4/5 exact tests on a diverse Run-005 survivor set"
 }

@@ -1,12 +1,12 @@
 {
-  "enabled": false,
-  "jobs": 20,
+  "enabled": true,
+  "jobs": 15,
   "max_attempts": 0,
-  "minimum_jobs": 20,
-  "nonce": "fourth-run-005-completed-31034878944",
-  "run_index": 5,
-  "runtime_seconds": 20700,
+  "minimum_jobs": 15,
+  "nonce": "manual-fourth-run-006-15-slots-20260806",
+  "run_index": 6,
+  "runtime_seconds": 20400,
   "schema_version": 1,
-  "spec_path": "fourth-approach/run-specs/run-005-stage5-bridge-second-approach.json",
-  "task": "stage5_bridge_second_approach"
+  "spec_path": "fourth-approach/run-specs/run-006-stage6-targeted-hard-survivors.json",
+  "task": "stage6_targeted_hard_survivors"
 }
