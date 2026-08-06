@@ -1,0 +1,63 @@
+name: Apply Fourth approach Run 006 full-record fallback
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-apply-run006-fallback.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fourth-approach-apply-run006-fallback
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Sparse clone
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
+      - name: Add automatic full-record fallback
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          path=Path('fourth-approach/targeted_survivors.py')
+          text=path.read_text(encoding='utf-8')
+          old='''    survivors = list(hard.get("records", hard.get("survivors", [])))\n    old_map = raw_bank_map(old_bank, "old_seed_bank")\n'''
+          new='''    survivors = list(hard.get("records", hard.get("survivors", [])))\n    group_sizes = {\n        group: sum(str(item.get("group", "")) == group for item in survivors)\n        for group in GROUP_LIMITS\n    }\n    if any(group_sizes[group] < limit for group, limit in GROUP_LIMITS.items()):\n        full_records_path = hard_survivors.with_name("bridge-records.json.gz")\n        if not full_records_path.exists():\n            raise ValueError(\n                f"compact survivor display is incomplete {group_sizes} and full records are missing: {full_records_path}"\n            )\n        full_document = read_gzip_json(full_records_path)\n        survivors = list(full_document.get("records", []))\n    old_map = raw_bank_map(old_bank, "old_seed_bank")\n'''
+          if text.count(old) != 1:
+              raise SystemExit(f'expected one fallback insertion point, found {text.count(old)}')
+          path.write_text(text.replace(old,new),encoding='utf-8')
+          PY
+          python -m py_compile fourth-approach/targeted_survivors.py
+      - name: Commit fix
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach/targeted_survivors.py
+          git commit -m 'fallback to full Run 005 records when compact survivor display is incomplete'
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
+            git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+            git rebase origin/main
+          done
