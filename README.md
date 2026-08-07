@@ -9,8 +9,8 @@ Computational research workspace for the Krenn–Gu problem.
 - `second-approach-2.0/` — diversified numerical search with independent and legacy lineages.
 - `third-approach/` — proof-oriented certificate search.
 - `third-approach-2.0/` — multi-basin / coefficient-space proof search.
-- `fourth-approach/` — obstruction-guided exact synthesis and GPT-5.6 Sol handoff.
-- `other-experiments/` — experiments for problems other than Krenn–Gu; keep them isolated from the approach folders.
+- `fourth-approach/` — obstruction-guided exact synthesis .
+- `other-experiments/` — experiments for problems other ; keep them isolated from the approach folders.
 
 GitHub Actions workflow files must live in `.github/workflows/`. Active workflows are named by approach. Historical First-approach workflows were moved under `first-approach/workflows/legacy/` and are not active Actions workflows.
 
