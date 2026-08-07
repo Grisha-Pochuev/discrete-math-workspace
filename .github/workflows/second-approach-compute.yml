@@ -98,7 +98,7 @@ jobs:
             second-approach/runner.py \
             second-approach/collect.py \
             second-approach/verify_run.py
-          test -f runs/2026-07-22-a/verify.py
+          test -f first-approach/runs/2026-07-22-a/verify.py
           PYTHONPATH=second-approach python - <<'PY'
           import numpy as np
           import model
