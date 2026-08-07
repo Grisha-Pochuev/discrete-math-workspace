@@ -1,19 +1,19 @@
 {
   "approach": "fourth-approach-obstruction-guided-exact-synthesis",
   "automation_mode": "manual_single_run",
-  "completed_runs": 7,
-  "current_stage": 7,
-  "current_stage_name": "gpt_sol_compact_handoff",
+  "completed_runs": 8,
+  "current_stage": 8,
+  "current_stage_name": "adaptive_exact_lemma_cycle",
   "full_run_auto_launch_allowed": false,
   "large_matrix_concurrency_guard": true,
-  "last_run_accepted": false,
-  "last_run_id": 31116848865,
-  "last_run_index": 6,
-  "minimum_free_concurrency_slots": 5,
-  "next_run_index": 7,
-  "next_spec_path": "fourth-approach/run-specs/run-007-stage7-gpt-sol-handoff.json",
-  "next_task": "stage7_gpt_sol_handoff",
-  "recommended_next_action": "inspect_or_rescue_run_006_without_advancing",
+  "last_run_accepted": true,
+  "last_run_id": 31182852208,
+  "last_run_index": 7,
+  "minimum_free_concurrency_slots": 0,
+  "next_run_index": 8,
+  "next_spec_path": "fourth-approach/run-specs/run-008-stage8-adaptive-exact-lemma-cycle.json",
+  "next_task": "stage8_adaptive_exact_lemma_cycle",
+  "recommended_next_action": "launch_run_008_on_20_github_machines",
   "run_history": [
     {
       "accepted": true,
@@ -205,10 +205,22 @@
       "run_id": 31130093117,
       "run_index": 6,
       "task": "stage6_targeted_hard_survivors"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "lemma_falsification_prompts": 4,
+        "source_exact_closures": 0,
+        "source_survivors": 60,
+        "source_workers": 60
+      },
+      "run_id": 31182852208,
+      "run_index": 7,
+      "task": "stage7_gpt_sol_handoff"
     }
   ],
   "schema_version": 1,
-  "scientific_stopping_rule": "manual GPT-5.6 Sol review before additional compute",
+  "scientific_stopping_rule": "review Run 008 exact closures/survivors before any n=8 transfer",
   "smoke_required": false,
   "smoke_verified_for_code_sha": null,
   "source_frontier": {

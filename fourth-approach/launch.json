@@ -1,12 +1,12 @@
 {
   "enabled": false,
-  "jobs": 15,
+  "jobs": 1,
   "max_attempts": 0,
-  "minimum_jobs": 15,
-  "nonce": "fourth-run-006-completed-31130093117",
-  "run_index": 6,
-  "runtime_seconds": 20400,
+  "minimum_jobs": 1,
+  "nonce": "fourth-run-007-completed-31182852208",
+  "run_index": 7,
+  "runtime_seconds": 900,
   "schema_version": 1,
-  "spec_path": "fourth-approach/run-specs/run-006-stage6-targeted-hard-survivors.json",
-  "task": "stage6_targeted_hard_survivors"
+  "spec_path": "fourth-approach/run-specs/run-007-stage7-gpt-sol-handoff.json",
+  "task": "stage7_gpt_sol_handoff"
 }
