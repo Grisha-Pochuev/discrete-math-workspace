@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "jobs": 15,
   "max_attempts": 0,
   "minimum_jobs": 15,
-  "nonce": "manual-fourth-run-006-15-slots-20260806",
+  "nonce": "fourth-run-006-completed-31130093117",
   "run_index": 6,
   "runtime_seconds": 20400,
   "schema_version": 1,

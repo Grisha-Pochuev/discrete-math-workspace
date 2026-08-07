@@ -1,0 +1,64 @@
+{
+  "accepted": true,
+  "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+  "metrics": {
+    "exactly_closed": 0,
+    "groups": {
+      "independent_2_0": {
+        "best_input_max_error": 1.3253445736421331e-05,
+        "best_survivor_max_error": 1.3253445736421331e-05,
+        "exactly_closed": 0,
+        "profiles": {
+          "degree3_expanded": 7,
+          "degree4_sparse": 7,
+          "degree4_wide": 8,
+          "degree5_sparse": 8
+        },
+        "selected": 30,
+        "survivors": 30
+      },
+      "legacy_2_0": {
+        "best_input_max_error": 8.528761437887434e-07,
+        "best_survivor_max_error": 8.528761437887434e-07,
+        "exactly_closed": 0,
+        "profiles": {
+          "degree3_expanded": 5,
+          "degree4_sparse": 5,
+          "degree4_wide": 5,
+          "degree5_sparse": 5
+        },
+        "selected": 20,
+        "survivors": 20
+      },
+      "old_pool": {
+        "best_input_max_error": 9.462588877284424e-06,
+        "best_survivor_max_error": 9.462588877284424e-06,
+        "exactly_closed": 0,
+        "profiles": {
+          "degree3_expanded": 3,
+          "degree4_sparse": 3,
+          "degree4_wide": 2,
+          "degree5_sparse": 2
+        },
+        "selected": 10,
+        "survivors": 10
+      }
+    },
+    "invalid_or_missing_workers": 0,
+    "jobs_configured": 15,
+    "maximum_tested_multiplier_degree": 5,
+    "selected_candidates": 60,
+    "survivors": 60,
+    "total_attempts": 3629620,
+    "workers_expected": 60,
+    "workers_present": 60
+  },
+  "next_decision": "Review the compact GPT-5.6 Sol handoff and its smallest exact closures and survivors before deciding between a new lemma cycle and n=8 transfer.",
+  "run_id": 31130093117,
+  "run_index": 6,
+  "schema_version": 1,
+  "scientific_interpretation": "Exact closures are independently verified support-restricted n=6,d=3 Nullstellensatz certificates. Remaining cases are survivors only relative to the recorded bounded higher-degree search and are not counterexamples.",
+  "source_sha": "28c77d0a8e370289e058229b629b1683581105f9",
+  "task": "stage6_targeted_hard_survivors",
+  "worker_error_count": 0
+}

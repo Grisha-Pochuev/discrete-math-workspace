@@ -1,19 +1,19 @@
 {
   "approach": "fourth-approach-obstruction-guided-exact-synthesis",
   "automation_mode": "manual_single_run",
-  "completed_runs": 6,
-  "current_stage": 6,
-  "current_stage_name": "targeted_hard_survivor_exact_tests",
+  "completed_runs": 7,
+  "current_stage": 7,
+  "current_stage_name": "gpt_sol_compact_handoff",
   "full_run_auto_launch_allowed": false,
   "large_matrix_concurrency_guard": true,
   "last_run_accepted": true,
-  "last_run_id": 31034878944,
-  "last_run_index": 5,
-  "minimum_free_concurrency_slots": 20,
-  "next_run_index": 6,
-  "next_spec_path": "fourth-approach/run-specs/run-006-stage6-targeted-hard-survivors.json",
-  "next_task": "stage6_targeted_hard_survivors",
-  "recommended_next_action": "design_targeted_higher_degree_tests_and_sol_handoff",
+  "last_run_id": 31130093117,
+  "last_run_index": 6,
+  "minimum_free_concurrency_slots": 5,
+  "next_run_index": 7,
+  "next_spec_path": "fourth-approach/run-specs/run-007-stage7-gpt-sol-handoff.json",
+  "next_task": "stage7_gpt_sol_handoff",
+  "recommended_next_action": "review_exact_closures_and_compact_handoff_before_any_new_long_run",
   "run_history": [
     {
       "accepted": true,
@@ -147,10 +147,68 @@
       "run_id": 31034878944,
       "run_index": 5,
       "task": "stage5_bridge_second_approach"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "exactly_closed": 0,
+        "groups": {
+          "independent_2_0": {
+            "best_input_max_error": 1.3253445736421331e-05,
+            "best_survivor_max_error": 1.3253445736421331e-05,
+            "exactly_closed": 0,
+            "profiles": {
+              "degree3_expanded": 7,
+              "degree4_sparse": 7,
+              "degree4_wide": 8,
+              "degree5_sparse": 8
+            },
+            "selected": 30,
+            "survivors": 30
+          },
+          "legacy_2_0": {
+            "best_input_max_error": 8.528761437887434e-07,
+            "best_survivor_max_error": 8.528761437887434e-07,
+            "exactly_closed": 0,
+            "profiles": {
+              "degree3_expanded": 5,
+              "degree4_sparse": 5,
+              "degree4_wide": 5,
+              "degree5_sparse": 5
+            },
+            "selected": 20,
+            "survivors": 20
+          },
+          "old_pool": {
+            "best_input_max_error": 9.462588877284424e-06,
+            "best_survivor_max_error": 9.462588877284424e-06,
+            "exactly_closed": 0,
+            "profiles": {
+              "degree3_expanded": 3,
+              "degree4_sparse": 3,
+              "degree4_wide": 2,
+              "degree5_sparse": 2
+            },
+            "selected": 10,
+            "survivors": 10
+          }
+        },
+        "invalid_or_missing_workers": 0,
+        "jobs_configured": 15,
+        "maximum_tested_multiplier_degree": 5,
+        "selected_candidates": 60,
+        "survivors": 60,
+        "total_attempts": 3629620,
+        "workers_expected": 60,
+        "workers_present": 60
+      },
+      "run_id": 31130093117,
+      "run_index": 6,
+      "task": "stage6_targeted_hard_survivors"
     }
   ],
   "schema_version": 1,
-  "scientific_stopping_rule": "do not infer the full conjecture from support-restricted n=6 certificates",
+  "scientific_stopping_rule": "manual GPT-5.6 Sol review before additional compute",
   "smoke_required": false,
   "smoke_verified_for_code_sha": null,
   "source_frontier": {
