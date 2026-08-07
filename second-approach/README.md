@@ -1,32 +1,23 @@
 # Second approach
 
-This directory is an independent, counterexample-oriented research track for the Krenn–Gu problem.
+This directory contains the second computational experiment track.
 
-The existing frontier search is valuable for enumerating sparse closed supports and certifying why they fail. This second approach is deliberately different: it searches for dense, nonlinear candidates and complex edge weights that avoid the three currently observed exact obstructions.
-
-## Purpose
-
-- search directly for counterexample candidates rather than only classifying sparse supports;
-- explore denser supports, especially beyond the well-sampled size-30 region;
-- preserve near-solutions and unresolved cases instead of discarding them;
-- separate heuristic evidence from exact verification;
-- provide reproducible data for later mathematical analysis.
-
-## Bias-control rules
-
-1. Do not require a candidate to contain many two-term mixed equations.
-2. Do not rank candidates by how easily the existing obstruction analyzer can reject them.
-3. Preserve every candidate with unusually small mixed residuals or unusually strong monochromatic amplitudes.
-4. Record failed and unresolved attempts, not only successful certificates.
-5. Use deterministic seeds, complete configurations, and checksums for every substantial run.
-6. Validate promising candidates independently with higher precision and exact algebra whenever possible.
+It is intentionally isolated from the original exact-search archives so its assumptions, state, and outputs can be reviewed independently.
 
 ## Directory layout
 
-- `plans/` — experimental designs and hypotheses;
+- `plans/` — experiment designs and run notes;
 - `runs/` — one subdirectory per compute run;
-- `candidates/` — compact candidate records and promoted near-solutions;
-- `analysis/` — comparisons, clustering, and mathematical interpretation;
-- `schemas/` — stable formats for configurations and results.
+- `candidates/` — compact retained records;
+- `analysis/` — comparisons and post-run analysis;
+- `schemas/` — stable formats for configurations and results;
+- `control.json` — durable run state;
+- `model.py`, `runner.py`, `collect.py`, `verify_run.py` — execution and verification code.
 
-This track must remain separate from the existing frontier archives so the two search strategies can be compared without mixing their assumptions or evidence.
+## Operating principles
+
+1. Preserve reproducible inputs, deterministic seeds, configurations, and checksums.
+2. Keep heuristic output distinct from independently verified output.
+3. Preserve unusual or unresolved records instead of retaining only the current numerical leader.
+4. Do not mix this track's archives with the other approach directories.
+5. Before any large run, inspect all active GitHub Actions jobs and avoid overlapping large matrices.
