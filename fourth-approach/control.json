@@ -1,19 +1,19 @@
 {
   "approach": "fourth-approach-obstruction-guided-exact-synthesis",
   "automation_mode": "manual_single_run",
-  "completed_runs": 8,
-  "current_stage": 8,
-  "current_stage_name": "adaptive_exact_lemma_cycle",
+  "completed_runs": 9,
+  "current_stage": 9,
+  "current_stage_name": "post_adaptive_structural_decision",
   "full_run_auto_launch_allowed": false,
   "large_matrix_concurrency_guard": true,
   "last_run_accepted": true,
-  "last_run_id": 31182852208,
-  "last_run_index": 7,
+  "last_run_id": 31183347151,
+  "last_run_index": 8,
   "minimum_free_concurrency_slots": 0,
-  "next_run_index": 8,
-  "next_spec_path": "fourth-approach/run-specs/run-008-stage8-adaptive-exact-lemma-cycle.json",
-  "next_task": "stage8_adaptive_exact_lemma_cycle",
-  "recommended_next_action": "launch_run_008_on_20_github_machines",
+  "next_run_index": 9,
+  "next_spec_path": "fourth-approach/run-specs/run-009-stage9-structural-decision.json",
+  "next_task": "stage9_structural_decision",
+  "recommended_next_action": "review_run_008_sol_handoff_before_any_n8_transfer",
   "run_history": [
     {
       "accepted": true,
@@ -217,10 +217,52 @@
       "run_id": 31182852208,
       "run_index": 7,
       "task": "stage7_gpt_sol_handoff"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "candidate_count": 60,
+        "duplicate_tasks": 20,
+        "exact_candidate_closures": 0,
+        "exact_task_closures": 0,
+        "groups": {
+          "independent_2_0": {
+            "best_input_max_error": 1.3253445736421331e-05,
+            "candidates": 30,
+            "duplicate_covered": 10,
+            "exactly_closed": 0,
+            "survivors": 30
+          },
+          "legacy_2_0": {
+            "best_input_max_error": 8.528761437887434e-07,
+            "candidates": 20,
+            "duplicate_covered": 6,
+            "exactly_closed": 0,
+            "survivors": 20
+          },
+          "old_pool": {
+            "best_input_max_error": 9.462588877284424e-06,
+            "candidates": 10,
+            "duplicate_covered": 4,
+            "exactly_closed": 0,
+            "survivors": 10
+          }
+        },
+        "jobs_configured": 20,
+        "successful_attempts": 6866009,
+        "survivor_candidates": 60,
+        "total_attempts": 6866009,
+        "worker_error_count": 0,
+        "workers_expected": 80,
+        "workers_present": 80
+      },
+      "run_id": 31183347151,
+      "run_index": 8,
+      "task": "stage8_adaptive_exact_lemma_cycle"
     }
   ],
   "schema_version": 1,
-  "scientific_stopping_rule": "review Run 008 exact closures/survivors before any n=8 transfer",
+  "scientific_stopping_rule": "manual GPT-5.6 Sol review before n=8 transfer",
   "smoke_required": false,
   "smoke_verified_for_code_sha": null,
   "source_frontier": {
