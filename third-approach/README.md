@@ -1,51 +1,31 @@
-# Third approach: proof-oriented numerical certificates
+# Third approach
 
-This directory contains the third computational approach to the Krenn--Gu problem.
+This directory contains the third computational experiment track.
 
-Unlike `second-approach/`, which searches numerically for counterexamples, this approach searches for low-degree algebraic infeasibility certificates. For the initial frontier (`n=6`, `d=3`) it samples restricted support families and numerically fits affine Nullstellensatz-style identities
-
-```text
-1 ~= sum_i q_i(x) F_i(x),
-```
-
-where the `F_i` are GHZ polynomial equations and the `q_i` are affine holomorphic multipliers.
-
-A small numerical residual is only a lead. It becomes a proof only after exact coefficient reconstruction and symbolic verification of the polynomial identity. Results in this directory must never be described as a proof solely because the numerical error is small.
+It uses a proof-oriented search architecture and is kept separate from the numerical search tracks so its assumptions, state, and outputs remain independently auditable.
 
 ## Execution model
 
 - 20 GitHub Actions jobs run in parallel.
 - Each job uses four independent Python processes.
-- The workflow budget is 21,000 seconds (5 h 50 min).
-- The numerical workers stop about eight minutes early so artifacts can be validated, uploaded, aggregated, and committed safely.
-- Raw artifacts are retained by GitHub for 14 days.
-- Compact summaries and the best numerical certificate candidates are committed under `third-approach/runs/`.
-- There is no GitHub watchdog and no self-dispatching collector. The single workflow computes, collects, verifies, and commits its own run. ChatGPT scheduled tracking decides whether to launch the next run.
-- Executable-code changes are checked by the separate short `Third approach smoke test` before another long run is allowed.
+- The normal workflow budget is 21,000 seconds.
+- Workers stop early enough to validate and upload artifacts safely.
+- Compact summaries and retained candidates are committed under `runs/` and `candidates/`.
+- A separate short smoke workflow checks executable-code changes before another long run.
 
-## Adaptive candidate selection
+## Adaptive selection
 
-After the first accepted run, later runs use a mixed exploration policy rather than following only the current numerical leader.
-
-- Fresh search starts from a newly sampled support.
-- Elite mutation makes a relatively small change to a rank-weighted parent selected from the strongest part of the bank.
-- Diverse mutation chooses a parent from a structural bucket uniformly before making a larger change.
-
-The normal mixture is 45% fresh search, 35% elite mutation, and 20% diverse mutation. Code-level guardrails keep fresh search at or above 35%, elite mutation at or below 45%, and diverse mutation at or above 15% whenever a bank exists. An absent or unreadable bank safely falls back to 100% fresh search.
-
-The committed bank retains both global leaders and structurally distinct candidates. It does not consist solely of the numerically best variants. Scheduled tracking may shift the mixture within the guardrails: sustained progress can justify modestly more elite mutation, while a three-run plateau or structural collapse increases fresh exploration.
+Later runs mix fresh search, refinement of strong retained candidates, and structurally diverse mutation. The committed bank preserves both strong and distinct candidates rather than only one lineage.
 
 ## Files
 
-- `certificate.py` -- GHZ polynomial evaluation, fresh support generation, parent mutation, and numerical certificate fitting.
-- `runner.py` -- checkpointed four-process worker driver and adaptive parent selection.
-- `collect.py` -- aggregation, diversity-aware bank retention, and compact archival.
-- `AGENTS.md` -- mandatory safe-operation and adaptive-search rules.
-- `control.json` -- accepted-run state, next-run parameters, and policy guardrails.
-- `launch.json` -- changing this file launches exactly one new workflow run.
-- `candidates/bank.json.gz` -- elite and structurally diverse certificate leads accumulated across accepted runs.
-- `runs/` -- committed run summaries.
+- `certificate.py` — local search model and candidate generation.
+- `runner.py` — checkpointed worker driver.
+- `collect.py` — aggregation and compact archival.
+- `AGENTS.md` — operating and search rules.
+- `control.json` — accepted-run state and policy parameters.
+- `launch.json` — explicit one-run launch configuration.
+- `candidates/` — retained candidate bank.
+- `runs/` — committed run summaries.
 
-## Scientific scope
-
-The first implementation studies restricted support families for `n=6`, `d=3`. Closing those families is useful evidence and may expose an exact algebraic obstruction, but it does not by itself prove the full conjecture for all even `n >= 6` and all `d >= 3`.
+Numerical output remains provisional until the corresponding exact or independent verification step succeeds.
