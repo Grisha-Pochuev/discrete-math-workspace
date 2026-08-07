@@ -1,0 +1,53 @@
+{
+  "acceptance_criteria": {
+    "allow_numerical_result_to_count_as_proof": false,
+    "require_all_20_jobs": true,
+    "require_all_80_workers": true,
+    "require_independent_verification_of_every_exact_closure": true,
+    "require_task_digest_match": true
+  },
+  "certificate_class": {
+    "description": "adaptive support-restricted Nullstellensatz descriptor families extending Run 006 rather than repeating it",
+    "exactness": "floating-point LSQR is only a lead; every closure requires rational reconstruction and independent exact polynomial identity verification on the unchanged support",
+    "multiplier_degrees": [5, 6, 7],
+    "profiles": [
+      "degree5_dense",
+      "degree6_sparse",
+      "degree6_wide",
+      "degree7_sparse"
+    ],
+    "support": "unchanged Run-006 survivor support"
+  },
+  "execution": {
+    "github_concurrency_slots_reserved_for_other_work": 0,
+    "jobs": 20,
+    "max_attempts": 0,
+    "minimum_jobs": 20,
+    "runtime_seconds": 20400,
+    "workers": 80,
+    "workers_per_job": 4
+  },
+  "implementation_status": "ready_after_run007_handoff",
+  "next_decision": "Review exact closures and the residual/profile map; only then choose a structural lemma test or n=8 transfer.",
+  "research_question": "Do adaptive degree-5/6/7 descriptor families exactly close any of the 60 Run-006 hard survivors, and which survivors remain robust across two independent task variants?",
+  "run_index": 8,
+  "schema_version": 1,
+  "scientific_output": "An independently checked 80-task exact-search table, including duplicate coverage of the strongest 20 survivors, profile-specific negative evidence, exact closures if any, and a compact Sol handoff.",
+  "selection": {
+    "base_tasks": 60,
+    "duplicate_strongest_tasks": 20,
+    "policy": "one task for every accepted Run-006 survivor plus a second independent task for the twenty strongest survivors with group-aware diversity",
+    "total_tasks": 80
+  },
+  "sources": {
+    "run_006_results": "fourth-approach/runs/run-006-31130093117/targeted-results.json.gz",
+    "run_006_summary": "fourth-approach/runs/run-006-31130093117/summary.json",
+    "run_007_handoff": "resolved at launch from latest accepted run 007",
+    "certificate_engine": "third-approach-2.0/certificate.py",
+    "run_006_engine": "fourth-approach/targeted_survivors.py",
+    "exact_verifier": "fourth-approach/bridge_second.py"
+  },
+  "stage_name": "adaptive_exact_lemma_cycle",
+  "task": "stage8_adaptive_exact_lemma_cycle",
+  "title": "Adaptive degree-5/6/7 exact search on all Run-006 survivors"
+}
