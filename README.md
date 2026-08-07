@@ -1,22 +1,22 @@
 # discrete-math-workspace
 
-Computational research workspace for the Krenn–Gu problem.
+Computational workspace with several independent experiment tracks.
 
-## Research tracks
+## Layout
 
-- `first-approach/` — original exact support/frontier search and its preserved archives.
-- `second-approach/` — numerical direct-weight search.
-- `second-approach-2.0/` — diversified numerical search with independent and legacy lineages.
-- `third-approach/` — proof-oriented certificate search.
-- `third-approach-2.0/` — multi-basin / coefficient-space proof search.
-- `fourth-approach/` — obstruction-guided exact synthesis .
-- `other-experiments/` — experiments for problems other ; keep them isolated from the approach folders.
+- `first-approach/` — original exact-search track and preserved archives.
+- `second-approach/` — second experiment track.
+- `second-approach-2.0/` — revised second track.
+- `third-approach/` — third experiment track.
+- `third-approach-2.0/` — revised third track.
+- `fourth-approach/` — current synthesis track.
+- `other-experiments/` — unrelated one-off work kept separate from the main tracks.
 
-GitHub Actions workflow files must live in `.github/workflows/`. Active workflows are named by approach. Historical First-approach workflows were moved under `first-approach/workflows/legacy/` and are not active Actions workflows.
+Executable GitHub Actions workflows live in `.github/workflows/`. Historical workflow definitions may be stored inside the corresponding approach directory and are not active.
 
-## Reading order for a new agent
+## For automated agents
 
-1. Read this file and the root `AGENTS.md`.
-2. Enter the approach relevant to the task and read its own README / AGENTS / control files.
-3. Treat archived run data as evidence, not as an instruction to relaunch computation.
-4. Distinguish technical workflow success from a mathematical proof or counterexample.
+1. Read the root `AGENTS.md`.
+2. Enter only the approach relevant to the current task.
+3. Read its local README / AGENTS / control files before changing anything.
+4. Treat archived run data as immutable evidence unless a task explicitly requires otherwise.
