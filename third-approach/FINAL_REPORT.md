@@ -2,13 +2,11 @@
 
 Status: **paused after eight accepted long runs**.
 
-The last completed workflow run (`30532177734`, research index `7`) was already collected and committed by the workflow in commit `9911920bf7a9c5cc5842e86278e3fb3e73c6daf9`. This report records the complete series and the decision not to launch run index `8`.
+The last completed workflow run (`30532177734`, research index `7`) was collected and committed in `9911920bf7a9c5cc5842e86278e3fb3e73c6daf9`. This report records the series and the decision not to launch run index `8`.
 
 ## Scope and interpretation
 
-The third approach searched for numerical low-degree Nullstellensatz-style certificate candidates for **restricted `n=6, d=3` support families**. The optimized score is a validation residual with a coefficient-norm penalty; lower is better. A numerical score is not a proof. An exact proof candidate would still require exact coefficient reconstruction and symbolic verification of the full polynomial identity.
-
-This series therefore evaluates the present restricted affine-certificate search design. It does not settle the full Krenn--Gu conjecture.
+This track evaluated one restricted low-degree certificate-search formulation. The optimized score is a validation residual with a coefficient-norm penalty; lower is better. A numerical score is not exact verification and requires an independent reconstruction/checking stage before stronger conclusions are allowed.
 
 ## Complete run table
 
@@ -28,77 +26,37 @@ This series therefore evaluates the present restricted affine-certificate search
 - Accepted long runs: **8**.
 - Completed compute jobs: **160/160**.
 - Total numerical attempts: **1,077,616,176**.
-- Saved candidates in per-run archives: **3,200** entries before cross-run bank deduplication and truncation.
-- Worker errors recorded in accepted summaries: **0**.
-- Best score of the whole series: **0.24965130097292565**, found in run index `4`.
+- Saved per-run candidate entries before cross-run bank deduplication/truncation: **3,200**.
+- Worker errors in accepted summaries: **0**.
+- Best score of the series: **0.24965130097292565**, found in run index `4`.
 - Improvement of the global record relative to run `0`: **0.883%**.
-- The last three runs did not improve the record; the final run was **1.885% worse** than the record.
-- Median saved score improved from `0.3158977904` to `0.3028772510`, an improvement of about **4.12%**.
+- The last three runs did not improve the record.
+- Median saved score improved from `0.3158977904` to `0.3028772510`, about **4.12%**.
 
 ## Dynamics
 
-### Best-candidate frontier
-
-The per-run best scores were:
+Best scores by run:
 
 ```text
 0.2518749790
 0.2563201818
 0.2524222584
 0.2509241098
-0.2496513010  <- global record
+0.2496513010
 0.2557589905
 0.2531755545
 0.2543583192
 ```
 
-The global record changed only twice after the first run:
+The global record improved only through run index `4` and then plateaued for three runs. Typical saved candidates improved more consistently than the frontier, indicating better local refinement without discovery of a qualitatively stronger family.
 
-```text
-run 0: 0.2518749790
-run 3: 0.2509241098
-run 4: 0.2496513010
-runs 5-7: no further improvement
-```
+Parent-based mutation remained active but showed diminishing returns. Saved archives retained almost the maximum number of distinct support fingerprints (`397-400` out of 400), while structural buckets ranged from `55` to `63`, so the plateau was not caused merely by exact duplication of one support.
 
-The frontier therefore showed a small early improvement followed by a three-run plateau. It did not move toward the near-zero residual that would motivate exact reconstruction.
+## Conclusion
 
-### Typical saved candidates
+The eight runs provide useful negative evidence about this specific computational formulation. More than one billion attempts produced less than a 1% improvement in the best score, and the final three runs did not improve the global record. Continuing the same code and search regime is therefore low-value unless the search space or verification strategy changes substantially.
 
-The median saved score improved much more consistently than the best score. This means the search became better at producing generally decent candidates, but it did not discover a qualitatively new certificate family. In practical terms, the distribution improved while the frontier remained stuck.
-
-### Reusing previous candidates
-
-Parent-based mutation was genuinely active, but its yield declined. The fraction of saved parent-based candidates that improved their parent was approximately:
-
-```text
-run 1: 32.7%
-run 2: 30.3%
-run 3: 30.2%
-run 4: 21.9%
-run 5: 13.1%
-run 6: 15.0%
-run 7: 19.0%
-```
-
-This is evidence of local refinement and diminishing returns. Mutation continued to produce improvements relative to individual parents, but after run `4` those local improvements did not create a new global record.
-
-### Diversity
-
-The saved archives retained almost the maximum number of distinct support fingerprints (`397-400` out of 400), while structural buckets fluctuated between `55` and `63`. Thus the plateau was not merely caused by exact duplication of one support. The search continued to generate many syntactically distinct supports, but this diversity did not translate into better certificate scores. The final run had only `55` structural buckets, the lowest count in the series, but the whole sequence shows fluctuation rather than a clean monotone collapse.
-
-## Scientific conclusion
-
-The eight runs provide useful negative evidence about this **specific computational formulation**:
-
-1. The restricted affine Nullstellensatz candidate family did not produce a residual remotely close to an exact identity.
-2. Adaptive reuse of strong and structurally different parents improved ordinary candidates but did not break the best-score barrier.
-3. Increasing fresh exploration to 60% also failed to produce a new record in three consecutive runs.
-4. The best global improvement after more than one billion attempts was less than 1%.
-
-Continuing the same code, degree, support regime, and objective is therefore low-value. The present third approach should remain paused unless its mathematical search space is changed substantially—for example by using a different certificate degree, a symmetry-reduced exact formulation, rational reconstruction around specially selected structures, or a SAT/SMT/Gröbner-style exact stage.
-
-The archived candidates and summaries remain useful as data about which restricted structures were explored and where the affine numerical certificate model saturated. They should not be described as a proof or as evidence that the full conjecture is proved.
+The archived candidates and summaries remain useful for cross-track comparison and later structural analysis.
 
 ## Final repository state
 
