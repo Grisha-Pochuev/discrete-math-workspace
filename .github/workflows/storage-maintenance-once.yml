@@ -1,0 +1,210 @@
+name: Storage Maintenance
+
+on:
+  push:
+    paths:
+      - '.github/workflows/storage-maintenance-once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  prune:
+    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.message == 'maintenance: prune redundant Actions storage'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Prune proven redundant Actions storage
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPOSITORY: ${{ github.repository }}
+          GH_CURRENT_RUN_ID: ${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import collections
+          import json
+          import os
+          import re
+          import sys
+          import time
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+
+          repo = os.environ['GH_REPOSITORY']
+          token = os.environ['GH_TOKEN']
+          current_run_id = int(os.environ['GH_CURRENT_RUN_ID'])
+          base = f'https://api.github.com/repos/{repo}'
+          headers = {
+              'Authorization': f'Bearer {token}',
+              'Accept': 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28',
+              'User-Agent': 'storage-maintenance',
+          }
+
+          def api(method, path, payload=None, allow_404=False):
+              url = path if path.startswith('http') else base + path
+              data = None if payload is None else json.dumps(payload).encode()
+              req = urllib.request.Request(url, data=data, headers=headers, method=method)
+              try:
+                  with urllib.request.urlopen(req, timeout=60) as r:
+                      raw = r.read()
+                      return None if not raw else json.loads(raw.decode())
+              except urllib.error.HTTPError as e:
+                  body = e.read().decode(errors='replace')
+                  if allow_404 and e.code == 404:
+                      return None
+                  raise RuntimeError(f'{method} {url} -> HTTP {e.code}: {body[:1000]}')
+
+          def paged(path, key):
+              out = []
+              page = 1
+              sep = '&' if '?' in path else '?'
+              while True:
+                  obj = api('GET', f'{path}{sep}per_page=100&page={page}')
+                  batch = obj.get(key, [])
+                  out.extend(batch)
+                  if len(batch) < 100:
+                      return out
+                  page += 1
+
+          def gib(n):
+              return n / (1024 ** 3)
+
+          def mib(n):
+              return n / (1024 ** 2)
+
+          # Protect every currently active run, regardless of workflow/branch.
+          active_ids = {current_run_id}
+          for status in ('queued', 'in_progress', 'waiting', 'requested', 'pending'):
+              runs = paged(f'/actions/runs?status={status}', 'workflow_runs')
+              active_ids.update(int(r['id']) for r in runs)
+
+          artifacts = paged('/actions/artifacts', 'artifacts')
+          live_artifacts = [a for a in artifacts if not a.get('expired', False)]
+          total_artifact_bytes = sum(int(a.get('size_in_bytes', 0)) for a in live_artifacts)
+
+          # ---- Candidate set 1: exact byte-for-byte duplicates by digest ----
+          final_marker = re.compile(r'(collection|collector|consolidated|aggregate|archive|combined|final)', re.I)
+          shard_marker = re.compile(r'(^|[-_])(data|shard|worker|job|part|chunk|checkpoint)([-_]|$|\d)', re.I)
+          protected_marker = re.compile(r'(manifest|certificate|candidate|handoff|report|summary|collection|collector|consolidated|aggregate|archive|combined|final)', re.I)
+
+          delete = {}  # artifact id -> reason
+          by_digest = collections.defaultdict(list)
+          for a in live_artifacts:
+              d = a.get('digest')
+              rid = int((a.get('workflow_run') or {}).get('id') or 0)
+              if d and rid not in active_ids:
+                  by_digest[d].append(a)
+
+          def keep_score(a):
+              name = a.get('name', '')
+              score = 0
+              if final_marker.search(name): score += 100
+              if not shard_marker.search(name): score += 30
+              if not re.search(r'smoke|diagnostic|debug', name, re.I): score += 10
+              return score
+
+          for digest, group in by_digest.items():
+              if len(group) < 2:
+                  continue
+              keep = max(group, key=lambda a: (keep_score(a), int(a.get('size_in_bytes', 0))))
+              for a in group:
+                  if int(a['id']) != int(keep['id']):
+                      delete[int(a['id'])] = f'exact duplicate of artifact {keep["id"]} (digest {digest})'
+
+          # ---- Candidate set 2: shard artifacts already represented by a same-run consolidated artifact ----
+          by_run = collections.defaultdict(list)
+          for a in live_artifacts:
+              rid = int((a.get('workflow_run') or {}).get('id') or 0)
+              if rid:
+                  by_run[rid].append(a)
+
+          run_cache = {}
+          def run_info(rid):
+              if rid not in run_cache:
+                  run_cache[rid] = api('GET', f'/actions/runs/{rid}')
+              return run_cache[rid]
+
+          for rid, group in by_run.items():
+              if rid in active_ids:
+                  continue
+              finals = [a for a in group if final_marker.search(a.get('name',''))]
+              shards = [a for a in group if shard_marker.search(a.get('name','')) and not protected_marker.search(a.get('name',''))]
+              if not finals or not shards:
+                  continue
+              info = run_info(rid)
+              if info.get('status') != 'completed' or info.get('conclusion') != 'success':
+                  continue
+              final = max(finals, key=lambda a: int(a.get('size_in_bytes', 0)))
+              final_size = int(final.get('size_in_bytes', 0))
+              shard_total = sum(int(a.get('size_in_bytes', 0)) for a in shards)
+              shard_max = max(int(a.get('size_in_bytes', 0)) for a in shards)
+              # Conservative evidence that the final artifact is a real aggregation, not a tiny marker.
+              if final_size < shard_max or final_size < max(1024, int(0.10 * shard_total)):
+                  continue
+              for a in shards:
+                  delete.setdefault(int(a['id']), f'shard represented by same-run consolidated artifact {final["id"]}')
+
+          # Safety guard: this maintenance pass must stay conservative.
+          delete_bytes = sum(int(a.get('size_in_bytes', 0)) for a in live_artifacts if int(a['id']) in delete)
+          if len(delete) > 900 or (total_artifact_bytes and delete_bytes > 0.80 * total_artifact_bytes):
+              raise RuntimeError(f'Safety guard: refusing to delete {len(delete)} artifacts / {mib(delete_bytes):.1f} MiB')
+
+          print(f'Artifacts before: {len(live_artifacts)} live, {mib(total_artifact_bytes):.1f} MiB')
+          print(f'Protected active runs: {sorted(active_ids)}')
+          print(f'Artifact deletion plan: {len(delete)} artifacts, {mib(delete_bytes):.1f} MiB')
+          reasons = collections.Counter(delete.values())
+          # Print summarized classes without dumping hundreds of IDs.
+          dup_count = sum(1 for r in delete.values() if r.startswith('exact duplicate'))
+          shard_count = sum(1 for r in delete.values() if r.startswith('shard represented'))
+          print(f'  exact-digest duplicates: {dup_count}')
+          print(f'  consolidated-run shards: {shard_count}')
+
+          deleted_artifacts = 0
+          deleted_artifact_bytes = 0
+          id_to_art = {int(a['id']): a for a in live_artifacts}
+          for aid in sorted(delete):
+              a = id_to_art[aid]
+              api('DELETE', f'/actions/artifacts/{aid}')
+              deleted_artifacts += 1
+              deleted_artifact_bytes += int(a.get('size_in_bytes', 0))
+              if deleted_artifacts % 50 == 0:
+                  print(f'  deleted {deleted_artifacts}/{len(delete)} artifacts...')
+
+          # ---- Caches: keep only the most recently accessed cache for each cache version ----
+          caches = paged('/actions/caches', 'actions_caches')
+          cache_bytes_before = sum(int(c.get('size_in_bytes', 0)) for c in caches)
+          by_version = collections.defaultdict(list)
+          for c in caches:
+              by_version[c.get('version') or f'id:{c["id"]}'].append(c)
+
+          cache_delete = []
+          for version, group in by_version.items():
+              if len(group) < 2:
+                  continue
+              keep = max(group, key=lambda c: c.get('last_accessed_at') or c.get('created_at') or '')
+              cache_delete.extend(c for c in group if int(c['id']) != int(keep['id']))
+
+          deleted_cache_bytes = 0
+          for c in cache_delete:
+              api('DELETE', f'/actions/caches/{int(c["id"])}')
+              deleted_cache_bytes += int(c.get('size_in_bytes', 0))
+
+          # Re-read inventories for a trustworthy final report.
+          remaining_artifacts = [a for a in paged('/actions/artifacts', 'artifacts') if not a.get('expired', False)]
+          remaining_artifact_bytes = sum(int(a.get('size_in_bytes', 0)) for a in remaining_artifacts)
+          remaining_caches = paged('/actions/caches', 'actions_caches')
+          remaining_cache_bytes = sum(int(c.get('size_in_bytes', 0)) for c in remaining_caches)
+
+          print('--- FINAL STORAGE MAINTENANCE REPORT ---')
+          print(f'Deleted artifacts: {deleted_artifacts}, reclaimed {mib(deleted_artifact_bytes):.1f} MiB')
+          print(f'Deleted redundant caches: {len(cache_delete)}, reclaimed {mib(deleted_cache_bytes):.1f} MiB')
+          print(f'Remaining artifacts: {len(remaining_artifacts)}, {mib(remaining_artifact_bytes):.1f} MiB')
+          print(f'Remaining caches: {len(remaining_caches)}, {mib(remaining_cache_bytes):.1f} MiB')
+          print(f'Approx Actions storage after cleanup: {mib(remaining_artifact_bytes + remaining_cache_bytes):.1f} MiB')
+          PY
