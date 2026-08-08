@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "approach": "fifth-approach",
-  "status": "prepared",
-  "enabled": false,
+  "status": "smoke_passed_ready",
+  "enabled": true,
   "automation_mode": "manual_single_run",
   "completed_runs": 0,
   "last_run_id": null,
   "last_run_index": null,
   "next_run_index": 0,
-  "active_spec_path": null,
-  "smoke_required": true,
-  "last_smoke_run_id": null,
+  "active_spec_path": "fifth-approach/specs/run-000-exchange-frontier.json",
+  "smoke_required": false,
+  "last_smoke_run_id": 31266254863,
   "large_matrix_concurrency_guard": true,
   "full_run_auto_launch_allowed": false,
   "tracking_enabled": false,
   "artifact_policy": "consolidate_unique_data_then_prune_redundant_shards",
-  "recommended_next_action": "prepare a structural run specification before any full compute"
+  "recommended_next_action": "launch one explicitly authorized run 000"
 }
