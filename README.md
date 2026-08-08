@@ -9,7 +9,8 @@ Computational workspace with several independent experiment tracks.
 - `second-approach-2.0/` — revised second track.
 - `third-approach/` — third experiment track.
 - `third-approach-2.0/` — revised third track.
-- `fourth-approach/` — current synthesis track.
+- `fourth-approach/` — synthesis track.
+- `fifth-approach/` — current isolated experiment track for new work.
 - `other-experiments/` — unrelated one-off work kept separate from the main tracks.
 
 Executable GitHub Actions workflows live in `.github/workflows/`. Historical workflow definitions may be stored inside the corresponding approach directory and are not active.
