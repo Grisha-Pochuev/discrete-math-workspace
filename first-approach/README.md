@@ -17,10 +17,9 @@ This directory contains the original exact-search track. These files historicall
 
 - `runs/` — verified dated run archives.
 - `.runs/`, `.runs3/` — historical launch/marker state.
-- `.archive/`, `.collect/`, `.collect-v2/`, `.diagnose/`, `.inspect/`, `.query/` — historical orchestration and diagnostic state.
-- `diagnostics/` — preserved diagnostic material.
+- `.archive/` — compact historical source/run markers.
 
-These directories were moved as Git trees without rewriting their contents.
+Temporary collector/query/inspection markers and tail-only diagnostic logs were pruned after the corresponding runs and durable archives had been preserved. Scientific run archives, exact verification inputs, checksums, task queues, certificates, and candidate data are retained.
 
 ## Historical workflows
 
