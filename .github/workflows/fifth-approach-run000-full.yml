@@ -1,4 +1,5 @@
 name: Fifth approach Run 000 full
+# Explicitly authorized launch: 2026-08-08, Run 000.
 
 on:
   workflow_dispatch:
