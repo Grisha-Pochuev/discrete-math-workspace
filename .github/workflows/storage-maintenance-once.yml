@@ -2,6 +2,7 @@ name: Storage Maintenance
 
 on:
   workflow_dispatch:
+  public:
 
 permissions:
   contents: read
