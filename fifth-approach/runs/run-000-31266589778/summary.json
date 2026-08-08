@@ -1,0 +1,84 @@
+{
+  "accepted": true,
+  "execution": {
+    "jobs": 20,
+    "seconds_per_worker": 21000,
+    "workers": 80
+  },
+  "frontier_by_mode": {
+    "n12_exhaustive": {
+      "assignments_checked": 33190189491,
+      "corrected_failures": 0,
+      "h_only_failures": 324,
+      "minimum_full_safe": 9,
+      "minimum_h_safe": 0,
+      "sampled_systems": 62474,
+      "systems_completed": 62435,
+      "systems_partial": 39,
+      "trap_cases": 958441254,
+      "workers": 40
+    },
+    "n14_exhaustive": {
+      "assignments_checked": 13861047560,
+      "corrected_failures": 0,
+      "h_only_failures": 0,
+      "minimum_full_safe": 17,
+      "minimum_h_safe": 1,
+      "sampled_systems": 2908,
+      "systems_completed": 2888,
+      "systems_partial": 20,
+      "trap_cases": 391181071,
+      "workers": 20
+    },
+    "n16_adversarial": {
+      "assignments_checked": 443487456,
+      "corrected_failures": 0,
+      "h_only_failures": 0,
+      "minimum_full_safe": 31,
+      "minimum_h_safe": 2,
+      "sampled_systems": 14790,
+      "systems_completed": 0,
+      "systems_partial": 0,
+      "trap_cases": 0,
+      "workers": 12
+    },
+    "n18_adversarial": {
+      "assignments_checked": 150740592,
+      "corrected_failures": 0,
+      "h_only_failures": 0,
+      "minimum_full_safe": 53,
+      "minimum_h_safe": 5,
+      "sampled_systems": 5029,
+      "systems_completed": 0,
+      "systems_partial": 0,
+      "trap_cases": 0,
+      "workers": 8
+    }
+  },
+  "n10_exact": {
+    "assignments_checked": 65426292,
+    "corrected_failures": 0,
+    "h_only_failures": 18,
+    "labelled_factor_triples": 23019264,
+    "minimum_full_safe": 7,
+    "minimum_h_safe": 0,
+    "orbit_count": 1108,
+    "orbit_coverage_complete": true,
+    "orbit_digest": "15b3128be0d118bcf91b01559e49943cb637fd689f8212859cd9d68eb8d8c88b",
+    "trap_cases": 1976684
+  },
+  "run_id": 31266589778,
+  "run_index": 0,
+  "schema_version": 1,
+  "scientific_status": "no_corrected_exchange_counterexample_observed",
+  "source_sha": "1cded282ca1ef72f15e41ce400d2873fa2e465af",
+  "technical_status_counts": {
+    "SUCCESS": 80
+  },
+  "worker_modes": {
+    "n12_exhaustive": 40,
+    "n14_exhaustive": 20,
+    "n16_adversarial": 12,
+    "n18_adversarial": 8
+  }
+}
