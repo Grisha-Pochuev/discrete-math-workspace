@@ -7,13 +7,13 @@
   "enabled": false,
   "full_run_auto_launch_allowed": false,
   "large_matrix_concurrency_guard": true,
-  "last_run_id": 31266643408,
+  "last_run_id": 31266589778,
   "last_run_index": 0,
   "last_smoke_run_id": 31266254863,
-  "next_run_index": 0,
+  "next_run_index": 1,
   "recommended_next_action": "review run-000 exact n10 result and high-n hard cases before selecting run 001",
   "schema_version": 1,
   "smoke_required": true,
-  "status": "run_000_collection_failed",
+  "status": "run_000_accepted",
   "tracking_enabled": false
 }

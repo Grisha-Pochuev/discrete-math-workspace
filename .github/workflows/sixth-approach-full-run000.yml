@@ -1,0 +1,123 @@
+name: Sixth approach run-000 full
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  workers:
+    name: shard-job-${{ matrix.job }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        job: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile optimized worker
+        run: >-
+          g++ -std=c++20 -O3 -DNDEBUG -pthread
+          "sixth approach/run000_worker.cpp"
+          -o sixth-run000-worker
+
+      - name: Run four isolated workers
+        env:
+          JOB_INDEX: ${{ matrix.job }}
+        run: |
+          mkdir -p worker-output
+          declare -a pids
+          declare -a worker_ids
+          for local_index in 0 1 2 3; do
+            worker_id=$((JOB_INDEX * 4 + local_index))
+            worker_ids[$local_index]=$worker_id
+            (
+              ulimit -v 2560000
+              timeout --signal=TERM --kill-after=30s 1020s \
+                ./sixth-run000-worker worker \
+                  --worker-id "$worker_id" \
+                  --worker-count 80 \
+                  --seconds 840 \
+                  --output "worker-output/worker-$(printf '%03d' "$worker_id").json"
+            ) >"worker-output/worker-$(printf '%03d' "$worker_id").log" 2>&1 &
+            pids[$local_index]=$!
+          done
+
+          status=0
+          while true; do
+            alive=0
+            echo "resource snapshot $(date -u +%FT%TZ)"
+            free -m
+            ps -o pid,ppid,etime,rss,vsz,comm -C sixth-run000-worker || true
+            for pid in "${pids[@]}"; do
+              if kill -0 "$pid" 2>/dev/null; then alive=1; fi
+            done
+            if [ "$alive" -eq 0 ]; then break; fi
+            sleep 30
+          done
+
+          for local_index in 0 1 2 3; do
+            if ! wait "${pids[$local_index]}"; then status=1; fi
+          done
+          for worker_id in "${worker_ids[@]}"; do
+            if ! python3 "sixth approach/driver.py" verify-worker \
+              "worker-output/worker-$(printf '%03d' "$worker_id").json" \
+              --worker-count 80; then status=1; fi
+          done
+          exit "$status"
+
+      - name: Preserve worker checkpoints
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sixth-run000-worker-${{ matrix.job }}
+          path: worker-output/
+          if-no-files-found: warn
+          retention-days: 14
+
+  collect:
+    if: always()
+    needs: workers
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download every worker artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: sixth-run000-worker-*
+          path: downloaded-workers
+
+      - name: Validate, collect, and checksum
+        run: |
+          archive="sixth approach/runs/run-000-${GITHUB_RUN_ID}"
+          python3 "sixth approach/driver.py" collect \
+            --input-root downloaded-workers \
+            --output-dir "$archive" \
+            --expected-workers 80 \
+            --run-id "$GITHUB_RUN_ID" \
+            --control "sixth approach/control.json"
+
+      - name: Preserve collected archive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sixth-run000-collected-${{ github.run_id }}
+          path: sixth approach/runs/run-000-${{ github.run_id }}/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Commit accepted archive
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "sixth approach/control.json" "sixth approach/runs/run-000-${GITHUB_RUN_ID}"
+          git commit -m "Archive sixth approach run-000 ${GITHUB_RUN_ID}"
+          git push origin HEAD:main
