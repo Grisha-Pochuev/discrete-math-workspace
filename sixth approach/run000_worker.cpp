@@ -388,7 +388,29 @@ struct WorkerState {
     std::uint64_t exact_h_zero{};
     std::uint64_t exact_threshold_violations{};
     int exact_min_full{std::numeric_limits<int>::max()};
-    std::vector<Record>€ü-¢Gß≤⁄Óù∆≠yÿ
+    std::vector<Record> h_zero_records;
+    std::vector<Record> equality_records;
+    int frontier_order{};
+    std::uint64_t frontier_systems{};
+    std::uint64_t frontier_assignments{};
+    std::uint64_t frontier_trap_cases{};
+    std::uint64_t frontier_threshold_violations{};
+    int frontier_min_full{std::numeric_limits<int>::max()};
+    std::vector<Record> frontier_records;
+    double elapsed_seconds{};
+};
+
+void write_edge_array(std::ostream& out, const std::vector<Edge>& edges) {
+    out << '[';
+    for (std::size_t i = 0; i < edges.size(); ++i) {
+        if (i) out << ',';
+        out << '[' << edges[i].first << ',' << edges[i].second << ']';
+    }
+    out << ']';
+}
+
+void write_record(std::ostream& out, const Record& record) {
+    out << "{\"orbit_index\":" << record.orbit_index
         << ",\"order\":" << record.n << ",\"factors\":[";
     for (int color = 0; color < 3; ++color) {
         if (color) out << ',';
