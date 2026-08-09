@@ -3,7 +3,7 @@
   "run_id": "run-049",
   "mode": "native_exact_support_layers",
   "trigger": "workflow_dispatch",
-  "workflow": "sixth-approach-native-frontier-batch.yml",
+  "workflow": "sixth-approach-native-targeted-batch.yml",
   "runner": "ubuntu-24.04",
   "cases": [
     {"case": 3, "orbit": 8, "stabilizer_size": 4, "term_variables": 27428},
