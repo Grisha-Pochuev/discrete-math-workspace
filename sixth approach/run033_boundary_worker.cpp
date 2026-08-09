@@ -103,6 +103,23 @@ Config GetConfig(int case_id) {
         },
     };
   }
+  if (case_id == 7) {
+    return {
+        7,
+        36,
+        std::array<Matching, 3>{
+            Matching{{0, 2}, {1, 4}, {3, 6}, {5, 7}},
+            Matching{{0, 3}, {1, 6}, {2, 5}, {4, 7}},
+            Matching{{0, 5}, {1, 3}, {2, 7}, {4, 6}},
+        },
+        Matching{{0, 4}, {0, 6}, {1, 5}, {1, 7},
+                 {2, 4}, {2, 6}, {3, 5}, {3, 7}},
+        std::array<std::array<int, 4>, 2>{
+            std::array<int, 4>{0, 4, 2, 6},
+            std::array<int, 4>{1, 5, 3, 7},
+        },
+    };
+  }
   if (case_id == 9) {
     return {
         9,
@@ -168,6 +185,91 @@ Config GetConfig(int case_id) {
         std::array<std::array<int, 4>, 2>{
             std::array<int, 4>{0, 5, 2, 7},
             std::array<int, 4>{1, 4, 3, 6},
+        },
+    };
+  }
+  if (case_id == 18) {
+    return {
+        18,
+        9,
+        std::array<Matching, 3>{
+            Matching{{0, 2}, {1, 4}, {3, 6}, {5, 7}},
+            Matching{{0, 4}, {1, 5}, {2, 6}, {3, 7}},
+            Matching{{0, 6}, {1, 7}, {2, 4}, {3, 5}},
+        },
+        Matching{{0, 5}, {0, 7}, {1, 3}, {1, 6},
+                 {2, 5}, {2, 7}, {3, 4}, {4, 6}},
+        std::array<std::array<int, 4>, 2>{
+            std::array<int, 4>{0, 5, 2, 7},
+            std::array<int, 4>{1, 3, 4, 6},
+        },
+    };
+  }
+  if (case_id == 19) {
+    return {
+        19,
+        16,
+        std::array<Matching, 3>{
+            Matching{{0, 2}, {1, 4}, {3, 6}, {5, 7}},
+            Matching{{0, 5}, {1, 3}, {2, 7}, {4, 6}},
+            Matching{{0, 7}, {1, 6}, {2, 5}, {3, 4}},
+        },
+        Matching{{0, 4}, {0, 6}, {1, 5}, {1, 7},
+                 {2, 4}, {2, 6}, {3, 5}, {3, 7}},
+        std::array<std::array<int, 4>, 2>{
+            std::array<int, 4>{0, 4, 2, 6},
+            std::array<int, 4>{1, 5, 3, 7},
+        },
+    };
+  }
+  if (case_id == 20) {
+    return {
+        20,
+        17,
+        std::array<Matching, 3>{
+            Matching{{0, 4}, {1, 5}, {2, 6}, {3, 7}},
+            Matching{{0, 5}, {1, 4}, {2, 7}, {3, 6}},
+            Matching{{0, 6}, {1, 7}, {2, 4}, {3, 5}},
+        },
+        Matching{{0, 2}, {0, 7}, {1, 3}, {1, 6},
+                 {2, 5}, {3, 4}, {4, 6}, {5, 7}},
+        std::array<std::array<int, 4>, 2>{
+            std::array<int, 4>{0, 2, 5, 7},
+            std::array<int, 4>{1, 3, 4, 6},
+        },
+    };
+  }
+  if (case_id == 21) {
+    return {
+        21,
+        19,
+        std::array<Matching, 3>{
+            Matching{{0, 4}, {1, 5}, {2, 6}, {3, 7}},
+            Matching{{0, 5}, {1, 6}, {2, 7}, {3, 4}},
+            Matching{{0, 6}, {1, 7}, {2, 4}, {3, 5}},
+        },
+        Matching{{0, 2}, {0, 7}, {1, 3}, {1, 4},
+                 {2, 5}, {3, 6}, {4, 6}, {5, 7}},
+        std::array<std::array<int, 4>, 2>{
+            std::array<int, 4>{0, 2, 5, 7},
+            std::array<int, 4>{1, 3, 6, 4},
+        },
+    };
+  }
+  if (case_id == 22) {
+    return {
+        22,
+        20,
+        std::array<Matching, 3>{
+            Matching{{0, 4}, {1, 5}, {2, 6}, {3, 7}},
+            Matching{{0, 5}, {1, 7}, {2, 4}, {3, 6}},
+            Matching{{0, 6}, {1, 4}, {2, 7}, {3, 5}},
+        },
+        Matching{{0, 2}, {0, 7}, {1, 3}, {1, 6},
+                 {2, 5}, {3, 4}, {4, 6}, {5, 7}},
+        std::array<std::array<int, 4>, 2>{
+            std::array<int, 4>{0, 2, 5, 7},
+            std::array<int, 4>{1, 3, 4, 6},
         },
     };
   }
