@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "run_id": "run-038",
+  "mode": "exact_integer_lattice_audit",
+  "trigger": "workflow_dispatch",
+  "source_run": 31314627849,
+  "source_repository": "Grisha-Pochuev/discrete-math-workspace",
+  "runner": "ubuntu-24.04",
+  "engine": "python_sympy_exact_hnf",
+  "layers": [
+    {"index": 3, "support": 56, "artifact": "run-035-case-3-layer-56"},
+    {"index": 3, "support": 57, "artifact": "run-035-case-3-layer-57"},
+    {"index": 3, "support": 58, "artifact": "run-035-case-3-layer-58"},
+    {"index": 9, "support": 55, "artifact": "run-035-case-9-layer-55"},
+    {"index": 9, "support": 56, "artifact": "run-035-case-9-layer-56"},
+    {"index": 9, "support": 57, "artifact": "run-035-case-9-layer-57"},
+    {"index": 9, "support": 58, "artifact": "run-035-case-9-layer-58"},
+    {"index": 10, "support": 55, "artifact": "run-035-case-10-layer-55"},
+    {"index": 10, "support": 56, "artifact": "run-035-case-10-layer-56"},
+    {"index": 10, "support": 57, "artifact": "run-035-case-10-layer-57"},
+    {"index": 10, "support": 58, "artifact": "run-035-case-10-layer-58"},
+    {"index": 11, "support": 55, "artifact": "run-035-case-11-layer-55"},
+    {"index": 11, "support": 56, "artifact": "run-035-case-11-layer-56"},
+    {"index": 11, "support": 57, "artifact": "run-035-case-11-layer-57"},
+    {"index": 11, "support": 58, "artifact": "run-035-case-11-layer-58"}
+  ],
+  "acceptance": {
+    "all_layers_present": true,
+    "all_inputs_complete": true,
+    "all_support_orbits_audited": true,
+    "scientific_survivors_preserved": true,
+    "mathematical_closure_requires_zero_two_sided": true,
+    "artifacts_always_uploaded": true
+  }
+}

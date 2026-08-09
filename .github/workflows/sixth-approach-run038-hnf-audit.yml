@@ -1,0 +1,160 @@
+name: Sixth Approach Run 038 Exact Audit
+run-name: run-038 exact audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  audit-layer:
+    name: audit-${{ matrix.index }}-${{ matrix.support }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - {index: 3, support: 56, artifact: run-035-case-3-layer-56}
+          - {index: 3, support: 57, artifact: run-035-case-3-layer-57}
+          - {index: 3, support: 58, artifact: run-035-case-3-layer-58}
+          - {index: 9, support: 55, artifact: run-035-case-9-layer-55}
+          - {index: 9, support: 56, artifact: run-035-case-9-layer-56}
+          - {index: 9, support: 57, artifact: run-035-case-9-layer-57}
+          - {index: 9, support: 58, artifact: run-035-case-9-layer-58}
+          - {index: 10, support: 55, artifact: run-035-case-10-layer-55}
+          - {index: 10, support: 56, artifact: run-035-case-10-layer-56}
+          - {index: 10, support: 57, artifact: run-035-case-10-layer-57}
+          - {index: 10, support: 58, artifact: run-035-case-10-layer-58}
+          - {index: 11, support: 55, artifact: run-035-case-11-layer-55}
+          - {index: 11, support: 56, artifact: run-035-case-11-layer-56}
+          - {index: 11, support: 57, artifact: run-035-case-11-layer-57}
+          - {index: 11, support: 58, artifact: run-035-case-11-layer-58}
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Prepare audit directory
+        shell: bash
+        run: |
+          mkdir -p work/input work/out
+          printf 'prepared\n' > work/out/status.txt
+
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up exact Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install exact integer dependency
+        shell: bash
+        run: python -m pip install --disable-pip-version-check 'sympy==1.13.3'
+
+      - name: Generate immutable audit context
+        shell: bash
+        run: node 'sixth approach/run035_hnf_context.js' work/context.json
+
+      - name: Download accepted source layer
+        uses: actions/download-artifact@v8
+        with:
+          github-token: ${{ github.token }}
+          repository: Grisha-Pochuev/discrete-math-workspace
+          run-id: '31314627849'
+          name: ${{ matrix.artifact }}
+          path: work/input
+
+      - name: Execute exact audit
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          if [ -f work/context.json ] && [ -f 'work/input/layer-${{ matrix.support }}-merged.json' ]; then
+            python 'sixth approach/run035_hnf_audit.py' \
+              --input 'work/input/layer-${{ matrix.support }}-merged.json' \
+              --context work/context.json \
+              --expected-index '${{ matrix.index }}' \
+              --expected-support '${{ matrix.support }}' \
+              --output work/out/audit.json > work/out/audit.log 2>&1
+            code=$?
+          else
+            echo 'ERROR: required context or source layer is missing' > work/out/audit.log
+            code=2
+          fi
+          printf '%s\n' "$code" > work/out/audit.exit
+          exit 0
+
+      - name: Gate audit result
+        if: always()
+        shell: bash
+        run: exit "$(cat work/out/audit.exit 2>/dev/null || echo 2)"
+
+      - name: Upload audit bundle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: run-038-audit-${{ matrix.index }}-${{ matrix.support }}
+          path: work/out/
+          if-no-files-found: error
+          retention-days: 14
+
+  collect:
+    name: collect-run-038
+    needs: audit-layer
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Prepare collector directory
+        shell: bash
+        run: |
+          mkdir -p work/audits work/out
+          printf 'prepared\n' > work/out/status.txt
+
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python collector
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Download all audit bundles
+        uses: actions/download-artifact@v8
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.run_id }}
+          pattern: run-038-audit-*
+          path: work/audits
+
+      - name: Validate audit coverage and summary
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          python 'sixth approach/run035_hnf_collect.py' \
+            --spec 'sixth approach/specs/run-038-hnf-audit.json' \
+            --input-root work/audits --output work/out/summary.json > work/out/collector.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > work/out/collector.exit
+          exit 0
+
+      - name: Gate collector result
+        if: always()
+        shell: bash
+        run: exit "$(cat work/out/collector.exit 2>/dev/null || echo 2)"
+
+      - name: Upload collector bundle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: run-038-audit-collection
+          path: work/out/
+          if-no-files-found: error
+          retention-days: 14
