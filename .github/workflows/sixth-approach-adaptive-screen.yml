@@ -1,0 +1,205 @@
+name: Sixth Approach Adaptive Screen
+run-name: ${{ inputs.run_id }} adaptive screen
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+      graphs_json:
+        description: JSON array of exact graph metadata
+        required: true
+        type: string
+      spec_path:
+        description: Repository path to the immutable JSON specification
+        required: true
+        type: string
+      seconds_per_round:
+        description: Exact solver seconds per adaptive round
+        required: true
+        type: string
+      exchange_rounds:
+        description: Exact maximum adaptive cut rounds
+        required: true
+        type: string
+      worker_seconds:
+        description: Exact wall limit for each shard
+        required: true
+        type: string
+      worker_memory_mib:
+        description: Exact memory limit for each shard
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  adaptive-screen:
+    name: graph-${{ matrix.graph.id }}
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        graph: ${{ fromJSON(inputs.graphs_json) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      CALC_RUN_ID: ${{ inputs.run_id }}
+      CALC_GRAPHS_JSON: ${{ inputs.graphs_json }}
+      CALC_SPEC_PATH: ${{ inputs.spec_path }}
+      CALC_SECONDS: ${{ inputs.seconds_per_round }}
+      CALC_ROUNDS: ${{ inputs.exchange_rounds }}
+      CALC_WORKER_SECONDS: ${{ inputs.worker_seconds }}
+      CALC_MEMORY_MIB: ${{ inputs.worker_memory_mib }}
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python collector
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Verify immutable specification
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          spec = json.loads(Path(os.environ['CALC_SPEC_PATH']).read_text())
+          assert spec['run_id'] == os.environ['CALC_RUN_ID']
+          assert spec['workflow'] == 'sixth-approach-adaptive-screen.yml'
+          assert spec['graphs'] == json.loads(os.environ['CALC_GRAPHS_JSON'])
+          assert str(spec['seconds_per_round']) == os.environ['CALC_SECONDS']
+          assert str(spec['exchange_rounds']) == os.environ['CALC_ROUNDS']
+          assert str(spec['worker_seconds']) == os.environ['CALC_WORKER_SECONDS']
+          assert str(spec['worker_memory_mib']) == os.environ['CALC_MEMORY_MIB']
+          assert spec['jobs'] == len(spec['graphs'])
+          assert spec['shards_per_job'] == 4
+          assert spec['partition'] == 'first-edge-bits-v1'
+          assert spec['single_threaded_workers'] is True
+          assert spec['worker_language'] == 'C++20'
+          assert spec['solver'] == 'OR-Tools CP-SAT v9.15.6755'
+          assert spec['job_timeout_minutes'] <= 75
+          PY
+
+      - name: Fetch verified native toolkit
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/or-tools.tar.gz"
+          root="$RUNNER_TEMP/or-tools"
+          curl --fail --location --retry 3 \
+            'https://github.com/google/or-tools/releases/download/v9.15/or-tools_amd64_ubuntu-24.04_cpp_v9.15.6755.tar.gz' \
+            --output "$archive"
+          echo '6f389320672cee00b78aacefb2bde33fef0bb988c3b2735573b9fffd1047fbda  '"$archive" | sha256sum --check
+          mkdir -p "$root"
+          tar -xzf "$archive" -C "$root" --strip-components=1
+
+      - name: Compile the native worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake \
+            -S "$GITHUB_WORKSPACE/sixth approach/run052_adaptive" \
+            -B "$RUNNER_TEMP/adaptive-build" \
+            -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/or-tools" \
+            -Dortools_DIR="$RUNNER_TEMP/or-tools/lib/cmake/ortools" \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/adaptive-build" --parallel 2
+          test -x "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker"
+
+      - name: Record machine diagnostics
+        shell: bash
+        run: |
+          mkdir -p out
+          {
+            date -u +%FT%TZ
+            uname -a
+            nproc
+            lscpu
+            free -h
+            swapon --show
+            df -h .
+            ulimit -a
+            g++ --version
+            echo "GITHUB_SHA=$GITHUB_SHA"
+            sha256sum "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker"
+            sha256sum 'sixth approach/run052_adaptive/main.cpp'
+            sha256sum "$CALC_SPEC_PATH"
+          } > out/diagnostics.log
+
+      - name: Start resource monitor
+        shell: bash
+        run: |
+          (
+            while true; do
+              date -u +%FT%TZ
+              grep -E 'MemTotal|MemAvailable|SwapTotal|SwapFree' /proc/meminfo
+              ps -eo pid,ppid,rss,etime,cmd --sort=-rss | head -25
+              sleep 60
+            done
+          ) > out/resource-monitor.log 2>&1 &
+          echo $! > out/resource-monitor.pid
+
+      - name: Run four exact native shards
+        id: compute
+        shell: bash
+        run: |
+          export LD_LIBRARY_PATH="$RUNNER_TEMP/or-tools/lib:${LD_LIBRARY_PATH:-}"
+          set +e
+          pids=()
+          for shard in 0 1 2 3; do
+            (
+              ulimit -v $((CALC_MEMORY_MIB*1024))
+              timeout --signal=TERM --kill-after=30s "$CALC_WORKER_SECONDS" \
+                "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker" \
+                  --run-id "$CALC_RUN_ID" \
+                  --graph '${{ matrix.graph.type }}' \
+                  --seconds "$CALC_SECONDS" \
+                  --rounds "$CALC_ROUNDS" \
+                  --workers 1 \
+                  --memory-mib "$CALC_MEMORY_MIB" \
+                  --shard-id "$shard" \
+                  --shard-count 4 \
+                  --output "out/shard-${shard}.json" \
+                > "out/shard-${shard}.log" 2>&1
+              echo $? > "out/shard-${shard}.exit"
+            ) &
+            pids+=("$!")
+          done
+          for pid in "${pids[@]}"; do
+            wait "$pid"
+          done
+          exit 0
+
+      - name: Stop monitor and validate exact coverage
+        if: always()
+        shell: bash
+        run: |
+          if [ -f out/resource-monitor.pid ]; then
+            kill "$(cat out/resource-monitor.pid)" 2>/dev/null || true
+          fi
+          python 'sixth approach/run052_collect.py' \
+            --spec "$CALC_SPEC_PATH" \
+            --run-id "$CALC_RUN_ID" \
+            --graph '${{ matrix.graph.type }}' \
+            --input-dir out \
+            --output 'out/merged.json'
+
+      - name: Upload complete diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-graph-${{ matrix.graph.id }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
