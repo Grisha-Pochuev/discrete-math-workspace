@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "series": "run-025",
+  "mode": "exact_one_edge_deletion",
+  "n": 8,
+  "connected_labelled_factor_triples": 27456,
+  "factor_triple_orbits": 39,
+  "remainder_edge": {
+    "kind": "remainder_edge",
+    "configurations": 113724,
+    "minimum_witnesses": 2,
+    "witness_count_histogram": {
+      "2": 2,
+      "3": 57,
+      "4": 228,
+      "5": 2250,
+      "6": 7906,
+      "7": 28837,
+      "8": 27582,
+      "9": 36834,
+      "10": 610,
+      "11": 3622,
+      "12": 84,
+      "13": 688,
+      "14": 1544,
+      "15": 3480
+    },
+    "failures": []
+  },
+  "colour_zero_edge": {
+    "kind": "colour_zero_edge",
+    "configurations": 1023516,
+    "minimum_witnesses": 2,
+    "witness_count_histogram": {
+      "2": 54,
+      "3": 22,
+      "4": 2242,
+      "5": 8877,
+      "6": 38714,
+      "7": 58892,
+      "8": 242284,
+      "9": 228441,
+      "10": 368330,
+      "11": 332,
+      "12": 25208,
+      "13": 1936,
+      "14": 10080,
+      "15": 6840,
+      "16": 31264
+    },
+    "failures": []
+  },
+  "elapsed_seconds": 68.323
+}
