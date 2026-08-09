@@ -86,6 +86,7 @@ jobs:
         id: compute
         shell: bash
         run: |
+          export LD_LIBRARY_PATH="$RUNNER_TEMP/or-tools/lib:${LD_LIBRARY_PATH:-}"
           set +e
           pids=()
           for shard in 0 1 2 3; do
