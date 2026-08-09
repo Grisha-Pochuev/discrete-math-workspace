@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Strict collector for the run-038 exact audit matrix."""
+"""Strict collector for an exact audit matrix."""
 
 from __future__ import annotations
 
@@ -16,16 +16,43 @@ def main():
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
     spec = json.loads(args.spec.read_text(encoding="utf-8"))
-    expected = {(item["index"], item["support"]) for item in spec["layers"]}
-    if len(expected) != 15:
-        raise ValueError("spec must declare exactly fifteen distinct layers")
+    layers = spec.get("layers")
+    if not isinstance(layers, list) or not layers:
+        raise ValueError("spec must declare a nonempty layer list")
+    required = (
+        "index",
+        "orbit",
+        "missing_type",
+        "support",
+        "source_run",
+        "source_logical_run",
+        "artifact",
+    )
+    if any(any(field not in item for field in required) for item in layers):
+        raise ValueError("spec layer misses required identity fields")
+    expected = {(item["index"], item["support"]): item for item in layers}
+    if len(expected) != len(layers):
+        raise ValueError("spec declares duplicate layers")
+    if spec.get("jobs", len(layers)) != len(layers):
+        raise ValueError("spec job count does not match its layers")
     found = {}
     for path in args.input_root.rglob("audit.json"):
         item = json.loads(path.read_text(encoding="utf-8"))
         key = (item.get("index"), item.get("support"))
         if key in found:
             raise ValueError(f"duplicate audit for {key}")
-        if item.get("run_id") != spec["run_id"] or item.get("source_run") != spec["source_run"]:
+        declared = expected.get(key)
+        if declared is None:
+            raise ValueError(f"unexpected audit for {key}")
+        identity = (
+            "orbit",
+            "missing_type",
+            "source_run",
+            "source_logical_run",
+        )
+        if item.get("run_id") != spec["run_id"] or any(
+            item.get(field) != declared[field] for field in identity
+        ):
             raise ValueError(f"source identity mismatch for {key}")
         if not item.get("input_complete"):
             raise ValueError(f"incomplete audit for {key}")
@@ -62,14 +89,21 @@ def main():
         if item.get("all_two_sided_are_coordinate_edge_faces") != (nonface_total == 0):
             raise ValueError(f"face flag mismatch for {key}")
         found[key] = item
-    if set(found) != expected:
-        raise ValueError(f"audit coverage mismatch; missing={sorted(expected - set(found))}; extra={sorted(set(found) - expected)}")
+    if set(found) != set(expected):
+        missing = sorted(set(expected) - set(found))
+        extra = sorted(set(found) - set(expected))
+        raise ValueError(f"audit coverage mismatch; missing={missing}; extra={extra}")
     two_sided_total = sum(item["two_sided_total"] for item in found.values())
     nonface_total = sum(item["nonface_total"] for item in found.values())
     summary = {
         "schema_version": 1,
         "run_id": spec["run_id"],
-        "source_run": spec["source_run"],
+        "source_runs": [
+            {"source_run": source_run, "source_logical_run": logical_run}
+            for source_run, logical_run in sorted(
+                {(item["source_run"], item["source_logical_run"]) for item in layers}
+            )
+        ],
         "accepted": True,
         "audited_layers": len(found),
         "audited_support_orbits": sum(item["audited_support_orbits"] for item in found.values()),
@@ -82,7 +116,11 @@ def main():
         "layers": [
             {
                 "index": index,
+                "orbit": found[(index, support)]["orbit"],
+                "missing_type": found[(index, support)]["missing_type"],
                 "support": support,
+                "source_run": found[(index, support)]["source_run"],
+                "source_logical_run": found[(index, support)]["source_logical_run"],
                 "support_orbits": found[(index, support)]["audited_support_orbits"],
                 "two_sided_total": found[(index, support)]["two_sided_total"],
                 "nonface_total": found[(index, support)]["nonface_total"],

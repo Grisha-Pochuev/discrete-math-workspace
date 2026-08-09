@@ -1,8 +1,26 @@
-name: Sixth Approach Run 038 Exact Audit
-run-name: run-038 exact audit
+name: Sixth Approach Exact Lattice Batch
+run-name: ${{ inputs.run_id }} exact lattice batch
 
 on:
   workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+      layers_json:
+        description: JSON array of exact layer metadata
+        required: true
+        type: string
+      spec_path:
+        description: Repository path to the immutable JSON specification
+        required: true
+        type: string
+      max_parallel:
+        description: Maximum simultaneous audit jobs
+        required: true
+        default: 3
+        type: number
 
 permissions:
   actions: read
@@ -15,25 +33,20 @@ jobs:
     timeout-minutes: 360
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: ${{ inputs.max_parallel }}
       matrix:
-        include:
-          - {index: 3, orbit: 8, support: 56, artifact: run-035-case-3-layer-56}
-          - {index: 3, orbit: 8, support: 57, artifact: run-035-case-3-layer-57}
-          - {index: 3, orbit: 8, support: 58, artifact: run-035-case-3-layer-58}
-          - {index: 9, orbit: 51, support: 55, artifact: run-035-case-9-layer-55}
-          - {index: 9, orbit: 51, support: 56, artifact: run-035-case-9-layer-56}
-          - {index: 9, orbit: 51, support: 57, artifact: run-035-case-9-layer-57}
-          - {index: 9, orbit: 51, support: 58, artifact: run-035-case-9-layer-58}
-          - {index: 10, orbit: 52, support: 55, artifact: run-035-case-10-layer-55}
-          - {index: 10, orbit: 52, support: 56, artifact: run-035-case-10-layer-56}
-          - {index: 10, orbit: 52, support: 57, artifact: run-035-case-10-layer-57}
-          - {index: 10, orbit: 52, support: 58, artifact: run-035-case-10-layer-58}
-          - {index: 11, orbit: 53, support: 55, artifact: run-035-case-11-layer-55}
-          - {index: 11, orbit: 53, support: 56, artifact: run-035-case-11-layer-56}
-          - {index: 11, orbit: 53, support: 57, artifact: run-035-case-11-layer-57}
-          - {index: 11, orbit: 53, support: 58, artifact: run-035-case-11-layer-58}
+        include: ${{ fromJSON(inputs.layers_json) }}
     env:
+      AUDIT_RUN_ID: ${{ inputs.run_id }}
+      AUDIT_SPEC_PATH: ${{ inputs.spec_path }}
+      AUDIT_LAYERS_JSON: ${{ inputs.layers_json }}
+      AUDIT_MAX_PARALLEL: ${{ inputs.max_parallel }}
+      EXPECTED_INDEX: ${{ matrix.index }}
+      EXPECTED_ORBIT: ${{ matrix.orbit }}
+      EXPECTED_MISSING_TYPE: ${{ matrix.missing_type }}
+      EXPECTED_SUPPORT: ${{ matrix.support }}
+      SOURCE_RUN: ${{ matrix.source_run }}
+      SOURCE_LOGICAL_RUN: ${{ matrix.source_logical_run }}
       OPENBLAS_NUM_THREADS: '1'
       OMP_NUM_THREADS: '1'
       MKL_NUM_THREADS: '1'
@@ -53,6 +66,22 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Verify immutable specification
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          spec = json.loads(Path(os.environ['AUDIT_SPEC_PATH']).read_text())
+          layers = json.loads(os.environ['AUDIT_LAYERS_JSON'])
+          assert spec['run_id'] == os.environ['AUDIT_RUN_ID']
+          assert spec['layers'] == layers
+          assert spec['jobs'] == len(layers)
+          assert spec['max_parallel'] == int(os.environ['AUDIT_MAX_PARALLEL'])
+          assert len({(item['index'], item['support']) for item in layers}) == len(layers)
+          PY
+
       - name: Install exact integer dependency
         shell: bash
         run: python -m pip install --disable-pip-version-check 'sympy==1.13.3'
@@ -65,8 +94,8 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           github-token: ${{ github.token }}
-          repository: Grisha-Pochuev/discrete-math-workspace
-          run-id: '31314627849'
+          repository: ${{ github.repository }}
+          run-id: ${{ matrix.source_run }}
           name: ${{ matrix.artifact }}
           path: work/input
 
@@ -75,17 +104,18 @@ jobs:
         shell: bash
         run: |
           set +e
-          if [ -f work/context.json ] && [ -f 'work/input/layer-${{ matrix.support }}-merged.json' ]; then
+          input="work/input/layer-${EXPECTED_SUPPORT}-merged.json"
+          if [ -f work/context.json ] && [ -f "$input" ]; then
             python 'sixth approach/run035_hnf_audit.py' \
-              --input 'work/input/layer-${{ matrix.support }}-merged.json' \
+              --input "$input" \
               --context work/context.json \
-              --run-id run-038 \
-              --source-run 31314627849 \
-              --source-logical-run run-035 \
-              --expected-index '${{ matrix.index }}' \
-              --expected-orbit '${{ matrix.orbit }}' \
-              --expected-support '${{ matrix.support }}' \
-              --expected-missing-type C8 \
+              --run-id "$AUDIT_RUN_ID" \
+              --source-run "$SOURCE_RUN" \
+              --source-logical-run "$SOURCE_LOGICAL_RUN" \
+              --expected-index "$EXPECTED_INDEX" \
+              --expected-orbit "$EXPECTED_ORBIT" \
+              --expected-support "$EXPECTED_SUPPORT" \
+              --expected-missing-type "$EXPECTED_MISSING_TYPE" \
               --output work/out/audit.json > work/out/audit.log 2>&1
             code=$?
           else
@@ -104,13 +134,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: run-038-audit-${{ matrix.index }}-${{ matrix.support }}
+          name: ${{ inputs.run_id }}-audit-${{ matrix.index }}-${{ matrix.support }}
           path: work/out/
           if-no-files-found: error
           retention-days: 14
 
   collect:
-    name: collect-run-038
+    name: collect-${{ inputs.run_id }}
     needs: audit-layer
     if: always()
     runs-on: ubuntu-24.04
@@ -135,17 +165,20 @@ jobs:
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
           run-id: ${{ github.run_id }}
-          pattern: run-038-audit-*
+          pattern: ${{ inputs.run_id }}-audit-*
           path: work/audits
 
       - name: Validate audit coverage and summary
         if: always()
         shell: bash
+        env:
+          AUDIT_SPEC_PATH: ${{ inputs.spec_path }}
         run: |
           set +e
           python 'sixth approach/run035_hnf_collect.py' \
-            --spec 'sixth approach/specs/run-038-hnf-audit.json' \
-            --input-root work/audits --output work/out/summary.json > work/out/collector.log 2>&1
+            --spec "$AUDIT_SPEC_PATH" \
+            --input-root work/audits \
+            --output work/out/summary.json > work/out/collector.log 2>&1
           code=$?
           printf '%s\n' "$code" > work/out/collector.exit
           exit 0
@@ -159,7 +192,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: run-038-audit-collection
+          name: ${{ inputs.run_id }}-audit-collection
           path: work/out/
           if-no-files-found: error
           retention-days: 14

@@ -5,10 +5,17 @@ const fs = require("fs");
 const path = require("path");
 
 const SOURCES = [
-  { index: 3, orbit: 8, factors: [[[0,2],[1,3],[4,6],[5,7]],[[0,3],[1,6],[2,5],[4,7]],[[0,5],[1,4],[2,7],[3,6]]], residual_edges: [[0,4],[0,6],[1,5],[1,7],[2,4],[2,6],[3,5],[3,7]], residual_components: [[0,2,4,6],[1,3,5,7]] },
-  { index: 9, orbit: 51, factors: [[[0,2],[1,5],[3,7],[4,6]],[[0,3],[1,6],[2,5],[4,7]],[[0,5],[1,4],[2,7],[3,6]]], residual_edges: [[0,4],[0,6],[1,3],[1,7],[2,4],[2,6],[3,5],[5,7]], residual_components: [[0,2,4,6],[1,3,5,7]] },
-  { index: 10, orbit: 52, factors: [[[0,3],[1,5],[2,6],[4,7]],[[0,4],[1,6],[2,5],[3,7]],[[0,5],[1,4],[2,7],[3,6]]], residual_edges: [[0,2],[0,6],[1,3],[1,7],[2,4],[3,5],[4,6],[5,7]], residual_components: [[0,2,4,6],[1,3,5,7]] },
-  { index: 11, orbit: 53, factors: [[[0,3],[1,6],[2,5],[4,7]],[[0,4],[1,5],[2,6],[3,7]],[[0,5],[1,4],[2,7],[3,6]]], residual_edges: [[0,2],[0,6],[1,3],[1,7],[2,4],[3,5],[4,6],[5,7]], residual_components: [[0,2,4,6],[1,3,5,7]] }
+  { index: 3, missing_type: "C8", orbit: 8, factors: [[[0,2],[1,3],[4,6],[5,7]],[[0,3],[1,6],[2,5],[4,7]],[[0,5],[1,4],[2,7],[3,6]]], residual_edges: [[0,4],[0,6],[1,5],[1,7],[2,4],[2,6],[3,5],[3,7]], residual_components: [[0,2,4,6],[1,3,5,7]] },
+  { index: 7, missing_type: "C8", orbit: 36, factors: [[[0,2],[1,4],[3,6],[5,7]],[[0,3],[1,6],[2,5],[4,7]],[[0,5],[1,3],[2,7],[4,6]]], residual_edges: [[0,4],[0,6],[1,5],[1,7],[2,4],[2,6],[3,5],[3,7]], residual_components: [[0,2,4,6],[1,3,5,7]] },
+  { index: 9, missing_type: "C8", orbit: 51, factors: [[[0,2],[1,5],[3,7],[4,6]],[[0,3],[1,6],[2,5],[4,7]],[[0,5],[1,4],[2,7],[3,6]]], residual_edges: [[0,4],[0,6],[1,3],[1,7],[2,4],[2,6],[3,5],[5,7]], residual_components: [[0,2,4,6],[1,3,5,7]] },
+  { index: 10, missing_type: "C8", orbit: 52, factors: [[[0,3],[1,5],[2,6],[4,7]],[[0,4],[1,6],[2,5],[3,7]],[[0,5],[1,4],[2,7],[3,6]]], residual_edges: [[0,2],[0,6],[1,3],[1,7],[2,4],[3,5],[4,6],[5,7]], residual_components: [[0,2,4,6],[1,3,5,7]] },
+  { index: 11, missing_type: "C8", orbit: 53, factors: [[[0,3],[1,6],[2,5],[4,7]],[[0,4],[1,5],[2,6],[3,7]],[[0,5],[1,4],[2,7],[3,6]]], residual_edges: [[0,2],[0,6],[1,3],[1,7],[2,4],[3,5],[4,6],[5,7]], residual_components: [[0,2,4,6],[1,3,5,7]] },
+  { index: 14, missing_type: "C4+C4", orbit: 3, factors: [[[0,2],[1,3],[4,6],[5,7]],[[0,4],[1,5],[2,6],[3,7]],[[0,6],[1,7],[2,4],[3,5]]], residual_edges: [[0,5],[0,7],[1,4],[1,6],[2,5],[2,7],[3,4],[3,6]], residual_components: [[0,2,5,7],[1,3,4,6]] },
+  { index: 18, missing_type: "C4+C4", orbit: 9, factors: [[[0,2],[1,4],[3,6],[5,7]],[[0,4],[1,5],[2,6],[3,7]],[[0,6],[1,7],[2,4],[3,5]]], residual_edges: [[0,5],[0,7],[1,3],[1,6],[2,5],[2,7],[3,4],[4,6]], residual_components: [[0,2,5,7],[1,3,4,6]] },
+  { index: 19, missing_type: "C4+C4", orbit: 16, factors: [[[0,2],[1,4],[3,6],[5,7]],[[0,5],[1,3],[2,7],[4,6]],[[0,7],[1,6],[2,5],[3,4]]], residual_edges: [[0,4],[0,6],[1,5],[1,7],[2,4],[2,6],[3,5],[3,7]], residual_components: [[0,2,4,6],[1,3,5,7]] },
+  { index: 20, missing_type: "C4+C4", orbit: 17, factors: [[[0,4],[1,5],[2,6],[3,7]],[[0,5],[1,4],[2,7],[3,6]],[[0,6],[1,7],[2,4],[3,5]]], residual_edges: [[0,2],[0,7],[1,3],[1,6],[2,5],[3,4],[4,6],[5,7]], residual_components: [[0,2,5,7],[1,3,4,6]] },
+  { index: 21, missing_type: "C4+C4", orbit: 19, factors: [[[0,4],[1,5],[2,6],[3,7]],[[0,5],[1,6],[2,7],[3,4]],[[0,6],[1,7],[2,4],[3,5]]], residual_edges: [[0,2],[0,7],[1,3],[1,4],[2,5],[3,6],[4,6],[5,7]], residual_components: [[0,2,5,7],[1,3,4,6]] },
+  { index: 22, missing_type: "C4+C4", orbit: 20, factors: [[[0,4],[1,5],[2,6],[3,7]],[[0,5],[1,7],[2,4],[3,6]],[[0,6],[1,4],[2,7],[3,5]]], residual_edges: [[0,2],[0,7],[1,3],[1,6],[2,5],[3,4],[4,6],[5,7]], residual_components: [[0,2,5,7],[1,3,4,6]] }
 ];
 
 function key(a, b) { return a < b ? `${a},${b}` : `${b},${a}`; }
@@ -76,7 +83,7 @@ const records = SOURCES.map(source => {
     for (let index = 0; index < 81; index++) if ((extent >> BigInt(index)) & 1n) closure &= rows[index];
     concepts.set(`${extent}|${closure}`, [extent.toString(), closure.toString()]);
   }
-  return { index: source.index, missing_type: "C8", orbit: source.orbit, residual_edges: residual, cycle_orders: orders, concepts: [...concepts.values()] };
+  return { index: source.index, missing_type: source.missing_type, orbit: source.orbit, residual_edges: residual, cycle_orders: orders, concepts: [...concepts.values()] };
 });
 
 const output = process.argv[2];

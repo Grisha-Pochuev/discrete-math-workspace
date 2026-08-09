@@ -13,9 +13,9 @@ from sympy import Matrix
 from sympy.matrices.normalforms import hermite_normal_form
 
 
-EXPECTED = {3: 8, 9: 51, 10: 52, 11: 53}
-SOURCE_RUN = 31314627849
-SOURCE_LOGICAL_RUN = "run-035"
+DEFAULT_AUDIT_RUN = "run-038"
+DEFAULT_SOURCE_RUN = 31314627849
+DEFAULT_SOURCE_LOGICAL_RUN = "run-035"
 
 
 def edge(a, b):
@@ -118,19 +118,29 @@ class CycleSystem:
         return len(indices) == 9 and set(fixed) in ({0, 1}, {1, 2}, {2, 3}, {0, 3})
 
 
-def checked_input(path, expected_index, expected_support):
+def checked_input(
+    path,
+    expected_index,
+    expected_orbit,
+    expected_support,
+    expected_missing_type,
+    source_run,
+    source_logical_run,
+):
     stored = json.loads(path.read_text(encoding="utf-8"))
     required = ("support", "orbit", "raw_supports", "support_orbits", "orbits")
     if any(field not in stored for field in required):
         raise ValueError("input misses required exact-enumeration fields")
     index = stored.get("index", stored.get("case"))
-    if index not in EXPECTED or stored.get("missing_type", "C8") != "C8" or stored.get("orbit") != EXPECTED[index]:
+    if index != expected_index or stored.get("orbit") != expected_orbit:
         raise ValueError("input layer has an unexpected source identity")
-    if index != expected_index or stored["support"] != expected_support:
+    if stored.get("missing_type", expected_missing_type) != expected_missing_type:
+        raise ValueError("input layer has an unexpected source type")
+    if stored["support"] != expected_support:
         raise ValueError("input layer does not match the declared matrix cell")
-    if stored.get("source_run") not in (None, SOURCE_RUN):
+    if stored.get("source_run") not in (None, source_run):
         raise ValueError("input layer names a different source run")
-    if stored.get("run_id") not in (None, SOURCE_LOGICAL_RUN):
+    if stored.get("run_id") not in (None, source_logical_run):
         raise ValueError("input layer names a different logical run")
     if "complete_exact_coverage" in stored:
         if not stored["complete_exact_coverage"] or stored.get("status") != "SUCCESS" or stored.get("errors"):
@@ -169,7 +179,7 @@ def checked_input(path, expected_index, expected_support):
         if not isinstance(item.get("labelled_multiplicity"), int) or item["labelled_multiplicity"] <= 0:
             raise ValueError("support orbit has an invalid labelled multiplicity")
     stored["index"] = index
-    stored["missing_type"] = stored.get("missing_type", "C8")
+    stored["missing_type"] = stored.get("missing_type", expected_missing_type)
     return stored
 
 
@@ -177,15 +187,31 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--context", required=True, type=Path)
+    parser.add_argument("--run-id", default=DEFAULT_AUDIT_RUN)
+    parser.add_argument("--source-run", type=int, default=DEFAULT_SOURCE_RUN)
+    parser.add_argument("--source-logical-run", default=DEFAULT_SOURCE_LOGICAL_RUN)
     parser.add_argument("--expected-index", required=True, type=int)
+    parser.add_argument("--expected-orbit", required=True, type=int)
     parser.add_argument("--expected-support", required=True, type=int)
+    parser.add_argument("--expected-missing-type", required=True)
     parser.add_argument("--output", required=True, type=Path)
     args = parser.parse_args()
-    stored = checked_input(args.input, args.expected_index, args.expected_support)
-    contexts = {item["index"]: item for item in json.loads(args.context.read_text(encoding="utf-8"))["records"]}
-    context = contexts.get(stored["index"])
-    if not context or context["orbit"] != stored["orbit"] or context["missing_type"] != stored["missing_type"]:
+    context_records = json.loads(args.context.read_text(encoding="utf-8"))["records"]
+    contexts = {item["index"]: item for item in context_records}
+    if len(contexts) != len(context_records):
+        raise ValueError("duplicate context index")
+    context = contexts.get(args.expected_index)
+    if not context or context["orbit"] != args.expected_orbit or context["missing_type"] != args.expected_missing_type:
         raise ValueError("context identity mismatch")
+    stored = checked_input(
+        args.input,
+        args.expected_index,
+        args.expected_orbit,
+        args.expected_support,
+        args.expected_missing_type,
+        args.source_run,
+        args.source_logical_run,
+    )
     residual = tuple(edge(*item) for item in context["residual_edges"])
     residual_index = {item: index for index, item in enumerate(residual)}
     concepts = tuple((int(left), int(right)) for left, right in context["concepts"])
@@ -220,9 +246,12 @@ def main():
         nonface_support_orbits += orbit_has_nonface
     result = {
         "schema_version": 1,
-        "run_id": "run-038",
-        "source_run": SOURCE_RUN,
+        "run_id": args.run_id,
+        "source_run": args.source_run,
+        "source_logical_run": args.source_logical_run,
         "index": stored["index"],
+        "orbit": stored["orbit"],
+        "missing_type": stored["missing_type"],
         "support": stored["support"],
         "input_complete": True,
         "audited_support_orbits": stored["support_orbits"],
