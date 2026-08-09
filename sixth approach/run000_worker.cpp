@@ -228,7 +228,7 @@ struct GraphSystem {
     std::vector<int> edge_color;
     std::vector<std::vector<std::pair<int, int>>> adjacency;
     std::uint64_t remainder_mask{};
-    std::vector<std::uint64_t> mixed_full_matchings;
+    std::vector<std::uint64_t> full_matchings;
     std::vector<std::uint64_t> mixed_h_matchings;
     bool matching_overflow{};
 
@@ -265,11 +265,12 @@ struct GraphSystem {
             for (std::size_t id = 0; id < edges.size(); ++id) {
                 if ((mask & (1ULL << id)) && edge_color[id] >= 0) color_mask |= 1 << edge_color[id];
             }
-            if (std::popcount(static_cast<unsigned>(color_mask)) >= 2) {
-                mixed_full_matchings.push_back(mask);
-                if ((mask & remainder_mask) == 0) mixed_h_matchings.push_back(mask);
+            full_matchings.push_back(mask);
+            if ((mask & remainder_mask) == 0 &&
+                std::popcount(static_cast<unsigned>(color_mask)) >= 2) {
+                mixed_h_matchings.push_back(mask);
             }
-            if (mixed_full_matchings.size() >= cap) matching_overflow = true;
+            if (full_matchings.size() >= cap) matching_overflow = true;
             return;
         }
         const int u = std::countr_zero(remaining_vertices);
@@ -346,7 +347,22 @@ struct GraphSystem {
             return true;
         };
         for (std::uint64_t matching : mixed_h_matchings) result.h_safe += is_safe(matching);
-        for (std::uint64_t matching : mixed_full_matchings) result.full_safe += is_safe(matching);
+        for (std::uint64_t matching : full_matchings) {
+            int induced_color_mask = 0;
+            for (std::size_t id = 0; id < edges.size(); ++id) {
+                if ((matching & (1ULL << id)) == 0) continue;
+                if (edge_color[id] >= 0) {
+                    induced_color_mask |= 1 << edge_color[id];
+                } else {
+                    const auto [u, v] = edges[id];
+                    induced_color_mask |= 1 << assignment[u];
+                    induced_color_mask |= 1 << assignment[v];
+                }
+            }
+            if (std::popcount(static_cast<unsigned>(induced_color_mask)) >= 2) {
+                result.full_safe += is_safe(matching);
+            }
+        }
         if (retain_halves) result.trap_halves = std::move(halves);
         return result;
     }
@@ -630,8 +646,20 @@ int run_self_test() {
     OrbitCatalogue catalogue;
     const auto factors = factors_from_representative(catalogue.complete, catalogue.representatives.front());
     GraphSystem system(10, factors);
-    if (system.matching_overflow || system.mixed_full_matchings.empty()) {
+    if (system.matching_overflow || system.full_matchings.empty()) {
         throw std::runtime_error("matching enumeration self-test failed");
+    }
+    const std::array<std::vector<Edge>, 3> regression_factors{{
+        {{0, 9}, {1, 8}, {2, 7}, {3, 5}, {4, 6}},
+        {{0, 6}, {1, 5}, {2, 9}, {3, 7}, {4, 8}},
+        {{0, 4}, {1, 3}, {2, 6}, {5, 9}, {7, 8}}
+    }};
+    GraphSystem regression_system(10, regression_factors);
+    const std::vector<int> regression_assignment{0, 0, 2, 1, 1, 2, 2, 1, 1, 2};
+    const Evaluation regression = regression_system.evaluate(regression_assignment);
+    if (!regression.has_mixed_trap || regression.trap_count != 2 ||
+        regression.h_safe != 0 || regression.full_safe != 9) {
+        throw std::runtime_error("remainder-colour regression failed");
     }
     std::uint64_t trap_cases = 0;
     for (std::uint64_t code = 0; code < power3(10); code += 97) {
