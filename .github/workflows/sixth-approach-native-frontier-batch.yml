@@ -1,0 +1,199 @@
+name: Sixth Approach Native Frontier Batch
+run-name: ${{ inputs.run_id }} native frontier batch
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+      supports_json:
+        description: JSON array of exact support sizes
+        required: true
+        type: string
+      spec_path:
+        description: Repository path to the immutable JSON specification
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  exact-layer:
+    name: case-${{ matrix.case.id }}-layer-${{ matrix.support }}
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        case:
+          - id: 3
+            orbit: 8
+            stabilizer: 4
+            terms: 27428
+          - id: 9
+            orbit: 51
+            stabilizer: 4
+            terms: 27286
+          - id: 10
+            orbit: 52
+            stabilizer: 8
+            terms: 27272
+          - id: 11
+            orbit: 53
+            stabilizer: 16
+            terms: 27264
+        support: ${{ fromJSON(inputs.supports_json) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      CALC_RUN_ID: ${{ inputs.run_id }}
+      CALC_SUPPORTS_JSON: ${{ inputs.supports_json }}
+      CALC_SPEC_PATH: ${{ inputs.spec_path }}
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python collector
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Verify immutable specification
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          spec = json.loads(Path(os.environ['CALC_SPEC_PATH']).read_text())
+          assert spec['run_id'] == os.environ['CALC_RUN_ID']
+          assert spec['supports'] == json.loads(os.environ['CALC_SUPPORTS_JSON'])
+          assert spec['jobs'] == 4 * len(spec['supports'])
+          assert spec['shards_per_job'] == 4
+          assert spec['symmetry_breaking'] == 'full_coloured_stabilizer_lex_leader'
+          PY
+
+      - name: Fetch verified native toolkit
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/or-tools.tar.gz"
+          root="$RUNNER_TEMP/or-tools"
+          curl --fail --location --retry 3 \
+            'https://github.com/google/or-tools/releases/download/v9.15/or-tools_amd64_ubuntu-24.04_cpp_v9.15.6755.tar.gz' \
+            --output "$archive"
+          echo '6f389320672cee00b78aacefb2bde33fef0bb988c3b2735573b9fffd1047fbda  '"$archive" | sha256sum --check
+          mkdir -p "$root"
+          tar -xzf "$archive" -C "$root" --strip-components=1
+
+      - name: Compile the native worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake \
+            -S "$GITHUB_WORKSPACE/sixth approach/run033_native" \
+            -B "$RUNNER_TEMP/frontier-build" \
+            -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/or-tools" \
+            -Dortools_DIR="$RUNNER_TEMP/or-tools/lib/cmake/ortools" \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/frontier-build" --parallel 2
+          test -x "$RUNNER_TEMP/frontier-build/run033_boundary_worker"
+
+      - name: Record machine diagnostics
+        shell: bash
+        run: |
+          mkdir -p out
+          {
+            date -u +%FT%TZ
+            uname -a
+            nproc
+            lscpu
+            free -h
+            swapon --show
+            df -h .
+            ulimit -a
+            g++ --version
+            echo "GITHUB_SHA=$GITHUB_SHA"
+            sha256sum "$RUNNER_TEMP/frontier-build/run033_boundary_worker"
+          } > out/diagnostics.log
+
+      - name: Start resource monitor
+        shell: bash
+        run: |
+          (
+            while true; do
+              date -u +%FT%TZ
+              grep -E 'MemTotal|MemAvailable|SwapTotal|SwapFree' /proc/meminfo
+              ps -eo pid,ppid,rss,etime,cmd --sort=-rss | head -25
+              sleep 60
+            done
+          ) > out/resource-monitor.log 2>&1 &
+          echo $! > out/resource-monitor.pid
+
+      - name: Run four exact native shards
+        id: compute
+        shell: bash
+        run: |
+          export LD_LIBRARY_PATH="$RUNNER_TEMP/or-tools/lib:${LD_LIBRARY_PATH:-}"
+          set +e
+          pids=()
+          for shard in 0 1 2 3; do
+            (
+              ulimit -v $((2500*1024))
+              timeout --signal=TERM --kill-after=30s 3360 \
+                "$RUNNER_TEMP/frontier-build/run033_boundary_worker" \
+                  --run-id "$CALC_RUN_ID" \
+                  --symmetry-break 1 \
+                  --case '${{ matrix.case.id }}' \
+                  --support '${{ matrix.support }}' \
+                  --shard-id "$shard" \
+                  --shard-count 4 \
+                  --seconds 3300 \
+                  --cap 2000000 \
+                  --checkpoint-every 100000 \
+                  --checkpoint-seconds 300 \
+                  --output "out/shard-${shard}.json" \
+                > "out/shard-${shard}.log" 2>&1
+              echo $? > "out/shard-${shard}.exit"
+            ) &
+            pids+=("$!")
+          done
+          for pid in "${pids[@]}"; do
+            wait "$pid"
+          done
+          exit 0
+
+      - name: Stop monitor and validate exact coverage
+        if: always()
+        shell: bash
+        run: |
+          if [ -f out/resource-monitor.pid ]; then
+            kill "$(cat out/resource-monitor.pid)" 2>/dev/null || true
+          fi
+          python 'sixth approach/run033_collect.py' \
+            --run-id "$CALC_RUN_ID" \
+            --case '${{ matrix.case.id }}' \
+            --orbit '${{ matrix.case.orbit }}' \
+            --support '${{ matrix.support }}' \
+            --expected-stabilizer '${{ matrix.case.stabilizer }}' \
+            --expected-term-variables '${{ matrix.case.terms }}' \
+            --expected-escape-variables 162 \
+            --expected-symmetry-breaking 1 \
+            --input-dir out \
+            --require-exit-files \
+            --output 'out/layer-${{ matrix.support }}-merged.json'
+
+      - name: Upload complete diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-case-${{ matrix.case.id }}-layer-${{ matrix.support }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
