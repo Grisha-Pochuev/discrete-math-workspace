@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "series": "run-029",
+  "mode": "exact_support_boundary",
+  "representative": "n8-f31-r8-v1",
+  "base_model": {
+    "residual_support_variables": 72,
+    "perfect_matchings": 31,
+    "mixed_rows": 6558,
+    "matching_term_variables": 27268,
+    "minimum_singleton_free_support": 52,
+    "minimum_support_lower_bound": 52,
+    "labelled_minimum_supports": 2,
+    "minimum_support_orbits": 1,
+    "minimum_support_edge_sizes": [1, 1, 7, 7, 9, 9, 9, 9]
+  },
+  "minimum_layer_audit": {
+    "cycle_state_term_histogram": {"0": 32, "1": 48, "2": 1},
+    "states_remaining_on_other_component": 0,
+    "closed": true
+  },
+  "cardinality_regression": [
+    {"support": 52, "labelled": 2, "orbits": 1, "closed_by_component_cut": 1},
+    {"support": 53, "labelled": 32, "orbits": 8, "closed_by_component_cut": 8},
+    {"support": 54, "labelled": 240, "orbits": 66, "closed_by_component_cut": 66},
+    {"support": 55, "labelled": 1068, "orbits": 267, "closed_by_component_cut": 267}
+  ],
+  "component_cut_model": {
+    "forbidden_product_pairs": 5622,
+    "minimum_support_after_cut": 70,
+    "minimum_support_lower_bound": 70
+  },
+  "dense_direct_audit": {
+    "support_70": {
+      "all_zero_placements": 2556,
+      "singleton_free": 1100,
+      "excluded_by_component_cut": 1044,
+      "remaining_labelled": 56,
+      "remaining_orbits": 19
+    },
+    "support_71": {
+      "all_zero_placements": 72,
+      "singleton_free": 72,
+      "excluded_by_component_cut": 40,
+      "remaining_labelled": 32,
+      "remaining_orbits": 8
+    }
+  },
+  "integer_character_audit": {
+    "formal_concepts": 316,
+    "boundary_orbits": 27,
+    "closed_by_zero_or_character": 16,
+    "single_nine_by_nine_face": 11,
+    "face_factorization_closed": 11
+  },
+  "full_support_audit": {
+    "formal_concepts": 316,
+    "distinct_character_lattices": 581,
+    "one_sided_concepts": 312,
+    "nine_by_nine_concepts": 4,
+    "remaining_after_factorization": 0
+  },
+  "unresolved_support_orbits": 0
+}
