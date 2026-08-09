@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "series": "run-031",
+  "mode": "exact_sparse_boundary_group",
+  "frontier_group": {
+    "catalogue_indices": [1, 4, 5, 6, 12, 16],
+    "source_orbits": 6,
+    "support_layers": [68, 69, 70, 71],
+    "all_enumerations_complete": true,
+    "all_status_optimal": true,
+    "hit_time_cap": false,
+    "hit_solution_cap": false,
+    "labelled_supports_by_layer": {
+      "68": 24,
+      "69": 96,
+      "70": 606,
+      "71": 214
+    },
+    "support_orbits_by_layer": {
+      "68": 7,
+      "69": 24,
+      "70": 178,
+      "71": 62
+    },
+    "audited_support_orbits": 271
+  },
+  "character_audit": {
+    "zero_cycle_concepts_by_layer": {
+      "68": 14,
+      "69": 48,
+      "70": 351,
+      "71": 817
+    },
+    "two_sided_coordinate_edge_faces_by_layer": {
+      "68": 0,
+      "69": 0,
+      "70": 32,
+      "71": 52
+    },
+    "two_sided_non_edge_faces": 0,
+    "unresolved_support_orbits_in_group": 0
+  },
+  "arbitrary_support_closure": {
+    "previously_closed_orbits": 3,
+    "newly_closed_orbits": 6,
+    "total_closed_orbits": 9,
+    "remaining_orbits": 14,
+    "remaining_frontier_histogram": {
+      "50": 6,
+      "52": 4,
+      "54": 1,
+      "56": 3
+    }
+  }
+}
