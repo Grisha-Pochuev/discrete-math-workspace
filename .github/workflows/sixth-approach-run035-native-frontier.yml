@@ -11,7 +11,7 @@ jobs:
     name: case-${{ matrix.case.id }}-layer-${{ matrix.support }}
     strategy:
       fail-fast: false
-      max-parallel: 16
+      max-parallel: 12
       matrix:
         case:
           - id: 3
@@ -30,7 +30,26 @@ jobs:
             orbit: 53
             stabilizer: 16
             terms: 27264
-        support: [55, 56, 57, 58]
+        support: [56, 57, 58]
+        include:
+          - case:
+              id: 9
+              orbit: 51
+              stabilizer: 4
+              terms: 27286
+            support: 55
+          - case:
+              id: 10
+              orbit: 52
+              stabilizer: 8
+              terms: 27272
+            support: 55
+          - case:
+              id: 11
+              orbit: 53
+              stabilizer: 16
+              terms: 27264
+            support: 55
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:

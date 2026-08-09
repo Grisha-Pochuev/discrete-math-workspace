@@ -10,9 +10,14 @@
     {"case": 10, "orbit": 52, "stabilizer_size": 8, "term_variables": 27272},
     {"case": 11, "orbit": 53, "stabilizer_size": 16, "term_variables": 27264}
   ],
-  "supports": [55, 56, 57, 58],
-  "jobs": 16,
-  "max_parallel": 16,
+  "supports": [56, 57, 58],
+  "additional_layers": [
+    {"case": 9, "support": 55},
+    {"case": 10, "support": 55},
+    {"case": 11, "support": 55}
+  ],
+  "jobs": 15,
+  "max_parallel": 12,
   "shards_per_job": 4,
   "partition": "parity2-v1",
   "single_threaded_workers": true,
