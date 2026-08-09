@@ -1,4 +1,4 @@
-"""Validate and merge four exact native shards for one run-033 layer."""
+"""Validate and merge four exact native shards for one support layer."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from pathlib import Path
 import sys
 
 
-RUN_ID = "run-033"
+DEFAULT_RUN_ID = "run-033"
 SHARD_COUNT = 4
 PARTITION_VERSION = "parity2-v1"
 
@@ -27,11 +27,15 @@ def atomic_json(path, value):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--run-id", default=DEFAULT_RUN_ID)
     parser.add_argument("--case", type=int, required=True)
     parser.add_argument("--orbit", type=int, required=True)
     parser.add_argument("--support", type=int, required=True)
     parser.add_argument("--input-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--expected-stabilizer", type=int)
+    parser.add_argument("--expected-term-variables", type=int)
+    parser.add_argument("--expected-escape-variables", type=int)
     parser.add_argument("--require-exit-files", action="store_true")
     args = parser.parse_args()
     errors = []
@@ -58,7 +62,7 @@ def main():
         elif args.require_exit_files:
             errors.append(f"missing {exit_path.name}")
         expected = {
-            "run_id": RUN_ID,
+            "run_id": args.run_id,
             "case": args.case,
             "orbit": args.orbit,
             "support": args.support,
@@ -68,6 +72,14 @@ def main():
         }
         for key, value in expected.items():
             if record.get(key) != value:
+                errors.append(f"{path.name}: {key}={record.get(key)!r}, expected {value!r}")
+        expected_model = {
+            "stabilizer_size": args.expected_stabilizer,
+            "term_variables": args.expected_term_variables,
+            "escape_variables": args.expected_escape_variables,
+        }
+        for key, value in expected_model.items():
+            if value is not None and record.get(key) != value:
                 errors.append(f"{path.name}: {key}={record.get(key)!r}, expected {value!r}")
         if args.require_exit_files and exit_code != 0:
             errors.append(f"{path.name}: exit code {exit_code!r}")
@@ -105,6 +117,9 @@ def main():
             "complete_enumeration": record.get("complete_enumeration"),
             "raw_supports": record.get("raw_supports"),
             "support_orbits": record.get("support_orbits"),
+            "stabilizer_size": record.get("stabilizer_size"),
+            "term_variables": record.get("term_variables"),
+            "escape_variables": record.get("escape_variables"),
             "wall_seconds": record.get("wall_seconds"),
             "sha256": digest(path),
         })
@@ -123,7 +138,7 @@ def main():
         errors.append("merged multiplicity mismatch")
     result = {
         "schema_version": 1,
-        "run_id": RUN_ID,
+        "run_id": args.run_id,
         "mode": "exact_support_layer_merge",
         "case": args.case,
         "orbit": args.orbit,

@@ -56,6 +56,7 @@ struct Symmetry {
 };
 
 struct Arguments {
+  std::string run_id = kRunId;
   int case_id = -1;
   int support = -1;
   int shard_id = -1;
@@ -557,7 +558,8 @@ Arguments ParseArguments(int argc, char** argv) {
     const std::string key = argv[index];
     if (index + 1 >= argc) throw std::invalid_argument("missing value for " + key);
     const std::string value = argv[++index];
-    if (key == "--case") args.case_id = std::stoi(value);
+    if (key == "--run-id") args.run_id = value;
+    else if (key == "--case") args.case_id = std::stoi(value);
     else if (key == "--support") args.support = std::stoi(value);
     else if (key == "--shard-id") args.shard_id = std::stoi(value);
     else if (key == "--shard-count") args.shard_count = std::stoi(value);
@@ -568,7 +570,7 @@ Arguments ParseArguments(int argc, char** argv) {
     else if (key == "--output") args.output = value;
     else throw std::invalid_argument("unknown argument: " + key);
   }
-  if (args.case_id < 0 || args.support < 0 || args.support > 72 ||
+  if (args.run_id.empty() || args.case_id < 0 || args.support < 0 || args.support > 72 ||
       args.shard_count != 4 || args.shard_id < 0 || args.shard_id >= 4 ||
       args.seconds <= 0 || args.cap == 0 || args.output.empty()) {
     throw std::invalid_argument("invalid or missing arguments");
@@ -662,7 +664,7 @@ class Collector {
     if (!stream) throw std::runtime_error("cannot open checkpoint");
     stream << "{\n"
            << "  \"schema_version\": 1,\n"
-           << "  \"run_id\": \"" << kRunId << "\",\n"
+           << "  \"run_id\": \"" << args_.run_id << "\",\n"
            << "  \"mode\": \"exact_support_layer\",\n"
            << "  \"case\": " << config_.case_id << ",\n"
            << "  \"orbit\": " << config_.orbit_id << ",\n"
