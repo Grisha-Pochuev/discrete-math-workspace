@@ -39,14 +39,14 @@ jobs:
       MKL_NUM_THREADS: '1'
       NUMEXPR_NUM_THREADS: '1'
     steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
       - name: Prepare audit directory
         shell: bash
         run: |
           mkdir -p work/input work/out
           printf 'prepared\n' > work/out/status.txt
-
-      - name: Check out exact source
-        uses: actions/checkout@v7
 
       - name: Set up exact Python
         uses: actions/setup-python@v6
@@ -110,14 +110,14 @@ jobs:
     if: always()
     runs-on: ubuntu-24.04
     steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
       - name: Prepare collector directory
         shell: bash
         run: |
           mkdir -p work/audits work/out
           printf 'prepared\n' > work/out/status.txt
-
-      - name: Check out exact source
-        uses: actions/checkout@v7
 
       - name: Set up Python collector
         uses: actions/setup-python@v6
