@@ -8,19 +8,14 @@ on:
         description: Neutral immutable run identifier
         required: true
         type: string
-      matrix_json:
-        description: JSON matrix object containing exact layer metadata
+      layers_json:
+        description: JSON array of exact layer metadata
         required: true
         type: string
       spec_path:
         description: Repository path to the immutable JSON specification
         required: true
         type: string
-      max_parallel:
-        description: Maximum simultaneous audit jobs
-        required: true
-        default: 3
-        type: number
 
 permissions:
   actions: read
@@ -28,24 +23,25 @@ permissions:
 
 jobs:
   audit-layer:
-    name: audit-${{ matrix.index }}-${{ matrix.support }}
+    name: audit-${{ matrix.layer.index }}-${{ matrix.layer.support }}
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     strategy:
       fail-fast: false
-      max-parallel: ${{ inputs.max_parallel }}
-      matrix: ${{ fromJSON(inputs.matrix_json) }}
+      max-parallel: 3
+      matrix:
+        layer: ${{ fromJSON(inputs.layers_json) }}
     env:
       AUDIT_RUN_ID: ${{ inputs.run_id }}
       AUDIT_SPEC_PATH: ${{ inputs.spec_path }}
-      AUDIT_MATRIX_JSON: ${{ inputs.matrix_json }}
-      AUDIT_MAX_PARALLEL: ${{ inputs.max_parallel }}
-      EXPECTED_INDEX: ${{ matrix.index }}
-      EXPECTED_ORBIT: ${{ matrix.orbit }}
-      EXPECTED_MISSING_TYPE: ${{ matrix.missing_type }}
-      EXPECTED_SUPPORT: ${{ matrix.support }}
-      SOURCE_RUN: ${{ matrix.source_run }}
-      SOURCE_LOGICAL_RUN: ${{ matrix.source_logical_run }}
+      AUDIT_LAYERS_JSON: ${{ inputs.layers_json }}
+      AUDIT_MAX_PARALLEL: '3'
+      EXPECTED_INDEX: ${{ matrix.layer.index }}
+      EXPECTED_ORBIT: ${{ matrix.layer.orbit }}
+      EXPECTED_MISSING_TYPE: ${{ matrix.layer.missing_type }}
+      EXPECTED_SUPPORT: ${{ matrix.layer.support }}
+      SOURCE_RUN: ${{ matrix.layer.source_run }}
+      SOURCE_LOGICAL_RUN: ${{ matrix.layer.source_logical_run }}
       OPENBLAS_NUM_THREADS: '1'
       OMP_NUM_THREADS: '1'
       MKL_NUM_THREADS: '1'
@@ -73,9 +69,7 @@ jobs:
           import os
           from pathlib import Path
           spec = json.loads(Path(os.environ['AUDIT_SPEC_PATH']).read_text())
-          matrix = json.loads(os.environ['AUDIT_MATRIX_JSON'])
-          assert set(matrix) == {'include'}
-          layers = matrix['include']
+          layers = json.loads(os.environ['AUDIT_LAYERS_JSON'])
           assert spec['run_id'] == os.environ['AUDIT_RUN_ID']
           assert spec['layers'] == layers
           assert spec['jobs'] == len(layers)
@@ -96,8 +90,8 @@ jobs:
         with:
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
-          run-id: ${{ matrix.source_run }}
-          name: ${{ matrix.artifact }}
+          run-id: ${{ matrix.layer.source_run }}
+          name: ${{ matrix.layer.artifact }}
           path: work/input
 
       - name: Execute exact audit
@@ -135,7 +129,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ inputs.run_id }}-audit-${{ matrix.index }}-${{ matrix.support }}
+          name: ${{ inputs.run_id }}-audit-${{ matrix.layer.index }}-${{ matrix.layer.support }}
           path: work/out/
           if-no-files-found: error
           retention-days: 14
