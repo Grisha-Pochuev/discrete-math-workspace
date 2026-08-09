@@ -16,6 +16,7 @@
   "shards_per_job": 4,
   "partition": "parity2-v1",
   "single_threaded_workers": true,
+  "symmetry_breaking": "full_coloured_stabilizer_lex_leader",
   "worker_language": "C++20",
   "worker_seconds": 3300,
   "worker_cap": 2000000,

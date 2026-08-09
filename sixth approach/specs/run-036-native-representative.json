@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "run_id": "run-036",
+  "mode": "native_exact_symmetry_representative",
+  "trigger": "workflow_dispatch",
+  "runner": "ubuntu-24.04",
+  "case": 3,
+  "orbit": 8,
+  "support": 55,
+  "shards": 4,
+  "partition": "parity2-v1",
+  "single_threaded_workers": true,
+  "symmetry_breaking": "full_coloured_stabilizer_lex_leader",
+  "worker_language": "C++20",
+  "worker_seconds": 900,
+  "worker_cap": 500000,
+  "worker_memory_mib": 2500,
+  "expected_model": {
+    "stabilizer_size": 4,
+    "term_variables": 27428,
+    "escape_variables": 162
+  },
+  "acceptance": {
+    "all_shards_complete": true,
+    "raw_supports": 7272,
+    "support_orbits": 1855,
+    "compare_with_independent_local_enumeration": true
+  }
+}

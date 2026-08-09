@@ -57,6 +57,7 @@ struct Symmetry {
 
 struct Arguments {
   std::string run_id = kRunId;
+  bool symmetry_break = false;
   int case_id = -1;
   int support = -1;
   int shard_id = -1;
@@ -312,6 +313,36 @@ Masks Canonical(const Masks& masks, const Config& config,
   return best;
 }
 
+std::array<int, kSupportVariableCount> TargetToSource(
+    const Config& config, const Symmetry& symmetry) {
+  std::array<int, kSupportVariableCount> result{};
+  result.fill(-1);
+  for (int source = 0; source < kSupportVariableCount; ++source) {
+    Masks basis{};
+    basis[source / 9] = std::uint16_t{1} << (source % 9);
+    const Masks image = TransformMasks(basis, config, symmetry);
+    int target = -1;
+    for (int edge = 0; edge < kResidualEdgeCount; ++edge) {
+      if (image[edge] == 0) continue;
+      if (target >= 0 || std::popcount(image[edge]) != 1) {
+        throw std::logic_error("invalid coordinate image");
+      }
+      target = 9 * edge + std::countr_zero(image[edge]);
+    }
+    if (target < 0 || result[target] >= 0) {
+      throw std::logic_error("nonpermutation coordinate image");
+    }
+    result[target] = source;
+  }
+  return result;
+}
+
+struct BuiltModel;
+
+void AddLexLeader(const Config& config,
+                  const std::vector<Symmetry>& symmetries,
+                  BuiltModel* built);
+
 std::uint64_t SplitMix64(std::uint64_t value) {
   value += 0x9E3779B97F4A7C15ULL;
   value = (value ^ (value >> 30)) * 0xBF58476D1CE4E5B9ULL;
@@ -428,7 +459,40 @@ struct BuiltModel {
   std::array<int, 2> partition_group_sizes{};
 };
 
+void AddLexLeader(const Config& config,
+                  const std::vector<Symmetry>& symmetries,
+                  BuiltModel* built) {
+  for (const Symmetry& symmetry : symmetries) {
+    const auto target_to_source = TargetToSource(config, symmetry);
+    bool identity = true;
+    for (int index = 0; index < kSupportVariableCount; ++index) {
+      identity &= target_to_source[index] == index;
+    }
+    if (identity) continue;
+
+    sat::BoolVar prefix = built->model.NewBoolVar();
+    built->model.AddEquality(prefix, 1);
+    for (int edge = 0; edge < kResidualEdgeCount; ++edge) {
+      for (int bit = 8; bit >= 0; --bit) {
+        const int target = 9 * edge + bit;
+        const sat::BoolVar left = built->support[target];
+        const sat::BoolVar right = built->support[target_to_source[target]];
+        built->model.AddLessOrEqual(left, right).OnlyEnforceIf(prefix);
+        const sat::BoolVar same = built->model.NewBoolVar();
+        built->model.AddEquality(left, right).OnlyEnforceIf(same);
+        built->model.AddNotEqual(left, right).OnlyEnforceIf(same.Not());
+        const sat::BoolVar next = built->model.NewBoolVar();
+        built->model.AddImplication(next, prefix);
+        built->model.AddImplication(next, same);
+        built->model.AddBoolOr({prefix.Not(), same.Not(), next});
+        prefix = next;
+      }
+    }
+  }
+}
+
 void BuildModel(const Config& config, const Prepared& data,
+                const std::vector<Symmetry>& symmetries,
                 const Arguments& args, BuiltModel* built) {
   for (int index = 0; index < kSupportVariableCount; ++index) {
     built->support[index] = built->model.NewBoolVar();
@@ -541,6 +605,8 @@ void BuildModel(const Config& config, const Prepared& data,
   for (const sat::BoolVar value : built->support) support_sum += value;
   built->model.AddEquality(support_sum, args.support);
 
+  if (args.symmetry_break) AddLexLeader(config, symmetries, built);
+
   const auto groups = PartitionGroups(kSupportVariableCount);
   for (int bit = 0; bit < 2; ++bit) {
     sat::LinearExpr group_sum;
@@ -559,6 +625,7 @@ Arguments ParseArguments(int argc, char** argv) {
     if (index + 1 >= argc) throw std::invalid_argument("missing value for " + key);
     const std::string value = argv[++index];
     if (key == "--run-id") args.run_id = value;
+    else if (key == "--symmetry-break") args.symmetry_break = std::stoi(value) != 0;
     else if (key == "--case") args.case_id = std::stoi(value);
     else if (key == "--support") args.support = std::stoi(value);
     else if (key == "--shard-id") args.shard_id = std::stoi(value);
@@ -595,7 +662,7 @@ class Collector {
                            std::chrono::duration<double>(args.checkpoint_seconds))) {}
 
   void Observe(const sat::CpSolverResponse& response, sat::Model* model) {
-    ++raw_;
+    ++enumerated_;
     Masks masks{};
     for (int edge_index = 0; edge_index < kResidualEdgeCount; ++edge_index) {
       for (int row = 0; row < 3; ++row) {
@@ -607,9 +674,21 @@ class Collector {
         }
       }
     }
-    ++orbits_[Canonical(masks, config_, symmetries_)];
+    const Masks canonical = Canonical(masks, config_, symmetries_);
+    if (args_.symmetry_break) {
+      if (canonical != masks) throw std::logic_error("lex leader admitted a noncanonical support");
+      std::set<Masks> images;
+      for (const Symmetry& symmetry : symmetries_) {
+        images.insert(TransformMasks(masks, config_, symmetry));
+      }
+      raw_ += images.size();
+      orbits_[masks] += images.size();
+    } else {
+      ++raw_;
+      ++orbits_[canonical];
+    }
     const auto now = std::chrono::steady_clock::now();
-    if (raw_ >= args_.cap) {
+    if (enumerated_ >= args_.cap) {
       hit_cap_ = true;
       Write("CAP_REACHED", false, response);
       sat::StopSearch(model);
@@ -621,7 +700,8 @@ class Collector {
       hit_signal_ = true;
       Write("SIGNAL_RECEIVED", false, response);
       sat::StopSearch(model);
-    } else if ((args_.checkpoint_every > 0 && raw_ % args_.checkpoint_every == 0) ||
+    } else if ((args_.checkpoint_every > 0 &&
+                enumerated_ % args_.checkpoint_every == 0) ||
                now >= next_checkpoint_) {
       Write("RUNNING", false, response);
       next_checkpoint_ =
@@ -672,6 +752,7 @@ class Collector {
            << "  \"shard_id\": " << args_.shard_id << ",\n"
            << "  \"shard_count\": " << args_.shard_count << ",\n"
            << "  \"partition_version\": \"" << kPartitionVersion << "\",\n"
+           << "  \"symmetry_breaking\": " << (args_.symmetry_break ? "true" : "false") << ",\n"
            << "  \"partition_group_sizes\": [" << partition_group_sizes_[0]
            << ", " << partition_group_sizes_[1] << "],\n"
            << "  \"stabilizer_size\": " << symmetries_.size() << ",\n"
@@ -683,6 +764,7 @@ class Collector {
            << "  \"hit_deadline\": " << (hit_deadline_ ? "true" : "false") << ",\n"
            << "  \"hit_signal\": " << (hit_signal_ ? "true" : "false") << ",\n"
            << "  \"wall_seconds\": " << Elapsed(std::chrono::steady_clock::now()) << ",\n"
+           << "  \"enumerated_supports\": " << enumerated_ << ",\n"
            << "  \"raw_supports\": " << raw_ << ",\n"
            << "  \"support_orbits\": " << orbits_.size() << ",\n"
            << "  \"branches\": " << response.num_branches() << ",\n"
@@ -723,6 +805,7 @@ class Collector {
   std::array<int, 2> partition_group_sizes_;
   std::chrono::steady_clock::time_point started_;
   std::chrono::steady_clock::time_point next_checkpoint_;
+  std::uint64_t enumerated_ = 0;
   std::uint64_t raw_ = 0;
   std::map<Masks, std::uint64_t> orbits_;
   bool hit_cap_ = false;
@@ -743,7 +826,7 @@ int main(int argc, char** argv) {
     const Prepared prepared = Prepare(config);
     const std::vector<Symmetry> symmetries = Stabilizer(config);
     BuiltModel built;
-    BuildModel(config, prepared, args, &built);
+    BuildModel(config, prepared, symmetries, args, &built);
     Collector collector(config, symmetries, args, built);
     collector.InitialCheckpoint();
 

@@ -36,6 +36,7 @@ def main():
     parser.add_argument("--expected-stabilizer", type=int)
     parser.add_argument("--expected-term-variables", type=int)
     parser.add_argument("--expected-escape-variables", type=int)
+    parser.add_argument("--expected-symmetry-breaking", type=int, choices=(0, 1))
     parser.add_argument("--require-exit-files", action="store_true")
     args = parser.parse_args()
     errors = []
@@ -77,6 +78,11 @@ def main():
             "stabilizer_size": args.expected_stabilizer,
             "term_variables": args.expected_term_variables,
             "escape_variables": args.expected_escape_variables,
+            "symmetry_breaking": (
+                None
+                if args.expected_symmetry_breaking is None
+                else bool(args.expected_symmetry_breaking)
+            ),
         }
         for key, value in expected_model.items():
             if value is not None and record.get(key) != value:
@@ -120,6 +126,8 @@ def main():
             "stabilizer_size": record.get("stabilizer_size"),
             "term_variables": record.get("term_variables"),
             "escape_variables": record.get("escape_variables"),
+            "symmetry_breaking": record.get("symmetry_breaking"),
+            "enumerated_supports": record.get("enumerated_supports"),
             "wall_seconds": record.get("wall_seconds"),
             "sha256": digest(path),
         })

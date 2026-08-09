@@ -1,4 +1,4 @@
-name: Sixth Approach Run 035 Native Frontier
+name: Sixth Approach Run 036 Native Representative
 
 on:
   workflow_dispatch:
@@ -8,31 +8,9 @@ permissions:
 
 jobs:
   exact-layer:
-    name: case-${{ matrix.case.id }}-layer-${{ matrix.support }}
-    strategy:
-      fail-fast: false
-      max-parallel: 16
-      matrix:
-        case:
-          - id: 3
-            orbit: 8
-            stabilizer: 4
-            terms: 27428
-          - id: 9
-            orbit: 51
-            stabilizer: 4
-            terms: 27286
-          - id: 10
-            orbit: 52
-            stabilizer: 8
-            terms: 27272
-          - id: 11
-            orbit: 53
-            stabilizer: 16
-            terms: 27264
-        support: [55, 56, 57, 58]
+    name: exact-layer
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 20
     env:
       OMP_NUM_THREADS: '1'
       OPENBLAS_NUM_THREADS: '1'
@@ -66,12 +44,12 @@ jobs:
           set -euo pipefail
           cmake \
             -S "$GITHUB_WORKSPACE/sixth approach/run033_native" \
-            -B "$RUNNER_TEMP/run035-build" \
+            -B "$RUNNER_TEMP/run036-build" \
             -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/or-tools" \
             -Dortools_DIR="$RUNNER_TEMP/or-tools/lib/cmake/ortools" \
             -DCMAKE_BUILD_TYPE=Release
-          cmake --build "$RUNNER_TEMP/run035-build" --parallel 2
-          test -x "$RUNNER_TEMP/run035-build/run033_boundary_worker"
+          cmake --build "$RUNNER_TEMP/run036-build" --parallel 2
+          test -x "$RUNNER_TEMP/run036-build/run033_boundary_worker"
 
       - name: Record machine diagnostics
         shell: bash
@@ -88,21 +66,8 @@ jobs:
             ulimit -a
             g++ --version
             echo "GITHUB_SHA=$GITHUB_SHA"
-            sha256sum "$RUNNER_TEMP/run035-build/run033_boundary_worker"
+            sha256sum "$RUNNER_TEMP/run036-build/run033_boundary_worker"
           } > out/diagnostics.log
-
-      - name: Start resource monitor
-        shell: bash
-        run: |
-          (
-            while true; do
-              date -u +%FT%TZ
-              grep -E 'MemTotal|MemAvailable|SwapTotal|SwapFree' /proc/meminfo
-              ps -eo pid,ppid,rss,etime,cmd --sort=-rss | head -25
-              sleep 60
-            done
-          ) > out/resource-monitor.log 2>&1 &
-          echo $! > out/resource-monitor.pid
 
       - name: Run four exact native shards
         id: compute
@@ -114,18 +79,18 @@ jobs:
           for shard in 0 1 2 3; do
             (
               ulimit -v $((2500*1024))
-              timeout --signal=TERM --kill-after=30s 3360 \
-                "$RUNNER_TEMP/run035-build/run033_boundary_worker" \
-                  --run-id run-035 \
+              timeout --signal=TERM --kill-after=30s 960 \
+                "$RUNNER_TEMP/run036-build/run033_boundary_worker" \
+                  --run-id run-036 \
                   --symmetry-break 1 \
-                  --case '${{ matrix.case.id }}' \
-                  --support '${{ matrix.support }}' \
+                  --case 3 \
+                  --support 55 \
                   --shard-id "$shard" \
                   --shard-count 4 \
-                  --seconds 3300 \
-                  --cap 2000000 \
-                  --checkpoint-every 100000 \
-                  --checkpoint-seconds 300 \
+                  --seconds 900 \
+                  --cap 500000 \
+                  --checkpoint-every 25000 \
+                  --checkpoint-seconds 120 \
                   --output "out/shard-${shard}.json" \
                 > "out/shard-${shard}.log" 2>&1
               echo $? > "out/shard-${shard}.exit"
@@ -137,31 +102,36 @@ jobs:
           done
           exit 0
 
-      - name: Stop monitor and validate exact coverage
+      - name: Validate exact coverage
         if: always()
         shell: bash
         run: |
-          if [ -f out/resource-monitor.pid ]; then
-            kill "$(cat out/resource-monitor.pid)" 2>/dev/null || true
-          fi
           python 'sixth approach/run033_collect.py' \
-            --run-id run-035 \
-            --case '${{ matrix.case.id }}' \
-            --orbit '${{ matrix.case.orbit }}' \
-            --support '${{ matrix.support }}' \
-            --expected-stabilizer '${{ matrix.case.stabilizer }}' \
-            --expected-term-variables '${{ matrix.case.terms }}' \
+            --run-id run-036 \
+            --case 3 \
+            --orbit 8 \
+            --support 55 \
+            --expected-stabilizer 4 \
+            --expected-term-variables 27428 \
             --expected-escape-variables 162 \
             --expected-symmetry-breaking 1 \
             --input-dir out \
             --require-exit-files \
-            --output 'out/layer-${{ matrix.support }}-merged.json'
+            --output out/layer-55-merged.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path('out/layer-55-merged.json').read_text())
+          assert result['complete_exact_coverage']
+          assert result['raw_supports'] == 7272
+          assert result['support_orbits'] == 1855
+          PY
 
       - name: Upload complete diagnostics
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: run-035-case-${{ matrix.case.id }}-layer-${{ matrix.support }}
+          name: run-036-native-representative
           path: out/
           if-no-files-found: error
           retention-days: 14
