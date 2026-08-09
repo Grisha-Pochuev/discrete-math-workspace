@@ -20,16 +20,6 @@ on:
         description: Repository path to the immutable JSON specification
         required: true
         type: string
-      worker_seconds:
-        description: Per-worker exact-search deadline
-        required: false
-        default: 3300
-        type: number
-      job_timeout_minutes:
-        description: Per-job runner timeout
-        required: false
-        default: 60
-        type: number
 
 permissions:
   contents: read
@@ -44,14 +34,12 @@ jobs:
         case: ${{ fromJSON(inputs.cases_json) }}
         support: ${{ fromJSON(inputs.supports_json) }}
     runs-on: ubuntu-24.04
-    timeout-minutes: ${{ inputs.job_timeout_minutes }}
+    timeout-minutes: 60
     env:
       CALC_RUN_ID: ${{ inputs.run_id }}
       CALC_SUPPORTS_JSON: ${{ inputs.supports_json }}
       CALC_CASES_JSON: ${{ inputs.cases_json }}
       CALC_SPEC_PATH: ${{ inputs.spec_path }}
-      CALC_WORKER_SECONDS: ${{ inputs.worker_seconds }}
-      CALC_JOB_TIMEOUT_MINUTES: ${{ inputs.job_timeout_minutes }}
       OMP_NUM_THREADS: '1'
       OPENBLAS_NUM_THREADS: '1'
       MKL_NUM_THREADS: '1'
@@ -89,8 +77,6 @@ jobs:
           assert spec['jobs'] == len(spec['cases']) * len(spec['supports'])
           assert spec['shards_per_job'] == 4
           assert spec['symmetry_breaking'] == 'full_coloured_stabilizer_lex_leader'
-          assert spec['worker_seconds'] == int(os.environ['CALC_WORKER_SECONDS'])
-          assert spec.get('job_timeout_minutes', 60) == int(os.environ['CALC_JOB_TIMEOUT_MINUTES'])
           PY
 
       - name: Fetch verified native toolkit
@@ -160,7 +146,7 @@ jobs:
           for shard in 0 1 2 3; do
             (
               ulimit -v $((2500*1024))
-              timeout --signal=TERM --kill-after=30s "$((CALC_WORKER_SECONDS + 60))" \
+              timeout --signal=TERM --kill-after=30s 3360 \
                 "$RUNNER_TEMP/frontier-build/run033_boundary_worker" \
                   --run-id "$CALC_RUN_ID" \
                   --symmetry-break 1 \
@@ -168,7 +154,7 @@ jobs:
                   --support '${{ matrix.support }}' \
                   --shard-id "$shard" \
                   --shard-count 4 \
-                  --seconds "$CALC_WORKER_SECONDS" \
+                  --seconds 3300 \
                   --cap 2000000 \
                   --checkpoint-every 100000 \
                   --checkpoint-seconds 300 \
