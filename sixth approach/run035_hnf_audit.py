@@ -15,6 +15,7 @@ from sympy.matrices.normalforms import hermite_normal_form
 
 EXPECTED = {3: 8, 9: 51, 10: 52, 11: 53}
 SOURCE_RUN = 31314627849
+SOURCE_LOGICAL_RUN = "run-035"
 
 
 def edge(a, b):
@@ -119,21 +120,35 @@ class CycleSystem:
 
 def checked_input(path, expected_index, expected_support):
     stored = json.loads(path.read_text(encoding="utf-8"))
-    required = (
-        "index", "support", "missing_type", "orbit", "complete_enumeration",
-        "hit_cap", "hit_deadline", "raw_supports", "support_orbits", "orbits",
-    )
+    required = ("support", "orbit", "raw_supports", "support_orbits", "orbits")
     if any(field not in stored for field in required):
         raise ValueError("input misses required exact-enumeration fields")
-    index = stored["index"]
-    if index not in EXPECTED or stored.get("missing_type") != "C8" or stored.get("orbit") != EXPECTED[index]:
+    index = stored.get("index", stored.get("case"))
+    if index not in EXPECTED or stored.get("missing_type", "C8") != "C8" or stored.get("orbit") != EXPECTED[index]:
         raise ValueError("input layer has an unexpected source identity")
     if index != expected_index or stored["support"] != expected_support:
         raise ValueError("input layer does not match the declared matrix cell")
     if stored.get("source_run") not in (None, SOURCE_RUN):
         raise ValueError("input layer names a different source run")
-    if not stored["complete_enumeration"] or stored["hit_cap"] or stored["hit_deadline"]:
-        raise ValueError("input layer is incomplete")
+    if stored.get("run_id") not in (None, SOURCE_LOGICAL_RUN):
+        raise ValueError("input layer names a different logical run")
+    if "complete_exact_coverage" in stored:
+        if not stored["complete_exact_coverage"] or stored.get("status") != "SUCCESS" or stored.get("errors"):
+            raise ValueError("merged native input is incomplete")
+        workers = stored.get("workers")
+        if not isinstance(workers, list) or len(workers) != 4:
+            raise ValueError("merged native input has invalid worker coverage")
+        for worker in workers:
+            if worker.get("exit_code") != 0 or not worker.get("complete_enumeration"):
+                raise ValueError("merged native input contains an incomplete worker")
+            if worker.get("status") not in ("OPTIMAL", "INFEASIBLE"):
+                raise ValueError("merged native input contains a nonterminal worker")
+    else:
+        exact_fields = ("complete_enumeration", "hit_cap", "hit_deadline")
+        if any(field not in stored for field in exact_fields):
+            raise ValueError("standard input misses exact-enumeration fields")
+        if not stored["complete_enumeration"] or stored["hit_cap"] or stored["hit_deadline"]:
+            raise ValueError("standard input is incomplete")
     if len(stored["orbits"]) != stored["support_orbits"]:
         raise ValueError("support-orbit count mismatch")
     if sum(item["labelled_multiplicity"] for item in stored["orbits"]) != stored["raw_supports"]:
@@ -153,6 +168,8 @@ def checked_input(path, expected_index, expected_support):
         seen.add(key)
         if not isinstance(item.get("labelled_multiplicity"), int) or item["labelled_multiplicity"] <= 0:
             raise ValueError("support orbit has an invalid labelled multiplicity")
+    stored["index"] = index
+    stored["missing_type"] = stored.get("missing_type", "C8")
     return stored
 
 
