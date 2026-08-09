@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "series": "run-014",
+  "seed": 2026080901,
+  "elapsed_seconds": 106.08,
+  "connected_graph_trials": 5000,
+  "local_colourings": 320000,
+  "support_cases": 5120000,
+  "minimum_mixed_singletons": 10,
+  "zero_record_found": false,
+  "first_zero_record": null
+}

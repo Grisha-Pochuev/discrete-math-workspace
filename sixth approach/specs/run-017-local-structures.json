@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "series": "run-017",
+  "mode": "local_exact",
+  "size": 12,
+  "component": "three_fixed_blocks",
+  "acceptance": {
+    "require_all_completion_triples": true,
+    "wall_seconds_max": 840,
+    "preserve_first_zero_record": true
+  }
+}

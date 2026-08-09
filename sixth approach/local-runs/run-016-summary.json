@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "series": "run-016",
+  "seed": 2026080901,
+  "elapsed_seconds": 199.844,
+  "samples": 1000000,
+  "simple_systems": 883474,
+  "connected_systems": 883474,
+  "completion_counts": [
+    33,
+    33,
+    33
+  ],
+  "minimum_mixed_singletons": 12,
+  "zero_record_found": false,
+  "first_zero_record": null
+}
