@@ -1,0 +1,296 @@
+{
+  "schema_version": 1,
+  "series": "run-021",
+  "mode": "exact_rectangular_boundary",
+  "support_shape": [
+    3,
+    2
+  ],
+  "stages": {
+    "degree_candidates": 852,
+    "four_connected": 756,
+    "active_minor_screen": 558,
+    "zero_minor_screen": 150,
+    "diagonal_minor_screen": 102,
+    "final_residue": 18
+  },
+  "local_rejections": {
+    "constant_coordinate_map": 36,
+    "full_column_shortage": 84
+  },
+  "residue_counts": {
+    "inactive_anchor_hits_left_0": 6,
+    "inactive_anchor_hits_left_1": 6,
+    "paired_bipartite": 6
+  },
+  "examples": {
+    "inactive_anchor_hits_left_0": {
+      "right_anchors": [
+        3,
+        4,
+        0
+      ],
+      "residual_vertex": 5,
+      "internal_edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "forced_edges": [
+        [
+          "1,3",
+          [
+            [
+              1,
+              "1"
+            ],
+            [
+              3,
+              "0"
+            ]
+          ]
+        ],
+        [
+          "2,5",
+          [
+            [
+              2,
+              "2"
+            ],
+            [
+              5,
+              "H"
+            ]
+          ]
+        ],
+        [
+          "0,5",
+          [
+            [
+              0,
+              "0"
+            ],
+            [
+              5,
+              "H"
+            ]
+          ]
+        ],
+        [
+          "2,4",
+          [
+            [
+              2,
+              "2"
+            ],
+            [
+              4,
+              "1"
+            ]
+          ]
+        ]
+      ],
+      "possible_residual_supports": [
+        "01",
+        "02",
+        "12",
+        "012"
+      ]
+    },
+    "inactive_anchor_hits_left_1": {
+      "right_anchors": [
+        3,
+        4,
+        1
+      ],
+      "residual_vertex": 5,
+      "internal_edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "forced_edges": [
+        [
+          "1,5",
+          [
+            [
+              1,
+              "1"
+            ],
+            [
+              5,
+              "H"
+            ]
+          ]
+        ],
+        [
+          "2,3",
+          [
+            [
+              2,
+              "2"
+            ],
+            [
+              3,
+              "0"
+            ]
+          ]
+        ],
+        [
+          "0,4",
+          [
+            [
+              0,
+              "0"
+            ],
+            [
+              4,
+              "1"
+            ]
+          ]
+        ],
+        [
+          "2,5",
+          [
+            [
+              2,
+              "2"
+            ],
+            [
+              5,
+              "H"
+            ]
+          ]
+        ]
+      ],
+      "possible_residual_supports": [
+        "01",
+        "02",
+        "12",
+        "012"
+      ]
+    },
+    "paired_bipartite": {
+      "right_anchors": [
+        3,
+        4,
+        5
+      ],
+      "residual_vertex": 5,
+      "internal_edges": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ]
+      ],
+      "forced_edges": [],
+      "possible_residual_supports": [
+        "0",
+        "1",
+        "2",
+        "01",
+        "02",
+        "12",
+        "012"
+      ]
+    }
+  }
+}
