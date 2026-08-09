@@ -1,0 +1,33 @@
+"use strict";
+
+// Exact n=8 screen for two disjoint high-rank edges when each has at least
+// one one-noncoordinate endpoint and no endpoint has two such anchors.
+// The first edge's special colour is normalized to zero; the second retains
+// all three relative colours.  Factor-triple representatives quotient the
+// remaining graph, vertex, and global-colour symmetries.
+
+const n=8,V=[0,1,2,3,4,5,6,7],R=[[0,1],[2,3],[4,5],[6,7]];
+function edge(a,b){return a<b?[a,b]:[b,a];}function ek(a,b){return a<b?`${a},${b}`:`${b},${a}`;}function mk(M){return M.map(e=>e.join("")).join("|");}function tk(T){return T.map(mk).join(";");}
+function pms(v){if(!v.length)return[[]];const a=v[0],out=[];for(let i=1;i<v.length;++i)for(const m of pms(v.slice(1,i).concat(v.slice(i+1))))out.push([edge(a,v[i]),...m].sort((x,y)=>x[0]-y[0]||x[1]-y[1]));return out;}
+function dis(A,B){const s=new Set(A.map(e=>ek(...e)));return B.every(e=>!s.has(ek(...e)));}function con(E){const A=Array.from({length:n},()=>[]);for(const[a,b]of E){A[a].push(b);A[b].push(a);}const seen=new Set([0]),todo=[0];while(todo.length){const a=todo.pop();for(const b of A[a])if(!seen.has(b)){seen.add(b);todo.push(b);}}return seen.size===n;}
+function perms(a){if(!a.length)return[[]];const out=[];for(let i=0;i<a.length;++i)for(const t of perms(a.slice(0,i).concat(a.slice(i+1))))out.push([a[i],...t]);return out;}
+function maps(){const out=[];for(const p of perms([0,1,2,3]))for(let f=0;f<16;++f){const m=Array(n);for(let i=0;i<4;++i)for(let s=0;s<2;++s)m[2*i+s]=2*p[i]+(s^((f>>>i)&1));out.push(m);}return out;}
+function trans(T,m,p){const U=Array(3);for(let q=0;q<3;++q)U[p[q]]=T[q].map(([a,b])=>edge(m[a],m[b])).sort((x,y)=>x[0]-y[0]||x[1]-y[1]);return U;}
+function factorOrbits(){const all=pms(V),allow=all.filter(m=>dis(m,R)),S=new Map();for(const a of allow)for(const b of allow)if(dis(a,b))for(const c of allow)if(dis(a,c)&&dis(b,c)&&con([...R,...a,...b,...c])){const T=[a,b,c];S.set(tk(T),T);}const labelled=S.size,ms=maps(),ps=perms([0,1,2]),reps=[];while(S.size){const k=[...S.keys()].sort()[0],T=S.get(k);reps.push(T);for(const m of ms)for(const p of ps)S.delete(tk(trans(T,m,p)));}return{labelled,reps};}
+function profiles(a){const o=[0,1,2].filter(x=>x!==a);return[[a,o[0]],[a,o[1]],[0,1,2]];}
+function partner(M,v){const e=M.find(x=>x.includes(v));return e[0]===v?e[1]:e[0];}function edgeIndex(M,v){return M.findIndex(e=>e.includes(v));}
+function bit(i,j){return 1<<(3*i+j);}function orientedMask(root,pairs,e){let m=0;for(const[i,j]of pairs){const[a,b]=e[0]===root?[i,j]:[j,i];m|=bit(a,b);}return m;}function rectangle(root,P,Q,e,omit){const z=[];for(const i of P)for(const j of Q)if(!omit||i!==omit[0]||j!==omit[1])z.push([i,j]);return orientedMask(root,z,e);}
+function descriptors(T,first){const out=[],colours=first?[0]:[0,1,2];for(const a of colours){const Ps=profiles(a);for(let i=0;i<4;++i){
+    {const qEdge=T[a][i],[r,t]=qEdge,ri=edgeIndex(R,r),ti=edgeIndex(R,t);for(const P of Ps)for(const Q of Ps)out.push({kind:"SM",a,q:3*a+i,roots:[r,t],leaves:[partner(R,r),partner(R,t)],set:[[3*a+i,rectangle(r,P,Q,qEdge,null)],[12+ri,orientedMask(r,P.map(x=>[x,a]),R[ri])],[12+ti,orientedMask(t,Q.map(x=>[x,a]),R[ti])]]});}
+    {const qEdge=R[i],[r,t]=qEdge,ri=edgeIndex(T[a],r),ti=edgeIndex(T[a],t);for(const P of Ps)for(const Q of Ps)out.push({kind:"SR",a,q:12+i,roots:[r,t],leaves:[partner(T[a],r),partner(T[a],t)],set:[[12+i,rectangle(r,P,Q,qEdge,[a,a])],[3*a+ri,orientedMask(r,P.map(x=>[x,a]),T[a][ri])],[3*a+ti,orientedMask(t,Q.map(x=>[x,a]),T[a][ti])]]});}
+    {const qEdge=T[a][i],[x,y]=qEdge;for(const[r,t]of[[x,y],[y,x]]){const ri=edgeIndex(R,r),ti=edgeIndex(R,t);for(const P of Ps)for(const b of[0,1,2])if(b!==a)out.push({kind:"A",a,q:3*a+i,roots:[r,t],leaves:[partner(R,r)],set:[[3*a+i,orientedMask(r,[[a,a],...P.map(x=>[x,b])],qEdge)],[12+ri,orientedMask(r,P.map(x=>[x,a]),R[ri])],[12+ti,orientedMask(t,[[b,a]],R[ti])]]});}}
+  }}return out;}
+function graphPms(edges){const A=Array.from({length:n},()=>[]),out=[];for(let i=0;i<edges.length;++i){const[a,b]=edges[i];A[a].push([b,i]);A[b].push([a,i]);}function rec(S,M){if(!S.size){out.push(M.slice());return;}const a=Math.min(...S);for(const[b,i]of A[a])if(S.has(b)){const U=new Set(S);U.delete(a);U.delete(b);M.push(i);rec(U,M);M.pop();}}rec(new Set(V),[]);return out;}
+function singleton(edges,pm,supports){const counts=new Map();for(const M of pm){const c=Array(n).fill(-1);function rec(j){if(j===M.length){const k=c.join("");counts.set(k,(counts.get(k)||0)+1);return;}const i=M[j],[a,b]=edges[i],mask=supports[i];for(let p=0;p<3;++p)for(let q=0;q<3;++q)if((mask>>>bitIndex(p,q))&1){c[a]=p;c[b]=q;rec(j+1);}c[a]=c[b]=-1;}rec(0);}for(const[k,z]of counts)if(z===1&&new Set(k).size>1)return true;return false;}
+function bitIndex(i,j){return 3*i+j;}
+function combine(T,A,B){if(A.q===B.q||A.roots.some(v=>B.roots.includes(v)))return null;const roots=new Set([...A.roots,...B.roots]),leaves=[...A.leaves,...B.leaves];if(new Set(leaves).size!==leaves.length||leaves.some(v=>roots.has(v)))return null;const fixed=new Map();for(const[i,m]of[...A.set,...B.set]){if(fixed.has(i)&&fixed.get(i)!==m)return null;fixed.set(i,m);}const edges=[...T[0],...T[1],...T[2],...R],supports=Array(16).fill(0);for(let q=0;q<3;++q)for(let i=0;i<4;++i)supports[3*q+i]=bit(q,q);for(const[i,m]of fixed)supports[i]=m;const free=[];for(let i=12;i<16;++i)if(!fixed.has(i))free.push(i);return{edges,supports,free};}
+const started=Date.now(),{labelled,reps}=factorOrbits(),stats={factor_orbits:reps.length,labelled_factor_triples:labelled,ordered_structures:0,support_configurations:0,singleton_free:0,by_type:{}},examples=[];
+for(let oi=0;oi<reps.length;++oi){const T=reps[oi],edges=[...T[0],...T[1],...T[2],...R],pm=graphPms(edges),D1=descriptors(T,true),D2=descriptors(T,false);for(const A of D1)for(const B of D2){const C=combine(T,A,B);if(!C)continue;++stats.ordered_structures;const type=`${A.kind}+${B.kind}`;if(!stats.by_type[type])stats.by_type[type]={structures:0,configurations:0,singleton_free:0};++stats.by_type[type].structures;for(let z=0;z<9**C.free.length;++z){let x=z;for(const i of C.free){const a=x%3;x=Math.floor(x/3);const b=x%3;x=Math.floor(x/3);C.supports[i]=bit(a,b);}++stats.support_configurations;++stats.by_type[type].configurations;const ok=singleton(C.edges,pm,C.supports);if(!ok){++stats.singleton_free;++stats.by_type[type].singleton_free;if(examples.length<20)examples.push({orbit:oi,A,B,free:C.free,supports:C.supports.slice(),perfect_matchings:pm.length});}}}}
+const result={stats,examples,elapsed_seconds:(Date.now()-started)/1000};
+if(require.main===module)console.log(JSON.stringify(result,null,2));
+module.exports=result;

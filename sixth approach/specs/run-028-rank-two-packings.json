@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "run_id": "run-028",
+  "mode": "exact_rank_two_packings",
+  "engine": "node",
+  "order": 8,
+  "subruns": ["028a", "028b", "028c", "028d"],
+  "output": "local-runs/run-028-summary.json"
+}
