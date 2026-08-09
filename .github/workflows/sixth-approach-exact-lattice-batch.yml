@@ -24,7 +24,7 @@ on:
 
 permissions:
   actions: read
-  contents: read
+  contents: write
 
 jobs:
   audit-layer:
@@ -53,7 +53,17 @@ jobs:
       NUMEXPR_NUM_THREADS: '1'
     steps:
       - name: Check out exact source
-        uses: actions/checkout@v7
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set 'sixth approach'
+          git checkout --detach FETCH_HEAD
 
       - name: Prepare audit directory
         shell: bash
@@ -146,7 +156,17 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Check out exact source
-        uses: actions/checkout@v7
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set 'sixth approach'
+          git checkout -B archive-write FETCH_HEAD
 
       - name: Prepare collector directory
         shell: bash
@@ -188,11 +208,41 @@ jobs:
         shell: bash
         run: exit "$(cat work/out/collector.exit 2>/dev/null || echo 2)"
 
+      - name: Build compact accepted archive
+        shell: bash
+        run: |
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          python 'sixth approach/run035_hnf_archive.py' \
+            --spec '${{ inputs.spec_path }}' \
+            --summary work/out/summary.json \
+            --input-root work/audits \
+            --output-dir "$archive" \
+            --workflow-run "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA"
+
+      - name: Commit compact accepted archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$archive"
+          git commit -m "archive ${{ inputs.run_id }} from ${GITHUB_RUN_ID}"
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
+            git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+            git rebase origin/main
+          done
+
       - name: Upload collector bundle
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.run_id }}-audit-collection
-          path: work/out/
+          path: |
+            work/out/
+            sixth approach/runs/${{ inputs.run_id }}-${{ github.run_id }}/
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 3
