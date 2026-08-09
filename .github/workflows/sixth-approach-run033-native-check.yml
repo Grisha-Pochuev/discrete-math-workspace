@@ -45,6 +45,7 @@ jobs:
           cmake \
             -S "$GITHUB_WORKSPACE/sixth approach/run033_native" \
             -B "$RUNNER_TEMP/run033-build" \
+            -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/or-tools" \
             -Dortools_DIR="$RUNNER_TEMP/or-tools/lib/cmake/ortools" \
             -DCMAKE_BUILD_TYPE=Release
           cmake --build "$RUNNER_TEMP/run033-build" --parallel 2
