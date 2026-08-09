@@ -152,6 +152,23 @@ Config GetConfig(int case_id) {
         },
     };
   }
+  if (case_id == 14) {
+    return {
+        14,
+        3,
+        std::array<Matching, 3>{
+            Matching{{0, 2}, {1, 3}, {4, 6}, {5, 7}},
+            Matching{{0, 4}, {1, 5}, {2, 6}, {3, 7}},
+            Matching{{0, 6}, {1, 7}, {2, 4}, {3, 5}},
+        },
+        Matching{{0, 5}, {0, 7}, {1, 4}, {1, 6},
+                 {2, 5}, {2, 7}, {3, 4}, {3, 6}},
+        std::array<std::array<int, 4>, 2>{
+            std::array<int, 4>{0, 5, 2, 7},
+            std::array<int, 4>{1, 4, 3, 6},
+        },
+    };
+  }
   throw std::invalid_argument("unsupported case id");
 }
 
@@ -719,8 +736,7 @@ int main(int argc, char** argv) {
     int google_argc = 1;
     char* google_argv_storage[] = {argv[0], nullptr};
     char** google_argv = google_argv_storage;
-    operations_research::InitGoogle(
-        google_argv[0], &google_argc, &google_argv, true);
+    InitGoogle(google_argv[0], &google_argc, &google_argv, true);
     const Config config = GetConfig(args.case_id);
     const Prepared prepared = Prepare(config);
     const std::vector<Symmetry> symmetries = Stabilizer(config);
