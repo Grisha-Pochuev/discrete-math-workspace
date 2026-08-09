@@ -56,8 +56,8 @@
   "full_support_audit": {
     "formal_concepts": 316,
     "distinct_character_lattices": 581,
-    "one_sided_concepts": 312,
-    "nine_by_nine_concepts": 4,
+    "one_sided_concepts": 304,
+    "nine_by_nine_concepts": 12,
     "remaining_after_factorization": 0
   },
   "unresolved_support_orbits": 0
