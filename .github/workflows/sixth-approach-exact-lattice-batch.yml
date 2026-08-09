@@ -8,8 +8,8 @@ on:
         description: Neutral immutable run identifier
         required: true
         type: string
-      layers_json:
-        description: JSON array of exact layer metadata
+      matrix_json:
+        description: JSON matrix object containing exact layer metadata
         required: true
         type: string
       spec_path:
@@ -34,12 +34,11 @@ jobs:
     strategy:
       fail-fast: false
       max-parallel: ${{ inputs.max_parallel }}
-      matrix:
-        include: ${{ fromJSON(inputs.layers_json) }}
+      matrix: ${{ fromJSON(inputs.matrix_json) }}
     env:
       AUDIT_RUN_ID: ${{ inputs.run_id }}
       AUDIT_SPEC_PATH: ${{ inputs.spec_path }}
-      AUDIT_LAYERS_JSON: ${{ inputs.layers_json }}
+      AUDIT_MATRIX_JSON: ${{ inputs.matrix_json }}
       AUDIT_MAX_PARALLEL: ${{ inputs.max_parallel }}
       EXPECTED_INDEX: ${{ matrix.index }}
       EXPECTED_ORBIT: ${{ matrix.orbit }}
@@ -74,7 +73,9 @@ jobs:
           import os
           from pathlib import Path
           spec = json.loads(Path(os.environ['AUDIT_SPEC_PATH']).read_text())
-          layers = json.loads(os.environ['AUDIT_LAYERS_JSON'])
+          matrix = json.loads(os.environ['AUDIT_MATRIX_JSON'])
+          assert set(matrix) == {'include'}
+          layers = matrix['include']
           assert spec['run_id'] == os.environ['AUDIT_RUN_ID']
           assert spec['layers'] == layers
           assert spec['jobs'] == len(layers)
