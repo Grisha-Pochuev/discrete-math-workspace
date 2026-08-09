@@ -1,26 +1,48 @@
-# Sixth approach
+name: Sixth approach run-000 smoke
 
-Neutral, reproducible C++ experiments for exact small-instance classification
-and larger frontier searches.
+on:
+  workflow_dispatch:
 
-The first series has two purposes:
+permissions:
+  contents: read
 
-1. independently regenerate and exactly partition the size-10 factor systems;
-2. search larger sizes for records below, or close to, the linear safety
-   threshold declared in the immutable run specification.
+jobs:
+  same-path-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
 
-The worker writes atomic JSON checkpoints. `driver.py` validates individual
-shards and collects a run only after exact shard and orbit coverage checks pass.
+      - name: Compile optimized worker
+        run: >-
+          g++ -std=c++20 -O3 -DNDEBUG -pthread
+          "sixth approach/run000_worker.cpp"
+          -o sixth-run000-worker
 
-## Local interface
+      - name: Deterministic catalogue self-test
+        run: ./sixth-run000-worker self-test
 
-```text
-g++ -std=c++20 -O3 -DNDEBUG -pthread run000_worker.cpp -o run000_worker
-./run000_worker self-test
-./run000_worker worker --worker-id 0 --worker-count 1 --seconds 60 --output worker-000.json
-python driver.py verify-worker worker-000.json --worker-count 1
-```
+      - name: Execute one exact shard through the production path
+        run: |
+          mkdir -p smoke-output
+          timeout --signal=TERM --kill-after=30s 600s \
+            ./sixth-run000-worker worker \
+              --worker-id 0 \
+              --worker-count 1108 \
+              --seconds 5 \
+              --output smoke-output/worker-000.json
 
-The public repository intentionally contains no statement of the surrounding
-research problem.
+      - name: Strictly verify the smoke shard
+        run: >-
+          python3 "sixth approach/driver.py" verify-worker
+          smoke-output/worker-000.json
+          --worker-count 1108
 
+      - name: Preserve smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sixth-run000-smoke-${{ github.run_id }}
+          path: smoke-output/
+          if-no-files-found: warn
+          retention-days: 14
