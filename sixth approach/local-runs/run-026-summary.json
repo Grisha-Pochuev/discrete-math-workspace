@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "series": "run-026",
+  "mode": "exact_diagonal_matching",
+  "n": 8,
+  "connected_labelled_factor_triples": 27456,
+  "factor_triple_orbits": 39,
+  "robust_census": {
+    "1": {
+      "configurations": 113724,
+      "minimum_witnesses": 2,
+      "witness_count_histogram": {
+        "2": 2,
+        "3": 57,
+        "4": 228,
+        "5": 2250,
+        "6": 7906,
+        "7": 28837,
+        "8": 27582,
+        "9": 36834,
+        "10": 610,
+        "11": 3622,
+        "12": 84,
+        "13": 688,
+        "14": 1544,
+        "15": 3480
+      },
+      "failures": 0
+    },
+    "2": {
+      "configurations": 18954,
+      "minimum_witnesses": 0,
+      "witness_count_histogram": {
+        "0": 4,
+        "1": 57,
+        "2": 626,
+        "3": 1987,
+        "4": 3931,
+        "5": 5323,
+        "6": 4736,
+        "7": 477,
+        "8": 881,
+        "9": 532,
+        "10": 400
+      },
+      "failures": 4
+    },
+    "3": {
+      "configurations": 1404,
+      "minimum_witnesses": 0,
+      "witness_count_histogram": {
+        "0": 84,
+        "1": 208,
+        "2": 468,
+        "3": 266,
+        "4": 184,
+        "5": 130,
+        "6": 64
+      },
+      "failures": 84
+    }
+  },
+  "support_masks_with_matching_number_at_least_two": 478,
+  "two_edge_screen": {
+    "residues": 4,
+    "mask_pairs_per_residue": 228484,
+    "total_mask_pairs": 913936,
+    "survivors": 0
+  },
+  "three_edge_screen": {
+    "residues": 84,
+    "first_two_mask_pairs_per_residue": 228484,
+    "total_first_two_mask_pairs": 19192656,
+    "surviving_pairs": 0
+  },
+  "elapsed_seconds": 42.386
+}

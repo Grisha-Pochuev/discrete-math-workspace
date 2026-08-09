@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "run_id": "run-026",
+  "mode": "exact_diagonal_matching",
+  "engine": "node",
+  "order": 8,
+  "distinguished_edge_counts": [1, 2, 3],
+  "output": "local-runs/run-026-summary.json"
+}
