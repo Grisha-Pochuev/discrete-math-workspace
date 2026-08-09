@@ -16,6 +16,11 @@ on:
         description: Repository path to the immutable JSON specification
         required: true
         type: string
+      max_parallel:
+        description: Maximum simultaneous audit jobs
+        required: false
+        default: '3'
+        type: string
 
 permissions:
   actions: read
@@ -28,14 +33,14 @@ jobs:
     timeout-minutes: 360
     strategy:
       fail-fast: false
-      max-parallel: 3
+      max-parallel: ${{ fromJSON(inputs.max_parallel) }}
       matrix:
         layer: ${{ fromJSON(inputs.layers_json) }}
     env:
       AUDIT_RUN_ID: ${{ inputs.run_id }}
       AUDIT_SPEC_PATH: ${{ inputs.spec_path }}
       AUDIT_LAYERS_JSON: ${{ inputs.layers_json }}
-      AUDIT_MAX_PARALLEL: '3'
+      AUDIT_MAX_PARALLEL: ${{ inputs.max_parallel }}
       EXPECTED_INDEX: ${{ matrix.layer.index }}
       EXPECTED_ORBIT: ${{ matrix.layer.orbit }}
       EXPECTED_MISSING_TYPE: ${{ matrix.layer.missing_type }}
