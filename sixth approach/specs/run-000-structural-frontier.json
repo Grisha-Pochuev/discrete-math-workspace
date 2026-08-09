@@ -1,48 +1,30 @@
-name: Sixth approach run-000 smoke
-
-on:
-  workflow_dispatch:
-
-permissions:
-  contents: read
-
-jobs:
-  same-path-smoke:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Compile optimized worker
-        run: >-
-          g++ -std=c++20 -O3 -DNDEBUG -pthread
-          "sixth approach/run000_worker.cpp"
-          -o sixth-run000-worker
-
-      - name: Deterministic catalogue self-test
-        run: ./sixth-run000-worker self-test
-
-      - name: Execute one exact shard through the production path
-        run: |
-          mkdir -p smoke-output
-          timeout --signal=TERM --kill-after=30s 600s \
-            ./sixth-run000-worker worker \
-              --worker-id 0 \
-              --worker-count 1108 \
-              --seconds 5 \
-              --output smoke-output/worker-000.json
-
-      - name: Strictly verify the smoke shard
-        run: >-
-          python3 "sixth approach/driver.py" verify-worker
-          smoke-output/worker-000.json
-          --worker-count 1108
-
-      - name: Preserve smoke evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: sixth-run000-smoke-${{ github.run_id }}
-          path: smoke-output/
-          if-no-files-found: warn
-          retention-days: 14
+{
+  "schema_version": 1,
+  "series": "run-000",
+  "engine": "cpp20",
+  "worker_count": 80,
+  "workers_per_job": 4,
+  "job_count": 20,
+  "seconds_per_worker": 840,
+  "memory_limit_mib_per_worker": 2500,
+  "exact_layer": {
+    "order": 10,
+    "expected_allowed_matchings": 544,
+    "expected_orbit_count": 1108,
+    "expected_labelled_factor_triples": 23019264,
+    "assignment_alphabet": 3,
+    "expected_assignments_per_orbit": 59049
+  },
+  "frontier": {
+    "orders": [12, 14, 16, 18, 20],
+    "linear_threshold_offset": 3,
+    "retain_records_per_worker": 12,
+    "stop_on_threshold_violation": false
+  },
+  "acceptance": {
+    "require_all_workers_success": true,
+    "require_exact_orbit_coverage": true,
+    "require_common_orbit_digest": true,
+    "accept_scientific_threshold_violations_as_data": true
+  }
+}

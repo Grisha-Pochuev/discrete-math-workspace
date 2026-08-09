@@ -1,48 +1,31 @@
-name: Sixth approach run-000 smoke
+# Sixth approach operating rules
 
-on:
-  workflow_dispatch:
+This directory is an isolated computational track. Do not import mutable state
+from earlier tracks and do not edit their accepted archives.
 
-permissions:
-  contents: read
+Public names, logs, workflow titles, artifact names, and commit messages must
+remain neutral. Mathematical motivation belongs only in the private analysis
+tree, not in this repository.
 
-jobs:
-  same-path-smoke:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
+## Required run discipline
 
-      - name: Compile optimized worker
-        run: >-
-          g++ -std=c++20 -O3 -DNDEBUG -pthread
-          "sixth approach/run000_worker.cpp"
-          -o sixth-run000-worker
+- `control.json` is the only mutable run-control record.
+- Every run is specified by an immutable JSON file under `specs/`.
+- Heavy work is C++20. Python is permitted only for validation and collection.
+- A smoke run must compile and execute the same worker binary and output path as
+  a full run.
+- Full runs are manual `workflow_dispatch` jobs only. Never add a `push` trigger.
+- Use exactly four independent single-threaded workers per Actions job.
+- Worker output is checkpointed atomically and is collected with `if: always()`.
+- The collector must reject missing/duplicate shards and incomplete exact
+  coverage. Scientific counterexamples are data, not technical failures.
+- Before a large run, inspect all queued, pending, waiting, requested, and
+  in-progress Actions jobs on every branch and workflow.
+- Never run an individual local computation for more than 15 minutes.
 
-      - name: Deterministic catalogue self-test
-        run: ./sixth-run000-worker self-test
+## Archive contract
 
-      - name: Execute one exact shard through the production path
-        run: |
-          mkdir -p smoke-output
-          timeout --signal=TERM --kill-after=30s 600s \
-            ./sixth-run000-worker worker \
-              --worker-id 0 \
-              --worker-count 1108 \
-              --seconds 5 \
-              --output smoke-output/worker-000.json
+An accepted archive contains the immutable spec, all worker JSON files, a
+machine-generated summary, selected frontier records, and SHA-256 checksums.
+Acceptance means only that the declared computation was technically complete.
 
-      - name: Strictly verify the smoke shard
-        run: >-
-          python3 "sixth approach/driver.py" verify-worker
-          smoke-output/worker-000.json
-          --worker-count 1108
-
-      - name: Preserve smoke evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: sixth-run000-smoke-${{ github.run_id }}
-          path: smoke-output/
-          if-no-files-found: warn
-          retention-days: 14
