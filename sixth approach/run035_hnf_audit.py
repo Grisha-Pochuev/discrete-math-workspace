@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from collections import Counter
+from collections import Counter, OrderedDict
 from pathlib import Path
 
 from sympy import Matrix
@@ -118,6 +118,35 @@ class CycleSystem:
         return len(indices) == 9 and set(fixed) in ({0, 1}, {1, 2}, {2, 3}, {0, 3})
 
 
+class CycleSystemCache:
+    """Bounded cache retaining repeated cycle masks without unbounded growth."""
+
+    def __init__(self, capacity=32):
+        self.capacity = capacity
+        self.entries = OrderedDict()
+        self.hits = 0
+        self.misses = 0
+
+    def get(self, order, residual, residual_index, masks):
+        vertices = set(order)
+        cycle_edges = tuple(item for item in residual if item[0] in vertices and item[1] in vertices)
+        signature = (
+            tuple(order),
+            tuple(masks[residual_index[item]] for item in cycle_edges),
+        )
+        found = self.entries.pop(signature, None)
+        if found is not None:
+            self.hits += 1
+            self.entries[signature] = found
+            return found
+        self.misses += 1
+        created = CycleSystem(order, residual, residual_index, masks)
+        self.entries[signature] = created
+        if len(self.entries) > self.capacity:
+            self.entries.popitem(last=False)
+        return created
+
+
 def checked_input(
     path,
     expected_index,
@@ -216,6 +245,7 @@ def main():
     residual_index = {item: index for index, item in enumerate(residual)}
     concepts = tuple((int(left), int(right)) for left, right in context["concepts"])
     histogram = Counter()
+    system_cache = CycleSystemCache()
     two_sided_samples, nonface_samples = [], []
     two_sided_support_orbits = nonface_support_orbits = 0
     two_sided_total = nonface_total = 0
@@ -223,7 +253,10 @@ def main():
         masks = tuple(support_record["masks"])
         if len(masks) != len(residual):
             raise ValueError("mask count mismatch")
-        systems = tuple(CycleSystem(order, residual, residual_index, masks) for order in context["cycle_orders"])
+        systems = tuple(
+            system_cache.get(order, residual, residual_index, masks)
+            for order in context["cycle_orders"]
+        )
         two_sided, orbit_has_nonface = 0, False
         for allowed_a, allowed_b in concepts:
             if systems[0].forced & ~allowed_a or systems[1].forced & ~allowed_b:
@@ -266,6 +299,12 @@ def main():
         "nonface_samples": nonface_samples,
         "all_force_zero": two_sided_total == 0,
         "all_two_sided_are_coordinate_edge_faces": nonface_total == 0,
+        "cycle_system_cache": {
+            "capacity": system_cache.capacity,
+            "hits": system_cache.hits,
+            "misses": system_cache.misses,
+            "retained": len(system_cache.entries),
+        },
     }
     args.output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
 
