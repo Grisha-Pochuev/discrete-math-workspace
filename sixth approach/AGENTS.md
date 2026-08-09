@@ -25,7 +25,15 @@ tree, not in this repository.
 
 ## Archive contract
 
-An accepted archive contains the immutable spec, all worker JSON files, a
-machine-generated summary, selected frontier records, and SHA-256 checksums.
+An accepted archive contains the immutable spec, a machine-generated summary,
+scientifically unique compact records, provenance, and SHA-256 checksums.
 Acceptance means only that the declared computation was technically complete.
+
+For matrix runs with a strict collector, automatically commit only the compact
+accepted archive under `runs/`. Raw shards and full merged layers remain
+temporary transport artifacts. Preserve all compact exceptional samples,
+provenance, the immutable spec, the accepted summary, and SHA-256 checksums.
+No committed blob may reach 95 MiB and no automatic archive may reach 100 MiB.
+Collectors must retry a conflicting push by fetching and rebasing on `main`;
+they must never force-push.
 

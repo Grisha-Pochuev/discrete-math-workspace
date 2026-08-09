@@ -24,3 +24,11 @@ python driver.py verify-worker worker-000.json --worker-count 1
 The public repository intentionally contains no statement of the surrounding
 research problem.
 
+## Durable results
+
+Large worker and layer artifacts are temporary transport. A strict collector
+may automatically commit a compact immutable archive under `runs/` after full
+coverage is accepted. The archive keeps the specification, summary, compact
+exceptional samples, provenance, and checksums; bulk raw layers stay outside
+Git history.
+
