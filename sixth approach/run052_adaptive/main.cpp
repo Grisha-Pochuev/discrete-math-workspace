@@ -686,7 +686,10 @@ Arguments ParseArguments(int argc, char** argv) {
 int main(int argc, char** argv) {
   try {
     const Arguments args = ParseArguments(argc, argv);
-    InitGoogle(argv[0], &argc, &argv, true);
+    int google_argc = 1;
+    char* google_argv_storage[] = {argv[0], nullptr};
+    char** google_argv = google_argv_storage;
+    InitGoogle(google_argv[0], &google_argc, &google_argv, true);
     AdaptiveScreen screen(args);
     return screen.Run();
   } catch (const std::exception& error) {
