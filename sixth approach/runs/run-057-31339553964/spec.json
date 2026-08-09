@@ -1,0 +1,346 @@
+{
+  "acceptance": {
+    "all_inputs_complete": true,
+    "all_layers_present": true,
+    "all_support_orbits_audited": true,
+    "artifacts_always_uploaded": true,
+    "mathematical_closure_requires_zero_two_sided": true,
+    "never_merge_partial_predecessor_data": true,
+    "scientific_survivors_preserved": true
+  },
+  "engine": "python_sympy_exact_hnf",
+  "jobs": 36,
+  "layers": [
+    {
+      "artifact": "run-047-case-7-layer-55",
+      "index": 7,
+      "missing_type": "C8",
+      "orbit": 36,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 55
+    },
+    {
+      "artifact": "run-047-case-7-layer-56",
+      "index": 7,
+      "missing_type": "C8",
+      "orbit": 36,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 56
+    },
+    {
+      "artifact": "run-047-case-7-layer-57",
+      "index": 7,
+      "missing_type": "C8",
+      "orbit": 36,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 57
+    },
+    {
+      "artifact": "run-047-case-7-layer-58",
+      "index": 7,
+      "missing_type": "C8",
+      "orbit": 36,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 58
+    },
+    {
+      "artifact": "run-047-case-18-layer-55",
+      "index": 18,
+      "missing_type": "C4+C4",
+      "orbit": 9,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 55
+    },
+    {
+      "artifact": "run-047-case-18-layer-56",
+      "index": 18,
+      "missing_type": "C4+C4",
+      "orbit": 9,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 56
+    },
+    {
+      "artifact": "run-047-case-18-layer-57",
+      "index": 18,
+      "missing_type": "C4+C4",
+      "orbit": 9,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 57
+    },
+    {
+      "artifact": "run-047-case-18-layer-58",
+      "index": 18,
+      "missing_type": "C4+C4",
+      "orbit": 9,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 58
+    },
+    {
+      "artifact": "run-047-case-19-layer-55",
+      "index": 19,
+      "missing_type": "C4+C4",
+      "orbit": 16,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 55
+    },
+    {
+      "artifact": "run-047-case-19-layer-56",
+      "index": 19,
+      "missing_type": "C4+C4",
+      "orbit": 16,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 56
+    },
+    {
+      "artifact": "run-047-case-19-layer-57",
+      "index": 19,
+      "missing_type": "C4+C4",
+      "orbit": 16,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 57
+    },
+    {
+      "artifact": "run-047-case-19-layer-58",
+      "index": 19,
+      "missing_type": "C4+C4",
+      "orbit": 16,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 58
+    },
+    {
+      "artifact": "run-047-case-20-layer-55",
+      "index": 20,
+      "missing_type": "C4+C4",
+      "orbit": 17,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 55
+    },
+    {
+      "artifact": "run-047-case-20-layer-56",
+      "index": 20,
+      "missing_type": "C4+C4",
+      "orbit": 17,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 56
+    },
+    {
+      "artifact": "run-047-case-20-layer-57",
+      "index": 20,
+      "missing_type": "C4+C4",
+      "orbit": 17,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 57
+    },
+    {
+      "artifact": "run-047-case-20-layer-58",
+      "index": 20,
+      "missing_type": "C4+C4",
+      "orbit": 17,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 58
+    },
+    {
+      "artifact": "run-047-case-21-layer-55",
+      "index": 21,
+      "missing_type": "C4+C4",
+      "orbit": 19,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 55
+    },
+    {
+      "artifact": "run-047-case-21-layer-56",
+      "index": 21,
+      "missing_type": "C4+C4",
+      "orbit": 19,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 56
+    },
+    {
+      "artifact": "run-047-case-21-layer-57",
+      "index": 21,
+      "missing_type": "C4+C4",
+      "orbit": 19,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 57
+    },
+    {
+      "artifact": "run-047-case-21-layer-58",
+      "index": 21,
+      "missing_type": "C4+C4",
+      "orbit": 19,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 58
+    },
+    {
+      "artifact": "run-047-case-22-layer-55",
+      "index": 22,
+      "missing_type": "C4+C4",
+      "orbit": 20,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 55
+    },
+    {
+      "artifact": "run-047-case-22-layer-56",
+      "index": 22,
+      "missing_type": "C4+C4",
+      "orbit": 20,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 56
+    },
+    {
+      "artifact": "run-047-case-22-layer-57",
+      "index": 22,
+      "missing_type": "C4+C4",
+      "orbit": 20,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 57
+    },
+    {
+      "artifact": "run-047-case-22-layer-58",
+      "index": 22,
+      "missing_type": "C4+C4",
+      "orbit": 20,
+      "source_logical_run": "run-047",
+      "source_run": 31336451430,
+      "support": 58
+    },
+    {
+      "artifact": "run-056-case-3-layer-67",
+      "index": 3,
+      "missing_type": "C8",
+      "orbit": 8,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 67
+    },
+    {
+      "artifact": "run-056-case-3-layer-68",
+      "index": 3,
+      "missing_type": "C8",
+      "orbit": 8,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 68
+    },
+    {
+      "artifact": "run-056-case-3-layer-69",
+      "index": 3,
+      "missing_type": "C8",
+      "orbit": 8,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 69
+    },
+    {
+      "artifact": "run-056-case-9-layer-67",
+      "index": 9,
+      "missing_type": "C8",
+      "orbit": 51,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 67
+    },
+    {
+      "artifact": "run-056-case-9-layer-68",
+      "index": 9,
+      "missing_type": "C8",
+      "orbit": 51,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 68
+    },
+    {
+      "artifact": "run-056-case-9-layer-69",
+      "index": 9,
+      "missing_type": "C8",
+      "orbit": 51,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 69
+    },
+    {
+      "artifact": "run-056-case-10-layer-67",
+      "index": 10,
+      "missing_type": "C8",
+      "orbit": 52,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 67
+    },
+    {
+      "artifact": "run-056-case-10-layer-68",
+      "index": 10,
+      "missing_type": "C8",
+      "orbit": 52,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 68
+    },
+    {
+      "artifact": "run-056-case-10-layer-69",
+      "index": 10,
+      "missing_type": "C8",
+      "orbit": 52,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 69
+    },
+    {
+      "artifact": "run-056-case-11-layer-67",
+      "index": 11,
+      "missing_type": "C8",
+      "orbit": 53,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 67
+    },
+    {
+      "artifact": "run-056-case-11-layer-68",
+      "index": 11,
+      "missing_type": "C8",
+      "orbit": 53,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 68
+    },
+    {
+      "artifact": "run-056-case-11-layer-69",
+      "index": 11,
+      "missing_type": "C8",
+      "orbit": 53,
+      "source_logical_run": "run-056",
+      "source_run": 31336452460,
+      "support": 69
+    }
+  ],
+  "max_parallel": 20,
+  "mode": "exact_integer_lattice_audit",
+  "run_id": "run-057",
+  "runner": "ubuntu-24.04",
+  "schema_version": 1,
+  "trigger": "workflow_dispatch",
+  "workflow": "sixth-approach-exact-lattice-batch.yml"
+}
