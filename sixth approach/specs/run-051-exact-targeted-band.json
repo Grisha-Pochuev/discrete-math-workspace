@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "run_id": "run-051",
+  "mode": "exact_integer_lattice_audit",
+  "trigger": "workflow_dispatch",
+  "workflow": "sixth-approach-exact-lattice-batch.yml",
+  "runner": "ubuntu-24.04",
+  "engine": "python_sympy_exact_hnf",
+  "jobs": 2,
+  "max_parallel": 3,
+  "layers": [
+    {"index": 3, "orbit": 8, "missing_type": "C8", "support": 62, "source_run": 31327589011, "source_logical_run": "run-049", "artifact": "run-049-case-3-layer-62"},
+    {"index": 9, "orbit": 51, "missing_type": "C8", "support": 62, "source_run": 31327589011, "source_logical_run": "run-049", "artifact": "run-049-case-9-layer-62"}
+  ],
+  "acceptance": {
+    "all_layers_present": true,
+    "all_inputs_complete": true,
+    "all_support_orbits_audited": true,
+    "scientific_survivors_preserved": true,
+    "mathematical_closure_requires_zero_two_sided": true,
+    "artifacts_always_uploaded": true,
+    "never_merge_partial_predecessor_data": true
+  }
+}
