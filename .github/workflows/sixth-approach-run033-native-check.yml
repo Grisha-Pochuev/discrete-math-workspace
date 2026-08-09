@@ -42,11 +42,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cp "$GITHUB_WORKSPACE/sixth approach/run033_boundary_worker.cpp" \
-            "$RUNNER_TEMP/or-tools/run033_boundary_worker.cpp"
-          make -C "$RUNNER_TEMP/or-tools" build \
-            SOURCE=run033_boundary_worker.cpp
-          test -x "$RUNNER_TEMP/or-tools/bin/run033_boundary_worker"
+          cmake \
+            -S "$GITHUB_WORKSPACE/sixth approach/run033_native" \
+            -B "$RUNNER_TEMP/run033-build" \
+            -Dortools_DIR="$RUNNER_TEMP/or-tools/lib/cmake/ortools" \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/run033-build" --parallel 2
+          test -x "$RUNNER_TEMP/run033-build/run033_boundary_worker"
 
       - name: Record machine diagnostics
         shell: bash
@@ -63,7 +65,7 @@ jobs:
             ulimit -a
             g++ --version
             echo "GITHUB_SHA=$GITHUB_SHA"
-            sha256sum "$RUNNER_TEMP/or-tools/bin/run033_boundary_worker"
+            sha256sum "$RUNNER_TEMP/run033-build/run033_boundary_worker"
           } > out/diagnostics.log
 
       - name: Start resource monitor
@@ -89,7 +91,7 @@ jobs:
             (
               ulimit -v $((2500*1024))
               timeout --signal=TERM --kill-after=30s 330 \
-                "$RUNNER_TEMP/or-tools/bin/run033_boundary_worker" \
+                "$RUNNER_TEMP/run033-build/run033_boundary_worker" \
                   --case 3 \
                   --support 52 \
                   --shard-id "$shard" \
