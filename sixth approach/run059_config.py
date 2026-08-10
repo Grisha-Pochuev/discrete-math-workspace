@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate run-059 input and resolve one neutral matrix cell."""
+"""Validate a short-pool input and resolve one neutral matrix cell."""
 
 from __future__ import annotations
 
@@ -18,16 +18,14 @@ EXPECTED_CELLS = {
 }
 
 
-def load_and_verify(path: Path) -> dict[str, Any]:
+def load_and_verify(path: Path, expected_run: str) -> dict[str, Any]:
     spec = json.loads(path.read_text(encoding="utf-8"))
     expected = {
         "schema_version": 1,
-        "run_id": "run-059",
-        "audit_run_id": "run-059-audit",
+        "run_id": expected_run,
+        "audit_run_id": f"{expected_run}-audit",
+        "mode": "native_exact_fine_layers",
         "provider": "circleci",
-        "trigger": "tag_push",
-        "trigger_tag": "ci-run-059",
-        "workflow": "short-pool-v1",
         "runner": "ubuntu-2404:current",
         "resource_class": "large",
         "jobs": 32,
@@ -42,6 +40,23 @@ def load_and_verify(path: Path) -> dict[str, Any]:
     for key, value in expected.items():
         if spec.get(key) != value:
             raise ValueError(f"unexpected {key}: {spec.get(key)!r}")
+
+    trigger = spec.get("trigger")
+    if trigger == "tag_push":
+        if spec.get("trigger_tag") != f"ci-{expected_run}":
+            raise ValueError("unexpected trigger tag")
+        if spec.get("workflow") != "short-pool-v1":
+            raise ValueError("unexpected tag workflow")
+    elif trigger == "api":
+        parameter = spec.get("pipeline_parameter")
+        if parameter != {"name": expected_run.replace("-", "_"), "value": True}:
+            raise ValueError("unexpected pipeline parameter")
+        if spec.get("config_ref") != "main" or spec.get("checkout_ref") != "main":
+            raise ValueError("unexpected API refs")
+        if spec.get("workflow") != "short-pool-v2":
+            raise ValueError("unexpected API workflow")
+    else:
+        raise ValueError(f"unexpected trigger: {trigger!r}")
 
     cells = spec.get("cells")
     if not isinstance(cells, list) or len(cells) != len(EXPECTED_CELLS):
@@ -89,12 +104,13 @@ def resolve_cell(spec: dict[str, Any], name: str) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--spec", required=True, type=Path)
+    parser.add_argument("--expected-run", required=True)
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--verify", action="store_true")
     mode.add_argument("--cell", choices=sorted(EXPECTED_CELLS))
     args = parser.parse_args()
 
-    spec = load_and_verify(args.spec)
+    spec = load_and_verify(args.spec, args.expected_run)
     if args.verify:
         print(
             json.dumps(
