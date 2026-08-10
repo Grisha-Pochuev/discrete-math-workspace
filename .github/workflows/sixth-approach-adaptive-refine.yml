@@ -64,6 +64,12 @@ jobs:
           python 'sixth approach/run065_cut_contract.py' \
             --bundle 'sixth approach/specs/run-065-exact-event-cuts.json' \
             --header 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
+          python 'sixth approach/run066_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-row-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v5.h'
+          python 'sixth approach/run066_exact_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v6.h'
           python 'sixth approach/run065_refine_contract.py' \
             --spec "$CALC_SPEC_PATH" \
             --run-id "$CALC_RUN_ID" \
@@ -121,6 +127,12 @@ jobs:
           python 'sixth approach/run065_cut_contract.py' \
             --bundle 'sixth approach/specs/run-065-exact-event-cuts.json' \
             --header 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
+          python 'sixth approach/run066_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-row-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v5.h'
+          python 'sixth approach/run066_exact_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v6.h'
 
       - name: Fetch verified native toolkit
         shell: bash
@@ -166,6 +178,8 @@ jobs:
             sha256sum "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker"
             sha256sum 'sixth approach/run052_adaptive/main.cpp'
             sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
+            sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v5.h'
+            sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v6.h'
             sha256sum "$CALC_SPEC_PATH"
           } > "out/$CALC_GRAPH_ID/refined-group-diagnostics.log"
 
