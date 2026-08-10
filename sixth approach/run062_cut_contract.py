@@ -13,8 +13,13 @@ MAX_BINOMIALS = 7
 MAX_TARGET_TERMS = 6
 
 
+def canonical_bytes(path: Path) -> bytes:
+    """Match the LF bytes stored by Git on Linux from any local checkout."""
+    return path.read_text(encoding="utf-8").replace("\r\n", "\n").encode()
+
+
 def render(bundle_path: Path) -> str:
-    raw = bundle_path.read_bytes()
+    raw = canonical_bytes(bundle_path)
     bundle = json.loads(raw)
     assert bundle["schema_version"] == 1
     assert bundle["version"] == 2
@@ -93,7 +98,7 @@ def main():
         assert args.header.read_text(encoding="utf-8") == expected
     print(json.dumps({
         "status": "accepted",
-        "bundle_sha256": hashlib.sha256(args.bundle.read_bytes()).hexdigest(),
+        "bundle_sha256": hashlib.sha256(canonical_bytes(args.bundle)).hexdigest(),
         "header_sha256": hashlib.sha256(expected.encode()).hexdigest(),
         "cuts": 45,
     }, sort_keys=True))

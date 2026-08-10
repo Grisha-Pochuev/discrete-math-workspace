@@ -6,7 +6,7 @@
 namespace exact_event_cuts_v2 {
 
 inline constexpr std::string_view kBundleSha256 =
-    "480632ed347103d95318f7e0000ee02f6306cf71c2473fde3d6a8a78630bc39e";
+    "453614ab1c47b7ea467ecc7d9d87d22e07cb19ca369d7c24f30726f063012157";
 
 struct BinomialEvent {
   int state;
