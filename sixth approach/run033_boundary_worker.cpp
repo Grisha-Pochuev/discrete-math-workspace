@@ -1,4 +1,4 @@
-// Exact four-way support-layer enumerator using the native OR-Tools C++ API.
+// Exact power-of-two support-layer enumerator using the native OR-Tools C++ API.
 
 #include <algorithm>
 #include <array>
@@ -32,11 +32,14 @@ namespace sat = operations_research::sat;
 namespace {
 
 constexpr char kRunId[] = "run-033";
-constexpr char kPartitionVersion[] = "parity2-v1";
+constexpr char kLegacyPartitionVersion[] = "parity2-v1";
+constexpr char kFinePartitionVersion[] = "parity-log2-v1";
 constexpr int kVertexCount = 8;
 constexpr int kColourCount = 3;
 constexpr int kResidualEdgeCount = 8;
 constexpr int kSupportVariableCount = 72;
+constexpr int kMinimumShardCount = 4;
+constexpr int kMaximumShardCount = 64;
 
 using Edge = std::array<int, 2>;
 using Matching = std::vector<Edge>;
@@ -452,11 +455,28 @@ std::uint64_t SplitMix64(std::uint64_t value) {
   return value ^ (value >> 31);
 }
 
-std::array<std::vector<int>, 2> PartitionGroups(int size) {
-  const std::array<std::uint64_t, 2> seeds{
-      0x243F6A8885A308D3ULL, 0x13198A2E03707344ULL};
-  std::array<std::vector<int>, 2> groups;
-  for (int bit = 0; bit < 2; ++bit) {
+int PartitionBits(int shard_count) {
+  if (shard_count < kMinimumShardCount || shard_count > kMaximumShardCount ||
+      !std::has_single_bit(static_cast<unsigned int>(shard_count))) {
+    throw std::invalid_argument("shard count must be a power of two from 4 through 64");
+  }
+  return std::countr_zero(static_cast<unsigned int>(shard_count));
+}
+
+const char* PartitionVersion(int shard_count) {
+  return shard_count == 4 ? kLegacyPartitionVersion : kFinePartitionVersion;
+}
+
+std::vector<std::vector<int>> PartitionGroups(int size, int bit_count) {
+  constexpr std::array<std::uint64_t, 6> seeds{
+      0x243F6A8885A308D3ULL, 0x13198A2E03707344ULL,
+      0xA4093822299F31D0ULL, 0x082EFA98EC4E6C89ULL,
+      0x452821E638D01377ULL, 0xBE5466CF34E90C6CULL};
+  if (bit_count < 2 || bit_count > static_cast<int>(seeds.size())) {
+    throw std::invalid_argument("unsupported partition bit count");
+  }
+  std::vector<std::vector<int>> groups(bit_count);
+  for (int bit = 0; bit < bit_count; ++bit) {
     for (int index = 0; index < size; ++index) {
       if ((SplitMix64(static_cast<std::uint64_t>(index) ^ seeds[bit]) & 1) != 0) {
         groups[bit].push_back(index);
@@ -558,7 +578,7 @@ struct BuiltModel {
   std::array<sat::BoolVar, kSupportVariableCount> support;
   int term_variables = 0;
   int escape_variables = 0;
-  std::array<int, 2> partition_group_sizes{};
+  std::vector<int> partition_group_sizes;
 };
 
 void AddLexLeader(const Config& config,
@@ -709,8 +729,10 @@ void BuildModel(const Config& config, const Prepared& data,
 
   if (args.symmetry_break) AddLexLeader(config, symmetries, built);
 
-  const auto groups = PartitionGroups(kSupportVariableCount);
-  for (int bit = 0; bit < 2; ++bit) {
+  const int partition_bits = PartitionBits(args.shard_count);
+  const auto groups = PartitionGroups(kSupportVariableCount, partition_bits);
+  built->partition_group_sizes.resize(partition_bits);
+  for (int bit = 0; bit < partition_bits; ++bit) {
     sat::LinearExpr group_sum;
     for (const int index : groups[bit]) group_sum += built->support[index];
     const sat::IntVar remainder = built->model.NewIntVar(operations_research::Domain(0, 1));
@@ -740,10 +762,11 @@ Arguments ParseArguments(int argc, char** argv) {
     else throw std::invalid_argument("unknown argument: " + key);
   }
   if (args.run_id.empty() || args.case_id < 0 || args.support < 0 || args.support > 72 ||
-      args.shard_count != 4 || args.shard_id < 0 || args.shard_id >= 4 ||
+      args.shard_id < 0 || args.shard_id >= args.shard_count ||
       args.seconds <= 0 || args.cap == 0 || args.output.empty()) {
     throw std::invalid_argument("invalid or missing arguments");
   }
+  PartitionBits(args.shard_count);
   return args;
 }
 
@@ -853,10 +876,14 @@ class Collector {
            << "  \"support\": " << args_.support << ",\n"
            << "  \"shard_id\": " << args_.shard_id << ",\n"
            << "  \"shard_count\": " << args_.shard_count << ",\n"
-           << "  \"partition_version\": \"" << kPartitionVersion << "\",\n"
+           << "  \"partition_version\": \"" << PartitionVersion(args_.shard_count) << "\",\n"
            << "  \"symmetry_breaking\": " << (args_.symmetry_break ? "true" : "false") << ",\n"
-           << "  \"partition_group_sizes\": [" << partition_group_sizes_[0]
-           << ", " << partition_group_sizes_[1] << "],\n"
+           << "  \"partition_group_sizes\": [";
+    for (std::size_t index = 0; index < partition_group_sizes_.size(); ++index) {
+      if (index) stream << ", ";
+      stream << partition_group_sizes_[index];
+    }
+    stream << "],\n"
            << "  \"stabilizer_size\": " << symmetries_.size() << ",\n"
            << "  \"term_variables\": " << term_variables_ << ",\n"
            << "  \"escape_variables\": " << escape_variables_ << ",\n"
@@ -904,7 +931,7 @@ class Collector {
   const std::array<sat::BoolVar, kSupportVariableCount>& support_;
   int term_variables_;
   int escape_variables_;
-  std::array<int, 2> partition_group_sizes_;
+  std::vector<int> partition_group_sizes_;
   std::chrono::steady_clock::time_point started_;
   std::chrono::steady_clock::time_point next_checkpoint_;
   std::uint64_t enumerated_ = 0;
