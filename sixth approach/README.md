@@ -32,3 +32,15 @@ coverage is accepted. The archive keeps the specification, summary, compact
 exceptional samples, provenance, and checksums; bulk raw layers stay outside
 Git history.
 
+## Two compute providers
+
+The same C++20 worker and immutable JSON specifications are used on both
+providers. GitHub Actions is reserved for long-running batches and audits of
+existing GitHub artifacts. CircleCI is reserved for fine power-of-two shard
+partitions that finish, audit, and checkpoint within a one-hour job boundary.
+
+CircleCI computation is inert on ordinary commits. A run is enabled only by
+the exact neutral tag recorded in its immutable specification. Fine shards are
+audited independently before aggregation, so large raw layers do not need to
+be copied into Git or onto a local workstation.
+
