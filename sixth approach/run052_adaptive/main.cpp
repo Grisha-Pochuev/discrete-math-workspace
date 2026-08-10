@@ -23,6 +23,7 @@
 #include "exact_event_cuts.h"
 #include "exact_event_cuts_v2.h"
 #include "exact_event_cuts_v3.h"
+#include "exact_event_cuts_v4.h"
 
 namespace sat = operations_research::sat;
 
@@ -501,6 +502,10 @@ class AdaptiveScreen {
       add_compiled_cuts(exact_event_cuts_v3::kVersion3);
       return;
     }
+    if (args_.exact_cut_version == 4) {
+      add_compiled_cuts(exact_event_cuts_v4::kVersion4);
+      return;
+    }
     throw std::invalid_argument("unknown exact cut version");
   }
 
@@ -612,7 +617,9 @@ class AdaptiveScreen {
                                 ? std::string(exact_event_cuts::kBundleSha256)
                                 : args_.exact_cut_version == 2
                                       ? std::string(exact_event_cuts_v2::kBundleSha256)
-                                      : std::string(exact_event_cuts_v3::kBundleSha256))
+                                      : args_.exact_cut_version == 3
+                                            ? std::string(exact_event_cuts_v3::kBundleSha256)
+                                            : std::string(exact_event_cuts_v4::kBundleSha256))
         << ",\n";
     out << "  \"exact_event_cuts\": " << exact_event_cut_count_ << ",\n";
     out << "  \"exact_event_cut_literals\": " << exact_event_cut_literals_ << ",\n";
@@ -788,7 +795,7 @@ Arguments ParseArguments(int argc, char** argv) {
       args.seconds <= 0 || args.rounds < 0 || args.workers < 1 ||
       args.workers > 4 || args.memory_mib < 512 ||
       !std::set<int>{4, 8, 16, 32, 64, 128, 256}.contains(args.shard_count) ||
-      !std::set<int>{0, 1, 2, 3}.contains(args.exact_cut_version) ||
+      !std::set<int>{0, 1, 2, 3, 4}.contains(args.exact_cut_version) ||
       args.shard_id < 0 || args.shard_id >= args.shard_count) {
     throw std::invalid_argument("invalid or missing arguments");
   }
