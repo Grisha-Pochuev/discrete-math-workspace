@@ -24,6 +24,8 @@
 #include "exact_event_cuts_v2.h"
 #include "exact_event_cuts_v3.h"
 #include "exact_event_cuts_v4.h"
+#include "exact_event_cuts_v5.h"
+#include "exact_event_cuts_v6.h"
 
 namespace sat = operations_research::sat;
 
@@ -506,6 +508,55 @@ class AdaptiveScreen {
       add_compiled_cuts(exact_event_cuts_v4::kVersion4);
       return;
     }
+    const auto add_multirow_cuts = [this](const auto& cuts) {
+      for (const auto& cut : cuts) {
+        if (cut.graph != args_.graph) continue;
+        std::vector<sat::BoolVar> clause;
+        for (int index = 0; index < cut.binomial_count; ++index) {
+          const auto& event = cut.binomials[index];
+          const auto& row = terms_.at(event.state);
+          if (event.left < 0 || event.right < 0 ||
+              event.left >= static_cast<int>(row.size()) ||
+              event.right >= static_cast<int>(row.size()) ||
+              event.left == event.right) {
+            throw std::logic_error("invalid multi-row binomial event");
+          }
+          clause.push_back(RowCount(event.state, 2).Not());
+          clause.push_back(row[event.left].Not());
+          clause.push_back(row[event.right].Not());
+        }
+        for (int index = 0; index < cut.row_event_count; ++index) {
+          const auto& event = cut.row_events[index];
+          const auto& row = terms_.at(event.state);
+          if (event.matching_count < 3 ||
+              event.matching_count > static_cast<int>(event.matchings.size())) {
+            throw std::logic_error("invalid multi-row event count");
+          }
+          clause.push_back(RowCount(event.state, event.matching_count).Not());
+          for (int term = 0; term < event.matching_count; ++term) {
+            const int matching = event.matchings[term];
+            if (matching < 0 || matching >= static_cast<int>(row.size())) {
+              throw std::logic_error("invalid multi-row matching event");
+            }
+            clause.push_back(row[matching].Not());
+          }
+        }
+        model_.AddBoolOr(clause);
+        ++exact_event_cut_count_;
+        exact_event_cut_literals_ += static_cast<int>(clause.size());
+      }
+    };
+    if (args_.exact_cut_version == 5) {
+      add_compiled_cuts(exact_event_cuts_v4::kVersion4);
+      add_multirow_cuts(exact_event_cuts_v5::kVersion5);
+      return;
+    }
+    if (args_.exact_cut_version == 6) {
+      add_compiled_cuts(exact_event_cuts_v4::kVersion4);
+      add_multirow_cuts(exact_event_cuts_v5::kVersion5);
+      add_compiled_cuts(exact_event_cuts_v6::kVersion6);
+      return;
+    }
     throw std::invalid_argument("unknown exact cut version");
   }
 
@@ -619,7 +670,11 @@ class AdaptiveScreen {
                                       ? std::string(exact_event_cuts_v2::kBundleSha256)
                                       : args_.exact_cut_version == 3
                                             ? std::string(exact_event_cuts_v3::kBundleSha256)
-                                            : std::string(exact_event_cuts_v4::kBundleSha256))
+                                            : args_.exact_cut_version == 4
+                                                  ? std::string(exact_event_cuts_v4::kBundleSha256)
+                                                  : args_.exact_cut_version == 5
+                                                        ? std::string(exact_event_cuts_v5::kBundleSha256)
+                                                        : std::string(exact_event_cuts_v6::kBundleSha256))
         << ",\n";
     out << "  \"exact_event_cuts\": " << exact_event_cut_count_ << ",\n";
     out << "  \"exact_event_cut_literals\": " << exact_event_cut_literals_ << ",\n";
@@ -795,7 +850,7 @@ Arguments ParseArguments(int argc, char** argv) {
       args.seconds <= 0 || args.rounds < 0 || args.workers < 1 ||
       args.workers > 4 || args.memory_mib < 512 ||
       !std::set<int>{4, 8, 16, 32, 64, 128, 256}.contains(args.shard_count) ||
-      !std::set<int>{0, 1, 2, 3, 4}.contains(args.exact_cut_version) ||
+      !std::set<int>{0, 1, 2, 3, 4, 5, 6}.contains(args.exact_cut_version) ||
       args.shard_id < 0 || args.shard_id >= args.shard_count) {
     throw std::invalid_argument("invalid or missing arguments");
   }
