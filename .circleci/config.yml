@@ -11,20 +11,9 @@ jobs:
           name: Verify immutable input
           command: |
             set -euo pipefail
-            python3 - <<'PY'
-            import json
-            from pathlib import Path
-            spec = json.loads(Path("sixth approach/specs/run-059-fine-rescue.json").read_text())
-            assert spec["run_id"] == "run-059"
-            assert spec["provider"] == "circleci"
-            assert spec["trigger_tag"] == "ci-run-059"
-            assert spec["resource_class"] == "large"
-            assert spec["jobs"] == 32
-            assert spec["groups_per_cell"] == 8
-            assert spec["workers_per_job"] == 4
-            assert spec["shard_count"] == 32
-            assert len(spec["cells"]) == 4
-            PY
+            python3 'sixth approach/run059_config.py' \
+              --spec 'sixth approach/specs/run-059-fine-rescue.json' \
+              --verify
       - restore_cache:
           keys:
             - short-pool-toolkit-v1
@@ -129,40 +118,12 @@ jobs:
             set -euo pipefail
             mkdir -p out/audits
             case "$CELL" in
-              c3-s63) case_id=3; support=63 ;;
-              c3-s64) case_id=3; support=64 ;;
-              c9-s63) case_id=9; support=63 ;;
-              c9-s64) case_id=9; support=64 ;;
+              c3-s63|c3-s64|c9-s63|c9-s64) ;;
               *) echo 'invalid neutral cell' >&2; exit 2 ;;
             esac
-            python3 - "$case_id" "$support" > out/cell.env <<'PY'
-            import json
-            import shlex
-            import sys
-            from pathlib import Path
-            case_id, support = map(int, sys.argv[1:])
-            spec = json.loads(Path("sixth approach/specs/run-059-fine-rescue.json").read_text())
-            cells = [item for item in spec["cells"] if item["case"] == case_id and item["support"] == support]
-            assert len(cells) == 1
-            cell = cells[0]
-            values = {
-                "RUN_ID": spec["run_id"],
-                "AUDIT_RUN_ID": spec["audit_run_id"],
-                "CASE_ID": case_id,
-                "SUPPORT": support,
-                "ORBIT": cell["orbit"],
-                "MISSING_TYPE": cell["missing_type"],
-                "SHARD_COUNT": spec["shard_count"],
-                "WORKERS_PER_JOB": spec["workers_per_job"],
-                "WORKER_SECONDS": spec["worker_seconds"],
-                "WORKER_CAP": spec["worker_cap"],
-                "WORKER_MEMORY_MIB": spec["worker_memory_mib"],
-                "CHECKPOINT_EVERY": spec["checkpoint_every"],
-                "CHECKPOINT_SECONDS": spec["checkpoint_seconds"],
-            }
-            for key, value in values.items():
-                print(f"{key}={shlex.quote(str(value))}")
-            PY
+            python3 'sixth approach/run059_config.py' \
+              --spec 'sixth approach/specs/run-059-fine-rescue.json' \
+              --cell "$CELL" > out/cell.env
       - run:
           name: Record machine diagnostics
           command: |
