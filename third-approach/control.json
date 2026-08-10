@@ -63,7 +63,7 @@
   "final_report": "third-approach/FINAL_REPORT.md",
   "jobs": 20,
   "last_best_certificate_score": 0.25435831921014035,
-  "last_run_accepted": true,
+  "last_run_accepted": false,
   "last_run_id": 30532177734,
   "last_run_index": 7,
   "max_attempts_per_worker": 0,
