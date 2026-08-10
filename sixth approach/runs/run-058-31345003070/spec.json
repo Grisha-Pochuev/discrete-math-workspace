@@ -1,0 +1,130 @@
+{
+  "acceptance": {
+    "all_inputs_complete": true,
+    "all_layers_present": true,
+    "all_support_orbits_audited": true,
+    "artifacts_always_uploaded": true,
+    "mathematical_closure_requires_zero_two_sided": true,
+    "never_merge_partial_predecessor_data": true,
+    "scientific_survivors_preserved": true
+  },
+  "engine": "python_sympy_exact_hnf",
+  "jobs": 12,
+  "layers": [
+    {
+      "artifact": "run-046-case-3-layer-65",
+      "index": 3,
+      "missing_type": "C8",
+      "orbit": 8,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 65
+    },
+    {
+      "artifact": "run-046-case-3-layer-66",
+      "index": 3,
+      "missing_type": "C8",
+      "orbit": 8,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 66
+    },
+    {
+      "artifact": "run-046-case-9-layer-65",
+      "index": 9,
+      "missing_type": "C8",
+      "orbit": 51,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 65
+    },
+    {
+      "artifact": "run-046-case-9-layer-66",
+      "index": 9,
+      "missing_type": "C8",
+      "orbit": 51,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 66
+    },
+    {
+      "artifact": "run-046-case-10-layer-63",
+      "index": 10,
+      "missing_type": "C8",
+      "orbit": 52,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 63
+    },
+    {
+      "artifact": "run-046-case-10-layer-64",
+      "index": 10,
+      "missing_type": "C8",
+      "orbit": 52,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 64
+    },
+    {
+      "artifact": "run-046-case-10-layer-65",
+      "index": 10,
+      "missing_type": "C8",
+      "orbit": 52,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 65
+    },
+    {
+      "artifact": "run-046-case-10-layer-66",
+      "index": 10,
+      "missing_type": "C8",
+      "orbit": 52,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 66
+    },
+    {
+      "artifact": "run-046-case-11-layer-63",
+      "index": 11,
+      "missing_type": "C8",
+      "orbit": 53,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 63
+    },
+    {
+      "artifact": "run-046-case-11-layer-64",
+      "index": 11,
+      "missing_type": "C8",
+      "orbit": 53,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 64
+    },
+    {
+      "artifact": "run-046-case-11-layer-65",
+      "index": 11,
+      "missing_type": "C8",
+      "orbit": 53,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 65
+    },
+    {
+      "artifact": "run-046-case-11-layer-66",
+      "index": 11,
+      "missing_type": "C8",
+      "orbit": 53,
+      "source_logical_run": "run-046",
+      "source_run": 31336450388,
+      "support": 66
+    }
+  ],
+  "max_parallel": 12,
+  "mode": "exact_integer_lattice_audit",
+  "run_id": "run-058",
+  "runner": "ubuntu-24.04",
+  "schema_version": 1,
+  "trigger": "workflow_dispatch",
+  "workflow": "sixth-approach-exact-lattice-batch.yml"
+}
