@@ -1,0 +1,5371 @@
+{
+  "cuts": [
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 24,
+          "state": 1
+        },
+        {
+          "left": 21,
+          "right": 28,
+          "state": 2275
+        },
+        {
+          "left": 9,
+          "right": 31,
+          "state": 2917
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-0",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "132349ce66e804f596a5d5d6d57018ad2126e250891bd5ef07a0c3ae0136913d",
+      "source_shard": 7,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 27,
+          "state": 27
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-1",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "33c89962a763f13a7944019894479eef7e9632af5fb621a8bfdc8908f795c31e",
+      "source_shard": 2,
+      "target_event": {
+        "state": 783,
+        "supported_matchings": [
+          11,
+          26,
+          28
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 28,
+          "state": 47
+        },
+        {
+          "left": 18,
+          "right": 30,
+          "state": 614
+        },
+        {
+          "left": 6,
+          "right": 13,
+          "state": 2720
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-2",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "02be164a1adc8da586236840e18891927bc40354b61c4ad095788c9a31953dc3",
+      "source_shard": 49,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 10,
+          "state": 82
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 115
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 117
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-3",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "e0952473b650e146814ab7d1cf0a97a2ffdc81000ff9a5eeb9b8083b7d24114a",
+      "source_shard": 58,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 26,
+          "state": 87
+        },
+        {
+          "left": 12,
+          "right": 29,
+          "state": 97
+        },
+        {
+          "left": 5,
+          "right": 19,
+          "state": 1554
+        },
+        {
+          "left": 23,
+          "right": 26,
+          "state": 1626
+        },
+        {
+          "left": 12,
+          "right": 30,
+          "state": 1636
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-4",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "a6a6e9392818d86cbb6b8e6b9516fd627c2f217169efee72fc568e62572f6044",
+      "source_shard": 10,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 21,
+          "right": 23,
+          "state": 90
+        },
+        {
+          "left": 22,
+          "right": 24,
+          "state": 2187
+        },
+        {
+          "left": 20,
+          "right": 25,
+          "state": 2529
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-5",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "734c345f78c18eaf3df1d2796f21768c839f630ca8af59e00f00c903eb9463ac",
+      "source_shard": 45,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 21,
+          "right": 23,
+          "state": 126
+        },
+        {
+          "left": 7,
+          "right": 9,
+          "state": 127
+        },
+        {
+          "left": 14,
+          "right": 16,
+          "state": 614
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-6",
+      "source_leaf": "refinement",
+      "source_record_run": "run-065-r1",
+      "source_run": "run-065-r1",
+      "source_sha256": "c40d0a4929a38ba381ac5e228853b21ae86e7d4be0f7f49ff97c6010690ac6fa",
+      "source_shard": 190,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 19,
+          "right": 31,
+          "state": 149
+        },
+        {
+          "left": 25,
+          "right": 26,
+          "state": 227
+        },
+        {
+          "left": 26,
+          "right": 32,
+          "state": 228
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-7",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "8ab400848b52d5d4cebdc4c43620276d005a98ae6d855e390c5ac20eb2195981",
+      "source_shard": 25,
+      "target_event": {
+        "state": 144,
+        "supported_matchings": [
+          19,
+          24,
+          27
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 26,
+          "right": 29,
+          "state": 162
+        },
+        {
+          "left": 7,
+          "right": 12,
+          "state": 172
+        },
+        {
+          "left": 7,
+          "right": 16,
+          "state": 178
+        },
+        {
+          "left": 29,
+          "right": 32,
+          "state": 411
+        },
+        {
+          "left": 27,
+          "right": 30,
+          "state": 870
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-8",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "7bfa7bc0148cf8b29b7325169f08096004f77734fed22c738f46f633a34f6438",
+      "source_shard": 5,
+      "target_event": {
+        "state": 1113,
+        "supported_matchings": [
+          27,
+          28,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 3,
+          "state": 243
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-9",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "06dc98508b971b172b16fb9514a3a80286367733f1b52bb1b3ceb663b6d9a481",
+      "source_shard": 29,
+      "target_event": {
+        "state": 244,
+        "supported_matchings": [
+          0,
+          3,
+          5
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 27,
+          "state": 265
+        },
+        {
+          "left": 24,
+          "right": 31,
+          "state": 733
+        },
+        {
+          "left": 8,
+          "right": 20,
+          "state": 3181
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-10",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "5a68fbbec8668d24122bb1e0baee0d0cf4e360409ddef8883324da58c3c03672",
+      "source_shard": 11,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 29,
+          "state": 270
+        },
+        {
+          "left": 16,
+          "right": 32,
+          "state": 459
+        },
+        {
+          "left": 10,
+          "right": 17,
+          "state": 2457
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-11",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "4a65eb9b978a6293c2db3e0758c7ca177675e27e0ea8385d81fef85c6930cf97",
+      "source_shard": 16,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 9,
+          "state": 297
+        },
+        {
+          "left": 14,
+          "right": 16,
+          "state": 541
+        },
+        {
+          "left": 21,
+          "right": 23,
+          "state": 1755
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-12",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "a2c7c7fe2ba21f3d62ad83b6ba1fabf2c2ab9edea9ea6f5a4e6e588898aebb1d",
+      "source_shard": 39,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 18,
+          "state": 297
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 1756
+        },
+        {
+          "left": 15,
+          "right": 17,
+          "state": 1917
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-13",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f25de8f27b0e6b04623ea55e63bebe06f992cce7ddf996d14fb2fd63844f5006",
+      "source_shard": 30,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 9,
+          "right": 15,
+          "state": 304
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 321
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 348
+        },
+        {
+          "left": 12,
+          "right": 19,
+          "state": 1755
+        },
+        {
+          "left": 0,
+          "right": 12,
+          "state": 1756
+        },
+        {
+          "left": 14,
+          "right": 21,
+          "state": 1866
+        },
+        {
+          "left": 2,
+          "right": 7,
+          "state": 1948
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-14",
+      "source_leaf": "refinement",
+      "source_record_run": "run-065-r1",
+      "source_run": "run-065-r1",
+      "source_sha256": "39a7f2b7940432a57c2461c13e22347bda805d842d516f6dce9c5d15ff7fbd39",
+      "source_shard": 254,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 15,
+          "state": 306
+        },
+        {
+          "left": 5,
+          "right": 19,
+          "state": 798
+        },
+        {
+          "left": 13,
+          "right": 20,
+          "state": 1116
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-15",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "8fa6e8fcd9cf433ecf6a3c51e85afcf46dadd31563dae428c1ab0dae5804014b",
+      "source_shard": 60,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 16,
+          "state": 333
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-16",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "9be914ad792ffa327c0cc286440c9c78f8202205477a620705986dc5b05fa5ac",
+      "source_shard": 53,
+      "target_event": {
+        "state": 81,
+        "supported_matchings": [
+          12,
+          16,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 24,
+          "right": 29,
+          "state": 361
+        },
+        {
+          "left": 11,
+          "right": 30,
+          "state": 1891
+        },
+        {
+          "left": 11,
+          "right": 30,
+          "state": 1894
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-17",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "bc424de1a0d07e6018641e9b6e9196e9048cb9fa855f85d430475b1c724e1acb",
+      "source_shard": 46,
+      "target_event": {
+        "state": 364,
+        "supported_matchings": [
+          24,
+          29,
+          31
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 26,
+          "state": 426
+        },
+        {
+          "left": 2,
+          "right": 29,
+          "state": 681
+        },
+        {
+          "left": 2,
+          "right": 7,
+          "state": 700
+        },
+        {
+          "left": 4,
+          "right": 17,
+          "state": 2622
+        },
+        {
+          "left": 4,
+          "right": 10,
+          "state": 2641
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-18",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "84aa5d45e7c472007d87d15b9a706b935023b8f461a73fcd78fad6e5162f3088",
+      "source_shard": 41,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 17,
+          "state": 462
+        },
+        {
+          "left": 12,
+          "right": 14,
+          "state": 465
+        },
+        {
+          "left": 16,
+          "right": 18,
+          "state": 975
+        },
+        {
+          "left": 12,
+          "right": 31,
+          "state": 1192
+        },
+        {
+          "left": 12,
+          "right": 28,
+          "state": 1195
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-19",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "4420c5b19102400c1b934d087827778fffeaad1feb4d888ad72449c13d9f4de9",
+      "source_shard": 36,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 17,
+          "right": 29,
+          "state": 487
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-20",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "bb9a6f5264094d180ab77a310a7022c1f06cc07576706701f267fe8f455af729",
+      "source_shard": 8,
+      "target_event": {
+        "state": 514,
+        "supported_matchings": [
+          17,
+          29,
+          31
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 25,
+          "state": 493
+        },
+        {
+          "left": 23,
+          "right": 30,
+          "state": 2194
+        },
+        {
+          "left": 14,
+          "right": 27,
+          "state": 2842
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-21",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "e0c2525fc1d45063588153959623fcffd90849b65d2f4af2f5f7c39196ac2e73",
+      "source_shard": 28,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 15,
+          "state": 505
+        },
+        {
+          "left": 6,
+          "right": 22,
+          "state": 1477
+        },
+        {
+          "left": 13,
+          "right": 20,
+          "state": 2125
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-22",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "ab851569d3cc737432f35ad855b35b27e18862e5fcebf23acf18859def430e66",
+      "source_shard": 38,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 2,
+          "state": 571
+        },
+        {
+          "left": 1,
+          "right": 4,
+          "state": 598
+        },
+        {
+          "left": 27,
+          "right": 29,
+          "state": 4963
+        },
+        {
+          "left": 27,
+          "right": 28,
+          "state": 4993
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-23",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "6c2c1ce6a9ebc03de7b949b934526aa62f292158fd81f5a23a1849e026e9d939",
+      "source_shard": 42,
+      "target_event": {
+        "state": 588,
+        "supported_matchings": [
+          6,
+          7,
+          10,
+          20,
+          22
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 601
+        },
+        {
+          "left": 10,
+          "right": 25,
+          "state": 608
+        },
+        {
+          "left": 8,
+          "right": 20,
+          "state": 638
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-24",
+      "source_leaf": "refinement",
+      "source_record_run": "run-065-r1",
+      "source_run": "run-065-r1",
+      "source_sha256": "125058669da77edfcfdbf06a6deb28eea39be616074b21c888979e62f1eb5e19",
+      "source_shard": 62,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 603
+        },
+        {
+          "left": 28,
+          "right": 31,
+          "state": 2754
+        },
+        {
+          "left": 29,
+          "right": 30,
+          "state": 2787
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-25",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "ab83bebce4fd0578fe2ea4410195dec531721ad9db3e87f99d11bba68851e8c3",
+      "source_shard": 34,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 5,
+          "right": 31,
+          "state": 622
+        },
+        {
+          "left": 5,
+          "right": 31,
+          "state": 631
+        },
+        {
+          "left": 5,
+          "right": 15,
+          "state": 2323
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-26",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "fd760d245c184a5a5088eab8892fc6ddba14f5cba96b3482d06ff16f6437060f",
+      "source_shard": 15,
+      "target_event": {
+        "state": 2332,
+        "supported_matchings": [
+          5,
+          8,
+          15
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 31,
+          "state": 624
+        },
+        {
+          "left": 9,
+          "right": 11,
+          "state": 705
+        },
+        {
+          "left": 21,
+          "right": 24,
+          "state": 1353
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-27",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "b4bfa2aa324704cb0b0f99b0540f972d0fac1bcfcc8aecf81835647c1ad92f05",
+      "source_shard": 0,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 18,
+          "state": 748
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-28",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "655497b2779352412987cddb070a45c57a7717d59e4dd973d7d61aa87a3637d2",
+      "source_shard": 22,
+      "target_event": {
+        "state": 739,
+        "supported_matchings": [
+          4,
+          11,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 29,
+          "right": 31,
+          "state": 748
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 2916
+        },
+        {
+          "left": 15,
+          "right": 17,
+          "state": 3177
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-29",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "6580b1088c5cc6770cfbf83741fe115110d2781de771ae2c6317ee62d04f65d5",
+      "source_shard": 51,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 14,
+          "right": 16,
+          "state": 762
+        },
+        {
+          "left": 17,
+          "right": 18,
+          "state": 765
+        },
+        {
+          "left": 13,
+          "right": 15,
+          "state": 798
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-30",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "9f222dc913da90bec36210bcc9db8751095fffbd1db978c9e7bfbcb5021739d2",
+      "source_shard": 57,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 13,
+          "state": 838
+        },
+        {
+          "left": 20,
+          "right": 22,
+          "state": 855
+        },
+        {
+          "left": 11,
+          "right": 18,
+          "state": 5191
+        },
+        {
+          "left": 24,
+          "right": 25,
+          "state": 5208
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-31",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "a4ddf30d803f4e099af5d842e6bb47c4910a627426e2880c9d3fcce37c3559cc",
+      "source_shard": 44,
+      "target_event": {
+        "state": 5185,
+        "supported_matchings": [
+          9,
+          16,
+          21,
+          23
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 25,
+          "state": 843
+        },
+        {
+          "left": 5,
+          "right": 19,
+          "state": 855
+        },
+        {
+          "left": 17,
+          "right": 18,
+          "state": 1344
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-32",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "fc3cba2e2dcce6858d3b4a99a9786b874a8d9c0b1f05998d7769360f02d631f3",
+      "source_shard": 59,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 18,
+          "state": 844
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-33",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "5e87aff019acfeb579632de45828895ee035e6b07aed03a5ce28af3b6076339e",
+      "source_shard": 35,
+      "target_event": {
+        "state": 838,
+        "supported_matchings": [
+          11,
+          13,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 17,
+          "state": 913
+        },
+        {
+          "left": 13,
+          "right": 20,
+          "state": 1639
+        },
+        {
+          "left": 6,
+          "right": 22,
+          "state": 2131
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-34",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "1926361befdfdacb69f97f64ed3cadfad9cb90922498b82905501fc0bc1f18d8",
+      "source_shard": 50,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 26,
+          "right": 27,
+          "state": 937
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-35",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "417918b73fa37069dae6f1400637e9e163c1b928fce91c39142cee32d16a6a94",
+      "source_shard": 32,
+      "target_event": {
+        "state": 919,
+        "supported_matchings": [
+          12,
+          14,
+          21,
+          26,
+          27
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 951
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-36",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "0edbc115d24cf3dd5f45bd55d1931b2e25894fbd63af812395704399b12aae37",
+      "source_shard": 23,
+      "target_event": {
+        "state": 3140,
+        "supported_matchings": [
+          1,
+          3,
+          9,
+          14,
+          16
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 5,
+          "right": 7,
+          "state": 1053
+        },
+        {
+          "left": 19,
+          "right": 29,
+          "state": 1072
+        },
+        {
+          "left": 7,
+          "right": 11,
+          "state": 1080
+        },
+        {
+          "left": 14,
+          "right": 18,
+          "state": 1404
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-37",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "e3f4b4ab9af1abda371219eb0bee983464a0e6e9c29477ec7a28452dadbb66b8",
+      "source_shard": 21,
+      "target_event": {
+        "state": 1162,
+        "supported_matchings": [
+          21,
+          23,
+          28,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 10,
+          "state": 1136
+        },
+        {
+          "left": 22,
+          "right": 24,
+          "state": 1216
+        },
+        {
+          "left": 7,
+          "right": 9,
+          "state": 5771
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-38",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "c87b026896d0e76252d1fb38a8f8c5e937d6d068583a6eed29c8aa1264c5ed49",
+      "source_shard": 33,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 20,
+          "right": 25,
+          "state": 1202
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 1211
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-39",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "a21f470f67e464241e821ebdeafd12f39d99bae487532d42c66ce8e864d4f022",
+      "source_shard": 6,
+      "target_event": {
+        "state": 1209,
+        "supported_matchings": [
+          1,
+          3,
+          15,
+          17
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 25,
+          "state": 1269
+        },
+        {
+          "left": 17,
+          "right": 18,
+          "state": 1278
+        },
+        {
+          "left": 12,
+          "right": 14,
+          "state": 1288
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-40",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "4064c8b4bdb8d631614446d4f389129bf95cfa482750dc89a30cf19d78615c93",
+      "source_shard": 55,
+      "target_event": {
+        "state": 5652,
+        "supported_matchings": [
+          0,
+          1,
+          5,
+          17,
+          18,
+          19
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 20,
+          "right": 25,
+          "state": 1274
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-41",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "150618a54f388ae61d6d9b45f272e27da6ac89b195b95e3b6455d383cdc1ae41",
+      "source_shard": 43,
+      "target_event": {
+        "state": 544,
+        "supported_matchings": [
+          13,
+          15,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 26,
+          "right": 27,
+          "state": 1330
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 1357
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 1411
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-42",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "15430f6022280890fa1d615beefeb51133bc4e524d4fe238e04c39a254ebbe84",
+      "source_shard": 26,
+      "target_event": {
+        "state": 1438,
+        "supported_matchings": [
+          26,
+          27,
+          32
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 17,
+          "right": 29,
+          "state": 1561
+        },
+        {
+          "left": 10,
+          "right": 27,
+          "state": 1795
+        },
+        {
+          "left": 7,
+          "right": 14,
+          "state": 5935
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-43",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "98bf19accb4d56f34f9f51931f12ba917ef1ee84c86e5bc030f4fab95e3cef92",
+      "source_shard": 27,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 4,
+          "state": 1828
+        },
+        {
+          "left": 15,
+          "right": 31,
+          "state": 1908
+        },
+        {
+          "left": 17,
+          "right": 29,
+          "state": 1935
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-44",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "27e00da2b7561b64a595b174a660beecc884498f377c1fc00744c385296312d8",
+      "source_shard": 40,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 9,
+          "state": 1865
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 2592
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 4068
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-45",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "1d20418e106e3322dd9ef306a2e0a5000f612559042993e0569ca5693b2606f8",
+      "source_shard": 61,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 31,
+          "state": 2196
+        },
+        {
+          "left": 22,
+          "right": 24,
+          "state": 2202
+        },
+        {
+          "left": 17,
+          "right": 29,
+          "state": 2229
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-46",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "0a1c5c113c506bed8510cd40794e54d869013679e5b1412decf5f066217fe628",
+      "source_shard": 31,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 21,
+          "state": 2197
+        },
+        {
+          "left": 4,
+          "right": 21,
+          "state": 2200
+        },
+        {
+          "left": 4,
+          "right": 14,
+          "state": 2201
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-47",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "fb76852c64c64b0433c49da6520434f538d7a5ea6059134c76e05ffeb2758b59",
+      "source_shard": 52,
+      "target_event": {
+        "state": 2198,
+        "supported_matchings": [
+          4,
+          14,
+          16
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 18,
+          "state": 2212
+        },
+        {
+          "left": 13,
+          "right": 18,
+          "state": 2374
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 2924
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-48",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f03304ee8a0e1346291b7ba542ef7e72aad1e4dc96ff17c99db3ac9ab4b867e5",
+      "source_shard": 48,
+      "target_event": {
+        "state": 3084,
+        "supported_matchings": [
+          8,
+          10,
+          20,
+          25
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 17,
+          "state": 2248
+        },
+        {
+          "left": 7,
+          "right": 29,
+          "state": 4435
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 4525
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-49",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "52e0e2a203cb3832e632746239c9d6413fa60512f2efa0cc2a7f876422e70056",
+      "source_shard": 24,
+      "target_event": {
+        "state": 4516,
+        "supported_matchings": [
+          0,
+          2,
+          12,
+          26
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 20,
+          "state": 2260
+        },
+        {
+          "left": 1,
+          "right": 20,
+          "state": 2261
+        },
+        {
+          "left": 3,
+          "right": 25,
+          "state": 2426
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-50",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "997c8415ec61a97b8c0e8415b35b930ec6c5b1fbe7c1609be8a393e8261e75b7",
+      "source_shard": 47,
+      "target_event": {
+        "state": 2425,
+        "supported_matchings": [
+          3,
+          8,
+          10,
+          25
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 3,
+          "right": 15,
+          "state": 2271
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 2274
+        },
+        {
+          "left": 13,
+          "right": 16,
+          "state": 2289
+        },
+        {
+          "left": 12,
+          "right": 30,
+          "state": 2292
+        },
+        {
+          "left": 1,
+          "right": 15,
+          "state": 2298
+        },
+        {
+          "left": 2,
+          "right": 29,
+          "state": 2301
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-51",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "8afa3c89fd44e60946bbe382c4ea0ce7c416e18cfb62c2adda5e3260cfa953a8",
+      "source_shard": 1,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 10,
+          "state": 2271
+        },
+        {
+          "left": 7,
+          "right": 9,
+          "state": 2532
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 3162
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-52",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "058a5161ff75a935f8d95c71c2680973e0c2082b0cc609460f1064820203d3a2",
+      "source_shard": 9,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 19,
+          "right": 24,
+          "state": 2272
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-53",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "5813154c435ca3b55f28b85025eb6d2276bdfa60087d65f1b9484d13c10c9ea8",
+      "source_shard": 37,
+      "target_event": {
+        "state": 2352,
+        "supported_matchings": [
+          0,
+          1,
+          4
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 9,
+          "state": 2280
+        },
+        {
+          "left": 2,
+          "right": 8,
+          "state": 2766
+        },
+        {
+          "left": 7,
+          "right": 10,
+          "state": 3549
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-54",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "c9e55e8695a59ae7fbe126786928845c6844f08b1881bf3f6df9745904b314a1",
+      "source_shard": 54,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 15,
+          "state": 2316
+        },
+        {
+          "left": 12,
+          "right": 26,
+          "state": 4479
+        },
+        {
+          "left": 7,
+          "right": 29,
+          "state": 4965
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-55",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "df3f683253e5797f016cf91b7f3c363c47e50a5db9bb7e63720ef8999e4e7c5b",
+      "source_shard": 3,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 26,
+          "right": 30,
+          "state": 2357
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-56",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "b434b0cd77f364d46bca441a626bc2e019fc415a8f6a3f9e81820ed929a8537a",
+      "source_shard": 63,
+      "target_event": {
+        "state": 2355,
+        "supported_matchings": [
+          4,
+          26,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 3,
+          "state": 2390
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-57",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "64105c3446cd304d496f79fda0c7862ac6f5c6e24838522790f73290039ca222",
+      "source_shard": 18,
+      "target_event": {
+        "state": 2389,
+        "supported_matchings": [
+          0,
+          3,
+          10,
+          12,
+          16
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 15,
+          "state": 2432
+        },
+        {
+          "left": 17,
+          "right": 18,
+          "state": 2465
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 2700
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-58",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f0dc0a065aed1269b61c0fe5f92f30e1f143d5c62071cb8e10b1498873207279",
+      "source_shard": 17,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 3,
+          "state": 2529
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 2535
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 4704
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-59",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "8b28f200f08ab75a506bbdd9fcecc9c858f567fb35d44a20f9b10438cf810df5",
+      "source_shard": 13,
+      "target_event": {
+        "state": 4698,
+        "supported_matchings": [
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 17,
+          "state": 3052
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-60",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "0b929f4c96e545c7dd45792a5b35e7f58ae1c2a165fd6ce55bdafcdf5daa1001",
+      "source_shard": 19,
+      "target_event": {
+        "state": 865,
+        "supported_matchings": [
+          10,
+          17,
+          27
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 31,
+          "state": 3829
+        },
+        {
+          "left": 13,
+          "right": 15,
+          "state": 4108
+        },
+        {
+          "left": 13,
+          "right": 15,
+          "state": 4129
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-61",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "57ce39a4ff8edb68cbb89462c6b3a5ab716b3f00981f38f985d4180a9b78f60d",
+      "source_shard": 12,
+      "target_event": {
+        "state": 4111,
+        "supported_matchings": [
+          12,
+          13,
+          15
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 24,
+          "right": 31,
+          "state": 3840
+        },
+        {
+          "left": 17,
+          "right": 29,
+          "state": 3957
+        },
+        {
+          "left": 15,
+          "right": 22,
+          "state": 4083
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v6-62",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "9e86a602d89e696348c687f8f959eab764516e124d33a8cb683f909a6e62859b",
+      "source_shard": 4,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 29,
+          "state": 4
+        },
+        {
+          "left": 8,
+          "right": 26,
+          "state": 661
+        },
+        {
+          "left": 6,
+          "right": 27,
+          "state": 913
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-63",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "4f3e9fb37e8d0081070eab56eab6e979ce598a1ed5be80b6e17aa7c2c63c0603",
+      "source_shard": 44,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 25,
+          "right": 29,
+          "state": 16
+        },
+        {
+          "left": 9,
+          "right": 11,
+          "state": 2230
+        },
+        {
+          "left": 19,
+          "right": 23,
+          "state": 3661
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-64",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "88936b74e73cfdc10bbf13a7fdbe2d296a647a541cbf8ff4b1ff750cb733eef5",
+      "source_shard": 6,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 28
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-65",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "b73f02fdc86a2edcf8d61299dee097f98352decdc6434f66eb1f11f23c417d1f",
+      "source_shard": 41,
+      "target_event": {
+        "state": 27,
+        "supported_matchings": [
+          4,
+          5,
+          25
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 14,
+          "state": 30
+        },
+        {
+          "left": 2,
+          "right": 14,
+          "state": 1461
+        },
+        {
+          "left": 2,
+          "right": 14,
+          "state": 1488
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-66",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "77772612ada9fdb7d1c2509f785f67cc2616344d53e440a0a6ef492681161d69",
+      "source_shard": 19,
+      "target_event": {
+        "state": 3,
+        "supported_matchings": [
+          0,
+          2,
+          14
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 24,
+          "right": 26,
+          "state": 61
+        },
+        {
+          "left": 25,
+          "right": 27,
+          "state": 313
+        },
+        {
+          "left": 28,
+          "right": 29,
+          "state": 379
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 2216
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 2468
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-67",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "835c55997e6bd68e2afb7c32df9b7619faa8249c2403c314ba79439e6c2dd9fe",
+      "source_shard": 33,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 29,
+          "state": 65
+        },
+        {
+          "left": 16,
+          "right": 17,
+          "state": 4923
+        },
+        {
+          "left": 22,
+          "right": 23,
+          "state": 5168
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-68",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "273c2b70b3374475fd8c11b8db9ad99d057d49663221300cad0176e91fbe1747",
+      "source_shard": 59,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 81
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-69",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "05022f6ca57f0f008346ad470b2b02a590fb8766c77566123b9b1dec4fe3edc5",
+      "source_shard": 29,
+      "target_event": {
+        "state": 82,
+        "supported_matchings": [
+          1,
+          3,
+          6
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 89
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-70",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "e37d7243c1cca82ae53609d27aa32529c2bb0230b267828774f7469bdce731bd",
+      "source_shard": 21,
+      "target_event": {
+        "state": 87,
+        "supported_matchings": [
+          1,
+          3,
+          14
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 26,
+          "state": 102
+        },
+        {
+          "left": 12,
+          "right": 27,
+          "state": 345
+        },
+        {
+          "left": 17,
+          "right": 23,
+          "state": 405
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-71",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "1f2665e31fc6a59e6aefbb4a8bc9b150efb724cd5e60cf6bc2cd4e650949f6db",
+      "source_shard": 30,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 17,
+          "right": 23,
+          "state": 109
+        },
+        {
+          "left": 20,
+          "right": 26,
+          "state": 4570
+        },
+        {
+          "left": 16,
+          "right": 29,
+          "state": 5941
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-72",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "71cd93fea5d4511b6be562d314bd869e66618365ca5c7d3e6f67bc5d2732944c",
+      "source_shard": 39,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 7,
+          "state": 115
+        },
+        {
+          "left": 24,
+          "right": 25,
+          "state": 598
+        },
+        {
+          "left": 18,
+          "right": 19,
+          "state": 2056
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-73",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "12ba82d21a7fb77cc95cefc69fdaa4d63cd210afcc67275ddf0e04de651f7736",
+      "source_shard": 53,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 14,
+          "state": 144
+        },
+        {
+          "left": 2,
+          "right": 3,
+          "state": 384
+        },
+        {
+          "left": 19,
+          "right": 21,
+          "state": 396
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-74",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "852a714efdee13b5c5fc54073d17c2dce1135a8091d17e9efcf5d382ed7f024d",
+      "source_shard": 27,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 163
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 2376
+        },
+        {
+          "left": 0,
+          "right": 5,
+          "state": 3808
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-75",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "6eb532354cc60ce3125b8c2ecf1045a057a591efa871154c4408e8a4ce46169d",
+      "source_shard": 24,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 20,
+          "right": 26,
+          "state": 169
+        },
+        {
+          "left": 15,
+          "right": 21,
+          "state": 2842
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-76",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "98513a547e6b99a6c524d8f72487ba3b7e0b8536d37811bb7d813cc9180aba14",
+      "source_shard": 49,
+      "target_event": {
+        "state": 655,
+        "supported_matchings": [
+          14,
+          20,
+          26,
+          27
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 11,
+          "state": 227
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 1442
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 3079
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-77",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f86da883fe05c1cf2af7c9bd623696bf6be6f54ff9473a1f12f853376d5ffc37",
+      "source_shard": 58,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 2,
+          "state": 249
+        },
+        {
+          "left": 6,
+          "right": 8,
+          "state": 294
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 2613
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-78",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "5c172bdbbaf5d1f1b37e573b9fa87cc22b382cd20263e5a6ef444a0f98020353",
+      "source_shard": 35,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 5,
+          "state": 285
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 312
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 501
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-79",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "639297b147183f3c691ff53822d0ef8193a93be26e2b2f8f3311c0ccfd8663c4",
+      "source_shard": 22,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 19,
+          "state": 325
+        },
+        {
+          "left": 12,
+          "right": 13,
+          "state": 2026
+        },
+        {
+          "left": 24,
+          "right": 25,
+          "state": 3971
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-80",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "427a18e45598fc5dee1ffa7d2a8f4272c54d593ad63ea449583dfc34d3fcff72",
+      "source_shard": 17,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 29,
+          "state": 327
+        },
+        {
+          "left": 16,
+          "right": 17,
+          "state": 4701
+        },
+        {
+          "left": 1,
+          "right": 4,
+          "state": 5512
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-81",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "22b4105abbebab25cd6f792b24eb9fe82e12a311901776972d8778dbb35bff0e",
+      "source_shard": 25,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 3,
+          "right": 5,
+          "state": 357
+        },
+        {
+          "left": 9,
+          "right": 11,
+          "state": 404
+        },
+        {
+          "left": 14,
+          "right": 15,
+          "state": 456
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-82",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "0f07afcfeaccb25200eb3976dd3dbfea71c90b982b8e28d455c5226804d9b13e",
+      "source_shard": 23,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 16,
+          "state": 382
+        },
+        {
+          "left": 2,
+          "right": 3,
+          "state": 624
+        },
+        {
+          "left": 25,
+          "right": 29,
+          "state": 625
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-83",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "b0cfd1fd794ae7db3ef1bc5d3b32d7cb716605d6031279d326f2b79839911719",
+      "source_shard": 1,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 9,
+          "state": 407
+        },
+        {
+          "left": 6,
+          "right": 8,
+          "state": 416
+        },
+        {
+          "left": 10,
+          "right": 11,
+          "state": 422
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-84",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "909e555ab5aa38254dd00ba80e9469e9382f505635bb346dbeb739014e6fc37e",
+      "source_shard": 42,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 20,
+          "right": 24,
+          "state": 407
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-85",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f756ab97998c1c13b698814b8a2d2217f9a3b4a5c6bd3f0aa6bdf3b600c9c985",
+      "source_shard": 56,
+      "target_event": {
+        "state": 416,
+        "supported_matchings": [
+          20,
+          24,
+          25
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 3,
+          "state": 409
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-86",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "39394b609f062073aa764a961ae7bb55ecf369439bfd7104fba03db87e3fdd95",
+      "source_shard": 12,
+      "target_event": {
+        "state": 426,
+        "supported_matchings": [
+          2,
+          3,
+          8
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 25,
+          "state": 502
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 526
+        },
+        {
+          "left": 17,
+          "right": 28,
+          "state": 625
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-87",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "32bde96115a80ac64b1dd471611bd86ca55b07432b370ef560c1d93e9f6dc98d",
+      "source_shard": 34,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 29,
+          "state": 507
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 588
+        },
+        {
+          "left": 6,
+          "right": 8,
+          "state": 669
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-88",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "0f93fb802823e8a3678c530f627e3c7e610875c4be5eee6b3abe627bf4ee5bed",
+      "source_shard": 43,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 3,
+          "right": 16,
+          "state": 540
+        },
+        {
+          "left": 14,
+          "right": 20,
+          "state": 1443
+        },
+        {
+          "left": 4,
+          "right": 29,
+          "state": 2241
+        },
+        {
+          "left": 9,
+          "right": 10,
+          "state": 2709
+        },
+        {
+          "left": 19,
+          "right": 25,
+          "state": 2958
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-89",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "1060107b5cc68c527b2f0eaadfd5520d7cb9521776257a4efe1e4f889dbe4e7c",
+      "source_shard": 9,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 4,
+          "state": 545
+        },
+        {
+          "left": 3,
+          "right": 5,
+          "state": 1436
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 3542
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-90",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "c540b29e43a91a15ae5c62866a0a36a3133e3bd325a5bff7d80b66a1fccaa03d",
+      "source_shard": 2,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 29,
+          "state": 555
+        },
+        {
+          "left": 16,
+          "right": 17,
+          "state": 2500
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-91",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "1af1b800af1e853f04de25f4b9da760e0e46dd6c7548a54df475d6804ca0da82",
+      "source_shard": 36,
+      "target_event": {
+        "state": 2742,
+        "supported_matchings": [
+          22,
+          23,
+          28,
+          29
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 564
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 2508
+        },
+        {
+          "left": 2,
+          "right": 3,
+          "state": 2745
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-92",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "2a4ff7fce3cf9314e7096922e5e6e62417c5b3cd6d741928f96d3bb61fd91c73",
+      "source_shard": 4,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 19,
+          "right": 21,
+          "state": 609
+        },
+        {
+          "left": 19,
+          "right": 21,
+          "state": 636
+        },
+        {
+          "left": 19,
+          "right": 23,
+          "state": 717
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-93",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "d5148eba63093042e946f2e578d63a7f5d5ed0ded11e449a2f9517dd17685e4a",
+      "source_shard": 16,
+      "target_event": {
+        "state": 690,
+        "supported_matchings": [
+          19,
+          22,
+          23
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 22,
+          "right": 23,
+          "state": 631
+        },
+        {
+          "left": 3,
+          "right": 5,
+          "state": 945
+        },
+        {
+          "left": 28,
+          "right": 29,
+          "state": 1360
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-94",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "3789dd1ec987a9d21b890f99a407c431af91a145c271aa136891ac17d7f41e15",
+      "source_shard": 5,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 9,
+          "state": 648
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-95",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "3f13edeb718608861606bb35e25898deb58e8475bf88bd8c8ae157660c5269ef",
+      "source_shard": 62,
+      "target_event": {
+        "state": 684,
+        "supported_matchings": [
+          1,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 9,
+          "right": 19,
+          "state": 690
+        },
+        {
+          "left": 7,
+          "right": 13,
+          "state": 1905
+        },
+        {
+          "left": 16,
+          "right": 22,
+          "state": 2472
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-96",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "60ac996e7fa6274528d4d3acb7b3ac7d96ab89285bc1fbbc6d6b008edbc71a7f",
+      "source_shard": 48,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 9,
+          "state": 741
+        },
+        {
+          "left": 19,
+          "right": 21,
+          "state": 798
+        },
+        {
+          "left": 22,
+          "right": 23,
+          "state": 867
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 975
+        },
+        {
+          "left": 18,
+          "right": 20,
+          "state": 1032
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-97",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "035567271c371ae5a3382a22b879fdc87983709eb1f4425fe09ba48e6a73be83",
+      "source_shard": 13,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 21,
+          "right": 27,
+          "state": 758
+        },
+        {
+          "left": 15,
+          "right": 26,
+          "state": 1244
+        },
+        {
+          "left": 14,
+          "right": 20,
+          "state": 3458
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-98",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "40752bc85243cfb10ace6733c5b0241aaf56b109aed3763c6c0c367b312af0ff",
+      "source_shard": 20,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 1060
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-99",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "dc6ed2db6ee299d2dd247808d19be05792cd5a51f34637018cce8c970c9998da",
+      "source_shard": 47,
+      "target_event": {
+        "state": 1054,
+        "supported_matchings": [
+          0,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 17,
+          "right": 28,
+          "state": 1221
+        },
+        {
+          "left": 1,
+          "right": 4,
+          "state": 1275
+        },
+        {
+          "left": 16,
+          "right": 29,
+          "state": 2004
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-100",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "6bd98b0fe560475aa86243c44a5f648085eee2889b81660f85eb8610391eb11d",
+      "source_shard": 61,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 21,
+          "right": 29,
+          "state": 1458
+        },
+        {
+          "left": 21,
+          "right": 29,
+          "state": 1539
+        },
+        {
+          "left": 21,
+          "right": 29,
+          "state": 1540
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-101",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f8d112a7c012a2b70055bf0ac080180451c664a812dee869d7cb9535febdf47d",
+      "source_shard": 26,
+      "target_event": {
+        "state": 1459,
+        "supported_matchings": [
+          2,
+          21,
+          29
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 8,
+          "state": 1485
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 1486
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 3677
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-102",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "06098234f10303fcaaa4f409ebbc968ef417918ee7b0f9aaed2036f2b9d25930",
+      "source_shard": 40,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 4,
+          "state": 1548
+        },
+        {
+          "left": 16,
+          "right": 17,
+          "state": 1566
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 1578
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-103",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "d91782958fdae63e382e39a10c91e4741fd2b27c6d5607f745ee79655d6086f3",
+      "source_shard": 18,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 11,
+          "state": 1567
+        },
+        {
+          "left": 4,
+          "right": 5,
+          "state": 1593
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 5971
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-104",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "77e46809bf892471a540cd3b765dba394b545af6c5b48308aa8696e25ae257df",
+      "source_shard": 31,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 3,
+          "right": 5,
+          "state": 1625
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 1679
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 1868
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-105",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "29f63e96791ffcd7c1a45fe65928819530ce17727001a2a558743a49f5192964",
+      "source_shard": 0,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 1730
+        },
+        {
+          "left": 28,
+          "right": 29,
+          "state": 1749
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 1760
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-106",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "9a0c3c543f80ba32574d847b969377195d27426ac6a314722965e75d64010786",
+      "source_shard": 38,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 4,
+          "state": 2191
+        },
+        {
+          "left": 20,
+          "right": 21,
+          "state": 2195
+        },
+        {
+          "left": 7,
+          "right": 10,
+          "state": 2245
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-107",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "5f7087ef4c42560fd5ec201f788e11240a5eb657696d754fe6b090bcf4baa3ae",
+      "source_shard": 46,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 24,
+          "state": 2211
+        },
+        {
+          "left": 7,
+          "right": 10,
+          "state": 2235
+        },
+        {
+          "left": 17,
+          "right": 28,
+          "state": 2379
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-108",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "fe97f06d69080975e19c994ef2ecc9204e0abf24366a62597935a2d806c9112f",
+      "source_shard": 14,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 2230
+        },
+        {
+          "left": 0,
+          "right": 5,
+          "state": 2256
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 2715
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-109",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "7af2d5a70627d07ad7391b13b5b50563118c0005cfc8df465a7af396d4fee1a5",
+      "source_shard": 54,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 5,
+          "state": 2249
+        },
+        {
+          "left": 7,
+          "right": 10,
+          "state": 2357
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 3647
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-110",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "c5b1ea295a37fdc40485ba274f39025f47125e3bd5fc6e1c534e0020d559da07",
+      "source_shard": 3,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 4,
+          "state": 2269
+        },
+        {
+          "left": 16,
+          "right": 29,
+          "state": 2287
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-111",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "1baef590c78f8f85c79b4a84f98289d4cda1591155055e6afb3dbed9dfaca251",
+      "source_shard": 28,
+      "target_event": {
+        "state": 3745,
+        "supported_matchings": [
+          16,
+          17,
+          22,
+          23,
+          28,
+          29
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 19,
+          "state": 2271
+        },
+        {
+          "left": 12,
+          "right": 25,
+          "state": 2280
+        },
+        {
+          "left": 7,
+          "right": 21,
+          "state": 2328
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 3787
+        },
+        {
+          "left": 8,
+          "right": 26,
+          "state": 4281
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-112",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "cd17458bb6163c74e21d13902dfd3fbf88eaec76afabe10bf200a918f36ec3ef",
+      "source_shard": 45,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 16,
+          "state": 2274
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 2275
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 2528
+        },
+        {
+          "left": 12,
+          "right": 23,
+          "state": 3003
+        },
+        {
+          "left": 22,
+          "right": 23,
+          "state": 3246
+        },
+        {
+          "left": 12,
+          "right": 29,
+          "state": 4461
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 4462
+        },
+        {
+          "left": 23,
+          "right": 25,
+          "state": 5433
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-113",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "7a87c749c05808fd8363317c2615ea902d45f0e79277e14f6be6189285461d65",
+      "source_shard": 60,
+      "target_event": {
+        "state": 2535,
+        "supported_matchings": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 11,
+          "state": 2278
+        },
+        {
+          "left": 18,
+          "right": 19,
+          "state": 4464
+        },
+        {
+          "left": 6,
+          "right": 7,
+          "state": 4951
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-114",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "1a87b6147ac24be2b0265afeec436cd9e3e0af20227c107c0f96da2207d230c7",
+      "source_shard": 8,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 21,
+          "right": 22,
+          "state": 2286
+        },
+        {
+          "left": 21,
+          "right": 22,
+          "state": 2292
+        },
+        {
+          "left": 15,
+          "right": 16,
+          "state": 3743
+        },
+        {
+          "left": 7,
+          "right": 8,
+          "state": 3768
+        },
+        {
+          "left": 6,
+          "right": 7,
+          "state": 3771
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 3843
+        },
+        {
+          "left": 6,
+          "right": 9,
+          "state": 3852
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-115",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "5777687194c4e2d11e68a43701590efc1d859b42083a819f70d87c33c82248a3",
+      "source_shard": 50,
+      "target_event": {
+        "state": 3737,
+        "supported_matchings": [
+          13,
+          15,
+          16
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 14,
+          "right": 15,
+          "state": 2323
+        },
+        {
+          "left": 14,
+          "right": 15,
+          "state": 4510
+        },
+        {
+          "left": 7,
+          "right": 10,
+          "state": 4968
+        },
+        {
+          "left": 1,
+          "right": 4,
+          "state": 5005
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-116",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "1fa9e17943b18da2340ad116c09b93d7838b1e161a71be8c407ff233b7b8e9c6",
+      "source_shard": 52,
+      "target_event": {
+        "state": 2809,
+        "supported_matchings": [
+          14,
+          15,
+          20,
+          21
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 22,
+          "state": 2934
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-117",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "7ab2865832c76282705017caa2665c530edc1b3daddd272f34c4eb5fd31861ee",
+      "source_shard": 63,
+      "target_event": {
+        "state": 2940,
+        "supported_matchings": [
+          1,
+          3,
+          22
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 3,
+          "state": 2946
+        },
+        {
+          "left": 12,
+          "right": 25,
+          "state": 2964
+        },
+        {
+          "left": 16,
+          "right": 29,
+          "state": 3045
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-118",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "5d3ba44a098772524c0e04f299b0caad6c337cc3b762ffcd9c944249c564517b",
+      "source_shard": 11,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 5,
+          "state": 3654
+        },
+        {
+          "left": 12,
+          "right": 17,
+          "state": 3888
+        },
+        {
+          "left": 25,
+          "right": 28,
+          "state": 5832
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-119",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "4653f15f871fd798c2642edd9e89ef82e958d748dd2fdce1807193b1c96e5c66",
+      "source_shard": 7,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 1,
+          "state": 3732
+        },
+        {
+          "left": 6,
+          "right": 7,
+          "state": 3795
+        },
+        {
+          "left": 14,
+          "right": 15,
+          "state": 4059
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-120",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "d253ebc67222c15987ec78d79d9179bcbf47086e4ac469429c0bbdd5a4d27358",
+      "source_shard": 57,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 9,
+          "right": 15,
+          "state": 3777
+        },
+        {
+          "left": 15,
+          "right": 19,
+          "state": 3804
+        },
+        {
+          "left": 9,
+          "right": 15,
+          "state": 4020
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-121",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "90d193d4c7ef05652b7b70ee919d5542a99f0b69936f430373f5cbec84a11106",
+      "source_shard": 10,
+      "target_event": {
+        "state": 4047,
+        "supported_matchings": [
+          15,
+          19,
+          21
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 17,
+          "state": 3900
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-122",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "128691bcc1022ca12f7067b776ae213ce333c07df2b047e917c19d49e06e33ae",
+      "source_shard": 51,
+      "target_event": {
+        "state": 2199,
+        "supported_matchings": [
+          21,
+          23,
+          29
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 20,
+          "right": 26,
+          "state": 4513
+        },
+        {
+          "left": 18,
+          "right": 24,
+          "state": 4564
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 4609
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-123",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "9d5b4771ad3d3bcde81108de137081d6cae1164379fc828eaeb2d01135ce4423",
+      "source_shard": 32,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 11,
+          "state": 4591
+        },
+        {
+          "left": 22,
+          "right": 23,
+          "state": 5212
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-124",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "074ff19dcc7ad5efb18b9ac70374b2c31f5d544845c0abe222a1aa70c5a4c836",
+      "source_shard": 55,
+      "target_event": {
+        "state": 4563,
+        "supported_matchings": [
+          0,
+          2,
+          3,
+          5
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 26,
+          "right": 28,
+          "state": 4915
+        },
+        {
+          "left": 26,
+          "right": 28,
+          "state": 4924
+        },
+        {
+          "left": 24,
+          "right": 29,
+          "state": 6373
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v6-125",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "a3876cfdb66fee6413e01a126c7aac70820cf1fcff79c662cb491eacac7e62fe",
+      "source_shard": 15,
+      "target_event": {
+        "state": 6382,
+        "supported_matchings": [
+          24,
+          27,
+          29
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 23,
+          "right": 24,
+          "state": 15
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-126",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "aace58bca104b27f210237e9aa71906b386485f1dbad0ac72b817e3b4a238ddc",
+      "source_shard": 46,
+      "target_event": {
+        "state": 6,
+        "supported_matchings": [
+          22,
+          23,
+          24
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 26,
+          "right": 27,
+          "state": 28
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-127",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "414f47ba2405e7118b19a987b492bdd285da990e13a449c4824ed82a3a462e41",
+      "source_shard": 53,
+      "target_event": {
+        "state": 46,
+        "supported_matchings": [
+          18,
+          26,
+          27
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 3,
+          "right": 5,
+          "state": 30
+        },
+        {
+          "left": 14,
+          "right": 17,
+          "state": 50
+        },
+        {
+          "left": 27,
+          "right": 28,
+          "state": 779
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-128",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "ade07b92f6afb7c93be696a824916294bab7eb8a6d21490ab9aceb69a68a5119",
+      "source_shard": 27,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 16,
+          "right": 18,
+          "state": 30
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-129",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "cb0bac1971ee25c9ecfae10625522b78013dc94a2c0741cbb2760d938638a1aa",
+      "source_shard": 58,
+      "target_event": {
+        "state": 31,
+        "supported_matchings": [
+          5,
+          16,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 1,
+          "state": 35
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-130",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "32ab39c9ba5b655eb25119846e0ed4336b325abe80ed9b92469db35db463265f",
+      "source_shard": 48,
+      "target_event": {
+        "state": 34,
+        "supported_matchings": [
+          20,
+          22,
+          24
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 1,
+          "state": 35
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-131",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "a40f4d9cb920431676befc59fbb73e547e007eeb21656abb436885d93c29bb2f",
+      "source_shard": 34,
+      "target_event": {
+        "state": 42,
+        "supported_matchings": [
+          0,
+          1,
+          15
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 21,
+          "state": 70
+        },
+        {
+          "left": 21,
+          "right": 23,
+          "state": 151
+        },
+        {
+          "left": 22,
+          "right": 24,
+          "state": 4525
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-132",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "25e1afa1be8b6382563e80be97e8582e73d4318c7c5e9f481b903853848da4ea",
+      "source_shard": 43,
+      "target_event": {
+        "state": 4444,
+        "supported_matchings": [
+          14,
+          16,
+          18,
+          22
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 19,
+          "state": 73
+        },
+        {
+          "left": 0,
+          "right": 4,
+          "state": 783
+        },
+        {
+          "left": 16,
+          "right": 20,
+          "state": 5176
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-133",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "c9ecb624c31f28ddb6e3d8a46953268c3c968b4f7e76274a11c5fc1e0e74b420",
+      "source_shard": 31,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 22,
+          "right": 28,
+          "state": 89
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-134",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "8670f2725ac1ca39fe2e779ee992a649604dbb9bd259ef94d6d22db51085311e",
+      "source_shard": 60,
+      "target_event": {
+        "state": 83,
+        "supported_matchings": [
+          16,
+          22,
+          28
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 95
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-135",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "66af10fdaa8a67e11f1773ef51a7439e6626c52810ddd6ce860e7bb4fe7f091a",
+      "source_shard": 44,
+      "target_event": {
+        "state": 86,
+        "supported_matchings": [
+          1,
+          3,
+          13
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 109
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-136",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "babf7f4c4a3bdbf297d159f0a8e36ef182d6f2072403babba2f419b0d5412af4",
+      "source_shard": 45,
+      "target_event": {
+        "state": 108,
+        "supported_matchings": [
+          4,
+          5,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 21,
+          "state": 114
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-137",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "632b663a9fb2c15d6e60189d0f717378e9fa99c2a6f295146c0f7d04d8d8f999",
+      "source_shard": 49,
+      "target_event": {
+        "state": 123,
+        "supported_matchings": [
+          13,
+          15,
+          21
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 17,
+          "state": 141
+        },
+        {
+          "left": 3,
+          "right": 5,
+          "state": 386
+        },
+        {
+          "left": 14,
+          "right": 16,
+          "state": 2571
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-138",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "2215ca8fcc7299a3f818309ae3fe17ca862d552295afc9c6ab3e9f2d9e6d0748",
+      "source_shard": 50,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 17,
+          "right": 24,
+          "state": 252
+        },
+        {
+          "left": 12,
+          "right": 19,
+          "state": 1749
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-139",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "b68786186bf91a8060b151b193ee492ebf1a60994d3a16f9f5c40c886d28b0b8",
+      "source_shard": 6,
+      "target_event": {
+        "state": 1740,
+        "supported_matchings": [
+          17,
+          24,
+          25,
+          26
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 19,
+          "state": 261
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-140",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "7a6401f17ef73feb74c1d0bbbd58d0a629a6ffceec820ed57b1d6b72f67b5908",
+      "source_shard": 59,
+      "target_event": {
+        "state": 243,
+        "supported_matchings": [
+          2,
+          7,
+          19
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 28,
+          "state": 309
+        },
+        {
+          "left": 8,
+          "right": 28,
+          "state": 312
+        },
+        {
+          "left": 8,
+          "right": 28,
+          "state": 313
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-141",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "dc717d51cb43ab358dfd63b08ffd31a4666a32b50161f7390f1a9bcd405b5c0a",
+      "source_shard": 9,
+      "target_event": {
+        "state": 310,
+        "supported_matchings": [
+          8,
+          20,
+          28
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 2,
+          "state": 328
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-142",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "0e07485648f8064846ef63174eb75539d1a50c0b16416b9eac093cb8127e0ad8",
+      "source_shard": 62,
+      "target_event": {
+        "state": 327,
+        "supported_matchings": [
+          6,
+          7,
+          19
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 20,
+          "state": 423
+        },
+        {
+          "left": 18,
+          "right": 19,
+          "state": 1179
+        },
+        {
+          "left": 11,
+          "right": 26,
+          "state": 1863
+        },
+        {
+          "left": 17,
+          "right": 26,
+          "state": 1890
+        },
+        {
+          "left": 2,
+          "right": 5,
+          "state": 1891
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-143",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "a6a7c520483bd540c670e0729f10a86ca3e383be5c2b31d1024832f53d580bba",
+      "source_shard": 28,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 12,
+          "state": 434
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 1909
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-144",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f929f10f4cac114212eb605a2bf51d3a9eb27cb0a2067ddb57bbdf515a9a3693",
+      "source_shard": 33,
+      "target_event": {
+        "state": 1892,
+        "supported_matchings": [
+          6,
+          11,
+          12,
+          17
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 5,
+          "state": 492
+        },
+        {
+          "left": 2,
+          "right": 26,
+          "state": 978
+        },
+        {
+          "left": 1,
+          "right": 28,
+          "state": 1380
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-145",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "405de51786ddb1a411825099dfc5fd88ec764985d08fdc7d7d595e1b79cb875f",
+      "source_shard": 41,
+      "target_event": {
+        "state": 412,
+        "supported_matchings": [
+          2,
+          14,
+          17
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 20,
+          "state": 501
+        },
+        {
+          "left": 11,
+          "right": 20,
+          "state": 519
+        },
+        {
+          "left": 11,
+          "right": 20,
+          "state": 528
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-146",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f0c023fe164497c1f35a1b215bb4427d6b705e73b2d946c74eae4061403268c9",
+      "source_shard": 61,
+      "target_event": {
+        "state": 492,
+        "supported_matchings": [
+          5,
+          11,
+          20
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 18,
+          "state": 504
+        },
+        {
+          "left": 16,
+          "right": 22,
+          "state": 1215
+        },
+        {
+          "left": 9,
+          "right": 24,
+          "state": 1395
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-147",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "11eb67441e3d47a29c3877df48940f2ab3798586323ddae52bc4ae6875d87e73",
+      "source_shard": 24,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 21,
+          "state": 519
+        },
+        {
+          "left": 7,
+          "right": 19,
+          "state": 678
+        },
+        {
+          "left": 0,
+          "right": 3,
+          "state": 1246
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-148",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "b3fc64f762435d96bfbe621160822aa956572cd009a916b49e4c87555821654a",
+      "source_shard": 29,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 14,
+          "right": 22,
+          "state": 598
+        },
+        {
+          "left": 16,
+          "right": 23,
+          "state": 622
+        },
+        {
+          "left": 28,
+          "right": 29,
+          "state": 624
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-149",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f1e9492293d065811ced0a755e7309878c06da3183fe49eabdd81e922f59c910",
+      "source_shard": 2,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 20,
+          "right": 22,
+          "state": 660
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 671
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-150",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "d8a671c12311014813c7ffa00deb95ae3ea9ba57b60bb5d47beb41b4f320c48b",
+      "source_shard": 3,
+      "target_event": {
+        "state": 165,
+        "supported_matchings": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 1,
+          "state": 729
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-151",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "e3b05f6047ff4dad9047324ef6cf74f5ac39330f922c6da0095aff8aa7a90ae2",
+      "source_shard": 39,
+      "target_event": {
+        "state": 748,
+        "supported_matchings": [
+          0,
+          1,
+          12
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 27,
+          "state": 740
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-152",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "ed7aa527fe792493ecd983e49b4b26dbcc090b48bbf9d8ff5167e5b44fcc613e",
+      "source_shard": 0,
+      "target_event": {
+        "state": 731,
+        "supported_matchings": [
+          3,
+          11,
+          27
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 30,
+          "state": 930
+        },
+        {
+          "left": 6,
+          "right": 28,
+          "state": 3036
+        },
+        {
+          "left": 9,
+          "right": 16,
+          "state": 3849
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-153",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "d8f66374560f8988bc433c3c9d7d7a7b303b6e56bbd46691493447d73b684726",
+      "source_shard": 51,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 29,
+          "right": 30,
+          "state": 992
+        },
+        {
+          "left": 15,
+          "right": 17,
+          "state": 1054
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 1153
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-154",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "4940ff692067e429e5c14a64ab5fbcbee36d96b89312a4a586ec5903d0a41ecd",
+      "source_shard": 57,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 21,
+          "state": 1275
+        },
+        {
+          "left": 19,
+          "right": 21,
+          "state": 1411
+        },
+        {
+          "left": 2,
+          "right": 21,
+          "state": 1437
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-155",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "90ad004d41566673fd91d679f5bc9423c2aae075c4e8721666882c3bfa536349",
+      "source_shard": 1,
+      "target_event": {
+        "state": 1249,
+        "supported_matchings": [
+          13,
+          19,
+          21
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 22,
+          "state": 1542
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-156",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "186933b72faa08fd6d2c31e96341ad312096101e5c433f345ccad0d196ad33a3",
+      "source_shard": 7,
+      "target_event": {
+        "state": 1623,
+        "supported_matchings": [
+          1,
+          2,
+          22
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 3,
+          "state": 1575
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-157",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "969e2d8fa95c5a9a25cd1258be71aef53871633b0135c0f1d272bc8c13b04599",
+      "source_shard": 38,
+      "target_event": {
+        "state": 1494,
+        "supported_matchings": [
+          0,
+          1,
+          3
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 1590
+        },
+        {
+          "left": 23,
+          "right": 24,
+          "state": 1627
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-158",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "321196893bc4b9f88e19167476eaec6a4161ada1e988d8c6b082aa9d9d97aae0",
+      "source_shard": 12,
+      "target_event": {
+        "state": 1563,
+        "supported_matchings": [
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 17,
+          "state": 1712
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 1863
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 1926
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-159",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "b37ad16dd35149b16875a8da901b9ac7f2219ae68006b2ac01166fdd29d9f27c",
+      "source_shard": 25,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 2,
+          "state": 1734
+        },
+        {
+          "left": 26,
+          "right": 28,
+          "state": 1771
+        },
+        {
+          "left": 14,
+          "right": 17,
+          "state": 1825
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-160",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "72b7f88a30e0ea1e17b9caaf5a1ee4a172f513932c8eb8498ff8e3ec98cfff22",
+      "source_shard": 35,
+      "target_event": {
+        "state": 1852,
+        "supported_matchings": [
+          12,
+          14,
+          16,
+          17,
+          18,
+          25,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 24,
+          "state": 1840
+        },
+        {
+          "left": 4,
+          "right": 19,
+          "state": 4432
+        },
+        {
+          "left": 4,
+          "right": 19,
+          "state": 4675
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-161",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f0005ce443f92548aa444ed85440dc2b19151ec865e8b02cc585f15b0010ee60",
+      "source_shard": 63,
+      "target_event": {
+        "state": 1597,
+        "supported_matchings": [
+          17,
+          18,
+          24
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 2,
+          "state": 1956
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-162",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "1daeaa88c960e8efdd23df0b1866e6240329d053348a6b200679f4b9d18dff2e",
+      "source_shard": 19,
+      "target_event": {
+        "state": 1947,
+        "supported_matchings": [
+          0,
+          2,
+          9
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 18,
+          "state": 2196
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 2349
+        },
+        {
+          "left": 23,
+          "right": 24,
+          "state": 2430
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-163",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "8b528ace26fb70abba11b3915cda014333e4b6009b810ae243a339a759c5177b",
+      "source_shard": 5,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 20,
+          "right": 24,
+          "state": 2196
+        },
+        {
+          "left": 20,
+          "right": 23,
+          "state": 2199
+        },
+        {
+          "left": 20,
+          "right": 23,
+          "state": 2280
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-164",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "875495dbff8ec45c66cf5106a8a6004086e3c31515774fab30aab63edfa5ab00",
+      "source_shard": 52,
+      "target_event": {
+        "state": 2277,
+        "supported_matchings": [
+          20,
+          22,
+          24
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 13,
+          "state": 2227
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-165",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "73e1fa73f11cb08ddb4fe53df070eae47d2a88f23bf071061df92ba565f3cbc6",
+      "source_shard": 47,
+      "target_event": {
+        "state": 2224,
+        "supported_matchings": [
+          7,
+          13,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 26,
+          "right": 27,
+          "state": 2285
+        },
+        {
+          "left": 25,
+          "right": 29,
+          "state": 2681
+        },
+        {
+          "left": 6,
+          "right": 7,
+          "state": 3518
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-166",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "731f0c2c6b3696d3fa7b28a8d154b0f514afbca90b737be7098a4c5164c6e812",
+      "source_shard": 37,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 20,
+          "state": 2334
+        },
+        {
+          "left": 9,
+          "right": 23,
+          "state": 4440
+        },
+        {
+          "left": 0,
+          "right": 3,
+          "state": 4522
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-167",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "17a3898c9391aee98fe3d63e1c4b92c1a31a76a204656c9c688d3ddd6758f89c",
+      "source_shard": 21,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 2350
+        },
+        {
+          "left": 2,
+          "right": 3,
+          "state": 2377
+        },
+        {
+          "left": 23,
+          "right": 24,
+          "state": 2782
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-168",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "75c4a34a2b84c8f256ffb5e37d4fa0910cecf2ef7964ce995d677bfd40c65a92",
+      "source_shard": 42,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 9,
+          "right": 24,
+          "state": 2410
+        },
+        {
+          "left": 10,
+          "right": 17,
+          "state": 2491
+        },
+        {
+          "left": 1,
+          "right": 4,
+          "state": 2949
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-169",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "47673cda5116839374e9cf5bffc0251663db57660e6c832547acea2ddc20517a",
+      "source_shard": 55,
+      "target_event": {
+        "state": 2950,
+        "supported_matchings": [
+          16,
+          22,
+          28
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 3,
+          "state": 2437
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-170",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "fdafe7585c74b310c6fb41f15eb379a9227bb22e14e692a92937e614b5270125",
+      "source_shard": 30,
+      "target_event": {
+        "state": 2455,
+        "supported_matchings": [
+          25,
+          28,
+          29
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 16,
+          "right": 20,
+          "state": 2683
+        },
+        {
+          "left": 16,
+          "right": 20,
+          "state": 2710
+        },
+        {
+          "left": 16,
+          "right": 20,
+          "state": 4303
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-171",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "18f4b639608141e9418b5eb037edb243777128066f35da71e4872ca87d359be8",
+      "source_shard": 15,
+      "target_event": {
+        "state": 4330,
+        "supported_matchings": [
+          14,
+          16,
+          20
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 19,
+          "right": 21,
+          "state": 2922
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-172",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "b5bd0704b1f2b935be81c7819cd822a3af929c2ad0c24719f012795fd6fe7e08",
+      "source_shard": 17,
+      "target_event": {
+        "state": 2193,
+        "supported_matchings": [
+          2,
+          19,
+          21
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 21,
+          "state": 2967
+        },
+        {
+          "left": 12,
+          "right": 13,
+          "state": 3046
+        },
+        {
+          "left": 8,
+          "right": 20,
+          "state": 3675
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-173",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "ce2505d903cea44d2051b1a4c0a70d9052e3ef5a8a370b7f682cb839dede91fb",
+      "source_shard": 56,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 6,
+          "state": 3051
+        },
+        {
+          "left": 17,
+          "right": 18,
+          "state": 3055
+        },
+        {
+          "left": 4,
+          "right": 10,
+          "state": 5241
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-174",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "1b5e265afba0b78071f0148e855c358852ead7fdedad7cf60f57f7b401cf6a12",
+      "source_shard": 23,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 20,
+          "state": 3219
+        },
+        {
+          "left": 9,
+          "right": 23,
+          "state": 3300
+        },
+        {
+          "left": 10,
+          "right": 11,
+          "state": 3471
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-175",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "0ccd4cd8b8d5d6fbd4445b210b01e6fda85a390bfb38e527b69396fb990d7113",
+      "source_shard": 36,
+      "target_event": {
+        "state": 3237,
+        "supported_matchings": [
+          0,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 5,
+          "state": 3700
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-176",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f17855feb5b4b2e40408fa41caf057314f8c611a27ef064bcd9b2d03005800d0",
+      "source_shard": 10,
+      "target_event": {
+        "state": 3719,
+        "supported_matchings": [
+          0,
+          5,
+          20
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 30,
+          "state": 3809
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-177",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "f5b1c56948412fddf3c3fb311b882cda4d7f9e68e931e5a634bf026f82597d81",
+      "source_shard": 40,
+      "target_event": {
+        "state": 3836,
+        "supported_matchings": [
+          4,
+          10,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 16,
+          "state": 4537
+        },
+        {
+          "left": 10,
+          "right": 15,
+          "state": 4555
+        },
+        {
+          "left": 3,
+          "right": 8,
+          "state": 5185
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-178",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "836c1d1d5b221652c1cd386c8491c0b5835c862089ec7320dfeeb3eb0c2303e0",
+      "source_shard": 8,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 7,
+          "state": 4659
+        },
+        {
+          "left": 19,
+          "right": 21,
+          "state": 4688
+        },
+        {
+          "left": 25,
+          "right": 29,
+          "state": 6227
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-179",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "203bb360592de7082827cbbeaebd11e5db05cc3d3bbeb845e626a6175a703ef2",
+      "source_shard": 14,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 11,
+          "state": 4809
+        },
+        {
+          "left": 7,
+          "right": 10,
+          "state": 4815
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 4818
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-180",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "0e304c3da3c608ccd7f86c84464b4a544d7ca75e49d2f0b33150bbb2c64f372e",
+      "source_shard": 4,
+      "target_event": {
+        "state": 4644,
+        "supported_matchings": [
+          6,
+          13,
+          15
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 20,
+          "state": 4894
+        },
+        {
+          "left": 0,
+          "right": 3,
+          "state": 4902
+        },
+        {
+          "left": 9,
+          "right": 23,
+          "state": 5053
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-181",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "837334e728f0ff0f680ecf4ae7c09992d7bdc9574f0a0ed76f1ed606faaab4ee",
+      "source_shard": 54,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 14,
+          "right": 16,
+          "state": 5300
+        },
+        {
+          "left": 15,
+          "right": 17,
+          "state": 5552
+        },
+        {
+          "left": 19,
+          "right": 21,
+          "state": 5865
+        },
+        {
+          "left": 6,
+          "right": 7,
+          "state": 5892
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-182",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "7a472b4f9ca040bcd78d37c8f7649e27382bfb20921a5eecb33d699f7a57760b",
+      "source_shard": 22,
+      "target_event": {
+        "state": 5866,
+        "supported_matchings": [
+          12,
+          13,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 5351
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-183",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "c2266d4e624d4ab46b981c54d05205c185085589eb5859021ae9acf6f8825d98",
+      "source_shard": 16,
+      "target_event": {
+        "state": 5108,
+        "supported_matchings": [
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 19,
+          "right": 20,
+          "state": 6105
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v6-184",
+      "source_leaf": "parent",
+      "source_record_run": "run-065",
+      "source_run": "run-065-r1",
+      "source_sha256": "dffbdb4a97624c387910e27a34c2bf5cab00366a9e82ef22e81db65cab91fd70",
+      "source_shard": 20,
+      "target_event": {
+        "state": 5887,
+        "supported_matchings": [
+          19,
+          20,
+          22
+        ]
+      }
+    }
+  ],
+  "independent_audit_sha256": "40a6eda39c5cac1e36039cac0d737454868caad40209d6c2f3fc955b5825b430",
+  "private_proof_bundle_sha256": "04455d24185b4a0ac31e2b28255062e98c6464928b4512ed0fa30f434c18b677",
+  "schema_version": 1,
+  "semantics": "exact-event-conjunction-nogood-v1",
+  "source_github_run": 31422138690,
+  "source_run": "run-065-r1",
+  "version": 6
+}

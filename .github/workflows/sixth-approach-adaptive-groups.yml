@@ -14,7 +14,8 @@ on:
         type: string
 
 permissions:
-  contents: write
+  actions: read
+  contents: read
 
 jobs:
   prepare:
@@ -59,6 +60,12 @@ jobs:
           python 'sixth approach/run065_cut_contract.py' \
             --bundle 'sixth approach/specs/run-065-exact-event-cuts.json' \
             --header 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
+          python 'sixth approach/run066_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-row-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v5.h'
+          python 'sixth approach/run066_exact_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v6.h'
           python - <<'PY'
           import hashlib
           import json
@@ -85,12 +92,14 @@ jobs:
           assert spec['workers_per_shard'] == 1
           assert spec['worker_language'] == 'C++20'
           assert spec['solver'] == 'OR-Tools CP-SAT v9.15.6755'
-          assert spec['exact_cut_version'] in (2, 3, 4)
+          assert spec['exact_cut_version'] in (2, 3, 4, 5, 6)
           assert spec['job_timeout_minutes'] == 150
           header_path = {
               2: 'sixth approach/run052_adaptive/exact_event_cuts_v2.h',
               3: 'sixth approach/run052_adaptive/exact_event_cuts_v3.h',
               4: 'sixth approach/run052_adaptive/exact_event_cuts_v4.h',
+              5: 'sixth approach/run052_adaptive/exact_event_cuts_v5.h',
+              6: 'sixth approach/run052_adaptive/exact_event_cuts_v6.h',
           }[spec['exact_cut_version']]
           files = {
               spec['cut_bundle_path']: spec['cut_bundle_sha256'],
@@ -98,6 +107,16 @@ jobs:
               header_path: spec['cut_header_sha256'],
               'sixth approach/run052_adaptive/main.cpp': spec['worker_source_sha256'],
           }
+          if spec['exact_cut_version'] == 5:
+              assert spec['preflight_compile_gate'] is True
+              files[spec['base_cut_bundle_path']] = spec['base_cut_bundle_sha256']
+              files['sixth approach/run052_adaptive/exact_event_cuts_v4.h'] = spec['cut_header_v4_sha256']
+          if spec['exact_cut_version'] == 6:
+              assert spec['preflight_compile_gate'] is True
+              files[spec['base_cut_bundle_path']] = spec['base_cut_bundle_sha256']
+              files[spec['row_cut_bundle_path']] = spec['row_cut_bundle_sha256']
+              files['sixth approach/run052_adaptive/exact_event_cuts_v4.h'] = spec['cut_header_v4_sha256']
+              files['sixth approach/run052_adaptive/exact_event_cuts_v5.h'] = spec['cut_header_v5_sha256']
           for relative, expected in files.items():
               actual = hashlib.sha256((root / relative).read_bytes()).hexdigest()
               assert actual == expected, (relative, actual, expected)
@@ -126,6 +145,32 @@ jobs:
               for key, value in outputs.items():
                   stream.write(f'{key}={value}\n')
           PY
+
+      - name: Fetch verified native toolkit for compile gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/or-tools.tar.gz"
+          root="$RUNNER_TEMP/or-tools"
+          curl --fail --location --retry 3 \
+            'https://github.com/google/or-tools/releases/download/v9.15/or-tools_amd64_ubuntu-24.04_cpp_v9.15.6755.tar.gz' \
+            --output "$archive"
+          echo '6f389320672cee00b78aacefb2bde33fef0bb988c3b2735573b9fffd1047fbda  '"$archive" | sha256sum --check
+          mkdir -p "$root"
+          tar -xzf "$archive" -C "$root" --strip-components=1
+
+      - name: Compile native worker before expanding the matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake \
+            -S "$GITHUB_WORKSPACE/sixth approach/run052_adaptive" \
+            -B "$RUNNER_TEMP/adaptive-build" \
+            -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/or-tools" \
+            -Dortools_DIR="$RUNNER_TEMP/or-tools/lib/cmake/ortools" \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/adaptive-build" --parallel 4
+          test -x "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker"
 
   adaptive-group:
     name: ${{ matrix.graph_id }}-group-${{ matrix.group }}
@@ -181,6 +226,12 @@ jobs:
           python 'sixth approach/run065_cut_contract.py' \
             --bundle 'sixth approach/specs/run-065-exact-event-cuts.json' \
             --header 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
+          python 'sixth approach/run066_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-row-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v5.h'
+          python 'sixth approach/run066_exact_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v6.h'
 
       - name: Fetch verified native toolkit
         shell: bash
@@ -229,6 +280,8 @@ jobs:
             sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v2.h'
             sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v3.h'
             sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
+            sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v5.h'
+            sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v6.h'
             sha256sum "$CALC_SPEC_PATH"
           } > "$target/group-${{ matrix.group }}-diagnostics.log"
 
@@ -312,6 +365,9 @@ jobs:
     needs: [prepare, adaptive-group]
     if: always()
     runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
     steps:
       - name: Check out exact source
         uses: actions/checkout@v7
