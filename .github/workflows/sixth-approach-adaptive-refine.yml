@@ -14,7 +14,7 @@ on:
         type: string
 
 permissions:
-  contents: write
+  contents: read
   actions: read
 
 jobs:
@@ -30,6 +30,11 @@ jobs:
       workers: ${{ steps.spec.outputs.workers }}
       shards: ${{ steps.spec.outputs.shards }}
       cut_version: ${{ steps.spec.outputs.cut_version }}
+      base_spec: ${{ steps.spec.outputs.base_spec }}
+      parent_workflow_run: ${{ steps.spec.outputs.parent_workflow_run }}
+      parent_logical_run: ${{ steps.spec.outputs.parent_logical_run }}
+      graph_id: ${{ steps.spec.outputs.graph_id }}
+      graph_type: ${{ steps.spec.outputs.graph_type }}
     steps:
       - name: Check out exact source
         uses: actions/checkout@v7
@@ -53,59 +58,16 @@ jobs:
           python 'sixth approach/run062_cut_contract.py' \
             --bundle 'sixth approach/specs/run-062-exact-event-cuts.json' \
             --header 'sixth approach/run052_adaptive/exact_event_cuts_v2.h'
-          python - <<'PY'
-          import hashlib
-          import json
-          import os
-          from pathlib import Path
-
-          root = Path.cwd().resolve()
-          spec_path = (root / os.environ['CALC_SPEC_PATH']).resolve()
-          assert spec_path.is_relative_to(root / 'sixth approach' / 'specs')
-          spec = json.loads(spec_path.read_text(encoding='utf-8'))
-          assert spec['schema_version'] == 1
-          assert spec['run_id'] == os.environ['CALC_RUN_ID'] == 'run-063'
-          assert spec['mode'] == 'adaptive_refined_rescue'
-          assert spec['workflow'] == 'sixth-approach-adaptive-refine.yml'
-          assert spec['runner'] == 'ubuntu-24.04'
-          assert spec['parent']['workflow_run'] == 31360493541
-          assert spec['parent']['graph_type'] == 'C4+C4'
-          assert spec['parent']['shard'] == 31
-          assert spec['parent']['shard_count'] == 64
-          assert spec['refinement']['shard_count'] == 256
-          assert spec['refinement']['partition_bits'] == 8
-          assert spec['refinement']['child_shards'] == [31, 95, 159, 223]
-          assert all(shard % 64 == 31 for shard in spec['refinement']['child_shards'])
-          assert spec['expected_leaf_shards'] == 195
-          assert spec['compute_jobs'] == 1
-          assert spec['workers_per_job'] == 4
-          assert spec['workers_per_shard'] == 1
-          assert spec['exact_cut_version'] == 2
-          assert spec['job_timeout_minutes'] == 150
-          files = {
-              spec['parent']['spec_path']: spec['parent']['spec_sha256'],
-              spec['cut_bundle_path']: spec['cut_bundle_sha256'],
-              'sixth approach/run052_adaptive/exact_event_cuts.h': spec['cut_header_v1_sha256'],
-              'sixth approach/run052_adaptive/exact_event_cuts_v2.h': spec['cut_header_sha256'],
-              'sixth approach/run052_adaptive/main.cpp': spec['worker_source_sha256'],
-          }
-          for relative, expected in files.items():
-              actual = hashlib.sha256((root / relative).read_bytes()).hexdigest()
-              assert actual == expected, (relative, actual, expected)
-          outputs = {
-              'child_shards': ' '.join(map(str, spec['refinement']['child_shards'])),
-              'seconds': spec['seconds_per_round'],
-              'rounds': spec['exchange_rounds'],
-              'worker_seconds': spec['worker_seconds'],
-              'memory_mib': spec['worker_memory_mib'],
-              'workers': spec['workers_per_shard'],
-              'shards': spec['refinement']['shard_count'],
-              'cut_version': spec['exact_cut_version'],
-          }
-          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as stream:
-              for key, value in outputs.items():
-                  stream.write(f'{key}={value}\n')
-          PY
+          python 'sixth approach/run064_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-064-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v3.h'
+          python 'sixth approach/run065_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-065-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
+          python 'sixth approach/run065_refine_contract.py' \
+            --spec "$CALC_SPEC_PATH" \
+            --run-id "$CALC_RUN_ID" \
+            --github-output "$GITHUB_OUTPUT"
 
   refine:
     name: refined-group
@@ -115,7 +77,9 @@ jobs:
     env:
       CALC_RUN_ID: ${{ inputs.run_id }}
       CALC_SPEC_PATH: ${{ inputs.spec_path }}
-      CALC_BASE_SPEC: sixth approach/specs/run-062-adaptive-exact-cuts.json
+      CALC_BASE_SPEC: ${{ needs.prepare.outputs.base_spec }}
+      CALC_GRAPH_ID: ${{ needs.prepare.outputs.graph_id }}
+      CALC_GRAPH_TYPE: ${{ needs.prepare.outputs.graph_type }}
       CALC_CHILD_SHARDS: ${{ needs.prepare.outputs.child_shards }}
       CALC_SECONDS: ${{ needs.prepare.outputs.seconds }}
       CALC_ROUNDS: ${{ needs.prepare.outputs.rounds }}
@@ -139,7 +103,7 @@ jobs:
 
       - name: Initialize diagnostics
         shell: bash
-        run: mkdir -p out/c4c4
+        run: mkdir -p "out/$CALC_GRAPH_ID"
 
       - name: Verify compiled cut contracts
         shell: bash
@@ -151,6 +115,12 @@ jobs:
           python 'sixth approach/run062_cut_contract.py' \
             --bundle 'sixth approach/specs/run-062-exact-event-cuts.json' \
             --header 'sixth approach/run052_adaptive/exact_event_cuts_v2.h'
+          python 'sixth approach/run064_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-064-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v3.h'
+          python 'sixth approach/run065_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-065-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
 
       - name: Fetch verified native toolkit
         shell: bash
@@ -195,9 +165,9 @@ jobs:
             echo "CALC_CHILD_SHARDS=$CALC_CHILD_SHARDS"
             sha256sum "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker"
             sha256sum 'sixth approach/run052_adaptive/main.cpp'
-            sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v2.h'
+            sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
             sha256sum "$CALC_SPEC_PATH"
-          } > out/c4c4/refined-group-diagnostics.log
+          } > "out/$CALC_GRAPH_ID/refined-group-diagnostics.log"
 
       - name: Start resource monitor
         shell: bash
@@ -209,8 +179,8 @@ jobs:
               ps -eo pid,ppid,rss,etime,cmd --sort=-rss | head -25
               sleep 60
             done
-          ) > out/c4c4/refined-group-resources.log 2>&1 &
-          echo $! > out/c4c4/refined-group-monitor.pid
+          ) > "out/$CALC_GRAPH_ID/refined-group-resources.log" 2>&1 &
+          echo $! > "out/$CALC_GRAPH_ID/refined-group-monitor.pid"
 
       - name: Run four independent refined shards
         shell: bash
@@ -224,7 +194,7 @@ jobs:
               timeout --signal=TERM --kill-after=30s "$CALC_WORKER_SECONDS" \
                 "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker" \
                   --run-id "$CALC_RUN_ID" \
-                  --graph 'C4+C4' \
+                  --graph "$CALC_GRAPH_TYPE" \
                   --seconds "$CALC_SECONDS" \
                   --rounds "$CALC_ROUNDS" \
                   --workers "$CALC_WORKERS" \
@@ -232,9 +202,9 @@ jobs:
                   --shard-id "$shard" \
                   --shard-count "$CALC_SHARDS" \
                   --exact-cut-version "$CALC_CUT_VERSION" \
-                  --output "out/c4c4/shard-$shard.json" \
-                > "out/c4c4/shard-$shard.log" 2>&1
-              echo $? > "out/c4c4/shard-$shard.exit"
+                  --output "out/$CALC_GRAPH_ID/shard-$shard.json" \
+                > "out/$CALC_GRAPH_ID/shard-$shard.log" 2>&1
+              echo $? > "out/$CALC_GRAPH_ID/shard-$shard.exit"
             ) &
             pids+=("$!")
           done
@@ -244,7 +214,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          monitor='out/c4c4/refined-group-monitor.pid'
+          monitor="out/$CALC_GRAPH_ID/refined-group-monitor.pid"
           if [ -f "$monitor" ]; then kill "$(cat "$monitor")" 2>/dev/null || true; fi
           failed=0
           for shard in $CALC_CHILD_SHARDS; do
@@ -252,10 +222,10 @@ jobs:
               --spec "$CALC_SPEC_PATH" \
               --base-spec "$CALC_BASE_SPEC" \
               --shard "$shard" \
-              --output "out/c4c4/shard-$shard.json" \
-              --exit "out/c4c4/shard-$shard.exit" \
-              --validation "out/c4c4/shard-$shard-validation.json" \
-              > "out/c4c4/shard-$shard-validation.log" 2>&1 || failed=1
+              --output "out/$CALC_GRAPH_ID/shard-$shard.json" \
+              --exit "out/$CALC_GRAPH_ID/shard-$shard.exit" \
+              --validation "out/$CALC_GRAPH_ID/shard-$shard-validation.json" \
+              > "out/$CALC_GRAPH_ID/shard-$shard-validation.log" 2>&1 || failed=1
           done
           exit "$failed"
 
@@ -273,6 +243,9 @@ jobs:
     needs: [prepare, refine]
     if: always()
     runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
     steps:
       - name: Check out exact source
         uses: actions/checkout@v7
@@ -292,8 +265,8 @@ jobs:
         with:
           github-token: ${{ github.token }}
           repository: ${{ github.repository }}
-          run-id: 31360493541
-          pattern: run-062-graph-*-group-*
+          run-id: ${{ needs.prepare.outputs.parent_workflow_run }}
+          pattern: ${{ needs.prepare.outputs.parent_logical_run }}-graph-*-group-*
           path: work/parent
           merge-multiple: true
 
@@ -315,7 +288,7 @@ jobs:
           set +e
           python 'sixth approach/run063_refine_collect.py' \
             --spec '${{ inputs.spec_path }}' \
-            --base-spec 'sixth approach/specs/run-062-adaptive-exact-cuts.json' \
+            --base-spec '${{ needs.prepare.outputs.base_spec }}' \
             --parent-root work/parent \
             --refinement-root work/refinement \
             --output work/out/summary.json \
@@ -332,7 +305,7 @@ jobs:
           archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
           python 'sixth approach/run063_refine_archive.py' \
             --spec '${{ inputs.spec_path }}' \
-            --base-spec 'sixth approach/specs/run-062-adaptive-exact-cuts.json' \
+            --base-spec '${{ needs.prepare.outputs.base_spec }}' \
             --summary work/out/summary.json \
             --parent-root work/parent \
             --refinement-root work/refinement \
