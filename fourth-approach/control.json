@@ -2,18 +2,18 @@
   "approach": "fourth-approach-obstruction-guided-exact-synthesis",
   "automation_mode": "manual_single_run",
   "completed_runs": 10,
-  "current_stage": 8,
-  "current_stage_name": "adaptive_exact_lemma_cycle",
+  "current_stage": 4,
+  "current_stage_name": "fixed_support_minimization_failed",
   "full_run_auto_launch_allowed": false,
   "large_matrix_concurrency_guard": true,
   "last_run_accepted": false,
-  "last_run_id": 31344143030,
-  "last_run_index": 8,
+  "last_run_id": 31344143041,
+  "last_run_index": 4,
   "minimum_free_concurrency_slots": 0,
-  "next_run_index": 2,
-  "next_spec_path": "fourth-approach/run-specs/run-008-stage8-adaptive-exact-lemma-cycle.json",
-  "next_task": "stage2_minimize_certificates",
-  "recommended_next_action": "inspect_or_rescue_run_008_without_advancing",
+  "next_run_index": 4,
+  "next_spec_path": "fourth-approach/run-specs/run-004-stage4-fixed-support-minimization.json",
+  "next_task": "stage4_fixed_support_certificate_minimization",
+  "recommended_next_action": "inspect_run_004_failure",
   "run_history": [
     {
       "accepted": true,
@@ -313,10 +313,30 @@
       "run_id": 31344143030,
       "run_index": 8,
       "task": "stage8_adaptive_exact_lemma_cycle"
+    },
+    {
+      "accepted": false,
+      "metrics": {
+        "certificate_terms_removed": 0,
+        "certificates_improved": 0,
+        "complete_shards": 0,
+        "completed_jobs": 0,
+        "independently_reverified": 0,
+        "minimized_nonzero_terms": 0,
+        "original_nonzero_terms": 0,
+        "source_support_classes": 0,
+        "supports_changed": 0,
+        "supports_missing_monochromatic_target": 0,
+        "term_count_distribution": {},
+        "total_optimization_attempts": 0
+      },
+      "run_id": 31344143041,
+      "run_index": 4,
+      "task": "stage4_fixed_support_certificate_minimization"
     }
   ],
   "schema_version": 1,
-  "scientific_stopping_rule": "review Run 008 exact closures/survivors before any n=8 transfer",
+  "scientific_stopping_rule": "do not infer the full conjecture from support-restricted n=6 certificates",
   "smoke_required": false,
   "smoke_verified_for_code_sha": null,
   "source_frontier": {
