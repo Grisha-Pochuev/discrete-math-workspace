@@ -20,6 +20,8 @@
 #include "ortools/sat/model.h"
 #include "ortools/sat/sat_parameters.pb.h"
 
+#include "exact_event_cuts.h"
+
 namespace sat = operations_research::sat;
 
 namespace {
@@ -41,6 +43,7 @@ struct Arguments {
   int memory_mib = 6000;
   int shard_id = -1;
   int shard_count = 4;
+  int exact_cut_version = 0;
   std::string output;
 };
 
@@ -176,8 +179,7 @@ class AdaptiveScreen {
     }
     BuildIncidence();
     BuildModel();
-    model_.AddEquality(support_[0][0][0], args_.shard_id & 1);
-    model_.AddEquality(support_[0][0][1], (args_.shard_id >> 1) & 1);
+    AddShardPartition();
   }
 
   int Run() {
@@ -408,6 +410,54 @@ class AdaptiveScreen {
       terms_.emplace(state_value, std::move(row_terms));
       term_keys_.emplace(state_value, std::move(row_keys));
     }
+    AddExactEventCuts();
+  }
+
+  void AddShardPartition() {
+    int bits = 0;
+    for (int count = args_.shard_count; count > 1; count >>= 1) ++bits;
+    for (int bit = 0; bit < bits; ++bit) {
+      const int row = bit / kColours;
+      const int column = bit % kColours;
+      model_.AddEquality(support_[0][row][column],
+                         (args_.shard_id >> bit) & 1);
+    }
+  }
+
+  void AddExactEventCuts() {
+    if (args_.exact_cut_version == 0) return;
+    if (args_.exact_cut_version != 1) {
+      throw std::invalid_argument("unknown exact cut version");
+    }
+    for (const auto& cut : exact_event_cuts::kVersion1) {
+      if (cut.graph != args_.graph) continue;
+      std::vector<sat::BoolVar> clause;
+      for (const auto& event : cut.binomials) {
+        const auto& row = terms_.at(event.state);
+        if (event.left < 0 || event.right < 0 ||
+            event.left >= static_cast<int>(row.size()) ||
+            event.right >= static_cast<int>(row.size()) ||
+            event.left == event.right) {
+          throw std::logic_error("invalid exact binomial event");
+        }
+        clause.push_back(RowCount(event.state, 2).Not());
+        clause.push_back(row[event.left].Not());
+        clause.push_back(row[event.right].Not());
+      }
+      if (cut.has_target) {
+        const auto& row = terms_.at(cut.target_state);
+        clause.push_back(RowCount(cut.target_state, 3).Not());
+        for (int matching : cut.target_matchings) {
+          if (matching < 0 || matching >= static_cast<int>(row.size())) {
+            throw std::logic_error("invalid exact target event");
+          }
+          clause.push_back(row[matching].Not());
+        }
+      }
+      model_.AddBoolOr(clause);
+      ++exact_event_cut_count_;
+      exact_event_cut_literals_ += static_cast<int>(clause.size());
+    }
   }
 
   bool Feasible(const sat::CpSolverResponse& response) const {
@@ -506,7 +556,18 @@ class AdaptiveScreen {
     out << "  \"memory_mib\": " << args_.memory_mib << ",\n";
     out << "  \"shard_id\": " << args_.shard_id << ",\n";
     out << "  \"shard_count\": " << args_.shard_count << ",\n";
-    out << "  \"partition\": \"first-edge-bits-v1\",\n";
+    out << "  \"partition\": "
+        << JsonString(args_.shard_count == 4 ? "first-edge-bits-v1"
+                                             : "first-edge-prefix-bits-v1")
+        << ",\n";
+    out << "  \"exact_cut_version\": " << args_.exact_cut_version << ",\n";
+    out << "  \"exact_event_cut_bundle_sha256\": "
+        << JsonString(args_.exact_cut_version == 0
+                          ? "none"
+                          : std::string(exact_event_cuts::kBundleSha256))
+        << ",\n";
+    out << "  \"exact_event_cuts\": " << exact_event_cut_count_ << ",\n";
+    out << "  \"exact_event_cut_literals\": " << exact_event_cut_literals_ << ",\n";
     out << "  \"wall_seconds\": " << total_wall_ << ",\n";
     out << "  \"branches\": " << total_branches_ << ",\n";
     out << "  \"conflicts\": " << total_conflicts_ << ",\n";
@@ -644,6 +705,8 @@ class AdaptiveScreen {
   std::set<std::tuple<int, int, int>> learned_trinomials_;
   int assignment_column_variables_ = 0;
   int term_variables_ = 0;
+  int exact_event_cut_count_ = 0;
+  int exact_event_cut_literals_ = 0;
   int solve_rounds_ = 0;
   std::int64_t total_branches_ = 0;
   std::int64_t total_conflicts_ = 0;
@@ -668,13 +731,16 @@ Arguments ParseArguments(int argc, char** argv) {
     else if (key == "--memory-mib") args.memory_mib = std::stoi(value);
     else if (key == "--shard-id") args.shard_id = std::stoi(value);
     else if (key == "--shard-count") args.shard_count = std::stoi(value);
+    else if (key == "--exact-cut-version") args.exact_cut_version = std::stoi(value);
     else if (key == "--output") args.output = value;
     else throw std::invalid_argument("unknown argument: " + key);
   }
   if (args.run_id.empty() || args.output.empty() ||
       !std::set<std::string>{"C8", "C5+C3", "C4+C4"}.contains(args.graph) ||
       args.seconds <= 0 || args.rounds < 0 || args.workers < 1 ||
-      args.workers > 4 || args.memory_mib < 512 || args.shard_count != 4 ||
+      args.workers > 4 || args.memory_mib < 512 ||
+      !std::set<int>{4, 8, 16}.contains(args.shard_count) ||
+      !std::set<int>{0, 1}.contains(args.exact_cut_version) ||
       args.shard_id < 0 || args.shard_id >= args.shard_count) {
     throw std::invalid_argument("invalid or missing arguments");
   }
