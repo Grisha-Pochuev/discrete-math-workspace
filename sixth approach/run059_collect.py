@@ -27,6 +27,19 @@ def digest(path: Path):
     return value.hexdigest()
 
 
+def resolve_vcs_ref(spec, vcs_tag, vcs_branch):
+    trigger = spec.get("trigger")
+    if trigger == "tag_push":
+        kind, expected, actual = "tag", spec.get("trigger_tag"), vcs_tag
+    elif trigger == "api":
+        kind, expected, actual = "branch", spec.get("checkout_ref"), vcs_branch
+    else:
+        raise ValueError(f"unsupported trigger: {trigger!r}")
+    if not expected or actual != expected:
+        raise ValueError(f"{kind} ref mismatch")
+    return kind, actual
+
+
 def write_json(path: Path, value):
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
@@ -38,14 +51,17 @@ def main():
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--pipeline-number", required=True, type=int)
     parser.add_argument("--vcs-revision", required=True)
-    parser.add_argument("--vcs-tag", required=True)
+    ref = parser.add_mutually_exclusive_group(required=True)
+    ref.add_argument("--vcs-tag")
+    ref.add_argument("--vcs-branch")
     args = parser.parse_args()
 
     spec = read(args.spec)
     if spec.get("schema_version") != 1 or spec.get("mode") != "native_exact_fine_layers":
         raise ValueError("unexpected specification schema or mode")
-    if spec.get("provider") != "circleci" or spec.get("trigger_tag") != args.vcs_tag:
-        raise ValueError("provider or trigger mismatch")
+    if spec.get("provider") != "circleci":
+        raise ValueError("provider mismatch")
+    vcs_ref_kind, vcs_ref = resolve_vcs_ref(spec, args.vcs_tag, args.vcs_branch)
     groups = []
     errors = []
     seen_cells = set()
@@ -77,7 +93,10 @@ def main():
                     "group": group,
                     "pipeline_number": args.pipeline_number,
                     "vcs_revision": args.vcs_revision,
+                    "vcs_ref_kind": vcs_ref_kind,
+                    "vcs_ref": vcs_ref,
                     "vcs_tag": args.vcs_tag,
+                    "vcs_branch": args.vcs_branch,
                     "resource_class": spec["resource_class"],
                     "shard_count": spec["shard_count"],
                     "partition_version": spec["partition"],
@@ -151,7 +170,10 @@ def main():
         "provider": "circleci",
         "pipeline_number": args.pipeline_number,
         "vcs_revision": args.vcs_revision,
+        "vcs_ref_kind": vcs_ref_kind,
+        "vcs_ref": vcs_ref,
         "vcs_tag": args.vcs_tag,
+        "vcs_branch": args.vcs_branch,
         "resource_class": spec["resource_class"],
         "partition_version": spec["partition"],
         "groups": len(groups),
@@ -177,7 +199,10 @@ def main():
         "provider": "circleci",
         "pipeline_number": args.pipeline_number,
         "vcs_revision": args.vcs_revision,
+        "vcs_ref_kind": vcs_ref_kind,
+        "vcs_ref": vcs_ref,
         "vcs_tag": args.vcs_tag,
+        "vcs_branch": args.vcs_branch,
         "resource_class": spec["resource_class"],
         "worker_language": spec["worker_language"],
         "audit_engine": spec["audit_engine"],

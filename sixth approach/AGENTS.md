@@ -16,8 +16,8 @@ tree, not in this repository.
   a full run.
 - GitHub Actions full runs are manual `workflow_dispatch` jobs only. Never add
   an ordinary branch `push` trigger.
-- CircleCI full runs use one immutable, neutral, exact-match tag declared in
-  the run specification. Ordinary commits and unrelated tags must run no jobs.
+- CircleCI full runs use one immutable boolean pipeline parameter declared in
+  the run specification. Ordinary commits and tags must run no jobs.
 - Use exactly four independent single-threaded workers per 4-vCPU compute job
   on either provider.
 - GitHub Actions owns long jobs and cross-run artifact audits. CircleCI owns

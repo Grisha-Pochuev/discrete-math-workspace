@@ -110,6 +110,19 @@ def enrich_samples(samples, orbits, shard_id):
     return result
 
 
+def resolve_vcs_ref(spec, vcs_tag, vcs_branch):
+    trigger = spec.get("trigger")
+    if trigger == "tag_push":
+        kind, expected, actual = "tag", spec.get("trigger_tag"), vcs_tag
+    elif trigger == "api":
+        kind, expected, actual = "branch", spec.get("checkout_ref"), vcs_branch
+    else:
+        raise ValueError(f"unsupported trigger: {trigger!r}")
+    if not expected or actual != expected:
+        raise ValueError(f"{kind} ref mismatch")
+    return kind, actual
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--spec", required=True, type=Path)
@@ -122,7 +135,9 @@ def main():
     parser.add_argument("--survivor-dir", required=True, type=Path)
     parser.add_argument("--pipeline-number", required=True, type=int)
     parser.add_argument("--vcs-revision", required=True)
-    parser.add_argument("--vcs-tag", required=True)
+    ref = parser.add_mutually_exclusive_group(required=True)
+    ref.add_argument("--vcs-tag")
+    ref.add_argument("--vcs-branch")
     parser.add_argument("--resource-class", required=True)
     args = parser.parse_args()
 
@@ -136,7 +151,10 @@ def main():
         "group": args.group,
         "pipeline_number": args.pipeline_number,
         "vcs_revision": args.vcs_revision,
+        "vcs_ref_kind": None,
+        "vcs_ref": args.vcs_tag or args.vcs_branch,
         "vcs_tag": args.vcs_tag,
+        "vcs_branch": args.vcs_branch,
         "resource_class": args.resource_class,
         "records": records,
         "errors": errors,
@@ -160,8 +178,9 @@ def main():
             raise ValueError("job count mismatch")
         if spec.get("resource_class") != args.resource_class:
             raise ValueError("resource class mismatch")
-        if spec.get("trigger_tag") != args.vcs_tag:
-            raise ValueError("trigger tag mismatch")
+        vcs_ref_kind, vcs_ref = resolve_vcs_ref(spec, args.vcs_tag, args.vcs_branch)
+        result["vcs_ref_kind"] = vcs_ref_kind
+        result["vcs_ref"] = vcs_ref
         if not 0 <= args.group < groups_per_cell:
             raise ValueError("group is outside the declared range")
         matches = [

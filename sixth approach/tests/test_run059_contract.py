@@ -13,12 +13,15 @@ import sys
 
 
 TRACK = Path(__file__).resolve().parents[1]
-SPEC_PATH = TRACK / "specs" / "run-059-fine-rescue.json"
+SPEC_PATH = (
+    Path(sys.argv[1]).resolve()
+    if len(sys.argv) > 1
+    else TRACK / "specs" / "run-059-fine-rescue.json"
+)
 GROUP_SCRIPT = TRACK / "run059_group_audit.py"
 COLLECT_SCRIPT = TRACK / "run059_collect.py"
 PIPELINE = 17
 REVISION = "0" * 40
-TAG = "ci-run-059"
 TEST_ROOT = TRACK / "tests" / "contract-tmp"
 
 
@@ -37,6 +40,12 @@ def write(path: Path, value):
 
 def main():
     spec = json.loads(SPEC_PATH.read_text(encoding="utf-8"))
+    if spec.get("trigger") == "tag_push":
+        ref_argument, ref_value = "--vcs-tag", spec["trigger_tag"]
+    elif spec.get("trigger") == "api":
+        ref_argument, ref_value = "--vcs-branch", spec["checkout_ref"]
+    else:
+        raise ValueError("unsupported synthetic trigger")
     group_module = load_group_module()
     group_sizes = group_module.partition_group_sizes(spec["shard_count"])
     for path in TEST_ROOT.iterdir():
@@ -119,7 +128,7 @@ def main():
                     "--survivor-dir", str(output / "survivors"),
                     "--pipeline-number", str(PIPELINE),
                     "--vcs-revision", REVISION,
-                    "--vcs-tag", TAG,
+                    ref_argument, ref_value,
                     "--resource-class", spec["resource_class"],
                 ], check=True, stdout=subprocess.DEVNULL)
         archive = root / "archive"
@@ -130,7 +139,7 @@ def main():
             "--output-dir", str(archive),
             "--pipeline-number", str(PIPELINE),
             "--vcs-revision", REVISION,
-            "--vcs-tag", TAG,
+            ref_argument, ref_value,
         ], check=True, stdout=subprocess.DEVNULL)
         summary = json.loads((archive / "summary.json").read_text(encoding="utf-8"))
         assert summary["accepted"] and summary["technical_completion"]
@@ -148,7 +157,7 @@ def main():
                 shutil.rmtree(path)
             else:
                 path.unlink()
-    print("run059-contract-ok")
+    print(f"{spec['run_id']}-contract-ok")
 
 
 if __name__ == "__main__":

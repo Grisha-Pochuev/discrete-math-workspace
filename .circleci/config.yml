@@ -1,5 +1,10 @@
 version: 2.1
 
+parameters:
+  run_060:
+    type: boolean
+    default: false
+
 jobs:
   prepare-short-pool:
     machine:
@@ -12,7 +17,8 @@ jobs:
           command: |
             set -euo pipefail
             python3 'sixth approach/run059_config.py' \
-              --spec 'sixth approach/specs/run-059-fine-rescue.json' \
+              --spec 'sixth approach/specs/run-060-fine-rescue.json' \
+              --expected-run run-060 \
               --verify
       - restore_cache:
           keys:
@@ -122,7 +128,8 @@ jobs:
               *) echo 'invalid neutral cell' >&2; exit 2 ;;
             esac
             python3 'sixth approach/run059_config.py' \
-              --spec 'sixth approach/specs/run-059-fine-rescue.json' \
+              --spec 'sixth approach/specs/run-060-fine-rescue.json' \
+              --expected-run run-060 \
               --cell "$CELL" > out/cell.env
       - run:
           name: Record machine diagnostics
@@ -223,7 +230,7 @@ jobs:
             bundle="circle-work/$RUN_ID/case-$CASE_ID/support-$SUPPORT/group-$GROUP"
             mkdir -p "$bundle/audits" "$bundle/logs" "$bundle/survivors"
             python3 'sixth approach/run059_group_audit.py' \
-              --spec 'sixth approach/specs/run-059-fine-rescue.json' \
+              --spec 'sixth approach/specs/run-060-fine-rescue.json' \
               --case "$CASE_ID" \
               --support "$SUPPORT" \
               --group "$GROUP" \
@@ -233,7 +240,7 @@ jobs:
               --survivor-dir "$bundle/survivors" \
               --pipeline-number "$CIRCLE_PIPELINE_NUMBER" \
               --vcs-revision "$CIRCLE_SHA1" \
-              --vcs-tag "${CIRCLE_TAG:-}" \
+              --vcs-branch "${CIRCLE_BRANCH:-}" \
               --resource-class "$RESOURCE_CLASS_NAME" \
               > "$bundle/group-audit.log" 2>&1
             group_code=$?
@@ -245,7 +252,7 @@ jobs:
       - persist_to_workspace:
           root: circle-work
           paths:
-            - run-059/case-*/support-*/group-*
+            - run-060/case-*/support-*/group-*
       - store_artifacts:
           path: circle-work
           destination: short-group
@@ -262,28 +269,24 @@ jobs:
           name: Strictly collect compact coverage
           command: |
             set -euo pipefail
-            archive="circle-result/run-059-${CIRCLE_PIPELINE_NUMBER}"
+            archive="circle-result/run-060-${CIRCLE_PIPELINE_NUMBER}"
             python3 'sixth approach/run059_collect.py' \
-              --spec 'sixth approach/specs/run-059-fine-rescue.json' \
+              --spec 'sixth approach/specs/run-060-fine-rescue.json' \
               --input-root circle-work \
               --output-dir "$archive" \
               --pipeline-number "$CIRCLE_PIPELINE_NUMBER" \
               --vcs-revision "$CIRCLE_SHA1" \
-              --vcs-tag "${CIRCLE_TAG:-}"
+              --vcs-branch "${CIRCLE_BRANCH:-}"
             (cd "$archive" && sha256sum -c checksums.sha256)
       - store_artifacts:
           path: circle-result
           destination: accepted-short-pool
 
 workflows:
-  short-pool-v1:
+  short-pool-v2:
+    when: << pipeline.parameters.run_060 >>
     jobs:
-      - prepare-short-pool:
-          filters: &run059-filters
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^ci-run-059$/
+      - prepare-short-pool
       - short-group:
           name: short-<< matrix.cell >>-g<< matrix.group >>
           matrix:
@@ -293,8 +296,6 @@ workflows:
               group: [0, 1, 2, 3, 4, 5, 6, 7]
           requires:
             - prepare-short-pool
-          filters: *run059-filters
       - collect-short-pool:
           requires:
             - short-groups
-          filters: *run059-filters
