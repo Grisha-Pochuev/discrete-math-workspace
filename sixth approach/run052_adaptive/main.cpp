@@ -776,7 +776,7 @@ Arguments ParseArguments(int argc, char** argv) {
       !std::set<std::string>{"C8", "C5+C3", "C4+C4"}.contains(args.graph) ||
       args.seconds <= 0 || args.rounds < 0 || args.workers < 1 ||
       args.workers > 4 || args.memory_mib < 512 ||
-      !std::set<int>{4, 8, 16, 32, 64}.contains(args.shard_count) ||
+      !std::set<int>{4, 8, 16, 32, 64, 128, 256}.contains(args.shard_count) ||
       !std::set<int>{0, 1, 2}.contains(args.exact_cut_version) ||
       args.shard_id < 0 || args.shard_id >= args.shard_count) {
     throw std::invalid_argument("invalid or missing arguments");

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "run_id": "run-063",
+  "mode": "adaptive_refined_rescue",
+  "trigger": "workflow_dispatch",
+  "workflow": "sixth-approach-adaptive-refine.yml",
+  "runner": "ubuntu-24.04",
+  "parent": {
+    "run_id": "run-062",
+    "workflow_run": 31360493541,
+    "spec_path": "sixth approach/specs/run-062-adaptive-exact-cuts.json",
+    "spec_sha256": "9394ea0714aafc221557f58f40a5c138234188909b8c0e8b69afce8b06f4e77f",
+    "graph_id": "c4c4",
+    "graph_type": "C4+C4",
+    "shard": 31,
+    "shard_count": 64
+  },
+  "refinement": {
+    "shard_count": 256,
+    "partition": "first-edge-prefix-bits-v1",
+    "partition_bits": 8,
+    "child_shards": [31, 95, 159, 223]
+  },
+  "expected_leaf_shards": 195,
+  "compute_jobs": 1,
+  "workers_per_job": 4,
+  "workers_per_shard": 1,
+  "worker_language": "C++20",
+  "solver": "OR-Tools CP-SAT v9.15.6755",
+  "seconds_per_round": 180,
+  "exchange_rounds": 40,
+  "worker_seconds": 7800,
+  "worker_memory_mib": 2800,
+  "job_timeout_minutes": 150,
+  "exact_cut_version": 2,
+  "exact_event_cuts": 14,
+  "exact_event_cut_literals": 152,
+  "cut_bundle_path": "sixth approach/specs/run-062-exact-event-cuts.json",
+  "cut_bundle_sha256": "453614ab1c47b7ea467ecc7d9d87d22e07cb19ca369d7c24f30726f063012157",
+  "cut_header_v1_sha256": "7ba01f2ef81044d56b0cc693becb6357e261a74138be0545484d40140107044b",
+  "cut_header_sha256": "c39dba75d3debdfa1c969467424d30d196596d4de14b2feff0f1487d62f1b10f",
+  "worker_source_sha256": "d966307d41b00b1519fc54bc8aa81e1b8a1e2463491fb2a48dd90d50fe086b54",
+  "acceptance": {
+    "parent_has_exactly_one_unknown": true,
+    "all_other_parent_shards_complete": true,
+    "all_four_children_complete": true,
+    "strict_refinement_coverage": true,
+    "four_independent_single_threaded_workers": true,
+    "scientific_survivors_are_data": true,
+    "compact_archive_on_acceptance": true
+  }
+}
