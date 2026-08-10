@@ -21,6 +21,7 @@
 #include "ortools/sat/sat_parameters.pb.h"
 
 #include "exact_event_cuts.h"
+#include "exact_event_cuts_v2.h"
 
 namespace sat = operations_research::sat;
 
@@ -426,30 +427,64 @@ class AdaptiveScreen {
 
   void AddExactEventCuts() {
     if (args_.exact_cut_version == 0) return;
-    if (args_.exact_cut_version != 1) {
+    if (args_.exact_cut_version == 1) {
+      for (const auto& cut : exact_event_cuts::kVersion1) {
+        if (cut.graph != args_.graph) continue;
+        std::vector<sat::BoolVar> clause;
+        for (const auto& event : cut.binomials) {
+          const auto& row = terms_.at(event.state);
+          if (event.left < 0 || event.right < 0 ||
+              event.left >= static_cast<int>(row.size()) ||
+              event.right >= static_cast<int>(row.size()) ||
+              event.left == event.right) {
+            throw std::logic_error("invalid exact binomial event");
+          }
+          clause.push_back(RowCount(event.state, 2).Not());
+          clause.push_back(row[event.left].Not());
+          clause.push_back(row[event.right].Not());
+        }
+        if (cut.has_target) {
+          const auto& row = terms_.at(cut.target_state);
+          clause.push_back(RowCount(cut.target_state, 3).Not());
+          for (int matching : cut.target_matchings) {
+            if (matching < 0 || matching >= static_cast<int>(row.size())) {
+              throw std::logic_error("invalid exact target event");
+            }
+            clause.push_back(row[matching].Not());
+          }
+        }
+        model_.AddBoolOr(clause);
+        ++exact_event_cut_count_;
+        exact_event_cut_literals_ += static_cast<int>(clause.size());
+      }
+      return;
+    }
+    if (args_.exact_cut_version != 2) {
       throw std::invalid_argument("unknown exact cut version");
     }
-    for (const auto& cut : exact_event_cuts::kVersion1) {
+    for (const auto& cut : exact_event_cuts_v2::kVersion2) {
       if (cut.graph != args_.graph) continue;
       std::vector<sat::BoolVar> clause;
-      for (const auto& event : cut.binomials) {
+      for (int index = 0; index < cut.binomial_count; ++index) {
+        const auto& event = cut.binomials[index];
         const auto& row = terms_.at(event.state);
         if (event.left < 0 || event.right < 0 ||
             event.left >= static_cast<int>(row.size()) ||
             event.right >= static_cast<int>(row.size()) ||
             event.left == event.right) {
-          throw std::logic_error("invalid exact binomial event");
+          throw std::logic_error("invalid version-2 binomial event");
         }
         clause.push_back(RowCount(event.state, 2).Not());
         clause.push_back(row[event.left].Not());
         clause.push_back(row[event.right].Not());
       }
-      if (cut.has_target) {
+      if (cut.target_count > 0) {
         const auto& row = terms_.at(cut.target_state);
-        clause.push_back(RowCount(cut.target_state, 3).Not());
-        for (int matching : cut.target_matchings) {
+        clause.push_back(RowCount(cut.target_state, cut.target_count).Not());
+        for (int index = 0; index < cut.target_count; ++index) {
+          const int matching = cut.target_matchings[index];
           if (matching < 0 || matching >= static_cast<int>(row.size())) {
-            throw std::logic_error("invalid exact target event");
+            throw std::logic_error("invalid version-2 target event");
           }
           clause.push_back(row[matching].Not());
         }
@@ -564,7 +599,9 @@ class AdaptiveScreen {
     out << "  \"exact_event_cut_bundle_sha256\": "
         << JsonString(args_.exact_cut_version == 0
                           ? "none"
-                          : std::string(exact_event_cuts::kBundleSha256))
+                          : args_.exact_cut_version == 1
+                                ? std::string(exact_event_cuts::kBundleSha256)
+                                : std::string(exact_event_cuts_v2::kBundleSha256))
         << ",\n";
     out << "  \"exact_event_cuts\": " << exact_event_cut_count_ << ",\n";
     out << "  \"exact_event_cut_literals\": " << exact_event_cut_literals_ << ",\n";
@@ -739,8 +776,8 @@ Arguments ParseArguments(int argc, char** argv) {
       !std::set<std::string>{"C8", "C5+C3", "C4+C4"}.contains(args.graph) ||
       args.seconds <= 0 || args.rounds < 0 || args.workers < 1 ||
       args.workers > 4 || args.memory_mib < 512 ||
-      !std::set<int>{4, 8, 16}.contains(args.shard_count) ||
-      !std::set<int>{0, 1}.contains(args.exact_cut_version) ||
+      !std::set<int>{4, 8, 16, 32, 64}.contains(args.shard_count) ||
+      !std::set<int>{0, 1, 2}.contains(args.exact_cut_version) ||
       args.shard_id < 0 || args.shard_id >= args.shard_count) {
     throw std::invalid_argument("invalid or missing arguments");
   }
