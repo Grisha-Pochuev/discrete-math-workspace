@@ -1,0 +1,14 @@
+{
+  "archive_format": "adaptive_refined_rescue_v1",
+  "base_spec_sha256": "edd72edbdafeedec33ee4cbc5ae0936b7e6f12228d5539eb38d582add0dfdbff",
+  "cut_bundle_sha256": "1ef3296568c7d70e15565ad108aa19608eb315c6871b037e79f3caec0ac323ae",
+  "mathematical_closure": false,
+  "parent_run_id": "run-065",
+  "parent_workflow_run": 31404374848,
+  "run_id": "run-065-r1",
+  "schema_version": 1,
+  "scientific_survivors": 195,
+  "source_sha": "694ddca5e92c7aa8122ed624a943709d0bd9df26",
+  "validated_leaf_shards": 195,
+  "workflow_run": "31422138690"
+}
