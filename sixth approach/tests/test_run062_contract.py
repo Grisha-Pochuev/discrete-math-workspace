@@ -82,6 +82,20 @@ class Run062ContractTest(unittest.TestCase):
             "--bundle", BUNDLE,
             "--header", HEADER,
         )
+        canonical_bundle = BUNDLE.read_text(encoding="utf-8").replace(
+            "\r\n", "\n"
+        ).encode()
+        canonical_header = HEADER.read_text(encoding="utf-8").replace(
+            "\r\n", "\n"
+        ).encode()
+        self.assertEqual(
+            hashlib.sha256(canonical_bundle).hexdigest(),
+            spec["cut_bundle_sha256"],
+        )
+        self.assertEqual(
+            hashlib.sha256(canonical_header).hexdigest(),
+            spec["cut_header_sha256"],
+        )
         bundle = json.loads(BUNDLE.read_text(encoding="utf-8"))
         self.assertEqual(len(bundle["cuts"]), 45)
 
