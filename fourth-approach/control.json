@@ -7,13 +7,13 @@
   "full_run_auto_launch_allowed": false,
   "large_matrix_concurrency_guard": true,
   "last_run_accepted": false,
-  "last_run_id": 31344143022,
-  "last_run_index": 2,
+  "last_run_id": 31344143030,
+  "last_run_index": 8,
   "minimum_free_concurrency_slots": 0,
   "next_run_index": 2,
   "next_spec_path": "fourth-approach/run-specs/run-008-stage8-adaptive-exact-lemma-cycle.json",
   "next_task": "stage2_minimize_certificates",
-  "recommended_next_action": "inspect_run_002_failure",
+  "recommended_next_action": "inspect_or_rescue_run_008_without_advancing",
   "run_history": [
     {
       "accepted": true,
@@ -271,6 +271,48 @@
       "run_id": 31344143027,
       "run_index": 7,
       "task": "stage7_gpt_sol_handoff"
+    },
+    {
+      "accepted": false,
+      "metrics": {
+        "candidate_count": 8,
+        "duplicate_tasks": 20,
+        "exact_candidate_closures": 0,
+        "exact_task_closures": 0,
+        "groups": {
+          "independent_2_0": {
+            "best_input_max_error": null,
+            "candidates": 0,
+            "duplicate_covered": 0,
+            "exactly_closed": 0,
+            "survivors": 0
+          },
+          "legacy_2_0": {
+            "best_input_max_error": 8.528761437887434e-07,
+            "candidates": 6,
+            "duplicate_covered": 0,
+            "exactly_closed": 0,
+            "survivors": 6
+          },
+          "old_pool": {
+            "best_input_max_error": 1.0810214319412947e-05,
+            "candidates": 2,
+            "duplicate_covered": 0,
+            "exactly_closed": 0,
+            "survivors": 2
+          }
+        },
+        "jobs_configured": 20,
+        "successful_attempts": 330,
+        "survivor_candidates": 8,
+        "total_attempts": 330,
+        "worker_error_count": 1,
+        "workers_expected": 80,
+        "workers_present": 8
+      },
+      "run_id": 31344143030,
+      "run_index": 8,
+      "task": "stage8_adaptive_exact_lemma_cycle"
     }
   ],
   "schema_version": 1,
