@@ -1,0 +1,5921 @@
+{
+  "base_bundle_sha256": "453614ab1c47b7ea467ecc7d9d87d22e07cb19ca369d7c24f30726f063012157",
+  "base_version": 2,
+  "cuts": [
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 26,
+          "state": 254
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-0",
+      "source_run": "run-061",
+      "source_sha256": "6aa05802c28d32b13bf109b70fdd5bf05a1f78cb0a72ec3827e0974871301832",
+      "source_shard": 7,
+      "target_event": {
+        "state": 311,
+        "supported_matchings": [
+          12,
+          14,
+          21,
+          26,
+          27
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 5,
+          "right": 11,
+          "state": 1143
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-1",
+      "source_run": "run-061",
+      "source_sha256": "c0449bfa4b269fc561504f1a0341b68c575e88427b7b3a28f5ec8b6b844e0512",
+      "source_shard": 9,
+      "target_event": {
+        "state": 1144,
+        "supported_matchings": [
+          5,
+          11,
+          19,
+          24,
+          28
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 30,
+          "state": 1431
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-2",
+      "source_run": "run-061",
+      "source_sha256": "c65be62050397c46bb7ad32221677765b629b488a33ab629e297e0b393bbd64f",
+      "source_shard": 14,
+      "target_event": {
+        "state": 5806,
+        "supported_matchings": [
+          16,
+          21,
+          23,
+          28,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 1816
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-3",
+      "source_run": "run-061",
+      "source_sha256": "e5238250e6972be5042ab2047fbe53dbf248ba1aea0345fd146a3f5172501291",
+      "source_shard": 12,
+      "target_event": {
+        "state": 1573,
+        "supported_matchings": [
+          1,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 4,
+          "state": 2193
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-4",
+      "source_run": "run-061",
+      "source_sha256": "5251c845f59598ce75a0c00f407896550f147e5c8c71fcc9e8964ea1b05a5442",
+      "source_shard": 15,
+      "target_event": {
+        "state": 2195,
+        "supported_matchings": [
+          0,
+          4,
+          28
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 21,
+          "right": 24,
+          "state": 5199
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-5",
+      "source_run": "run-061",
+      "source_sha256": "b13613e6f2602233962ee420b2eb5c8a309557bb77d93e943d953393230681d6",
+      "source_shard": 0,
+      "target_event": {
+        "state": 5201,
+        "supported_matchings": [
+          4,
+          14,
+          17,
+          21,
+          24
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 17,
+          "state": 7
+        },
+        {
+          "left": 11,
+          "right": 24,
+          "state": 736
+        },
+        {
+          "left": 18,
+          "right": 25,
+          "state": 898
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-6",
+      "source_run": "run-061",
+      "source_sha256": "70bf9d4ccbfc6ea6e3f98c72a715bbfadc18a2051befd96e3ab3625b96a288c2",
+      "source_shard": 10,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 31,
+          "state": 2247
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 2248
+        },
+        {
+          "left": 16,
+          "right": 32,
+          "state": 2352
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-7",
+      "source_run": "run-055",
+      "source_sha256": "5802c9b457bd48871fbec6528676dc36411f7bd3b5b6c2ffba70582a3e03ee03",
+      "source_shard": 3,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 27,
+          "right": 28,
+          "state": 2522
+        },
+        {
+          "left": 13,
+          "right": 14,
+          "state": 4950
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-8",
+      "source_run": "run-061",
+      "source_sha256": "5b2a8cb9404da2e1882e153f50268ebaeecee29a39187e2f1a42a570239defc9",
+      "source_shard": 13,
+      "target_event": {
+        "state": 4707,
+        "supported_matchings": [
+          13,
+          14,
+          20,
+          21
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 22,
+          "right": 29,
+          "state": 5347
+        },
+        {
+          "left": 15,
+          "right": 17,
+          "state": 5352
+        },
+        {
+          "left": 24,
+          "right": 31,
+          "state": 5407
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-9",
+      "source_run": "run-061",
+      "source_sha256": "64846658c8c054e58cb1585d016d31d7859f44c574b482288b5f89dd894c0c3c",
+      "source_shard": 1,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 30,
+          "state": 1000
+        },
+        {
+          "left": 7,
+          "right": 30,
+          "state": 1026
+        },
+        {
+          "left": 1,
+          "right": 30,
+          "state": 1027
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-10",
+      "source_run": "run-055",
+      "source_sha256": "d59e2709ece26c575834c2f31e227b3c7bcd7a02270af3e5d34a45ba19d7e00b",
+      "source_shard": 2,
+      "target_event": {
+        "state": 999,
+        "supported_matchings": [
+          6,
+          7,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 28,
+          "state": 72
+        },
+        {
+          "left": 6,
+          "right": 30,
+          "state": 234
+        },
+        {
+          "left": 6,
+          "right": 13,
+          "state": 315
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 2259
+        },
+        {
+          "left": 6,
+          "right": 18,
+          "state": 2664
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-11",
+      "source_run": "run-061",
+      "source_sha256": "75fd2ba7d7da62ffde5a95a4cde2a75bd3937b29d32d04282d42deb349f7cd0a",
+      "source_shard": 11,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 29,
+          "state": 1710
+        },
+        {
+          "left": 28,
+          "right": 29,
+          "state": 1719
+        },
+        {
+          "left": 10,
+          "right": 20,
+          "state": 3655
+        },
+        {
+          "left": 13,
+          "right": 17,
+          "state": 3663
+        },
+        {
+          "left": 5,
+          "right": 19,
+          "state": 6328
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-12",
+      "source_run": "run-061",
+      "source_sha256": "5a5bd2d11f11b016784416249d7260e326e2fb0e31b838675e1d42bbc73b6d24",
+      "source_shard": 2,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 9,
+          "state": 487
+        },
+        {
+          "left": 0,
+          "right": 3,
+          "state": 541
+        },
+        {
+          "left": 0,
+          "right": 3,
+          "state": 649
+        },
+        {
+          "left": 0,
+          "right": 3,
+          "state": 703
+        },
+        {
+          "left": 7,
+          "right": 23,
+          "state": 2005
+        },
+        {
+          "left": 21,
+          "right": 23,
+          "state": 2113
+        },
+        {
+          "left": 1,
+          "right": 23,
+          "state": 2167
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-13",
+      "source_run": "run-061",
+      "source_sha256": "e2fd4b20579c799bf0b46195bb1438ee2b720518059b5ad0c1e0224a716faffe",
+      "source_shard": 8,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 17,
+          "state": 249
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-14",
+      "source_run": "run-061",
+      "source_sha256": "7b1178ea9cb4b0ead751c79abefe4ff0e98d3449836e3e48205f6bbaa77f8a83",
+      "source_shard": 14,
+      "target_event": {
+        "state": 250,
+        "supported_matchings": [
+          5,
+          15,
+          17
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 8,
+          "state": 40
+        },
+        {
+          "left": 9,
+          "right": 11,
+          "state": 5062
+        },
+        {
+          "left": 7,
+          "right": 10,
+          "state": 5872
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-15",
+      "source_run": "run-061",
+      "source_sha256": "856ebe0bd5afb2d97207c1a6b648e5a111f5b0b788ae55dead1cdc9d05f85c68",
+      "source_shard": 11,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 14,
+          "right": 27,
+          "state": 63
+        },
+        {
+          "left": 13,
+          "right": 21,
+          "state": 792
+        },
+        {
+          "left": 20,
+          "right": 24,
+          "state": 1026
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-16",
+      "source_run": "run-055",
+      "source_sha256": "fa1f506ed84e6c11f7f2d73ef41d7b65286128157300ec2a4eb62db2d59c87d4",
+      "source_shard": 2,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 5,
+          "state": 675
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 1161
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 5778
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-17",
+      "source_run": "run-061",
+      "source_sha256": "d365910f3eb35173b0f12db30a2d0d492156ab4348f468abcb45e24d2458f2d1",
+      "source_shard": 5,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 25,
+          "state": 1000
+        },
+        {
+          "left": 18,
+          "right": 24,
+          "state": 1486
+        },
+        {
+          "left": 13,
+          "right": 19,
+          "state": 1738
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-18",
+      "source_run": "run-061",
+      "source_sha256": "677993395039b7966cddb8c949fcbcf355900fdd5ab55ebfa05d69fa7be8a447",
+      "source_shard": 12,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 2,
+          "state": 1242
+        },
+        {
+          "left": 6,
+          "right": 8,
+          "state": 1260
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 1429
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-19",
+      "source_run": "run-061",
+      "source_sha256": "13288a52695b038f8074f37cea988333c5e5ac4199feccf3f6a6af8c7d89e349",
+      "source_shard": 3,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 1350
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 5643
+        },
+        {
+          "left": 4,
+          "right": 5,
+          "state": 5730
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-20",
+      "source_run": "run-061",
+      "source_sha256": "44a61ada9eb228445fc8f50d750ba61599bec3866b1851b922fafab46b830741",
+      "source_shard": 9,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 9,
+          "state": 2165
+        },
+        {
+          "left": 0,
+          "right": 5,
+          "state": 2848
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 3820
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-21",
+      "source_run": "run-061",
+      "source_sha256": "c148989f8be9fe393d128072199d38300cf4c669ba6ed36da221a3a704d09b42",
+      "source_shard": 0,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 21,
+          "right": 23,
+          "state": 2207
+        },
+        {
+          "left": 20,
+          "right": 22,
+          "state": 2261
+        },
+        {
+          "left": 7,
+          "right": 10,
+          "state": 3070
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-22",
+      "source_run": "run-061",
+      "source_sha256": "63c4b83ccdf8a6a662530ddbafec8cbc7d200ffb20af71eb7d243eca0199fb7a",
+      "source_shard": 13,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 19,
+          "state": 2380
+        },
+        {
+          "left": 20,
+          "right": 21,
+          "state": 2407
+        },
+        {
+          "left": 2,
+          "right": 3,
+          "state": 2412
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-23",
+      "source_run": "run-061",
+      "source_sha256": "9eb251169024bf5a7393042d547f7a1ea9342a749262774705d06b47914690d4",
+      "source_shard": 7,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 19,
+          "state": 2467
+        },
+        {
+          "left": 7,
+          "right": 9,
+          "state": 2474
+        },
+        {
+          "left": 16,
+          "right": 22,
+          "state": 2671
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-24",
+      "source_run": "run-061",
+      "source_sha256": "ce25530ce84baa58ad1fe9c5730899e96b2a23173f77f4266743ed7af2c2cee0",
+      "source_shard": 8,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 18,
+          "state": 2702
+        },
+        {
+          "left": 6,
+          "right": 8,
+          "state": 2705
+        },
+        {
+          "left": 16,
+          "right": 22,
+          "state": 2786
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-25",
+      "source_run": "run-061",
+      "source_sha256": "49e47169774f97310132bd35ed4706461bec1c39db6b5e0f52adad2f014f3d1c",
+      "source_shard": 1,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 11,
+          "state": 3427
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 5608
+        },
+        {
+          "left": 6,
+          "right": 7,
+          "state": 5611
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-26",
+      "source_run": "run-061",
+      "source_sha256": "66115602c4ed3852a76e9746d762ad73f6c0f0d7cc91dead4acae8b046defed4",
+      "source_shard": 4,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 24,
+          "state": 3646
+        },
+        {
+          "left": 21,
+          "right": 27,
+          "state": 3685
+        },
+        {
+          "left": 12,
+          "right": 13,
+          "state": 4141
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-27",
+      "source_run": "run-061",
+      "source_sha256": "e1120ffeb24a0c7d209bc947f61a243e7c36890f6892e02dfe96b98b1caa01cc",
+      "source_shard": 15,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 16,
+          "right": 17,
+          "state": 5181
+        },
+        {
+          "left": 22,
+          "right": 28,
+          "state": 5182
+        },
+        {
+          "left": 23,
+          "right": 29,
+          "state": 5398
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-28",
+      "source_run": "run-061",
+      "source_sha256": "115f75c74b70c89313e9f539b2ada3e081e117da35d1e760685c5ef2e757047f",
+      "source_shard": 2,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 5617
+        },
+        {
+          "left": 7,
+          "right": 9,
+          "state": 5669
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-29",
+      "source_run": "run-061",
+      "source_sha256": "f946d8ad33239a47ac0255d7228f4cae2fdbb6f3f1989dd54d7fef54dbf1236b",
+      "source_shard": 10,
+      "target_event": {
+        "state": 1249,
+        "supported_matchings": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 17,
+          "state": 139
+        },
+        {
+          "left": 1,
+          "right": 17,
+          "state": 300
+        },
+        {
+          "left": 1,
+          "right": 17,
+          "state": 381
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-30",
+      "source_run": "run-055",
+      "source_sha256": "f75f318c9f000355513ebc43092a75e5925bae9e9ece0e6abde4c0055205e04e",
+      "source_shard": 3,
+      "target_event": {
+        "state": 58,
+        "supported_matchings": [
+          1,
+          5,
+          17
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 22,
+          "state": 786
+        },
+        {
+          "left": 7,
+          "right": 13,
+          "state": 867
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 873
+        },
+        {
+          "left": 20,
+          "right": 22,
+          "state": 1029
+        },
+        {
+          "left": 7,
+          "right": 18,
+          "state": 1110
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-31",
+      "source_run": "run-061",
+      "source_sha256": "3fb673b2a3ee1cccaabd6c0b1cdd57c5d1d3e1f9647b50ebf4b5e56a7c0177c2",
+      "source_shard": 6,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 17,
+          "state": 11
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-32",
+      "source_run": "run-061",
+      "source_sha256": "7ed7423ad40810cf73ae48818f2bd903e45519e13e047c631b0e32c035ea4581",
+      "source_shard": 6,
+      "target_event": {
+        "state": 2,
+        "supported_matchings": [
+          13,
+          15,
+          17
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 4,
+          "state": 249
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-33",
+      "source_run": "run-061",
+      "source_sha256": "beed1ad05ed4b3c436f9a37071539c1c6ca247e0d285fc185dd2e1c51bce775c",
+      "source_shard": 13,
+      "target_event": {
+        "state": 250,
+        "supported_matchings": [
+          2,
+          4,
+          10
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 21,
+          "state": 2308
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-34",
+      "source_run": "run-061",
+      "source_sha256": "a3d06388e11cafe5404e418e8fa4584bfba679b4029f19c6b949d03e77880100",
+      "source_shard": 7,
+      "target_event": {
+        "state": 2299,
+        "supported_matchings": [
+          18,
+          21,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 3,
+          "state": 80
+        },
+        {
+          "left": 1,
+          "right": 2,
+          "state": 134
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 394
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-35",
+      "source_run": "run-061",
+      "source_sha256": "2554253ae6c2b23ce88ac2f03a1b8e83ce1096038ac1e1b899a5b16b7b48992a",
+      "source_shard": 0,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 27,
+          "right": 29,
+          "state": 130
+        },
+        {
+          "left": 25,
+          "right": 26,
+          "state": 4504
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-36",
+      "source_run": "run-061",
+      "source_sha256": "6548ea1a9dcb57fd6dc6dfb0477595a980f93a6c61c0d2c53d4c0af2eda71ec9",
+      "source_shard": 4,
+      "target_event": {
+        "state": 5206,
+        "supported_matchings": [
+          6,
+          7,
+          9,
+          10
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 12,
+          "state": 585
+        },
+        {
+          "left": 9,
+          "right": 25,
+          "state": 1548
+        },
+        {
+          "left": 16,
+          "right": 28,
+          "state": 4266
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-37",
+      "source_run": "run-061",
+      "source_sha256": "ae1984f856b0e4468499fdf6ca73a33cf4d14ba5be1549f2d77a1ccdb3b8de99",
+      "source_shard": 12,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 17,
+          "right": 26,
+          "state": 761
+        },
+        {
+          "left": 12,
+          "right": 19,
+          "state": 1265
+        },
+        {
+          "left": 24,
+          "right": 25,
+          "state": 1409
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-38",
+      "source_run": "run-061",
+      "source_sha256": "3028809bce0800ae9da40c8e02b31b890c02d743afff3516ab740240c28ba8a0",
+      "source_shard": 11,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 16,
+          "state": 972
+        },
+        {
+          "left": 7,
+          "right": 13,
+          "state": 4626
+        },
+        {
+          "left": 3,
+          "right": 4,
+          "state": 5346
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-39",
+      "source_run": "run-061",
+      "source_sha256": "f6ced8219cae3d93af6f1726afb91153db4e474594e46031b2e4ca74423085d0",
+      "source_shard": 9,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 14,
+          "right": 25,
+          "state": 163
+        },
+        {
+          "left": 14,
+          "right": 25,
+          "state": 1620
+        },
+        {
+          "left": 14,
+          "right": 25,
+          "state": 1629
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-40",
+      "source_run": "run-061",
+      "source_sha256": "7fa1df036d720aebbca58eefd035ba2cb30b1946d57b126cc955c00719a21f27",
+      "source_shard": 5,
+      "target_event": {
+        "state": 172,
+        "supported_matchings": [
+          12,
+          14,
+          25
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 2323
+        },
+        {
+          "left": 23,
+          "right": 30,
+          "state": 2340
+        },
+        {
+          "left": 23,
+          "right": 29,
+          "state": 2343
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-41",
+      "source_run": "run-061",
+      "source_sha256": "352e89cfc57e0094de333a750062dda5cc04decd9c4d4967a6a96871940def7d",
+      "source_shard": 10,
+      "target_event": {
+        "state": 2335,
+        "supported_matchings": [
+          3,
+          4,
+          15
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 5,
+          "right": 24,
+          "state": 1242
+        },
+        {
+          "left": 8,
+          "right": 14,
+          "state": 5131
+        },
+        {
+          "left": 0,
+          "right": 20,
+          "state": 5622
+        },
+        {
+          "left": 6,
+          "right": 28,
+          "state": 5785
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-42",
+      "source_run": "run-061",
+      "source_sha256": "94af79c33c88dbda6198365db907c8ebdb8d926e6ffc99770c52cba401a8e57b",
+      "source_shard": 1,
+      "target_event": {
+        "state": 5623,
+        "supported_matchings": [
+          8,
+          9,
+          12,
+          14,
+          16,
+          25
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 20,
+          "right": 28,
+          "state": 2934
+        },
+        {
+          "left": 8,
+          "right": 20,
+          "state": 2964
+        },
+        {
+          "left": 0,
+          "right": 5,
+          "state": 5104
+        },
+        {
+          "left": 11,
+          "right": 27,
+          "state": 5130
+        },
+        {
+          "left": 0,
+          "right": 3,
+          "state": 5134
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-43",
+      "source_run": "run-061",
+      "source_sha256": "d8bdf9762a0d3b7a39f2dc4d8375d200fc829bd5e6459ade9d99458044d8aeea",
+      "source_shard": 14,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 14,
+          "right": 24,
+          "state": 2247
+        },
+        {
+          "left": 1,
+          "right": 2,
+          "state": 2337
+        },
+        {
+          "left": 14,
+          "right": 17,
+          "state": 2490
+        },
+        {
+          "left": 1,
+          "right": 2,
+          "state": 2553
+        },
+        {
+          "left": 12,
+          "right": 25,
+          "state": 3705
+        },
+        {
+          "left": 12,
+          "right": 19,
+          "state": 3786
+        },
+        {
+          "left": 12,
+          "right": 26,
+          "state": 4029
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-44",
+      "source_run": "run-061",
+      "source_sha256": "0ce5c10e22bb8b672d074ac20f61c7664d4815e5afab64b5429f3197325bf228",
+      "source_shard": 15,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 2,
+          "state": 8
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 197
+        },
+        {
+          "left": 7,
+          "right": 23,
+          "state": 2390
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-45",
+      "source_run": "run-063",
+      "source_sha256": "dd820c8158db9da6b5b4cea93fd47e73df4c25ac6deae4e5a9da197ac968800c",
+      "source_shard": 22,
+      "target_event": {
+        "state": 179,
+        "supported_matchings": [
+          5,
+          6,
+          8,
+          20
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 2,
+          "state": 10
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-46",
+      "source_run": "run-063",
+      "source_sha256": "a52cbdfb22742a86707fa29d248bb57d1e404d210089715741b7a2f359e438ff",
+      "source_shard": 57,
+      "target_event": {
+        "state": 1,
+        "supported_matchings": [
+          1,
+          2,
+          20
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 3,
+          "right": 18,
+          "state": 69
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-47",
+      "source_run": "run-063",
+      "source_sha256": "33abbc18d47625410686b92bda37cd0d7c2aecc4689a036191d34b1766788311",
+      "source_shard": 6,
+      "target_event": {
+        "state": 15,
+        "supported_matchings": [
+          3,
+          6,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 26,
+          "right": 28,
+          "state": 99
+        },
+        {
+          "left": 26,
+          "right": 30,
+          "state": 129
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 2272
+        },
+        {
+          "left": 12,
+          "right": 13,
+          "state": 2531
+        },
+        {
+          "left": 12,
+          "right": 18,
+          "state": 2561
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-48",
+      "source_run": "run-063",
+      "source_sha256": "478473a8dd869dd0f61b992a9d4b803984e48b7ccb3b0e5e0efaa6de6804019b",
+      "source_shard": 62,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 28,
+          "state": 145
+        },
+        {
+          "left": 18,
+          "right": 30,
+          "state": 550
+        },
+        {
+          "left": 6,
+          "right": 13,
+          "state": 631
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-49",
+      "source_run": "run-063",
+      "source_sha256": "9878b25dd52f4c8e73f8fd3f28ffa2db3b0f35dd77c873506710ea0c698ff707",
+      "source_shard": 29,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 29,
+          "state": 153
+        },
+        {
+          "left": 12,
+          "right": 26,
+          "state": 612
+        },
+        {
+          "left": 8,
+          "right": 15,
+          "state": 2802
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-50",
+      "source_run": "run-063",
+      "source_sha256": "c2e60a637d54e4a0c862c2d31fca00e8e4313891d0ecda8aca2769a3f3664c38",
+      "source_shard": 50,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 5,
+          "right": 13,
+          "state": 168
+        },
+        {
+          "left": 8,
+          "right": 15,
+          "state": 183
+        },
+        {
+          "left": 19,
+          "right": 20,
+          "state": 187
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-51",
+      "source_run": "run-063",
+      "source_sha256": "2e31fb3dbaac28e8fc48de181738fb2131d35c01210eb721ee544707598cf0aa",
+      "source_shard": 26,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 5,
+          "right": 19,
+          "state": 171
+        },
+        {
+          "left": 22,
+          "right": 24,
+          "state": 2868
+        },
+        {
+          "left": 9,
+          "right": 15,
+          "state": 4329
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-52",
+      "source_run": "run-063",
+      "source_sha256": "dd322df2a1632ed90a8bbf6ba737106a0358b4757b7d451f551e9da5429606a8",
+      "source_shard": 61,
+      "target_event": {
+        "state": 2850,
+        "supported_matchings": [
+          7,
+          17,
+          18,
+          23
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 189
+        },
+        {
+          "left": 13,
+          "right": 15,
+          "state": 450
+        },
+        {
+          "left": 17,
+          "right": 18,
+          "state": 455
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-53",
+      "source_run": "run-063",
+      "source_sha256": "b538bb57156af8bd6840597999bbfe836e16e1f623a00ec96afecec3a74ee8e8",
+      "source_shard": 15,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 5,
+          "right": 9,
+          "state": 216
+        },
+        {
+          "left": 21,
+          "right": 28,
+          "state": 217
+        },
+        {
+          "left": 19,
+          "right": 31,
+          "state": 226
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-54",
+      "source_run": "run-063",
+      "source_sha256": "57164f34d029c986d3dc104e2149b648f0445e4874692dcef404c55c7e82ac98",
+      "source_shard": 38,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 31,
+          "state": 216
+        },
+        {
+          "left": 10,
+          "right": 29,
+          "state": 702
+        },
+        {
+          "left": 10,
+          "right": 29,
+          "state": 703
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-55",
+      "source_run": "run-063",
+      "source_sha256": "21ad08173e8cc038d660352bfb4b05e5d4f1eb60f5550aead77fdb62cbc407ad",
+      "source_shard": 32,
+      "target_event": {
+        "state": 217,
+        "supported_matchings": [
+          10,
+          17,
+          31
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 31,
+          "state": 253
+        },
+        {
+          "left": 11,
+          "right": 31,
+          "state": 259
+        },
+        {
+          "left": 11,
+          "right": 31,
+          "state": 415
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-56",
+      "source_run": "run-063",
+      "source_sha256": "f2ed26aaeb70a133ecc1dab36621cb17e64723af1a6fca5c2e26302b55df72d6",
+      "source_shard": 0,
+      "target_event": {
+        "state": 421,
+        "supported_matchings": [
+          11,
+          28,
+          31
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 17,
+          "state": 298
+        },
+        {
+          "left": 18,
+          "right": 25,
+          "state": 1729
+        },
+        {
+          "left": 11,
+          "right": 24,
+          "state": 1972
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-57",
+      "source_run": "run-063",
+      "source_sha256": "479a032537b9fea88c8341eb539313f004bd1745fe6e9981a4c9d04e1f301181",
+      "source_shard": 27,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 31,
+          "state": 325
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 416
+        },
+        {
+          "left": 17,
+          "right": 29,
+          "state": 1081
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-58",
+      "source_run": "run-063",
+      "source_sha256": "b92965619ffa8c2a38824c99261156a417837630bbf97493ba0f0e6d25dd6216",
+      "source_shard": 24,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 26,
+          "state": 343
+        },
+        {
+          "left": 23,
+          "right": 29,
+          "state": 640
+        },
+        {
+          "left": 17,
+          "right": 25,
+          "state": 2590
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-59",
+      "source_run": "run-063",
+      "source_sha256": "ce9bbc204c3b36f15088be5728133f603a92f957adda113d8573f74d333b4b80",
+      "source_shard": 4,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 28,
+          "state": 355
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 358
+        },
+        {
+          "left": 18,
+          "right": 30,
+          "state": 403
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-60",
+      "source_run": "run-063",
+      "source_sha256": "ff6bce5196db455ce5db17fb30545933ced4f6912f52c4b80b5e2aa846204aa0",
+      "source_shard": 11,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 3,
+          "right": 15,
+          "state": 384
+        },
+        {
+          "left": 16,
+          "right": 32,
+          "state": 393
+        },
+        {
+          "left": 3,
+          "right": 8,
+          "state": 394
+        },
+        {
+          "left": 3,
+          "right": 31,
+          "state": 627
+        },
+        {
+          "left": 3,
+          "right": 9,
+          "state": 637
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-61",
+      "source_run": "run-063",
+      "source_sha256": "e686da1b8653b0bec79a6fb5d3578d4f54307e93c49469653ed4939e8bf047db",
+      "source_shard": 17,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 11,
+          "state": 446
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 452
+        },
+        {
+          "left": 7,
+          "right": 10,
+          "state": 455
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-62",
+      "source_run": "run-063",
+      "source_sha256": "e216419533394046e42b12fefaa9a1f6c61feaf6a3fb21fed3acb63d4077529f",
+      "source_shard": 40,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 30,
+          "state": 489
+        },
+        {
+          "left": 23,
+          "right": 25,
+          "state": 499
+        },
+        {
+          "left": 16,
+          "right": 32,
+          "state": 501
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-63",
+      "source_run": "run-063",
+      "source_sha256": "59e7fcd199a0eed417a5c917671d6f66d1cee14bc1db1377a45e1683644ac1f4",
+      "source_shard": 25,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 17,
+          "state": 540
+        },
+        {
+          "left": 3,
+          "right": 4,
+          "state": 603
+        },
+        {
+          "left": 28,
+          "right": 30,
+          "state": 1329
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-64",
+      "source_run": "run-063",
+      "source_sha256": "8d55ae42d03010a3e56ac7b550c671f63058951eb1cc02e9c8ee07cc4478c5ca",
+      "source_shard": 18,
+      "target_event": {
+        "state": 636,
+        "supported_matchings": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 5,
+          "right": 19,
+          "state": 622
+        },
+        {
+          "left": 13,
+          "right": 20,
+          "state": 2836
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-65",
+      "source_run": "run-063",
+      "source_sha256": "2e5b0453d581ae6f617c66853dc52cfd71833d0dcee3adb09a743a6afb5cc9e3",
+      "source_shard": 28,
+      "target_event": {
+        "state": 2758,
+        "supported_matchings": [
+          8,
+          13,
+          15,
+          20
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 22,
+          "right": 24,
+          "state": 629
+        },
+        {
+          "left": 20,
+          "right": 25,
+          "state": 638
+        },
+        {
+          "left": 21,
+          "right": 23,
+          "state": 647
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-66",
+      "source_run": "run-063",
+      "source_sha256": "2e0a457012151c8d1a6518a6d37709c700dbd524c028fb1483a46692bbb9ad72",
+      "source_shard": 51,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 17,
+          "right": 25,
+          "state": 786
+        },
+        {
+          "left": 0,
+          "right": 3,
+          "state": 792
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-67",
+      "source_run": "run-063",
+      "source_sha256": "76c13cea22be45ebef895835f07dd2ed82fd6f67a6929a8277969ec8899739c1",
+      "source_shard": 3,
+      "target_event": {
+        "state": 783,
+        "supported_matchings": [
+          0,
+          3,
+          17,
+          19,
+          25
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 23,
+          "state": 892
+        },
+        {
+          "left": 29,
+          "right": 30,
+          "state": 893
+        },
+        {
+          "left": 6,
+          "right": 22,
+          "state": 919
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-68",
+      "source_run": "run-063",
+      "source_sha256": "0029fad28c1f8b0296441537cff4298d76767b3d255aa3353f5fe49241592015",
+      "source_shard": 49,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 21,
+          "right": 28,
+          "state": 894
+        },
+        {
+          "left": 9,
+          "right": 31,
+          "state": 1461
+        },
+        {
+          "left": 5,
+          "right": 19,
+          "state": 3162
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-69",
+      "source_run": "run-063",
+      "source_sha256": "c22b5b3be3ad19bfcc8b87bfe6577704a88191f6f5fb3b56a284a4ae089c44ff",
+      "source_shard": 31,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 21,
+          "right": 23,
+          "state": 955
+        },
+        {
+          "left": 7,
+          "right": 14,
+          "state": 1630
+        },
+        {
+          "left": 9,
+          "right": 16,
+          "state": 1690
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-70",
+      "source_run": "run-063",
+      "source_sha256": "658d96bdda0eae831e1a5bf906e5b6804aa164d28f04bcac7b6e83ba57cffa5c",
+      "source_shard": 34,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 3,
+          "state": 975
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-71",
+      "source_run": "run-063",
+      "source_sha256": "4660b24d71a379746312263fed35156f1248066831e0794410feebfb1f507ded",
+      "source_shard": 95,
+      "target_event": {
+        "state": 977,
+        "supported_matchings": [
+          2,
+          3,
+          15
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 29,
+          "state": 977
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-72",
+      "source_run": "run-063",
+      "source_sha256": "a62be6c07c94aab9fab12b6ecf7f40bf8f93592bb30280bc1217d9adb62aad9c",
+      "source_shard": 30,
+      "target_event": {
+        "state": 974,
+        "supported_matchings": [
+          7,
+          17,
+          29
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 23,
+          "right": 25,
+          "state": 988
+        },
+        {
+          "left": 20,
+          "right": 21,
+          "state": 1201
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 1761
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-73",
+      "source_run": "run-063",
+      "source_sha256": "180a3c5bad4abe829808f83051839a9ff7b6edfb7b1912c5be1216de51855fcb",
+      "source_shard": 47,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 18,
+          "state": 1005
+        },
+        {
+          "left": 0,
+          "right": 25,
+          "state": 1024
+        },
+        {
+          "left": 0,
+          "right": 18,
+          "state": 1167
+        },
+        {
+          "left": 0,
+          "right": 25,
+          "state": 1168
+        },
+        {
+          "left": 0,
+          "right": 12,
+          "state": 5352
+        },
+        {
+          "left": 0,
+          "right": 26,
+          "state": 5371
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-74",
+      "source_run": "run-063",
+      "source_sha256": "139ec0644f65e98092d22a79877f60a2122114902fb86a5f7e5f3b94dc1a0b54",
+      "source_shard": 41,
+      "target_event": {
+        "state": 5542,
+        "supported_matchings": [
+          0,
+          23,
+          26,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 10,
+          "state": 1047
+        },
+        {
+          "left": 20,
+          "right": 25,
+          "state": 1776
+        },
+        {
+          "left": 14,
+          "right": 16,
+          "state": 3216
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-75",
+      "source_run": "run-063",
+      "source_sha256": "c6d33913bb309c17a6fd79258c1d936582eb8f0ffeecf96a90e695133a1904f2",
+      "source_shard": 35,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 30,
+          "state": 1120
+        },
+        {
+          "left": 12,
+          "right": 26,
+          "state": 1189
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-76",
+      "source_run": "run-063",
+      "source_sha256": "537eeac6232bf527d17e8a60c62efae0b87465b15958b0135d12fb381dd5dd87",
+      "source_shard": 56,
+      "target_event": {
+        "state": 1111,
+        "supported_matchings": [
+          12,
+          23,
+          25,
+          26
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 9,
+          "right": 31,
+          "state": 1353
+        },
+        {
+          "left": 19,
+          "right": 21,
+          "state": 1357
+        },
+        {
+          "left": 5,
+          "right": 28,
+          "state": 1365
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-77",
+      "source_run": "run-063",
+      "source_sha256": "e57195e45fcdfd826a4c94b73891fc4d015881008b92472222bb802621bbcd6e",
+      "source_shard": 39,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 30,
+          "state": 1461
+        },
+        {
+          "left": 2,
+          "right": 31,
+          "state": 1560
+        },
+        {
+          "left": 2,
+          "right": 29,
+          "state": 1614
+        },
+        {
+          "left": 3,
+          "right": 13,
+          "state": 1948
+        },
+        {
+          "left": 1,
+          "right": 13,
+          "state": 2002
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-78",
+      "source_run": "run-063",
+      "source_sha256": "e55d96ed2adcda5e0c4870c365e0d794aadd49cf6333d9911417526f2de9b5aa",
+      "source_shard": 44,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 24,
+          "right": 31,
+          "state": 1467
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-79",
+      "source_run": "run-063",
+      "source_sha256": "60be99577c33cc1b50f328f3fba7238676346debffcdd9f74472f4699c61d958",
+      "source_shard": 60,
+      "target_event": {
+        "state": 1458,
+        "supported_matchings": [
+          24,
+          30,
+          31
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 9,
+          "right": 31,
+          "state": 1470
+        },
+        {
+          "left": 8,
+          "right": 15,
+          "state": 1956
+        },
+        {
+          "left": 12,
+          "right": 26,
+          "state": 1986
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-80",
+      "source_run": "run-063",
+      "source_sha256": "0ae822476efd89230ef939a0dacc62cffe8559cbbe99d8ba549654196fca835e",
+      "source_shard": 5,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 25,
+          "state": 1490
+        },
+        {
+          "left": 2,
+          "right": 25,
+          "state": 1706
+        },
+        {
+          "left": 2,
+          "right": 25,
+          "state": 1733
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-81",
+      "source_run": "run-063",
+      "source_sha256": "bff38f2cd1928e5906291e38c7d91eb8d0c130da71d9e238834659da4117a59d",
+      "source_shard": 223,
+      "target_event": {
+        "state": 1463,
+        "supported_matchings": [
+          2,
+          4,
+          25
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 5,
+          "right": 11,
+          "state": 1540
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-82",
+      "source_run": "run-063",
+      "source_sha256": "c38dd2a2b714b403e85a1e5298080584edbda02d37ddebe02f4aa4387492cb6c",
+      "source_shard": 42,
+      "target_event": {
+        "state": 1622,
+        "supported_matchings": [
+          0,
+          4,
+          31
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 16,
+          "right": 23,
+          "state": 1629
+        },
+        {
+          "left": 17,
+          "right": 29,
+          "state": 3726
+        },
+        {
+          "left": 25,
+          "right": 32,
+          "state": 4059
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-83",
+      "source_run": "run-063",
+      "source_sha256": "51b29479ecfc4960b80a505d30f736cc67ce6775bcb4432d1c1d8af16a1b72ff",
+      "source_shard": 52,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 18,
+          "state": 1633
+        },
+        {
+          "left": 17,
+          "right": 31,
+          "state": 4459
+        },
+        {
+          "left": 10,
+          "right": 32,
+          "state": 4792
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-84",
+      "source_run": "run-063",
+      "source_sha256": "0654f8bb2c72ac8b1cdabf27746d98d92555a29a93f25b18c9cc4924b76ba460",
+      "source_shard": 2,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 1917
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-85",
+      "source_run": "run-063",
+      "source_sha256": "eaa45f08e8fa4788c91a64eb65e182c2fe48d95e44af9768dfe1363db5e8dfce",
+      "source_shard": 23,
+      "target_event": {
+        "state": 1926,
+        "supported_matchings": [
+          1,
+          3,
+          9,
+          14,
+          16
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 5,
+          "right": 19,
+          "state": 1963
+        },
+        {
+          "left": 7,
+          "right": 29,
+          "state": 2449
+        },
+        {
+          "left": 23,
+          "right": 30,
+          "state": 3907
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-86",
+      "source_run": "run-063",
+      "source_sha256": "38b34c34a34e1db63fa5ca7bda64ae1bf0628a59ca588a3b57e288ff77b83a3e",
+      "source_shard": 13,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 2026
+        },
+        {
+          "left": 29,
+          "right": 30,
+          "state": 2046
+        },
+        {
+          "left": 13,
+          "right": 15,
+          "state": 2070
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-87",
+      "source_run": "run-063",
+      "source_sha256": "14002be3d1389a86552d8f8173701281aa58f1b62a5a2d1223a9dc6a131ea77a",
+      "source_shard": 43,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 18,
+          "state": 2042
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-88",
+      "source_run": "run-063",
+      "source_sha256": "7f316835ea35650b14de5d1182e9eb60e0809737d35744ce2ad9e7142a02060a",
+      "source_shard": 36,
+      "target_event": {
+        "state": 1322,
+        "supported_matchings": [
+          13,
+          18,
+          20,
+          21,
+          25
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 9,
+          "state": 2198
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 2252
+        },
+        {
+          "left": 18,
+          "right": 30,
+          "state": 2283
+        },
+        {
+          "left": 13,
+          "right": 28,
+          "state": 2331
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 3084
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-89",
+      "source_run": "run-063",
+      "source_sha256": "ee56ec7a282840b385c5d8b54734f7ba4e354671d9b7530138faf18022f02c34",
+      "source_shard": 45,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 23,
+          "right": 25,
+          "state": 2206
+        },
+        {
+          "left": 17,
+          "right": 29,
+          "state": 2349
+        },
+        {
+          "left": 14,
+          "right": 27,
+          "state": 2373
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-90",
+      "source_run": "run-063",
+      "source_sha256": "fff77b12589d420c77776d0cb5d9b66a6c31c95da70ad6c4f85d1a45491923a1",
+      "source_shard": 9,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 9,
+          "right": 10,
+          "state": 2276
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 2355
+        },
+        {
+          "left": 21,
+          "right": 25,
+          "state": 2356
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-91",
+      "source_run": "run-063",
+      "source_sha256": "2c37ecd7e01c78a780d176616a3e22114ef7445e7fd32f541c64e2cfdad417cb",
+      "source_shard": 55,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 28,
+          "state": 2286
+        },
+        {
+          "left": 22,
+          "right": 24,
+          "state": 2289
+        },
+        {
+          "left": 18,
+          "right": 30,
+          "state": 2343
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-92",
+      "source_run": "run-063",
+      "source_sha256": "500645e520543e73377fa0bdf9e908f17db77a9c2cfca509175c97e94fd4a083",
+      "source_shard": 63,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 19,
+          "right": 24,
+          "state": 2326
+        },
+        {
+          "left": 28,
+          "right": 30,
+          "state": 2331
+        },
+        {
+          "left": 19,
+          "right": 22,
+          "state": 2341
+        },
+        {
+          "left": 19,
+          "right": 20,
+          "state": 2809
+        },
+        {
+          "left": 19,
+          "right": 25,
+          "state": 2812
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-93",
+      "source_run": "run-063",
+      "source_sha256": "a9c573f7e9b83d7d706bea8f28671d87a1841a7c2aa4054355e447d7138ab3c2",
+      "source_shard": 53,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 11,
+          "state": 2337
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-94",
+      "source_run": "run-063",
+      "source_sha256": "22af1352da1c85707310f5267ef73163df011b9ab6096200a082eebc9cb34fab",
+      "source_shard": 54,
+      "target_event": {
+        "state": 2304,
+        "supported_matchings": [
+          2,
+          6,
+          13
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 6,
+          "state": 2409
+        },
+        {
+          "left": 2,
+          "right": 7,
+          "state": 2427
+        },
+        {
+          "left": 3,
+          "right": 18,
+          "state": 2835
+        },
+        {
+          "left": 3,
+          "right": 16,
+          "state": 2853
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 3132
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-95",
+      "source_run": "run-063",
+      "source_sha256": "1198485a2e2491541d9ae0a795b866a955d30c5b02be4369fe24f337907a6623",
+      "source_shard": 21,
+      "target_event": {
+        "state": 2403,
+        "supported_matchings": [
+          2,
+          4,
+          6,
+          8,
+          10,
+          11
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 22,
+          "right": 24,
+          "state": 2409
+        },
+        {
+          "left": 29,
+          "right": 31,
+          "state": 3868
+        },
+        {
+          "left": 15,
+          "right": 17,
+          "state": 4353
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-96",
+      "source_run": "run-063",
+      "source_sha256": "d204c40a8acbd910d3c8786b5be4b770be620d91453436a87b0b3ff0d1ed7d19",
+      "source_shard": 19,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 11,
+          "state": 2445
+        },
+        {
+          "left": 13,
+          "right": 18,
+          "state": 2607
+        },
+        {
+          "left": 21,
+          "right": 23,
+          "state": 2617
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-97",
+      "source_run": "run-063",
+      "source_sha256": "a5ae716325db7c17cde90bfc44441fc0771cb4b098bd7ec9e7be2f6701fcbfdb",
+      "source_shard": 20,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 31,
+          "state": 2445
+        },
+        {
+          "left": 16,
+          "right": 32,
+          "state": 2454
+        },
+        {
+          "left": 20,
+          "right": 21,
+          "state": 2536
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-98",
+      "source_run": "run-063",
+      "source_sha256": "55da014ab04032946bfc0dd0a9d9604b0548c70df48aaa936647a781278170be",
+      "source_shard": 48,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 30,
+          "state": 2897
+        },
+        {
+          "left": 2,
+          "right": 12,
+          "state": 4517
+        },
+        {
+          "left": 2,
+          "right": 12,
+          "state": 5003
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-99",
+      "source_run": "run-063",
+      "source_sha256": "de0d52ad10dc4eab5e91e5953cdb1ad85071e2167d1505a4c96c53ef813f5132",
+      "source_shard": 7,
+      "target_event": {
+        "state": 2411,
+        "supported_matchings": [
+          0,
+          12,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 3,
+          "right": 18,
+          "state": 2926
+        },
+        {
+          "left": 1,
+          "right": 13,
+          "state": 2953
+        },
+        {
+          "left": 13,
+          "right": 14,
+          "state": 2968
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-100",
+      "source_run": "run-063",
+      "source_sha256": "7ae967a85b6d29f50eeb639a2d21dd37980bca26dbb8034a84637e1595b26314",
+      "source_shard": 16,
+      "target_event": {
+        "state": 3097,
+        "supported_matchings": [
+          9,
+          11,
+          21
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 27,
+          "right": 29,
+          "state": 3234
+        },
+        {
+          "left": 13,
+          "right": 15,
+          "state": 4935
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-101",
+      "source_run": "run-063",
+      "source_sha256": "d524ab45dafc4f5ba7f25ec443fb8cc1e2a2bf908bd819e8e12245c7745c0352",
+      "source_shard": 59,
+      "target_event": {
+        "state": 4692,
+        "supported_matchings": [
+          6,
+          8,
+          13,
+          15
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 16,
+          "right": 18,
+          "state": 4161
+        },
+        {
+          "left": 16,
+          "right": 18,
+          "state": 4164
+        },
+        {
+          "left": 3,
+          "right": 18,
+          "state": 4170
+        },
+        {
+          "left": 15,
+          "right": 17,
+          "state": 4191
+        },
+        {
+          "left": 1,
+          "right": 13,
+          "state": 4197
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-102",
+      "source_run": "run-063",
+      "source_sha256": "983c0d10fc342bcc58f34381339c25cdd3889663f0f99947978044f282dee8c8",
+      "source_shard": 46,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 26,
+          "right": 27,
+          "state": 5644
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-103",
+      "source_run": "run-063",
+      "source_sha256": "3313648b6e69f52bf30566e444bf10b0b2bb5f08a2a8deb988ba42fe95dceb5a",
+      "source_shard": 1,
+      "target_event": {
+        "state": 5401,
+        "supported_matchings": [
+          26,
+          27,
+          28
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 2,
+          "state": 6484
+        },
+        {
+          "left": 1,
+          "right": 2,
+          "state": 6535
+        },
+        {
+          "left": 1,
+          "right": 2,
+          "state": 6538
+        }
+      ],
+      "graph": "C4+C4",
+      "id": "exact-cut-v3-104",
+      "source_run": "run-063",
+      "source_sha256": "758b0ac7c2ff74a18ad28160c683829af7a65078d7502b3878645ec25c657552",
+      "source_shard": 10,
+      "target_event": {
+        "state": 6481,
+        "supported_matchings": [
+          0,
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 10,
+          "state": 1
+        },
+        {
+          "left": 7,
+          "right": 9,
+          "state": 244
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 1459
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-105",
+      "source_run": "run-063",
+      "source_sha256": "35e5a32316e815e770b766af2fd387649df3136f36cafafab31e36324bf6923e",
+      "source_shard": 5,
+      "target_event": {
+        "state": 1702,
+        "supported_matchings": [
+          6,
+          7,
+          9,
+          11
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 26,
+          "state": 2
+        },
+        {
+          "left": 14,
+          "right": 20,
+          "state": 2918
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-106",
+      "source_run": "run-063",
+      "source_sha256": "5aa0a5f058a793bade6ba208be6f9b9678893e867397ff2a4af198fb7ecdc76d",
+      "source_shard": 50,
+      "target_event": {
+        "state": 731,
+        "supported_matchings": [
+          14,
+          20,
+          21,
+          27
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 19,
+          "state": 7
+        },
+        {
+          "left": 4,
+          "right": 5,
+          "state": 8
+        },
+        {
+          "left": 15,
+          "right": 21,
+          "state": 82
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-107",
+      "source_run": "run-063",
+      "source_sha256": "fa9de2e0474fc4ec5399ac7e54b88aacc2ca3c1260a5d63caad8c2a886b2863c",
+      "source_shard": 4,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 16,
+          "right": 17,
+          "state": 35
+        },
+        {
+          "left": 22,
+          "right": 23,
+          "state": 1979
+        },
+        {
+          "left": 28,
+          "right": 29,
+          "state": 2706
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-108",
+      "source_run": "run-063",
+      "source_sha256": "5909b23451e14a920bdc344b516296b5035491596411f0517335d71b8c9fa316",
+      "source_shard": 29,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 27,
+          "state": 43
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 1491
+        },
+        {
+          "left": 8,
+          "right": 26,
+          "state": 1510
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-109",
+      "source_run": "run-063",
+      "source_sha256": "ebee10fdd475eacdd94ac18938877a0c91b406a0a3f6839fa2a8dc093f76c3b8",
+      "source_shard": 15,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 15,
+          "state": 84
+        },
+        {
+          "left": 12,
+          "right": 14,
+          "state": 4458
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 4460
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-110",
+      "source_run": "run-063",
+      "source_sha256": "85132b224bc2a3f2eaf9cb8de5027a78d33def1113fae8eaa402b387e88c0f08",
+      "source_shard": 38,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 11,
+          "state": 88
+        },
+        {
+          "left": 1,
+          "right": 5,
+          "state": 115
+        },
+        {
+          "left": 14,
+          "right": 15,
+          "state": 276
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-111",
+      "source_run": "run-063",
+      "source_sha256": "67bae0127b6e965296b89c98006f6d4e2b03e3681c2373c72e350709856b242a",
+      "source_shard": 58,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 9,
+          "state": 163
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 2836
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 3817
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-112",
+      "source_run": "run-063",
+      "source_sha256": "b7e63cdd5ce9f4a815c22fd8d9e75bacc4be534291b0c4cff917903adfa8dd5e",
+      "source_shard": 22,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 2,
+          "state": 174
+        },
+        {
+          "left": 8,
+          "right": 18,
+          "state": 210
+        },
+        {
+          "left": 6,
+          "right": 12,
+          "state": 1668
+        },
+        {
+          "left": 20,
+          "right": 26,
+          "state": 4398
+        },
+        {
+          "left": 14,
+          "right": 27,
+          "state": 5856
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-113",
+      "source_run": "run-063",
+      "source_sha256": "fc3efe1326beef84743cf5379663b587b71ad71f358204ed858dc11099238d0c",
+      "source_shard": 34,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 18,
+          "state": 243
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 249
+        },
+        {
+          "left": 6,
+          "right": 8,
+          "state": 250
+        },
+        {
+          "left": 13,
+          "right": 19,
+          "state": 342
+        },
+        {
+          "left": 4,
+          "right": 5,
+          "state": 2514
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-114",
+      "source_run": "run-063",
+      "source_sha256": "07158d07f58bb4ed1806cb0972f4c45c285890b694b6ff4331b5b7ce5d8dab84",
+      "source_shard": 49,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 9,
+          "right": 16,
+          "state": 249
+        },
+        {
+          "left": 4,
+          "right": 10,
+          "state": 252
+        },
+        {
+          "left": 9,
+          "right": 13,
+          "state": 276
+        },
+        {
+          "left": 4,
+          "right": 10,
+          "state": 279
+        },
+        {
+          "left": 7,
+          "right": 16,
+          "state": 492
+        },
+        {
+          "left": 15,
+          "right": 21,
+          "state": 1707
+        },
+        {
+          "left": 19,
+          "right": 21,
+          "state": 1734
+        },
+        {
+          "left": 15,
+          "right": 22,
+          "state": 1950
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-115",
+      "source_run": "run-063",
+      "source_sha256": "1651c330e04fbad2ca6eb70ce2e1caeb6f7fe94c9420622dd8fdde073ba9f1fb",
+      "source_shard": 18,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 16,
+          "right": 29,
+          "state": 304
+        },
+        {
+          "left": 22,
+          "right": 28,
+          "state": 2005
+        },
+        {
+          "left": 17,
+          "right": 23,
+          "state": 6136
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-116",
+      "source_run": "run-063",
+      "source_sha256": "7191dae83ea84bbe45c4081d1c4d311044ed7e9900c641dce7c45e6285a8acbf",
+      "source_shard": 48,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 9,
+          "state": 319
+        },
+        {
+          "left": 7,
+          "right": 9,
+          "state": 1048
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 4675
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-117",
+      "source_run": "run-063",
+      "source_sha256": "aff42e5160ce44992b520b2e343656f5480f53ba50eba40ac334527039fbee3c",
+      "source_shard": 8,
+      "target_event": {
+        "state": 5404,
+        "supported_matchings": [
+          6,
+          8,
+          10,
+          11
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 10,
+          "state": 353
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 567
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 2054
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-118",
+      "source_run": "run-063",
+      "source_sha256": "ecfd6ef5cbc365bbc3cbdbe0efb915ffa77789098ce05dc6f129d0a0e66ffa97",
+      "source_shard": 41,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 4,
+          "state": 378
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 468
+        },
+        {
+          "left": 2,
+          "right": 3,
+          "state": 483
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-119",
+      "source_run": "run-063",
+      "source_sha256": "3093cecfda1a333984a36209f5cddea59cf81ebc5a7c6b14f3e2a2350fa1ba2f",
+      "source_shard": 13,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 21,
+          "state": 405
+        },
+        {
+          "left": 4,
+          "right": 5,
+          "state": 410
+        },
+        {
+          "left": 13,
+          "right": 19,
+          "state": 465
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-120",
+      "source_run": "run-063",
+      "source_sha256": "9372f303ca73b88e13e43e553984cdc8473aec1a39fde7d193468d5557484a48",
+      "source_shard": 2,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 411
+        },
+        {
+          "left": 17,
+          "right": 23,
+          "state": 412
+        },
+        {
+          "left": 13,
+          "right": 19,
+          "state": 2626
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-121",
+      "source_run": "run-063",
+      "source_sha256": "d43dcf9fc7ac4d7524d86326d04e6634d254a07109d88dd4e0d63d4d9e72d591",
+      "source_shard": 1,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 27,
+          "state": 415
+        },
+        {
+          "left": 21,
+          "right": 23,
+          "state": 900
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 1620
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-122",
+      "source_run": "run-063",
+      "source_sha256": "abfed533fb0ece4107df2885cca3b348add828c31e4a1198f5356620aec43a1a",
+      "source_shard": 35,
+      "target_event": {
+        "state": 1873,
+        "supported_matchings": [
+          8,
+          9,
+          10,
+          29
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 17,
+          "right": 28,
+          "state": 417
+        },
+        {
+          "left": 22,
+          "right": 23,
+          "state": 444
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-123",
+      "source_run": "run-063",
+      "source_sha256": "09de4925c33e95d4b49e1c9ec6b0882d2b004dd1ce91b5f5994adf4524aac251",
+      "source_shard": 25,
+      "target_event": {
+        "state": 1902,
+        "supported_matchings": [
+          16,
+          22,
+          23,
+          29
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 4,
+          "state": 436
+        },
+        {
+          "left": 3,
+          "right": 5,
+          "state": 2137
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 4081
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-124",
+      "source_run": "run-063",
+      "source_sha256": "5ec06fa1e4f1204421bc97859bd50f26c0391e799e4692f81d273892b36a7e80",
+      "source_shard": 40,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 21,
+          "state": 447
+        },
+        {
+          "left": 20,
+          "right": 26,
+          "state": 2877
+        },
+        {
+          "left": 16,
+          "right": 29,
+          "state": 4011
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-125",
+      "source_run": "run-063",
+      "source_sha256": "f2b907f97dfa039a301b0c192239f9a4e2e263960d98162f2a2b63767f8ef33c",
+      "source_shard": 52,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 11,
+          "state": 486
+        },
+        {
+          "left": 6,
+          "right": 7,
+          "state": 2436
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 2673
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-126",
+      "source_run": "run-063",
+      "source_sha256": "124019fff00a584839af420bed6e22a7caebc28c8d9f9ffe30899690ed59e2ee",
+      "source_shard": 63,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 21,
+          "state": 489
+        },
+        {
+          "left": 20,
+          "right": 26,
+          "state": 4620
+        },
+        {
+          "left": 16,
+          "right": 29,
+          "state": 4944
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-127",
+      "source_run": "run-063",
+      "source_sha256": "3a223647dda48c5dbf093b854f151ddc5aa63ca14eddca915334de117ab14c05",
+      "source_shard": 32,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 9,
+          "right": 10,
+          "state": 496
+        },
+        {
+          "left": 3,
+          "right": 4,
+          "state": 541
+        },
+        {
+          "left": 20,
+          "right": 21,
+          "state": 636
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-128",
+      "source_run": "run-063",
+      "source_sha256": "47e057f8155e301fa0d791288776120335bc8115bef512b8cb20cd62bf9ec213",
+      "source_shard": 44,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 18,
+          "state": 595
+        },
+        {
+          "left": 6,
+          "right": 12,
+          "state": 604
+        },
+        {
+          "left": 16,
+          "right": 22,
+          "state": 685
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-129",
+      "source_run": "run-063",
+      "source_sha256": "e0bdf2497cbeb7864d662e3d7eef9fc4878f0e4b3302f2b87190570b858497f6",
+      "source_shard": 39,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 21,
+          "state": 738
+        },
+        {
+          "left": 19,
+          "right": 21,
+          "state": 1224
+        },
+        {
+          "left": 7,
+          "right": 9,
+          "state": 1258
+        },
+        {
+          "left": 16,
+          "right": 23,
+          "state": 3003
+        },
+        {
+          "left": 22,
+          "right": 23,
+          "state": 3489
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-130",
+      "source_run": "run-063",
+      "source_sha256": "96ce50c213932f2b728198a5b58bba2774347281b83aa8e57e4ecf24c1627c58",
+      "source_shard": 60,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 762
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 4436
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 5379
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-131",
+      "source_run": "run-063",
+      "source_sha256": "8962ad0b5b9bb77ee4f12a909d1c1e9645c05cf4dee595a020206bdaff93d69c",
+      "source_shard": 19,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 20,
+          "right": 26,
+          "state": 765
+        },
+        {
+          "left": 18,
+          "right": 24,
+          "state": 900
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 902
+        },
+        {
+          "left": 9,
+          "right": 11,
+          "state": 974
+        },
+        {
+          "left": 14,
+          "right": 15,
+          "state": 1243
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-132",
+      "source_run": "run-063",
+      "source_sha256": "c0cb8db55be4d017a3d4900d1481c11dcaafd94924a8e35b293172c76dcd7e50",
+      "source_shard": 23,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 13,
+          "state": 858
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 1074
+        },
+        {
+          "left": 6,
+          "right": 11,
+          "state": 3018
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 3261
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-133",
+      "source_run": "run-063",
+      "source_sha256": "3bdf27c53b723ea8532f6d694bf00be10f4f92f1abfe92d0fbee91b6d359f6f4",
+      "source_shard": 59,
+      "target_event": {
+        "state": 831,
+        "supported_matchings": [
+          6,
+          7,
+          9,
+          11
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 3,
+          "state": 919
+        },
+        {
+          "left": 4,
+          "right": 5,
+          "state": 3106
+        },
+        {
+          "left": 0,
+          "right": 2,
+          "state": 5212
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-134",
+      "source_run": "run-063",
+      "source_sha256": "5a5417c404dab383d1f5899e3abda24b0869af8b97f872c126299d9528aea4d2",
+      "source_shard": 10,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 21,
+          "state": 949
+        },
+        {
+          "left": 14,
+          "right": 27,
+          "state": 4603
+        },
+        {
+          "left": 22,
+          "right": 28,
+          "state": 5257
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-135",
+      "source_run": "run-063",
+      "source_sha256": "02e1905f1e76a4c631cc48495c259d01f49e0baf3975e6c9045d7a9f202512a5",
+      "source_shard": 16,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 19,
+          "right": 23,
+          "state": 954
+        },
+        {
+          "left": 9,
+          "right": 29,
+          "state": 958
+        },
+        {
+          "left": 11,
+          "right": 25,
+          "state": 964
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-136",
+      "source_run": "run-063",
+      "source_sha256": "ab08b4fd8ff0227ae3aeff2bd5b6ef5783d3931a0c81c41a465a948df99bce75",
+      "source_shard": 51,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 5,
+          "state": 999
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 1485
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 3915
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-137",
+      "source_run": "run-063",
+      "source_sha256": "bde2657d471d750df6648ba8dbc8f7284090facbab361d0f4a9f761d9551f99c",
+      "source_shard": 43,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 18,
+          "state": 1026
+        },
+        {
+          "left": 6,
+          "right": 8,
+          "state": 1110
+        },
+        {
+          "left": 16,
+          "right": 22,
+          "state": 5376
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-138",
+      "source_run": "run-063",
+      "source_sha256": "3fe0987b94d26316c62725d6b7aaa89637dae5d14d2b27310e27402591d07bfb",
+      "source_shard": 30,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 13,
+          "state": 1151
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 2115
+        },
+        {
+          "left": 10,
+          "right": 11,
+          "state": 3573
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-139",
+      "source_run": "run-063",
+      "source_sha256": "ee7b6c18bfb709e10d49c27a282bb8c785c50cc07da95599eee06b3cb67d7d5c",
+      "source_shard": 61,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 11,
+          "state": 1225
+        },
+        {
+          "left": 18,
+          "right": 19,
+          "state": 1262
+        },
+        {
+          "left": 7,
+          "right": 10,
+          "state": 1396
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-140",
+      "source_run": "run-063",
+      "source_sha256": "1b611e85399a8929523ab51c0a42b9d4caa7b731351c10ce7fd95a026a084d0d",
+      "source_shard": 36,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 29,
+          "state": 1296
+        },
+        {
+          "left": 17,
+          "right": 23,
+          "state": 1297
+        },
+        {
+          "left": 16,
+          "right": 22,
+          "state": 1324
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-141",
+      "source_run": "run-063",
+      "source_sha256": "efb4c3ce3b0be2e0875fc9f814ba66bdfb1903daa730a79bb2f02e955de3562d",
+      "source_shard": 12,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 19,
+          "right": 25,
+          "state": 1470
+        },
+        {
+          "left": 18,
+          "right": 24,
+          "state": 1479
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-142",
+      "source_run": "run-063",
+      "source_sha256": "7d659608444d2f23c7deedd20bfd4ec724183f2d9d04288b36ba41b66f44d227",
+      "source_shard": 20,
+      "target_event": {
+        "state": 1713,
+        "supported_matchings": [
+          12,
+          13,
+          18,
+          24
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 1,
+          "state": 1707
+        },
+        {
+          "left": 6,
+          "right": 7,
+          "state": 1708
+        },
+        {
+          "left": 14,
+          "right": 15,
+          "state": 2032
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-143",
+      "source_run": "run-063",
+      "source_sha256": "a4465eaf5ec383a9cf28c215634701a3dea3774995c1474ec9003154b068fb67",
+      "source_shard": 3,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 24,
+          "state": 1758
+        },
+        {
+          "left": 20,
+          "right": 26,
+          "state": 1842
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 2002
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-144",
+      "source_run": "run-063",
+      "source_sha256": "ac3d2e50022791caf9536b119487b2e52e3ea86ab7ca84f35162736a1ae7ece3",
+      "source_shard": 14,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 25,
+          "right": 27,
+          "state": 1799
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-145",
+      "source_run": "run-063",
+      "source_sha256": "9aef4e1fb41526eb76bdd24ad57c223f9da5bdb0423d1f0109f5f130ef2e259b",
+      "source_shard": 7,
+      "target_event": {
+        "state": 1790,
+        "supported_matchings": [
+          25,
+          27,
+          29
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 11,
+          "state": 1810
+        },
+        {
+          "left": 8,
+          "right": 9,
+          "state": 1834
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-146",
+      "source_run": "run-063",
+      "source_sha256": "fa655da5cfa89d16b830ebe283ca6777eccc3f3088c04c992bde04a6be18aca3",
+      "source_shard": 21,
+      "target_event": {
+        "state": 1828,
+        "supported_matchings": [
+          6,
+          7,
+          10,
+          11
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 4,
+          "state": 1917
+        },
+        {
+          "left": 7,
+          "right": 21,
+          "state": 1918
+        },
+        {
+          "left": 10,
+          "right": 20,
+          "state": 1927
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-147",
+      "source_run": "run-063",
+      "source_sha256": "7155b50cb8725f6fd7bac1b89199521e4a020afb330f9e3d7d69f0e695beace9",
+      "source_shard": 37,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 11,
+          "state": 2203
+        },
+        {
+          "left": 25,
+          "right": 27,
+          "state": 2227
+        },
+        {
+          "left": 28,
+          "right": 29,
+          "state": 3688
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 3895
+        },
+        {
+          "left": 24,
+          "right": 26,
+          "state": 3919
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-148",
+      "source_run": "run-063",
+      "source_sha256": "e585b5c26d1e17c5c362c142c8acff972cafed871b9321d419b1ebac18ae9009",
+      "source_shard": 47,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 19,
+          "state": 2223
+        },
+        {
+          "left": 13,
+          "right": 24,
+          "state": 2305
+        },
+        {
+          "left": 12,
+          "right": 25,
+          "state": 3691
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-149",
+      "source_run": "run-063",
+      "source_sha256": "ee6e79150bc854872ba42431bd66920aceb78098714cfdf96e5cbbfa7f3fb799",
+      "source_shard": 6,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 19,
+          "right": 22,
+          "state": 2270
+        },
+        {
+          "left": 19,
+          "right": 22,
+          "state": 2513
+        },
+        {
+          "left": 19,
+          "right": 22,
+          "state": 2522
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-150",
+      "source_run": "run-063",
+      "source_sha256": "3cc8a33b0fd7c6e4a8bbbe4659906626f76f40248619e0acd1c0da6add871868",
+      "source_shard": 46,
+      "target_event": {
+        "state": 2279,
+        "supported_matchings": [
+          18,
+          19,
+          22
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 23,
+          "state": 2302
+        },
+        {
+          "left": 12,
+          "right": 17,
+          "state": 3274
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 5136
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-151",
+      "source_run": "run-063",
+      "source_sha256": "57604b912d2f6ffcdcae808c2e5f23f4b1752afd57dc4775b56357cd81d49c7a",
+      "source_shard": 55,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 25,
+          "right": 27,
+          "state": 2313
+        },
+        {
+          "left": 4,
+          "right": 5,
+          "state": 3760
+        },
+        {
+          "left": 24,
+          "right": 26,
+          "state": 4239
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-152",
+      "source_run": "run-063",
+      "source_sha256": "76e11de5f8046d5ce09d7445c13f4368319b311d7e056293cfc9b2e2ab23180f",
+      "source_shard": 57,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 22,
+          "right": 23,
+          "state": 2323
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-153",
+      "source_run": "run-063",
+      "source_sha256": "3c6ed16a325a331da2a32e895985559bcfe79797734e911af06fdf1ad969ba45",
+      "source_shard": 42,
+      "target_event": {
+        "state": 2242,
+        "supported_matchings": [
+          21,
+          22,
+          23
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 17,
+          "right": 28,
+          "state": 2341
+        },
+        {
+          "left": 7,
+          "right": 15,
+          "state": 2404
+        },
+        {
+          "left": 10,
+          "right": 26,
+          "state": 2899
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-154",
+      "source_run": "run-063",
+      "source_sha256": "33ab017c636bc0ad83b1f0d41e7990b33bf0ea4d6dff4df16e47c8c563d3f2d9",
+      "source_shard": 17,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 2352
+        },
+        {
+          "left": 2,
+          "right": 3,
+          "state": 4539
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 5025
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-155",
+      "source_run": "run-063",
+      "source_sha256": "2d9d451ff5770c6e0ed26769903368bb58f07cce66984d3d056312088f337677",
+      "source_shard": 31,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 24,
+          "state": 2544
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 2572
+        },
+        {
+          "left": 22,
+          "right": 28,
+          "state": 2814
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-156",
+      "source_run": "run-063",
+      "source_sha256": "e15f387c6b747a7504b676722aae8a37e80de98129f66b527abfd9bd7b16eb21",
+      "source_shard": 56,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 22,
+          "right": 23,
+          "state": 2922
+        },
+        {
+          "left": 16,
+          "right": 17,
+          "state": 3652
+        },
+        {
+          "left": 28,
+          "right": 29,
+          "state": 5838
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-157",
+      "source_run": "run-063",
+      "source_sha256": "e383b257392f9022ccdd5d1fa60f7cb48864978928b1022779e605c3d1bc3757",
+      "source_shard": 54,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 3646
+        },
+        {
+          "left": 28,
+          "right": 29,
+          "state": 3668
+        },
+        {
+          "left": 1,
+          "right": 3,
+          "state": 3676
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-158",
+      "source_run": "run-063",
+      "source_sha256": "5eac4190b73800232b9c1d84c5289abf16ed93d5128607c14b993baf7354b1ab",
+      "source_shard": 62,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 16,
+          "right": 23,
+          "state": 3651
+        },
+        {
+          "left": 16,
+          "right": 23,
+          "state": 3653
+        },
+        {
+          "left": 17,
+          "right": 23,
+          "state": 3675
+        },
+        {
+          "left": 14,
+          "right": 20,
+          "state": 3815
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 3841
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-159",
+      "source_run": "run-063",
+      "source_sha256": "641453d6f31b0019a9e1fd53ec904a8730608fd38bd1b728c3ace1787bfdf780",
+      "source_shard": 53,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 3,
+          "right": 28,
+          "state": 3722
+        },
+        {
+          "left": 3,
+          "right": 29,
+          "state": 3945
+        },
+        {
+          "left": 3,
+          "right": 29,
+          "state": 3965
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-160",
+      "source_run": "run-063",
+      "source_sha256": "de4cef3e955c5f28ff3b88b6ac34386afb445658185234bcb43f6167e4c0c43c",
+      "source_shard": 45,
+      "target_event": {
+        "state": 3702,
+        "supported_matchings": [
+          3,
+          22,
+          28
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 4104
+        },
+        {
+          "left": 2,
+          "right": 3,
+          "state": 4833
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 6048
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-161",
+      "source_run": "run-063",
+      "source_sha256": "5d22dbaf99f3e90d2103123b9e250240d25a174e26a9eb297c8a76ae1cd3ca46",
+      "source_shard": 33,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 3,
+          "right": 5,
+          "state": 4377
+        },
+        {
+          "left": 2,
+          "right": 4,
+          "state": 4539
+        },
+        {
+          "left": 0,
+          "right": 1,
+          "state": 4785
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-162",
+      "source_run": "run-063",
+      "source_sha256": "b4e071467046f021fc53dc0f9a1d0835dd02b0692959c897555b7c86ed3cbff1",
+      "source_shard": 11,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 26,
+          "state": 4617
+        },
+        {
+          "left": 14,
+          "right": 27,
+          "state": 5346
+        },
+        {
+          "left": 20,
+          "right": 21,
+          "state": 5347
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-163",
+      "source_run": "run-063",
+      "source_sha256": "2e4ffe09d67de848dff27ba3fdac11f14ed12643b053b3577f8764e1717df1bc",
+      "source_shard": 9,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 3,
+          "state": 4867
+        },
+        {
+          "left": 18,
+          "right": 19,
+          "state": 4918
+        },
+        {
+          "left": 20,
+          "right": 21,
+          "state": 4942
+        }
+      ],
+      "graph": "C5+C3",
+      "id": "exact-cut-v3-164",
+      "source_run": "run-063",
+      "source_sha256": "f799b422be017b0aa3b783d5f07fbc60b985af424f3f30be9ebfd37ded2d1473",
+      "source_shard": 26,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 10
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-165",
+      "source_run": "run-063",
+      "source_sha256": "bad026db35648f96b04383b2d836995f1c3591da33cfdddf41c090074a8178b6",
+      "source_shard": 50,
+      "target_event": {
+        "state": 36,
+        "supported_matchings": [
+          4,
+          5,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 21,
+          "right": 24,
+          "state": 18
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-166",
+      "source_run": "run-063",
+      "source_sha256": "f3b4383cbaa3d8c106962f006896a8293f61ea629f309ef4f03eb2de978b6048",
+      "source_shard": 0,
+      "target_event": {
+        "state": 19,
+        "supported_matchings": [
+          13,
+          21,
+          24
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 10,
+          "state": 30
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-167",
+      "source_run": "run-063",
+      "source_sha256": "15315090e4013dae03174729ea5fdfa587dbe6bf0ae81064584b768d115ab275",
+      "source_shard": 11,
+      "target_event": {
+        "state": 5,
+        "supported_matchings": [
+          6,
+          10,
+          26
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 7,
+          "right": 13,
+          "state": 63
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-168",
+      "source_run": "run-063",
+      "source_sha256": "abd0735b8a03601e2ad8ba4efe159b04038a3bcd2a045ae67ecc68fcf80e9173",
+      "source_shard": 9,
+      "target_event": {
+        "state": 54,
+        "supported_matchings": [
+          7,
+          13,
+          27
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 18,
+          "state": 112
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-169",
+      "source_run": "run-063",
+      "source_sha256": "086b05e80666e5dee9e2fc7e1389db662b2208b1627e8ca621cafb5549503224",
+      "source_shard": 5,
+      "target_event": {
+        "state": 109,
+        "supported_matchings": [
+          7,
+          11,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 19,
+          "right": 22,
+          "state": 117
+        },
+        {
+          "left": 19,
+          "right": 22,
+          "state": 198
+        },
+        {
+          "left": 19,
+          "right": 22,
+          "state": 846
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-170",
+      "source_run": "run-063",
+      "source_sha256": "1d43bec776cb685f5ba0e228960190211189fbb8615872f7992b3c143d09c7e9",
+      "source_shard": 6,
+      "target_event": {
+        "state": 927,
+        "supported_matchings": [
+          19,
+          20,
+          22
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 28,
+          "state": 172
+        },
+        {
+          "left": 11,
+          "right": 28,
+          "state": 4384
+        },
+        {
+          "left": 11,
+          "right": 28,
+          "state": 4546
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-171",
+      "source_run": "run-063",
+      "source_sha256": "98ad3c426b2ee1bf64aeec5cda56ef8ac611f488e332a2fd61678481b74e6c53",
+      "source_shard": 32,
+      "target_event": {
+        "state": 10,
+        "supported_matchings": [
+          11,
+          26,
+          28
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 23,
+          "state": 189
+        },
+        {
+          "left": 27,
+          "right": 30,
+          "state": 194
+        },
+        {
+          "left": 18,
+          "right": 21,
+          "state": 930
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-172",
+      "source_run": "run-063",
+      "source_sha256": "aec1a623d2f08ca501ae1e2b24990323cf171f4d4e1babc7846b9df6512eadf2",
+      "source_shard": 48,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 17,
+          "state": 206
+        },
+        {
+          "left": 2,
+          "right": 17,
+          "state": 4571
+        },
+        {
+          "left": 2,
+          "right": 17,
+          "state": 4580
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-173",
+      "source_run": "run-063",
+      "source_sha256": "aa3f40146ca83973b91b6044984cdb61c44417c433ee5cc4b5fd82b5e4e1390a",
+      "source_shard": 62,
+      "target_event": {
+        "state": 197,
+        "supported_matchings": [
+          2,
+          14,
+          17
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 1,
+          "state": 248
+        },
+        {
+          "left": 2,
+          "right": 3,
+          "state": 4622
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 4864
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-174",
+      "source_run": "run-063",
+      "source_sha256": "af3a430a5f24288dfc07195524a497fde71bc60874211b02ee86c9305134d68f",
+      "source_shard": 55,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 4,
+          "state": 250
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-175",
+      "source_run": "run-063",
+      "source_sha256": "33499cfe7d11f26fc2a1959381a3477f52a36a7d9f3724577803f30ae2712172",
+      "source_shard": 61,
+      "target_event": {
+        "state": 251,
+        "supported_matchings": [
+          0,
+          4,
+          6
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 17,
+          "right": 27,
+          "state": 265
+        },
+        {
+          "left": 11,
+          "right": 27,
+          "state": 292
+        },
+        {
+          "left": 1,
+          "right": 5,
+          "state": 492
+        },
+        {
+          "left": 9,
+          "right": 23,
+          "state": 520
+        },
+        {
+          "left": 18,
+          "right": 21,
+          "state": 1222
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-176",
+      "source_run": "run-063",
+      "source_sha256": "3cd646a021e841179f6866acdf4fb6c175bc0b040031660d8ea7d73f92f27383",
+      "source_shard": 53,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 10,
+          "right": 15,
+          "state": 270
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-177",
+      "source_run": "run-063",
+      "source_sha256": "965d1939f9ba00c0bb562064bb6562b843a0a738ba011a4da84a6a6fb7068dff",
+      "source_shard": 44,
+      "target_event": {
+        "state": 33,
+        "supported_matchings": [
+          10,
+          15,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 18,
+          "right": 30,
+          "state": 303
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-178",
+      "source_run": "run-063",
+      "source_sha256": "5bef926c98595199baef14d35b76e8491866e234d22b0eb616e7a771afb38951",
+      "source_shard": 8,
+      "target_event": {
+        "state": 297,
+        "supported_matchings": [
+          18,
+          28,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 16,
+          "right": 28,
+          "state": 330
+        },
+        {
+          "left": 6,
+          "right": 9,
+          "state": 339
+        },
+        {
+          "left": 18,
+          "right": 30,
+          "state": 4710
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-179",
+      "source_run": "run-063",
+      "source_sha256": "6d71e362cb6ba228b92ac87e97ec2c05d2045241a699b305a240f2c4c2ecc8cf",
+      "source_shard": 19,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 25,
+          "right": 30,
+          "state": 371
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-180",
+      "source_run": "run-063",
+      "source_sha256": "71355b6ac60b4628c6f782de9c1ce19a54e4b87148ff79233bbd409ef5661587",
+      "source_shard": 56,
+      "target_event": {
+        "state": 370,
+        "supported_matchings": [
+          9,
+          25,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 19,
+          "state": 405
+        },
+        {
+          "left": 15,
+          "right": 23,
+          "state": 423
+        },
+        {
+          "left": 26,
+          "right": 29,
+          "state": 424
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-181",
+      "source_run": "run-063",
+      "source_sha256": "992406001a4d6c4d8f989b08081d305b263050cbb42746ce967fbb5015bea748",
+      "source_shard": 37,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 3,
+          "state": 420
+        },
+        {
+          "left": 4,
+          "right": 5,
+          "state": 687
+        },
+        {
+          "left": 16,
+          "right": 18,
+          "state": 697
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-182",
+      "source_run": "run-063",
+      "source_sha256": "1740c1b2f68c8c02ace762ee57564cccbf3f700c94541a302d5b71fc6e04b7ae",
+      "source_shard": 18,
+      "target_event": {
+        "state": 429,
+        "supported_matchings": [
+          13,
+          14,
+          29
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 16,
+          "state": 620
+        },
+        {
+          "left": 9,
+          "right": 25,
+          "state": 685
+        },
+        {
+          "left": 9,
+          "right": 25,
+          "state": 691
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-183",
+      "source_run": "run-063",
+      "source_sha256": "a5806622ed59e647dc2670afbbdbeae2bdf5c3b9d09a5c1c25d86e384e00d0f5",
+      "source_shard": 27,
+      "target_event": {
+        "state": 614,
+        "supported_matchings": [
+          12,
+          14,
+          16
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 26,
+          "right": 27,
+          "state": 636
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-184",
+      "source_run": "run-063",
+      "source_sha256": "bfae5140ec3e1a401409dc36dccc12a2a525ec9182feeeb00ff335f7643da5a8",
+      "source_shard": 36,
+      "target_event": {
+        "state": 637,
+        "supported_matchings": [
+          15,
+          26,
+          27
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 5,
+          "state": 729
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-185",
+      "source_run": "run-063",
+      "source_sha256": "c6a7a7eeeff8c19973b5d90f303eda229b6001b2b18f201912a0d85d5e77c909",
+      "source_shard": 35,
+      "target_event": {
+        "state": 740,
+        "supported_matchings": [
+          2,
+          5,
+          26
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 14,
+          "right": 29,
+          "state": 731
+        },
+        {
+          "left": 23,
+          "right": 24,
+          "state": 732
+        },
+        {
+          "left": 16,
+          "right": 30,
+          "state": 788
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-186",
+      "source_run": "run-063",
+      "source_sha256": "bd94ead3962fa3549c6c57cb6be00c2891d57d2462ef324e271f82ec50a89373",
+      "source_shard": 30,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 14,
+          "right": 16,
+          "state": 735
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-187",
+      "source_run": "run-063",
+      "source_sha256": "fe546b03f8f3f75ad27ddf9e47af992710ef92ffc331c31391b1a2423d4483f6",
+      "source_shard": 26,
+      "target_event": {
+        "state": 736,
+        "supported_matchings": [
+          1,
+          2,
+          4
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 22,
+          "state": 783
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-188",
+      "source_run": "run-063",
+      "source_sha256": "ac9cd44791ed711b11211b32a55bcfa2b264b9d265aa4a85a598b8a1dc84ca05",
+      "source_shard": 59,
+      "target_event": {
+        "state": 57,
+        "supported_matchings": [
+          1,
+          8,
+          22
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 22,
+          "right": 28,
+          "state": 834
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-189",
+      "source_run": "run-063",
+      "source_sha256": "60ae5805dc89af3f00727b48944625a54b934f74f9276804a80c4a2c2a0ec1c0",
+      "source_shard": 57,
+      "target_event": {
+        "state": 816,
+        "supported_matchings": [
+          18,
+          22,
+          28
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 27,
+          "right": 28,
+          "state": 896
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-190",
+      "source_run": "run-063",
+      "source_sha256": "7dea79591ca2a9fa206ab7bd3aecaaf5eb34d719eda0d974536e03b981d208a2",
+      "source_shard": 63,
+      "target_event": {
+        "state": 162,
+        "supported_matchings": [
+          4,
+          27,
+          28
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 16,
+          "right": 25,
+          "state": 900
+        },
+        {
+          "left": 16,
+          "right": 25,
+          "state": 3093
+        },
+        {
+          "left": 16,
+          "right": 25,
+          "state": 3094
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-191",
+      "source_run": "run-063",
+      "source_sha256": "fa2decf8b238f42a75a959bedbd98ffdb5c7b0283c8b49e9f2d8f7b8d3602b1f",
+      "source_shard": 60,
+      "target_event": {
+        "state": 901,
+        "supported_matchings": [
+          4,
+          16,
+          25
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 3,
+          "state": 1216
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-192",
+      "source_run": "run-063",
+      "source_sha256": "7b89c4dcde6c819793f738893112d5e1e01d1bf09c83ef530ffc2b74b2c6924d",
+      "source_shard": 42,
+      "target_event": {
+        "state": 730,
+        "supported_matchings": [
+          0,
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 2,
+          "state": 1218
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-193",
+      "source_run": "run-063",
+      "source_sha256": "817cb193f492ebc36e2ebf1e2b38c4cbe36cf77b5f9081c4196e0b881ba11e64",
+      "source_shard": 17,
+      "target_event": {
+        "state": 1219,
+        "supported_matchings": [
+          6,
+          7,
+          9
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 25,
+          "right": 29,
+          "state": 1540
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-194",
+      "source_run": "run-063",
+      "source_sha256": "0df47b41ce488d2e8dcfe1ce78d3cc347cc256e2bf90b2df96ba145600200a90",
+      "source_shard": 7,
+      "target_event": {
+        "state": 1557,
+        "supported_matchings": [
+          0,
+          3,
+          11
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 8,
+          "right": 10,
+          "state": 1549
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 5923
+        },
+        {
+          "left": 8,
+          "right": 10,
+          "state": 5929
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-195",
+      "source_run": "run-063",
+      "source_sha256": "5aaefe2cc2f3b3fbed60441d344934c429021551b861edda6ab5e7103c8ed64d",
+      "source_shard": 22,
+      "target_event": {
+        "state": 1555,
+        "supported_matchings": [
+          8,
+          10,
+          11
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 5,
+          "state": 1582
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-196",
+      "source_run": "run-063",
+      "source_sha256": "448575b943c8a8ab2b08fbdf3b8ad5fd4043658424ebd257562bb3284181941e",
+      "source_shard": 21,
+      "target_event": {
+        "state": 1574,
+        "supported_matchings": [
+          2,
+          5,
+          11
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 16,
+          "state": 1644
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-197",
+      "source_run": "run-063",
+      "source_sha256": "c7056f1d3d41f0c59e5edcffa2c8629c2373148aedb48030a543dce6e96c5cf7",
+      "source_shard": 41,
+      "target_event": {
+        "state": 1645,
+        "supported_matchings": [
+          4,
+          12,
+          16
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 17,
+          "right": 24,
+          "state": 1674
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-198",
+      "source_run": "run-063",
+      "source_sha256": "94c0ef24ac5f57e4ef9070867b649dbaa470125dd45e86a1243f46adb80994a2",
+      "source_shard": 15,
+      "target_event": {
+        "state": 216,
+        "supported_matchings": [
+          17,
+          18,
+          24
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 28,
+          "right": 29,
+          "state": 1740
+        },
+        {
+          "left": 28,
+          "right": 29,
+          "state": 3951
+        },
+        {
+          "left": 28,
+          "right": 29,
+          "state": 3954
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-199",
+      "source_run": "run-063",
+      "source_sha256": "8849ae19d4228ffcc659b18449e78afa21a522387c4d293d4e3a766ed3b46ece",
+      "source_shard": 4,
+      "target_event": {
+        "state": 1737,
+        "supported_matchings": [
+          28,
+          29,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 9,
+          "right": 24,
+          "state": 1783
+        },
+        {
+          "left": 1,
+          "right": 6,
+          "state": 1795
+        },
+        {
+          "left": 23,
+          "right": 24,
+          "state": 1837
+        },
+        {
+          "left": 25,
+          "right": 29,
+          "state": 1848
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-200",
+      "source_run": "run-063",
+      "source_sha256": "41398ce9626f8b95d8067db41d5c1b1d474c9591530d75a6d1a410ea270135a5",
+      "source_shard": 49,
+      "target_event": {
+        "state": 1930,
+        "supported_matchings": [
+          0,
+          2,
+          3,
+          12,
+          13,
+          19
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 19,
+          "right": 20,
+          "state": 1866
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-201",
+      "source_run": "run-063",
+      "source_sha256": "dd8bbb2915ffd37083fdcd75496516e958896fad5c15ae8a7b4b7ef29b2997d3",
+      "source_shard": 52,
+      "target_event": {
+        "state": 1869,
+        "supported_matchings": [
+          6,
+          7,
+          8
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 16,
+          "right": 17,
+          "state": 2113
+        },
+        {
+          "left": 16,
+          "right": 17,
+          "state": 4300
+        },
+        {
+          "left": 16,
+          "right": 17,
+          "state": 4327
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-202",
+      "source_run": "run-063",
+      "source_sha256": "39ef854cb94c3f4ba3c83068ee8985ab8f5207a6e624d344c332345ef302abbc",
+      "source_shard": 39,
+      "target_event": {
+        "state": 2140,
+        "supported_matchings": [
+          15,
+          16,
+          17
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 9,
+          "right": 24,
+          "state": 2187
+        },
+        {
+          "left": 23,
+          "right": 24,
+          "state": 2241
+        },
+        {
+          "left": 8,
+          "right": 22,
+          "state": 2268
+        },
+        {
+          "left": 20,
+          "right": 22,
+          "state": 2322
+        },
+        {
+          "left": 0,
+          "right": 3,
+          "state": 3701
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-203",
+      "source_run": "run-063",
+      "source_sha256": "915fe8fa5c67c6df1f527d7fcb862180662fb7e01fb4c1810387e95ba3aa19c2",
+      "source_shard": 14,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 5,
+          "state": 2194
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-204",
+      "source_run": "run-063",
+      "source_sha256": "ac39e99b805daeaf27150c566d580cdfd394ae18b5b90608214ba07c8a1dec96",
+      "source_shard": 10,
+      "target_event": {
+        "state": 2202,
+        "supported_matchings": [
+          1,
+          5,
+          17
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 3,
+          "state": 2269
+        },
+        {
+          "left": 14,
+          "right": 20,
+          "state": 2286
+        },
+        {
+          "left": 13,
+          "right": 19,
+          "state": 3726
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-205",
+      "source_run": "run-063",
+      "source_sha256": "4f8280b3bd6a1d42b4dce224d365efe0e913b90b2f342a36da6ee2e66782d0bb",
+      "source_shard": 24,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 2,
+          "right": 4,
+          "state": 2748
+        },
+        {
+          "left": 25,
+          "right": 29,
+          "state": 4917
+        },
+        {
+          "left": 7,
+          "right": 9,
+          "state": 5052
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-206",
+      "source_run": "run-063",
+      "source_sha256": "b603ba56ef7a68a79e525fcf04688e24dfe18dae3abfdce2c2c2b6c66399fadc",
+      "source_shard": 12,
+      "target_event": {
+        "state": 5080,
+        "supported_matchings": [
+          2,
+          4,
+          19,
+          23
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 13,
+          "right": 18,
+          "state": 2748
+        },
+        {
+          "left": 15,
+          "right": 17,
+          "state": 3460
+        },
+        {
+          "left": 14,
+          "right": 16,
+          "state": 5646
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-207",
+      "source_run": "run-063",
+      "source_sha256": "171a4c9e7263196a4708d378616ad7269136508ec553ad951d947412e3f2e358",
+      "source_shard": 33,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 22,
+          "right": 28,
+          "state": 2793
+        },
+        {
+          "left": 4,
+          "right": 10,
+          "state": 2796
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-208",
+      "source_run": "run-063",
+      "source_sha256": "746e6e2b949aff3f9ed586b5ea766e7cb02d99bb99ac28772a21c414457610ee",
+      "source_shard": 54,
+      "target_event": {
+        "state": 2709,
+        "supported_matchings": [
+          5,
+          8,
+          11,
+          24,
+          30
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 12,
+          "right": 18,
+          "state": 2916
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-209",
+      "source_run": "run-063",
+      "source_sha256": "d55a4e2880c496d52b59ae1e8b01ff2a5af4604fd03eb977b8717ee3e503c026",
+      "source_shard": 20,
+      "target_event": {
+        "state": 2187,
+        "supported_matchings": [
+          12,
+          16,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 2919
+        },
+        {
+          "left": 7,
+          "right": 8,
+          "state": 2931
+        },
+        {
+          "left": 16,
+          "right": 18,
+          "state": 3090
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-210",
+      "source_run": "run-063",
+      "source_sha256": "32b476d9f73daa8f12e2e49d4d24b27bddfeb09ea98bd1315de4ebde53640980",
+      "source_shard": 45,
+      "target_event": null
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 27,
+          "right": 28,
+          "state": 2953
+        },
+        {
+          "left": 21,
+          "right": 22,
+          "state": 3681
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-211",
+      "source_run": "run-063",
+      "source_sha256": "ccf508874185dacfc42d612e01b70681bbd67507619480277a9bc7e72a856f9d",
+      "source_shard": 29,
+      "target_event": {
+        "state": 3763,
+        "supported_matchings": [
+          15,
+          16,
+          17,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 11,
+          "right": 24,
+          "state": 2998
+        },
+        {
+          "left": 11,
+          "right": 24,
+          "state": 3079
+        },
+        {
+          "left": 11,
+          "right": 24,
+          "state": 3105
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-212",
+      "source_run": "run-063",
+      "source_sha256": "fcf56ea0d4e4a439b537775027b07346dabe70883e04ad56f727074e03f1ee24",
+      "source_shard": 34,
+      "target_event": {
+        "state": 3024,
+        "supported_matchings": [
+          11,
+          24,
+          27
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 0,
+          "right": 1,
+          "state": 3112
+        },
+        {
+          "left": 26,
+          "right": 27,
+          "state": 5055
+        },
+        {
+          "left": 15,
+          "right": 17,
+          "state": 5619
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-213",
+      "source_run": "run-063",
+      "source_sha256": "4569f748877fdd835802350eff2d7f22fcdd11e5fd4232d0fa0e9aced892bafb",
+      "source_shard": 28,
+      "target_event": {
+        "state": 5296,
+        "supported_matchings": [
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 4,
+          "right": 5,
+          "state": 3761
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-214",
+      "source_run": "run-063",
+      "source_sha256": "cdbfc113e9967cbbea03ab24759e90aa1040c361a838f2eb5a291933839c8949",
+      "source_shard": 51,
+      "target_event": {
+        "state": 3770,
+        "supported_matchings": [
+          4,
+          5,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 1,
+          "right": 2,
+          "state": 3922
+        },
+        {
+          "left": 16,
+          "right": 20,
+          "state": 4671
+        },
+        {
+          "left": 14,
+          "right": 22,
+          "state": 6108
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-215",
+      "source_run": "run-063",
+      "source_sha256": "f11db226e8dfcc7468e705615b8df825b5f221f2befce76694e98bc16c00a6f8",
+      "source_shard": 31,
+      "target_event": {
+        "state": 2485,
+        "supported_matchings": [
+          0,
+          4,
+          5
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 15,
+          "right": 17,
+          "state": 4679
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-216",
+      "source_run": "run-063",
+      "source_sha256": "c8088128650bd85773d445b88fc1a2d058df5da1469fda8a8c738d76ab04fd9d",
+      "source_shard": 2,
+      "target_event": {
+        "state": 4445,
+        "supported_matchings": [
+          15,
+          17,
+          18
+        ]
+      }
+    },
+    {
+      "binomial_events": [
+        {
+          "left": 6,
+          "right": 9,
+          "state": 4721
+        }
+      ],
+      "graph": "C8",
+      "id": "exact-cut-v3-217",
+      "source_run": "run-063",
+      "source_sha256": "ac8d561808c25339e0184fe635d34d5479d80e2e1b97ed133a48d97d7dcd7788",
+      "source_shard": 38,
+      "target_event": {
+        "state": 590,
+        "supported_matchings": [
+          6,
+          9,
+          11
+        ]
+      }
+    }
+  ],
+  "private_proof_bundle_sha256": "dc0c32bc5cb58b3234070fcb84001375026937277374e7091c48b118a3239026",
+  "schema_version": 1,
+  "semantics": "exact-event-conjunction-nogood-v1",
+  "version": 3
+}

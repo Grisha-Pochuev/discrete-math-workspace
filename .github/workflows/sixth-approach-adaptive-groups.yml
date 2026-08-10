@@ -53,6 +53,9 @@ jobs:
           python 'sixth approach/run062_cut_contract.py' \
             --bundle 'sixth approach/specs/run-062-exact-event-cuts.json' \
             --header 'sixth approach/run052_adaptive/exact_event_cuts_v2.h'
+          python 'sixth approach/run064_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-064-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v3.h'
           python - <<'PY'
           import hashlib
           import json
@@ -79,12 +82,17 @@ jobs:
           assert spec['workers_per_shard'] == 1
           assert spec['worker_language'] == 'C++20'
           assert spec['solver'] == 'OR-Tools CP-SAT v9.15.6755'
-          assert spec['exact_cut_version'] == 2
+          assert spec['exact_cut_version'] in (2, 3)
           assert spec['job_timeout_minutes'] == 150
+          header_path = (
+              'sixth approach/run052_adaptive/exact_event_cuts_v2.h'
+              if spec['exact_cut_version'] == 2
+              else 'sixth approach/run052_adaptive/exact_event_cuts_v3.h'
+          )
           files = {
               spec['cut_bundle_path']: spec['cut_bundle_sha256'],
               'sixth approach/run052_adaptive/exact_event_cuts.h': spec['cut_header_v1_sha256'],
-              'sixth approach/run052_adaptive/exact_event_cuts_v2.h': spec['cut_header_sha256'],
+              header_path: spec['cut_header_sha256'],
               'sixth approach/run052_adaptive/main.cpp': spec['worker_source_sha256'],
           }
           for relative, expected in files.items():
@@ -164,6 +172,9 @@ jobs:
           python 'sixth approach/run062_cut_contract.py' \
             --bundle 'sixth approach/specs/run-062-exact-event-cuts.json' \
             --header 'sixth approach/run052_adaptive/exact_event_cuts_v2.h'
+          python 'sixth approach/run064_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-064-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v3.h'
 
       - name: Fetch verified native toolkit
         shell: bash
@@ -210,6 +221,7 @@ jobs:
             sha256sum "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker"
             sha256sum 'sixth approach/run052_adaptive/main.cpp'
             sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v2.h'
+            sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v3.h'
             sha256sum "$CALC_SPEC_PATH"
           } > "$target/group-${{ matrix.group }}-diagnostics.log"
 
