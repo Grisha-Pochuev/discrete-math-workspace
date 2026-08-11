@@ -27,7 +27,9 @@ tree, not in this repository.
   coverage. Scientific counterexamples are data, not technical failures.
 - Before a large run, inspect all queued, pending, waiting, requested, and
   in-progress Actions jobs on every branch and workflow.
-- Never run an individual local computation for more than 15 minutes.
+- Reserve two runner slots for unrelated work and use at most 18 concurrent
+  GitHub compute jobs in this track until the user changes that allocation.
+- Never run an individual local computation for more than 20 minutes.
 
 ## Archive contract
 
