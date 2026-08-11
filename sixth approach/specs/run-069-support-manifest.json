@@ -1,0 +1,27 @@
+{
+  "clause_count": 108913,
+  "clauses_sha256": "f1edb39ed932059b14ec79fee59301c888c7886b761dcd6b21066608c9dda097",
+  "dimacs_sha256": "3d89df32670e44f898c1063d71c5861cbdf7bb2b8bac960f5b62373c54fc651c",
+  "evidence_level": "immutable pure-CNF contract; solve outcome separate",
+  "global_claim": false,
+  "metadata": {
+    "active_variables": 108,
+    "cross_exact": 21,
+    "cut_representatives": 8,
+    "diagonal_constraint": "none",
+    "equations": 2916,
+    "monomial_variables": 17496,
+    "objective_relation": "cross count fixed at the first value not excluded by the certified C>=21 theorem",
+    "orbit_closed_cut_patterns": 132,
+    "support_region": "cross_eq21"
+  },
+  "schema": "three-arm-dense-support-region-cnf-v1",
+  "scope": "cross=21 constructive first-feasible-layer probe after the certified C>=21 theorem",
+  "source_hashes": {
+    "three_arm_dense_binomial_cut_probe.json": "d45074ec30a6c48a287eef5a215565bec5e037c36526812db173f21a3111bbaa",
+    "three_arm_dense_character_certificate.json": "7042dc2b474a9440f5df86692023c2334a061fc7660c751741a0ed5e3c87254d",
+    "three_arm_dense_character_certificate_002.json": "fd2adfb5572049bf39968c69c865cc5ca655741df23767c1899a5178ef5e68d2",
+    "three_arm_dense_character_certificate_003.json": "d265daddb942fcf2afd6e2fad80c56c401bbbf528b5a88e00cf849e7262ac951"
+  },
+  "variable_count": 22934
+}

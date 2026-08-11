@@ -1,0 +1,256 @@
+name: Sixth Approach Cubic Support
+run-name: ${{ inputs.run_id }} cubic support
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    name: prepare-${{ inputs.run_id }}
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.contract.outputs.matrix }}
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Verify immutable contract and matrix
+        id: contract
+        shell: bash
+        env:
+          CALC_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          test "$CALC_RUN_ID" = 'run-069'
+          python -m py_compile \
+            'sixth approach/run069_support_worker.py' \
+            'sixth approach/run069_collect.py'
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path('sixth approach')
+          dimacs = root / 'specs/run-069-support.cnf'
+          manifest_path = root / 'specs/run-069-support-manifest.json'
+          branches_path = root / 'specs/run-069-support-branches.json'
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          branches = json.loads(branches_path.read_text(encoding='utf-8'))
+          digest = hashlib.sha256(dimacs.read_bytes()).hexdigest()
+          assert digest == manifest['dimacs_sha256'] == branches['base_dimacs_sha256']
+          assert manifest['metadata']['support_region'] == 'cross_eq21'
+          assert manifest['variable_count'] == 22934
+          assert manifest['clause_count'] == 108913
+          jobs = branches['jobs']
+          assert len(jobs) == 20
+          assert len({job['id'] for job in jobs}) == 20
+          assert {job['orbit'] for job in jobs} == set(range(10))
+          for orbit in range(10):
+              pair = [job for job in jobs if job['orbit'] == orbit]
+              assert len(pair) == 2
+              assert {job['split_value'] for job in pair} == {0, 1}
+              assert pair[0]['assumption_literals'][:3] == pair[1]['assumption_literals'][:3]
+          matrix = {'include': [{'job_id': job['id']} for job in jobs]}
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as stream:
+              stream.write('matrix=' + json.dumps(matrix, separators=(',', ':')) + '\n')
+          PY
+
+      - name: Verify exact solver package
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check --no-cache-dir 'ortools==9.15.6755'
+          python -c "import ortools; assert ortools.__version__ == '9.15.6755'"
+
+  support-branch:
+    name: ${{ matrix.job_id }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install exact solver package
+        shell: bash
+        run: python -m pip install --disable-pip-version-check --no-cache-dir 'ortools==9.15.6755'
+
+      - name: Record machine diagnostics
+        shell: bash
+        run: |
+          mkdir -p out
+          {
+            date -u +%FT%TZ
+            uname -a
+            nproc
+            lscpu
+            free -h
+            df -h .
+            ulimit -a
+            python --version
+            python -c "import ortools; print(ortools.__version__)"
+            echo "GITHUB_SHA=$GITHUB_SHA"
+            sha256sum \
+              'sixth approach/specs/run-069-support.cnf' \
+              'sixth approach/specs/run-069-support-manifest.json' \
+              'sixth approach/specs/run-069-support-branches.json' \
+              'sixth approach/run069_support_worker.py'
+          } > out/diagnostics.log
+
+      - name: Run one exact partition branch
+        id: compute
+        shell: bash
+        run: |
+          set +e
+          timeout --signal=TERM --kill-after=60s 19000s \
+            python 'sixth approach/run069_support_worker.py' \
+              --dimacs 'sixth approach/specs/run-069-support.cnf' \
+              --manifest 'sixth approach/specs/run-069-support-manifest.json' \
+              --branches 'sixth approach/specs/run-069-support-branches.json' \
+              --job-id '${{ matrix.job_id }}' \
+              --seconds 18600 \
+              --workers 4 \
+              --memory-mib 12000 \
+              --output out/result.json \
+            > out/worker.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > out/worker.exit
+          exit 0
+
+      - name: Validate branch output
+        if: always()
+        shell: bash
+        env:
+          CALC_JOB_ID: ${{ matrix.job_id }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          assert Path('out/worker.exit').read_text().strip() == '0'
+          result = json.loads(Path('out/result.json').read_text(encoding='utf-8'))
+          assert result['schema'] == 'run-069-support-branch-result-v1'
+          assert result['job']['id'] == os.environ['CALC_JOB_ID']
+          assert result['status'] in {'OPTIMAL', 'FEASIBLE', 'INFEASIBLE', 'UNKNOWN'}
+          if result['status'] in {'OPTIMAL', 'FEASIBLE'}:
+              assert result['cross_colour_selected'] == 21
+              assert result['assignment_true_literals']
+          PY
+
+      - name: Upload compact branch result
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-${{ matrix.job_id }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
+
+  collect:
+    name: collect-${{ inputs.run_id }}
+    needs: [prepare, support-branch]
+    if: always()
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Download branch results
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.run_id }}
+          pattern: ${{ inputs.run_id }}-o*-b*
+          path: work/results
+
+      - name: Replay and build compact archive
+        id: collector
+        shell: bash
+        run: |
+          set +e
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          python 'sixth approach/run069_collect.py' \
+            --input-root work/results \
+            --dimacs 'sixth approach/specs/run-069-support.cnf' \
+            --manifest 'sixth approach/specs/run-069-support-manifest.json' \
+            --branches 'sixth approach/specs/run-069-support-branches.json' \
+            --output-dir "$archive" \
+            --workflow-run "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA" \
+            > collector.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > collector.exit
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Commit compact archive
+        if: steps.collector.outputs.code == '0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$archive"
+          git commit -m "archive ${{ inputs.run_id }} from ${GITHUB_RUN_ID}"
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
+            git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+            git rebase origin/main
+          done
+
+      - name: Upload collector diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-collection
+          path: |
+            collector.log
+            collector.exit
+            sixth approach/runs/${{ inputs.run_id }}-${{ github.run_id }}/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Require complete collection
+        if: always()
+        shell: bash
+        run: exit "$(cat collector.exit 2>/dev/null || echo 2)"
