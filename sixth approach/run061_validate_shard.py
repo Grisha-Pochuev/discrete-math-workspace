@@ -9,6 +9,66 @@ import json
 from pathlib import Path
 
 
+VERTICES = tuple(range(8))
+MISSING_CYCLES = {
+    "C8": ((0, 1, 2, 3, 4, 5, 6, 7),),
+    "C5+C3": ((0, 1, 2, 3, 4), (5, 6, 7)),
+    "C4+C4": ((0, 1, 2, 3), (4, 5, 6, 7)),
+}
+
+
+def edge(left, right):
+    return (left, right) if left < right else (right, left)
+
+
+def graph_edges(name):
+    missing = {
+        edge(cycle[index], cycle[(index + 1) % len(cycle)])
+        for cycle in MISSING_CYCLES[name]
+        for index in range(len(cycle))
+    }
+    result = tuple(
+        (left, right)
+        for left in VERTICES
+        for right in VERTICES
+        if left < right and (left, right) not in missing
+    )
+    assert len(result) == 20
+    return result
+
+
+def perfect_matchings(vertices, allowed):
+    if not vertices:
+        return ((),)
+    first = vertices[0]
+    result = []
+    for other in vertices[1:]:
+        item = edge(first, other)
+        if item not in allowed:
+            continue
+        remaining = tuple(
+            vertex for vertex in vertices if vertex not in (first, other)
+        )
+        result.extend(
+            (item, *tail) for tail in perfect_matchings(remaining, allowed)
+        )
+    return tuple(result)
+
+
+def uniform_matching_counts(graph, masks):
+    edges = graph_edges(graph)
+    mask_by_edge = dict(zip(edges, masks))
+    matchings = perfect_matchings(VERTICES, set(edges))
+    return [
+        sum(
+            all(mask_by_edge[item] & (1 << (3 * colour + colour))
+                for item in matching)
+            for matching in matchings
+        )
+        for colour in range(3)
+    ]
+
+
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -44,6 +104,11 @@ def validate_record(spec, graph, shard, output_path: Path, exit_path: Path):
     assert record["perfect_matchings"] == expected_graph["expected_matchings"]
     assert record["mixed_rows"] == 6558
     assert record["term_variables"] == 6558 * expected_graph["expected_matchings"]
+    required_targets = bool(spec.get("required_uniform_targets", False))
+    assert bool(record.get("required_uniform_targets", False)) == required_targets
+    if required_targets:
+        assert record["required_rows"] == 3
+        assert record["required_term_variables"] == 3 * expected_graph["expected_matchings"]
     assert record["support_variables"] == 180
     assert record["anchor_variables"] == 120
     assert record["anchor_support_variables"] == 72
@@ -77,6 +142,10 @@ def validate_record(spec, graph, shard, output_path: Path, exit_path: Path):
         assert len(record["assignments"]) == record["noncoordinate_anchors"]
         assert sum(record["matching_histogram"].values()) == 6558
         assert record["matching_histogram"].get("1", 0) == 0
+        if required_targets:
+            counts = uniform_matching_counts(graph, masks)
+            assert record["uniform_matching_counts"] == counts
+            assert len(counts) == 3 and all(count > 0 for count in counts)
         if record["screen_state"] == "exchange_clean_candidate":
             assert record["direct_exchange_contradictions"] == 0
         else:
@@ -85,7 +154,7 @@ def validate_record(spec, graph, shard, output_path: Path, exit_path: Path):
     else:
         assert record["direct_exchange_contradictions"] == 0
 
-    return {
+    result = {
         "graph": graph,
         "shard": shard,
         "exit_code": exit_code,
@@ -97,6 +166,9 @@ def validate_record(spec, graph, shard, output_path: Path, exit_path: Path):
         "scientific_survivor": record["screen_state"] in feasible_states,
         "sha256": sha256(output_path),
     }
+    if required_targets and record["screen_state"] in feasible_states:
+        result["uniform_matching_counts"] = record["uniform_matching_counts"]
+    return result
 
 
 def main():
