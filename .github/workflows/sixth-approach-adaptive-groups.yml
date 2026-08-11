@@ -92,6 +92,12 @@ jobs:
           assert spec['workers_per_shard'] == 1
           assert spec['worker_language'] == 'C++20'
           assert spec['solver'] == 'OR-Tools CP-SAT v9.15.6755'
+          assert spec['required_uniform_targets'] is True
+          worker_source = Path(spec['worker_source_path'])
+          worker_cmake = Path(spec['worker_cmake_path'])
+          assert worker_source.parent == worker_cmake.parent
+          assert (root / worker_source).resolve().is_relative_to(root / 'sixth approach')
+          assert (root / worker_cmake).resolve().is_relative_to(root / 'sixth approach')
           assert spec['exact_cut_version'] in (2, 3, 4, 5, 6)
           assert spec['job_timeout_minutes'] == 150
           header_path = {
@@ -105,7 +111,8 @@ jobs:
               spec['cut_bundle_path']: spec['cut_bundle_sha256'],
               'sixth approach/run052_adaptive/exact_event_cuts.h': spec['cut_header_v1_sha256'],
               header_path: spec['cut_header_sha256'],
-              'sixth approach/run052_adaptive/main.cpp': spec['worker_source_sha256'],
+              spec['worker_source_path']: spec['worker_source_sha256'],
+              spec['worker_cmake_path']: spec['worker_cmake_sha256'],
           }
           if spec['exact_cut_version'] == 5:
               assert spec['preflight_compile_gate'] is True
@@ -161,10 +168,13 @@ jobs:
 
       - name: Compile native worker before expanding the matrix
         shell: bash
+        env:
+          CALC_SPEC_PATH: ${{ inputs.spec_path }}
         run: |
           set -euo pipefail
+          worker_dir="$(python -c 'import json,sys; from pathlib import Path; print(Path(json.load(open(sys.argv[1], encoding="utf-8"))["worker_source_path"]).parent)' "$CALC_SPEC_PATH")"
           cmake \
-            -S "$GITHUB_WORKSPACE/sixth approach/run052_adaptive" \
+            -S "$GITHUB_WORKSPACE/$worker_dir" \
             -B "$RUNNER_TEMP/adaptive-build" \
             -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/or-tools" \
             -Dortools_DIR="$RUNNER_TEMP/or-tools/lib/cmake/ortools" \
@@ -250,8 +260,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          worker_dir="$(python -c 'import json,sys; from pathlib import Path; print(Path(json.load(open(sys.argv[1], encoding="utf-8"))["worker_source_path"]).parent)' "$CALC_SPEC_PATH")"
           cmake \
-            -S "$GITHUB_WORKSPACE/sixth approach/run052_adaptive" \
+            -S "$GITHUB_WORKSPACE/$worker_dir" \
             -B "$RUNNER_TEMP/adaptive-build" \
             -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/or-tools" \
             -Dortools_DIR="$RUNNER_TEMP/or-tools/lib/cmake/ortools" \
@@ -276,7 +287,8 @@ jobs:
             echo "GITHUB_SHA=$GITHUB_SHA"
             echo "CALC_GROUP=$CALC_GROUP"
             sha256sum "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker"
-            sha256sum 'sixth approach/run052_adaptive/main.cpp'
+            worker_source="$(python -c 'import json,sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["worker_source_path"])' "$CALC_SPEC_PATH")"
+            sha256sum "$worker_source"
             sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v2.h'
             sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v3.h'
             sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
