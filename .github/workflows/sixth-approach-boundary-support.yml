@@ -38,25 +38,27 @@ jobs:
           CALC_RUN_ID: ${{ inputs.run_id }}
         run: |
           set -euo pipefail
-          test "$CALC_RUN_ID" = 'run-070'
+          test "$CALC_RUN_ID" = 'run-071'
           python -m py_compile \
             'sixth approach/run070_contract.py' \
-            'sixth approach/run070_worker.py' \
-            'sixth approach/run070_collect.py' \
-            'sixth approach/tests/test_run070_contract.py' \
-            'sixth approach/tests/test_run070_collector.py'
-          python 'sixth approach/tests/test_run070_contract.py'
-          python 'sixth approach/tests/test_run070_collector.py'
+            'sixth approach/run071_worker.py' \
+            'sixth approach/run071_collect.py' \
+            'sixth approach/tests/test_run071_event_contract.py' \
+            'sixth approach/tests/test_run071_collector.py' \
+            'sixth approach/tests/test_run071_worker_smoke.py'
+          python 'sixth approach/tests/test_run071_event_contract.py'
+          python 'sixth approach/tests/test_run071_collector.py'
           python - <<'PY'
           import json
           import os
           from pathlib import Path
-          spec = json.loads(Path('sixth approach/specs/run-070-boundary-support.json').read_text(encoding='utf-8'))
-          assert spec['schema'] == 'run-070-boundary-support-v1'
-          assert spec['physical_jobs'] == 20
+          spec = json.loads(Path('sixth approach/specs/run-071-boundary-event.json').read_text(encoding='utf-8'))
+          assert spec['schema'] == 'run-071-boundary-event-v1'
+          assert spec['physical_jobs'] == 18
+          assert spec['reserved_runner_slots'] == 2
           assert spec['logical_workers_per_job'] == 4
-          assert len(spec['searches']) == 80
-          matrix = {'include': [{'group': group} for group in range(20)]}
+          assert len(spec['searches']) == 72
+          matrix = {'include': [{'group': group} for group in range(18)]}
           with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as stream:
               stream.write('matrix=' + json.dumps(matrix, separators=(',', ':')) + '\n')
           PY
@@ -65,38 +67,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p smoke
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          source = Path('sixth approach/specs/run-070-boundary-support.json')
-          spec = json.loads(source.read_text(encoding='utf-8'))
-          spec['seconds_per_search'] = 20
-          spec['seconds_per_round'] = 5
-          spec['max_rounds'] = 1
-          spec['cuts_per_round'] = 16
-          Path('smoke/spec.json').write_text(json.dumps(spec, indent=2, sort_keys=True) + '\n', encoding='utf-8')
-          PY
-          python 'sixth approach/run070_worker.py' \
-            --spec smoke/spec.json \
-            --search-id s000 \
-            --output smoke/result.json
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          result = json.loads(Path('smoke/result.json').read_text(encoding='utf-8'))
-          assert result['schema'] == 'run-070-boundary-support-result-v1'
-          assert result['search']['id'] == 's000'
-          assert result['workers'] == 1
-          assert result['status'] in {'SURVIVOR', 'TIME_LIMIT', 'MODEL_INFEASIBLE'}
-          PY
+          python 'sixth approach/tests/test_run071_worker_smoke.py'
 
   search-group:
     name: group-${{ matrix.group }}
     needs: prepare
     strategy:
       fail-fast: false
-      max-parallel: 20
+      max-parallel: 18
       matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 330
@@ -129,7 +107,7 @@ jobs:
           import os
           from pathlib import Path
           group = int(os.environ['CALC_GROUP'])
-          spec = json.loads(Path('sixth approach/specs/run-070-boundary-support.json').read_text(encoding='utf-8'))
+          spec = json.loads(Path('sixth approach/specs/run-071-boundary-event.json').read_text(encoding='utf-8'))
           searches = [item['id'] for item in spec['searches'] if item['group'] == group]
           assert len(searches) == 4
           Path('out/searches.txt').write_text(''.join(item + '\n' for item in searches), encoding='ascii')
@@ -146,10 +124,11 @@ jobs:
             python -c "import ortools; print(ortools.__version__)"
             echo "GITHUB_SHA=$GITHUB_SHA"
             sha256sum \
-              'sixth approach/specs/run-070-boundary-support.json' \
+              'sixth approach/specs/run-071-boundary-event.json' \
+              'sixth approach/specs/run-071-exact-event-cuts.json' \
               'sixth approach/run070_contract.py' \
-              'sixth approach/run070_worker.py' \
-              'sixth approach/run070_collect.py'
+              'sixth approach/run071_worker.py' \
+              'sixth approach/run071_collect.py'
           } > out/diagnostics.log
 
       - name: Run four independent single-threaded searches
@@ -161,8 +140,8 @@ jobs:
             mkdir -p "out/$search_id"
             (
               timeout --signal=TERM --kill-after=60s 19000s \
-                python 'sixth approach/run070_worker.py' \
-                  --spec 'sixth approach/specs/run-070-boundary-support.json' \
+                python 'sixth approach/run071_worker.py' \
+                  --spec 'sixth approach/specs/run-071-boundary-event.json' \
                   --search-id "$search_id" \
                   --output "out/$search_id/result.json" \
                 > "out/$search_id/worker.log" 2>&1
@@ -189,7 +168,7 @@ jobs:
               root = Path('out') / search_id
               assert (root / 'worker.exit').read_text().strip() == '0'
               result = json.loads((root / 'result.json').read_text(encoding='utf-8'))
-              assert result['schema'] == 'run-070-boundary-support-result-v1'
+              assert result['schema'] == 'run-071-boundary-event-result-v1'
               assert result['search']['id'] == search_id
               assert result['workers'] == 1
               assert result['status'] in {'SURVIVOR', 'TIME_LIMIT', 'MODEL_INFEASIBLE'}
@@ -240,9 +219,9 @@ jobs:
         run: |
           set +e
           archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
-          python 'sixth approach/run070_collect.py' \
+          python 'sixth approach/run071_collect.py' \
             --input-root work/results \
-            --spec 'sixth approach/specs/run-070-boundary-support.json' \
+            --spec 'sixth approach/specs/run-071-boundary-event.json' \
             --output-dir "$archive" \
             --workflow-run "$GITHUB_RUN_ID" \
             --source-sha "$GITHUB_SHA" \
