@@ -11,15 +11,18 @@ tree, not in this repository.
 
 - `control.json` is the only mutable run-control record.
 - Every run is specified by an immutable JSON file under `specs/`.
-- Heavy work is C++20. Python is permitted only for validation and collection.
+- Heavy search must execute in compiled native code. Python may construct an
+  immutable OR-Tools model when the timed search itself runs in the native
+  CP-SAT engine; Python remains preferred for validation and collection.
 - A smoke run must compile and execute the same worker binary and output path as
   a full run.
 - GitHub Actions full runs are manual `workflow_dispatch` jobs only. Never add
   an ordinary branch `push` trigger.
 - CircleCI full runs use one immutable boolean pipeline parameter declared in
   the run specification. Ordinary commits and tags must run no jobs.
-- Use exactly four independent single-threaded workers per 4-vCPU compute job
-  on either provider.
+- Normally use four independent single-threaded workers per 4-vCPU compute
+  job. A measured memory-heavy model may use two independent single-threaded
+  processes when its immutable specification records the capacity contract.
 - GitHub Actions owns long jobs and cross-run artifact audits. CircleCI owns
   sub-hour fine shards and must reserve time for exact per-shard validation.
 - Worker output is checkpointed atomically and is collected with `if: always()`.
@@ -27,8 +30,10 @@ tree, not in this repository.
   coverage. Scientific counterexamples are data, not technical failures.
 - Before a large run, inspect all queued, pending, waiting, requested, and
   in-progress Actions jobs on every branch and workflow.
-- Reserve two runner slots for unrelated work and use at most 18 concurrent
-  GitHub compute jobs in this track until the user changes that allocation.
+- Reserve one runner slot for unrelated work and use at most 19 concurrent
+  GitHub compute jobs in this track. Prefer three-hour exploratory searches,
+  roughly four-hour certification shards, and five-to-six hours only for a
+  diagnosed hard residue.
 - Never run an individual local computation for more than 20 minutes.
 
 ## Archive contract
