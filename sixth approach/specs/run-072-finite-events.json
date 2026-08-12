@@ -1,0 +1,507 @@
+{
+  "base_learned_clauses": 1562,
+  "base_source_clauses": 325,
+  "base_total_clauses": 1887,
+  "cuts_per_round": 512,
+  "engine": "ortools-cp-sat-9.15.6755-single-thread-cegis",
+  "input_outcome_sha256": "86e18dd15453029af75a5856fd2dae47dd0176832b6ca2458173a64566d786da",
+  "input_path": "sixth approach/specs/run-072-event-input.json.gz",
+  "input_sha256": "6946fe564170de9f85eef66623939634c77026d7fa293043922fdf6dbef3eec0",
+  "logical_workers_per_job": 4,
+  "max_rounds": 500,
+  "memory_mib_per_search": 3000,
+  "physical_jobs": 20,
+  "reserved_runner_slots": 0,
+  "run_id": "run-072",
+  "schema": "run-072-finite-events-v1",
+  "scope": "bounded independent continuation from a replayed finite-event frontier",
+  "searches": [
+    {
+      "group": 0,
+      "id": "s000",
+      "seed": 30790001,
+      "slot": 0
+    },
+    {
+      "group": 0,
+      "id": "s001",
+      "seed": 30797920,
+      "slot": 1
+    },
+    {
+      "group": 0,
+      "id": "s002",
+      "seed": 30805839,
+      "slot": 2
+    },
+    {
+      "group": 0,
+      "id": "s003",
+      "seed": 30813758,
+      "slot": 3
+    },
+    {
+      "group": 1,
+      "id": "s004",
+      "seed": 30821677,
+      "slot": 0
+    },
+    {
+      "group": 1,
+      "id": "s005",
+      "seed": 30829596,
+      "slot": 1
+    },
+    {
+      "group": 1,
+      "id": "s006",
+      "seed": 30837515,
+      "slot": 2
+    },
+    {
+      "group": 1,
+      "id": "s007",
+      "seed": 30845434,
+      "slot": 3
+    },
+    {
+      "group": 2,
+      "id": "s008",
+      "seed": 30853353,
+      "slot": 0
+    },
+    {
+      "group": 2,
+      "id": "s009",
+      "seed": 30861272,
+      "slot": 1
+    },
+    {
+      "group": 2,
+      "id": "s010",
+      "seed": 30869191,
+      "slot": 2
+    },
+    {
+      "group": 2,
+      "id": "s011",
+      "seed": 30877110,
+      "slot": 3
+    },
+    {
+      "group": 3,
+      "id": "s012",
+      "seed": 30885029,
+      "slot": 0
+    },
+    {
+      "group": 3,
+      "id": "s013",
+      "seed": 30892948,
+      "slot": 1
+    },
+    {
+      "group": 3,
+      "id": "s014",
+      "seed": 30900867,
+      "slot": 2
+    },
+    {
+      "group": 3,
+      "id": "s015",
+      "seed": 30908786,
+      "slot": 3
+    },
+    {
+      "group": 4,
+      "id": "s016",
+      "seed": 30916705,
+      "slot": 0
+    },
+    {
+      "group": 4,
+      "id": "s017",
+      "seed": 30924624,
+      "slot": 1
+    },
+    {
+      "group": 4,
+      "id": "s018",
+      "seed": 30932543,
+      "slot": 2
+    },
+    {
+      "group": 4,
+      "id": "s019",
+      "seed": 30940462,
+      "slot": 3
+    },
+    {
+      "group": 5,
+      "id": "s020",
+      "seed": 30948381,
+      "slot": 0
+    },
+    {
+      "group": 5,
+      "id": "s021",
+      "seed": 30956300,
+      "slot": 1
+    },
+    {
+      "group": 5,
+      "id": "s022",
+      "seed": 30964219,
+      "slot": 2
+    },
+    {
+      "group": 5,
+      "id": "s023",
+      "seed": 30972138,
+      "slot": 3
+    },
+    {
+      "group": 6,
+      "id": "s024",
+      "seed": 30980057,
+      "slot": 0
+    },
+    {
+      "group": 6,
+      "id": "s025",
+      "seed": 30987976,
+      "slot": 1
+    },
+    {
+      "group": 6,
+      "id": "s026",
+      "seed": 30995895,
+      "slot": 2
+    },
+    {
+      "group": 6,
+      "id": "s027",
+      "seed": 31003814,
+      "slot": 3
+    },
+    {
+      "group": 7,
+      "id": "s028",
+      "seed": 31011733,
+      "slot": 0
+    },
+    {
+      "group": 7,
+      "id": "s029",
+      "seed": 31019652,
+      "slot": 1
+    },
+    {
+      "group": 7,
+      "id": "s030",
+      "seed": 31027571,
+      "slot": 2
+    },
+    {
+      "group": 7,
+      "id": "s031",
+      "seed": 31035490,
+      "slot": 3
+    },
+    {
+      "group": 8,
+      "id": "s032",
+      "seed": 31043409,
+      "slot": 0
+    },
+    {
+      "group": 8,
+      "id": "s033",
+      "seed": 31051328,
+      "slot": 1
+    },
+    {
+      "group": 8,
+      "id": "s034",
+      "seed": 31059247,
+      "slot": 2
+    },
+    {
+      "group": 8,
+      "id": "s035",
+      "seed": 31067166,
+      "slot": 3
+    },
+    {
+      "group": 9,
+      "id": "s036",
+      "seed": 31075085,
+      "slot": 0
+    },
+    {
+      "group": 9,
+      "id": "s037",
+      "seed": 31083004,
+      "slot": 1
+    },
+    {
+      "group": 9,
+      "id": "s038",
+      "seed": 31090923,
+      "slot": 2
+    },
+    {
+      "group": 9,
+      "id": "s039",
+      "seed": 31098842,
+      "slot": 3
+    },
+    {
+      "group": 10,
+      "id": "s040",
+      "seed": 31106761,
+      "slot": 0
+    },
+    {
+      "group": 10,
+      "id": "s041",
+      "seed": 31114680,
+      "slot": 1
+    },
+    {
+      "group": 10,
+      "id": "s042",
+      "seed": 31122599,
+      "slot": 2
+    },
+    {
+      "group": 10,
+      "id": "s043",
+      "seed": 31130518,
+      "slot": 3
+    },
+    {
+      "group": 11,
+      "id": "s044",
+      "seed": 31138437,
+      "slot": 0
+    },
+    {
+      "group": 11,
+      "id": "s045",
+      "seed": 31146356,
+      "slot": 1
+    },
+    {
+      "group": 11,
+      "id": "s046",
+      "seed": 31154275,
+      "slot": 2
+    },
+    {
+      "group": 11,
+      "id": "s047",
+      "seed": 31162194,
+      "slot": 3
+    },
+    {
+      "group": 12,
+      "id": "s048",
+      "seed": 31170113,
+      "slot": 0
+    },
+    {
+      "group": 12,
+      "id": "s049",
+      "seed": 31178032,
+      "slot": 1
+    },
+    {
+      "group": 12,
+      "id": "s050",
+      "seed": 31185951,
+      "slot": 2
+    },
+    {
+      "group": 12,
+      "id": "s051",
+      "seed": 31193870,
+      "slot": 3
+    },
+    {
+      "group": 13,
+      "id": "s052",
+      "seed": 31201789,
+      "slot": 0
+    },
+    {
+      "group": 13,
+      "id": "s053",
+      "seed": 31209708,
+      "slot": 1
+    },
+    {
+      "group": 13,
+      "id": "s054",
+      "seed": 31217627,
+      "slot": 2
+    },
+    {
+      "group": 13,
+      "id": "s055",
+      "seed": 31225546,
+      "slot": 3
+    },
+    {
+      "group": 14,
+      "id": "s056",
+      "seed": 31233465,
+      "slot": 0
+    },
+    {
+      "group": 14,
+      "id": "s057",
+      "seed": 31241384,
+      "slot": 1
+    },
+    {
+      "group": 14,
+      "id": "s058",
+      "seed": 31249303,
+      "slot": 2
+    },
+    {
+      "group": 14,
+      "id": "s059",
+      "seed": 31257222,
+      "slot": 3
+    },
+    {
+      "group": 15,
+      "id": "s060",
+      "seed": 31265141,
+      "slot": 0
+    },
+    {
+      "group": 15,
+      "id": "s061",
+      "seed": 31273060,
+      "slot": 1
+    },
+    {
+      "group": 15,
+      "id": "s062",
+      "seed": 31280979,
+      "slot": 2
+    },
+    {
+      "group": 15,
+      "id": "s063",
+      "seed": 31288898,
+      "slot": 3
+    },
+    {
+      "group": 16,
+      "id": "s064",
+      "seed": 31296817,
+      "slot": 0
+    },
+    {
+      "group": 16,
+      "id": "s065",
+      "seed": 31304736,
+      "slot": 1
+    },
+    {
+      "group": 16,
+      "id": "s066",
+      "seed": 31312655,
+      "slot": 2
+    },
+    {
+      "group": 16,
+      "id": "s067",
+      "seed": 31320574,
+      "slot": 3
+    },
+    {
+      "group": 17,
+      "id": "s068",
+      "seed": 31328493,
+      "slot": 0
+    },
+    {
+      "group": 17,
+      "id": "s069",
+      "seed": 31336412,
+      "slot": 1
+    },
+    {
+      "group": 17,
+      "id": "s070",
+      "seed": 31344331,
+      "slot": 2
+    },
+    {
+      "group": 17,
+      "id": "s071",
+      "seed": 31352250,
+      "slot": 3
+    },
+    {
+      "group": 18,
+      "id": "s072",
+      "seed": 31360169,
+      "slot": 0
+    },
+    {
+      "group": 18,
+      "id": "s073",
+      "seed": 31368088,
+      "slot": 1
+    },
+    {
+      "group": 18,
+      "id": "s074",
+      "seed": 31376007,
+      "slot": 2
+    },
+    {
+      "group": 18,
+      "id": "s075",
+      "seed": 31383926,
+      "slot": 3
+    },
+    {
+      "group": 19,
+      "id": "s076",
+      "seed": 31391845,
+      "slot": 0
+    },
+    {
+      "group": 19,
+      "id": "s077",
+      "seed": 31399764,
+      "slot": 1
+    },
+    {
+      "group": 19,
+      "id": "s078",
+      "seed": 31407683,
+      "slot": 2
+    },
+    {
+      "group": 19,
+      "id": "s079",
+      "seed": 31415602,
+      "slot": 3
+    }
+  ],
+  "seconds_per_round": 120,
+  "seconds_per_search": 18000,
+  "source_hashes": {
+    "run072_collect.py": "dd025ee58756a9bad96750ee9cb2e76edcbd57b22051fcde4b6e66a33a768eda",
+    "run072_contract.py": "0dbd5b9bcc05dd69927797d15b33bc2ffe617beed8e9980e195ba5ccd7c7cd3f",
+    "run072_worker.py": "d192368b43e5271df10408824eb67b9e8287b0d3103514d51cb1ff9c1681f504"
+  }
+}
