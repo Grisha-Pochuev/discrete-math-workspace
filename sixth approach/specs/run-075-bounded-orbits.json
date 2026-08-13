@@ -1,0 +1,674 @@
+{
+  "assignments": [
+    {
+      "group": 0,
+      "lane": 0,
+      "orbit_ids": [
+        1,
+        77,
+        153
+      ]
+    },
+    {
+      "group": 0,
+      "lane": 1,
+      "orbit_ids": [
+        2,
+        78,
+        154
+      ]
+    },
+    {
+      "group": 0,
+      "lane": 2,
+      "orbit_ids": [
+        3,
+        79,
+        155
+      ]
+    },
+    {
+      "group": 0,
+      "lane": 3,
+      "orbit_ids": [
+        4,
+        80,
+        156
+      ]
+    },
+    {
+      "group": 1,
+      "lane": 0,
+      "orbit_ids": [
+        5,
+        81,
+        157
+      ]
+    },
+    {
+      "group": 1,
+      "lane": 1,
+      "orbit_ids": [
+        6,
+        82,
+        158
+      ]
+    },
+    {
+      "group": 1,
+      "lane": 2,
+      "orbit_ids": [
+        7,
+        83,
+        159
+      ]
+    },
+    {
+      "group": 1,
+      "lane": 3,
+      "orbit_ids": [
+        8,
+        84,
+        160
+      ]
+    },
+    {
+      "group": 2,
+      "lane": 0,
+      "orbit_ids": [
+        9,
+        85,
+        161
+      ]
+    },
+    {
+      "group": 2,
+      "lane": 1,
+      "orbit_ids": [
+        10,
+        86,
+        162
+      ]
+    },
+    {
+      "group": 2,
+      "lane": 2,
+      "orbit_ids": [
+        11,
+        87,
+        163
+      ]
+    },
+    {
+      "group": 2,
+      "lane": 3,
+      "orbit_ids": [
+        12,
+        88,
+        164
+      ]
+    },
+    {
+      "group": 3,
+      "lane": 0,
+      "orbit_ids": [
+        13,
+        89,
+        165
+      ]
+    },
+    {
+      "group": 3,
+      "lane": 1,
+      "orbit_ids": [
+        14,
+        90,
+        166
+      ]
+    },
+    {
+      "group": 3,
+      "lane": 2,
+      "orbit_ids": [
+        15,
+        91,
+        167
+      ]
+    },
+    {
+      "group": 3,
+      "lane": 3,
+      "orbit_ids": [
+        16,
+        92,
+        168
+      ]
+    },
+    {
+      "group": 4,
+      "lane": 0,
+      "orbit_ids": [
+        17,
+        93,
+        169
+      ]
+    },
+    {
+      "group": 4,
+      "lane": 1,
+      "orbit_ids": [
+        18,
+        94,
+        170
+      ]
+    },
+    {
+      "group": 4,
+      "lane": 2,
+      "orbit_ids": [
+        19,
+        95,
+        171
+      ]
+    },
+    {
+      "group": 4,
+      "lane": 3,
+      "orbit_ids": [
+        20,
+        96,
+        172
+      ]
+    },
+    {
+      "group": 5,
+      "lane": 0,
+      "orbit_ids": [
+        21,
+        97,
+        173
+      ]
+    },
+    {
+      "group": 5,
+      "lane": 1,
+      "orbit_ids": [
+        22,
+        98,
+        174
+      ]
+    },
+    {
+      "group": 5,
+      "lane": 2,
+      "orbit_ids": [
+        23,
+        99,
+        175
+      ]
+    },
+    {
+      "group": 5,
+      "lane": 3,
+      "orbit_ids": [
+        24,
+        100,
+        176
+      ]
+    },
+    {
+      "group": 6,
+      "lane": 0,
+      "orbit_ids": [
+        25,
+        101,
+        177
+      ]
+    },
+    {
+      "group": 6,
+      "lane": 1,
+      "orbit_ids": [
+        26,
+        102,
+        178
+      ]
+    },
+    {
+      "group": 6,
+      "lane": 2,
+      "orbit_ids": [
+        27,
+        103
+      ]
+    },
+    {
+      "group": 6,
+      "lane": 3,
+      "orbit_ids": [
+        28,
+        104
+      ]
+    },
+    {
+      "group": 7,
+      "lane": 0,
+      "orbit_ids": [
+        29,
+        105
+      ]
+    },
+    {
+      "group": 7,
+      "lane": 1,
+      "orbit_ids": [
+        30,
+        106
+      ]
+    },
+    {
+      "group": 7,
+      "lane": 2,
+      "orbit_ids": [
+        31,
+        107
+      ]
+    },
+    {
+      "group": 7,
+      "lane": 3,
+      "orbit_ids": [
+        32,
+        108
+      ]
+    },
+    {
+      "group": 8,
+      "lane": 0,
+      "orbit_ids": [
+        33,
+        109
+      ]
+    },
+    {
+      "group": 8,
+      "lane": 1,
+      "orbit_ids": [
+        34,
+        110
+      ]
+    },
+    {
+      "group": 8,
+      "lane": 2,
+      "orbit_ids": [
+        35,
+        111
+      ]
+    },
+    {
+      "group": 8,
+      "lane": 3,
+      "orbit_ids": [
+        36,
+        112
+      ]
+    },
+    {
+      "group": 9,
+      "lane": 0,
+      "orbit_ids": [
+        37,
+        113
+      ]
+    },
+    {
+      "group": 9,
+      "lane": 1,
+      "orbit_ids": [
+        38,
+        114
+      ]
+    },
+    {
+      "group": 9,
+      "lane": 2,
+      "orbit_ids": [
+        39,
+        115
+      ]
+    },
+    {
+      "group": 9,
+      "lane": 3,
+      "orbit_ids": [
+        40,
+        116
+      ]
+    },
+    {
+      "group": 10,
+      "lane": 0,
+      "orbit_ids": [
+        41,
+        117
+      ]
+    },
+    {
+      "group": 10,
+      "lane": 1,
+      "orbit_ids": [
+        42,
+        118
+      ]
+    },
+    {
+      "group": 10,
+      "lane": 2,
+      "orbit_ids": [
+        43,
+        119
+      ]
+    },
+    {
+      "group": 10,
+      "lane": 3,
+      "orbit_ids": [
+        44,
+        120
+      ]
+    },
+    {
+      "group": 11,
+      "lane": 0,
+      "orbit_ids": [
+        45,
+        121
+      ]
+    },
+    {
+      "group": 11,
+      "lane": 1,
+      "orbit_ids": [
+        46,
+        122
+      ]
+    },
+    {
+      "group": 11,
+      "lane": 2,
+      "orbit_ids": [
+        47,
+        123
+      ]
+    },
+    {
+      "group": 11,
+      "lane": 3,
+      "orbit_ids": [
+        48,
+        124
+      ]
+    },
+    {
+      "group": 12,
+      "lane": 0,
+      "orbit_ids": [
+        49,
+        125
+      ]
+    },
+    {
+      "group": 12,
+      "lane": 1,
+      "orbit_ids": [
+        50,
+        126
+      ]
+    },
+    {
+      "group": 12,
+      "lane": 2,
+      "orbit_ids": [
+        51,
+        127
+      ]
+    },
+    {
+      "group": 12,
+      "lane": 3,
+      "orbit_ids": [
+        52,
+        128
+      ]
+    },
+    {
+      "group": 13,
+      "lane": 0,
+      "orbit_ids": [
+        53,
+        129
+      ]
+    },
+    {
+      "group": 13,
+      "lane": 1,
+      "orbit_ids": [
+        54,
+        130
+      ]
+    },
+    {
+      "group": 13,
+      "lane": 2,
+      "orbit_ids": [
+        55,
+        131
+      ]
+    },
+    {
+      "group": 13,
+      "lane": 3,
+      "orbit_ids": [
+        56,
+        132
+      ]
+    },
+    {
+      "group": 14,
+      "lane": 0,
+      "orbit_ids": [
+        57,
+        133
+      ]
+    },
+    {
+      "group": 14,
+      "lane": 1,
+      "orbit_ids": [
+        58,
+        134
+      ]
+    },
+    {
+      "group": 14,
+      "lane": 2,
+      "orbit_ids": [
+        59,
+        135
+      ]
+    },
+    {
+      "group": 14,
+      "lane": 3,
+      "orbit_ids": [
+        60,
+        136
+      ]
+    },
+    {
+      "group": 15,
+      "lane": 0,
+      "orbit_ids": [
+        61,
+        137
+      ]
+    },
+    {
+      "group": 15,
+      "lane": 1,
+      "orbit_ids": [
+        62,
+        138
+      ]
+    },
+    {
+      "group": 15,
+      "lane": 2,
+      "orbit_ids": [
+        63,
+        139
+      ]
+    },
+    {
+      "group": 15,
+      "lane": 3,
+      "orbit_ids": [
+        64,
+        140
+      ]
+    },
+    {
+      "group": 16,
+      "lane": 0,
+      "orbit_ids": [
+        65,
+        141
+      ]
+    },
+    {
+      "group": 16,
+      "lane": 1,
+      "orbit_ids": [
+        66,
+        142
+      ]
+    },
+    {
+      "group": 16,
+      "lane": 2,
+      "orbit_ids": [
+        67,
+        143
+      ]
+    },
+    {
+      "group": 16,
+      "lane": 3,
+      "orbit_ids": [
+        68,
+        144
+      ]
+    },
+    {
+      "group": 17,
+      "lane": 0,
+      "orbit_ids": [
+        69,
+        145
+      ]
+    },
+    {
+      "group": 17,
+      "lane": 1,
+      "orbit_ids": [
+        70,
+        146
+      ]
+    },
+    {
+      "group": 17,
+      "lane": 2,
+      "orbit_ids": [
+        71,
+        147
+      ]
+    },
+    {
+      "group": 17,
+      "lane": 3,
+      "orbit_ids": [
+        72,
+        148
+      ]
+    },
+    {
+      "group": 18,
+      "lane": 0,
+      "orbit_ids": [
+        73,
+        149
+      ]
+    },
+    {
+      "group": 18,
+      "lane": 1,
+      "orbit_ids": [
+        74,
+        150
+      ]
+    },
+    {
+      "group": 18,
+      "lane": 2,
+      "orbit_ids": [
+        75,
+        151
+      ]
+    },
+    {
+      "group": 18,
+      "lane": 3,
+      "orbit_ids": [
+        76,
+        152
+      ]
+    }
+  ],
+  "canonical_sha256": "679216463a1bf7eab96506704241af638d31a24769e3534abf7b4df2733e9780",
+  "catalogue_acceptance_canonical_sha256": "e4682a58fb4c8f39824fe713f2ba2b5aa4a9d4e9fc587a61610c0f8083b92796",
+  "catalogue_sha256": "4479e0e120093dc4b3abcf1f44a002a5dbdb769024c57f182c6aa337c5b02127",
+  "group_count": 19,
+  "input_canonical_sha256": "363e5d0664d4593040db25428d06cdbe5269b494960219ef977f75af11acd140",
+  "input_file_sha256": "910d29a6757283486a797f62c8c735d7ce305add7572f004db6a59875ea44ac6",
+  "lanes_per_group": 4,
+  "max_parallel": 19,
+  "orbit_universe": {
+    "count": 178,
+    "first": 1,
+    "last": 178
+  },
+  "outcome_contract": {
+    "SAT": "retain full cross masks and require direct replay",
+    "TIMEOUT_OR_SIGNAL": "technical incompleteness",
+    "UNSAT": "diagnostic only; not theorem evidence",
+    "missing_or_duplicate": "technical incompleteness"
+  },
+  "reference_contract": {
+    "clause_count": 980520,
+    "dimacs_sha256": "fb7eb15f7c1669e8695cf355263c64387a3effcf58d0e37da8050c1a9220a686",
+    "orbit_id": 1,
+    "variable_count": 168328
+  },
+  "retention": "compact statuses and positive masks only; generated CNF files are temporary",
+  "run_id": "run-075",
+  "schema": "neutral-bounded-orbit-scan-spec-v1",
+  "single_threaded_solver_per_lane": true,
+  "solver": {
+    "name": "cadical",
+    "seconds_per_orbit": 180,
+    "ubuntu_package_version": "1.7.4-1"
+  },
+  "worker_header_sha256": "aa576b35b3f3ff2eb3f8db54c85c958ace085425442023b3d14e91112ddaa6d7",
+  "worker_source_sha256": "be8e02e33e438b40eaa19a7440fc3ecf4f0ad288099c7fc0ead1e909bc435309"
+}
