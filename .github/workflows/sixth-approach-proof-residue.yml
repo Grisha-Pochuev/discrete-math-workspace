@@ -68,6 +68,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p result/workers
+          trap 'rm -f result/input.cnf result/workers/proof-*.lrat result/workers/proof-*.lrat.gz' EXIT
           pids=()
           for seed in 1 2 3 4; do
             (
@@ -88,11 +89,16 @@ jobs:
                 rm -f "result/workers/proof-${seed}.lrat"
               elif test "$code" = 20; then
                 test -s "result/workers/proof-${seed}.lrat"
-                ./lrat-check result/input.cnf \
-                  "result/workers/proof-${seed}.lrat" \
-                  > "result/workers/checker-${seed}.log" 2>&1
-                grep -Fx 'c VERIFIED' "result/workers/checker-${seed}.log"
-                gzip -9 "result/workers/proof-${seed}.lrat"
+                if ./lrat-check result/input.cnf \
+                    "result/workers/proof-${seed}.lrat" \
+                    > "result/workers/checker-${seed}.log" 2>&1 \
+                    && grep -Fx 'c VERIFIED' \
+                      "result/workers/checker-${seed}.log"; then
+                  gzip -9 "result/workers/proof-${seed}.lrat"
+                else
+                  rm -f "result/workers/proof-${seed}.lrat"
+                  exit 21
+                fi
               else
                 rm -f "result/workers/proof-${seed}.lrat"
               fi
@@ -138,7 +144,6 @@ jobs:
           for path in workers.glob('proof-*.lrat.gz'):
               path.unlink()
           PY
-          rm -f result/input.cnf
       - name: Record compact provenance
         if: always()
         shell: bash

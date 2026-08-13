@@ -6,6 +6,7 @@ from __future__ import annotations
 from itertools import product
 import json
 from pathlib import Path
+import uuid
 
 import run077_contract as contract
 
@@ -18,7 +19,21 @@ def main():
     source = contract.validate(spec_path)
     broken = json.loads(json.dumps(source))
     broken["expected_clause_count"] += 1
-    assert broken != source
+    scratch = HERE / "tests" / f"run077-contract-{uuid.uuid4().hex}.json"
+    try:
+        broken_path = scratch
+        broken_path.write_text(
+            json.dumps(broken, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8", newline="\n",
+        )
+        try:
+            contract.validate(broken_path)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("mutated contract was accepted")
+    finally:
+        scratch.unlink(missing_ok=True)
     cases = 0
     for left, right, output in product((False, True), repeat=3):
         encoded = ((not output) or left) and ((not output) or right)
