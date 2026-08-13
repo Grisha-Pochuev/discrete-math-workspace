@@ -1,0 +1,155 @@
+name: Sixth Approach Event Residue
+run-name: ${{ inputs.run_id }} event residue
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    name: prepare-${{ inputs.run_id }}
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.contract.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install pinned exact engine
+        run: python -m pip install --disable-pip-version-check --no-cache-dir 'ortools==9.15.6755' 'sympy==1.14.0'
+      - name: Verify immutable contract and production path
+        id: contract
+        shell: bash
+        env:
+          CALC_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          test "$CALC_RUN_ID" = 'run-078'
+          python -m py_compile 'sixth approach/run078_event_residue.py'
+          python 'sixth approach/run078_event_residue.py' contract \
+            --spec 'sixth approach/specs/run-078-event-residue.json'
+          python 'sixth approach/run078_event_residue.py' self-test \
+            --spec 'sixth approach/specs/run-078-event-residue.json'
+          mkdir -p smoke
+          python 'sixth approach/run078_event_residue.py' worker \
+            --spec 'sixth approach/specs/run-078-event-residue.json' \
+            --search-id s000 --output smoke/result.json --smoke
+          python - <<'PY'
+          import json, os
+          result=json.load(open('smoke/result.json'))
+          assert result['schema']=='neutral-event-residue-result-v1'
+          assert result['search']['id']=='s000'
+          matrix={'include':[{'group': group} for group in range(19)]}
+          with open(os.environ['GITHUB_OUTPUT'],'a') as stream:
+              stream.write('matrix='+json.dumps(matrix,separators=(',',':'))+'\n')
+          PY
+
+  compute:
+    name: group-${{ matrix.group }}-${{ inputs.run_id }}
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 19
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install pinned exact engine
+        run: python -m pip install --disable-pip-version-check --no-cache-dir 'ortools==9.15.6755' 'sympy==1.14.0'
+      - name: Run four independent single-threaded searches
+        shell: bash
+        env:
+          GROUP_ID: ${{ matrix.group }}
+        run: |
+          set +e
+          mkdir -p out
+          pids=()
+          for slot in 0 1 2 3; do
+            search_id="$(printf 's%03d' $((GROUP_ID * 4 + slot)))"
+            mkdir -p "out/$search_id"
+            (
+              timeout --signal=TERM --kill-after=60s 10140s \
+                python 'sixth approach/run078_event_residue.py' worker \
+                  --spec 'sixth approach/specs/run-078-event-residue.json' \
+                  --search-id "$search_id" --output "out/$search_id/result.json" \
+                > "out/$search_id/worker.log" 2>&1
+              printf '%s\n' "$?" > "out/$search_id/worker.exit"
+            ) &
+            pids+=("$!")
+          done
+          for pid in "${pids[@]}"; do wait "$pid"; done
+          python 'sixth approach/run078_event_residue.py' validate-group \
+            --spec 'sixth approach/specs/run-078-event-residue.json' \
+            --group "$GROUP_ID" --input-root out
+      - name: Upload compact group records
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-group-${{ matrix.group }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
+
+  collect:
+    name: collect-${{ inputs.run_id }}
+    needs: [prepare, compute]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install pinned replay engine
+        run: python -m pip install --disable-pip-version-check --no-cache-dir 'sympy==1.14.0'
+      - uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          pattern: ${{ inputs.run_id }}-group-*
+          path: work/results
+      - name: Strict replay and compact collection
+        id: collect
+        shell: bash
+        run: |
+          set +e
+          python 'sixth approach/run078_event_residue.py' collect \
+            --spec 'sixth approach/specs/run-078-event-residue.json' \
+            --input-root work/results --output-dir compact \
+            --workflow-run "$GITHUB_RUN_ID" --source-sha "$GITHUB_SHA" \
+            > collector.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > collector.exit
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload compact collection
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-compact-collection
+          path: |
+            compact/
+            collector.log
+            collector.exit
+          if-no-files-found: error
+          retention-days: 30
+      - name: Require complete replayed coverage
+        if: always()
+        run: exit "$(cat collector.exit 2>/dev/null || echo 2)"
