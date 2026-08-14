@@ -13,9 +13,11 @@
 #include <iostream>
 #include <map>
 #include <numeric>
+#include <optional>
 #include <set>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -450,6 +452,145 @@ std::vector<long> ExponentDifference(Mask first, Mask second,
   return result;
 }
 
+struct LongVectorHash {
+  std::size_t operator()(const std::vector<long>& values) const noexcept {
+    std::size_t result = 1469598103934665603ULL;
+    for (long value : values) {
+      result ^= static_cast<std::size_t>(value + 7);
+      result *= 1099511628211ULL;
+    }
+    return result;
+  }
+};
+
+struct SignedPair {
+  int first = -1;
+  int first_sign = 0;
+  int second = -1;
+  int second_sign = 0;
+  std::vector<long> sum;
+};
+
+std::vector<long> CoordinatePart(const std::vector<long>& augmented) {
+  if (augmented.empty()) throw std::runtime_error("empty augmented vector");
+  return std::vector<long>(augmented.begin(), augmented.end() - 1);
+}
+
+std::vector<long> SubtractScaled(const std::vector<long>& target,
+                                 const std::vector<long>& first,
+                                 long first_scale,
+                                 const std::vector<long>* second = nullptr) {
+  if (target.size() != first.size() ||
+      (second != nullptr && second->size() != target.size())) {
+    throw std::runtime_error("signed-path dimension mismatch");
+  }
+  std::vector<long> result(target.size());
+  for (std::size_t index = 0; index < target.size(); ++index) {
+    result[index] = target[index] - first_scale * first[index] -
+                    (second == nullptr ? 0 : (*second)[index]);
+  }
+  return result;
+}
+
+int UnitSignedPathLength(const std::vector<std::vector<long>>& augmented_rows,
+                         int row_count,
+                         const std::vector<long>& augmented_target) {
+  if (row_count < 0 || row_count > static_cast<int>(augmented_rows.size()) ||
+      augmented_target.empty() || augmented_target.back() != 1) {
+    throw std::runtime_error("invalid signed-path contract");
+  }
+  const std::vector<long> target = CoordinatePart(augmented_target);
+  std::vector<std::vector<long>> rows;
+  rows.reserve(row_count);
+  for (int index = 0; index < row_count; ++index) {
+    rows.push_back(CoordinatePart(augmented_rows[index]));
+  }
+  for (int index = 0; index < row_count; ++index) {
+    for (long sign : {-1L, 1L}) {
+      bool equal = true;
+      for (std::size_t coordinate = 0; coordinate < target.size(); ++coordinate) {
+        if (sign * rows[index][coordinate] != target[coordinate]) {
+          equal = false;
+          break;
+        }
+      }
+      if (equal) return 1;
+    }
+  }
+
+  std::vector<SignedPair> pairs;
+  std::unordered_map<std::vector<long>, std::vector<std::size_t>, LongVectorHash>
+      pair_lookup;
+  for (int first = 0; first < row_count; ++first) {
+    for (int second = first + 1; second < row_count; ++second) {
+      for (long first_sign : {-1L, 1L}) {
+        for (long second_sign : {-1L, 1L}) {
+          std::vector<long> sum(target.size());
+          for (std::size_t coordinate = 0; coordinate < target.size(); ++coordinate) {
+            sum[coordinate] = first_sign * rows[first][coordinate] +
+                              second_sign * rows[second][coordinate];
+          }
+          const std::size_t pair_index = pairs.size();
+          pairs.push_back(SignedPair{first, static_cast<int>(first_sign), second,
+                                     static_cast<int>(second_sign), sum});
+          pair_lookup[sum].push_back(pair_index);
+        }
+      }
+    }
+  }
+
+  for (int single = 0; single < row_count; ++single) {
+    for (long single_sign : {-1L, 1L}) {
+      const std::vector<long> needed =
+          SubtractScaled(target, rows[single], single_sign);
+      const auto found = pair_lookup.find(needed);
+      if (found == pair_lookup.end()) continue;
+      for (std::size_t pair_index : found->second) {
+        const SignedPair& pair = pairs[pair_index];
+        if (pair.first != single && pair.second != single) return 3;
+      }
+    }
+  }
+
+  for (int single = 0; single < row_count; ++single) {
+    for (long single_sign : {-1L, 1L}) {
+      for (const SignedPair& first_pair : pairs) {
+        if (first_pair.first == single || first_pair.second == single) continue;
+        const std::vector<long> needed =
+            SubtractScaled(target, rows[single], single_sign, &first_pair.sum);
+        const auto found = pair_lookup.find(needed);
+        if (found == pair_lookup.end()) continue;
+        for (std::size_t pair_index : found->second) {
+          const SignedPair& second_pair = pairs[pair_index];
+          if (second_pair.first == single || second_pair.second == single ||
+              second_pair.first == first_pair.first ||
+              second_pair.first == first_pair.second ||
+              second_pair.second == first_pair.first ||
+              second_pair.second == first_pair.second) {
+            continue;
+          }
+          return 5;
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+void RunSignedPathContractTests() {
+  const std::vector<std::vector<long>> rows = {
+      {1, 0, 0, 0, 0, 1}, {0, 1, 0, 0, 0, 1},
+      {0, 0, 1, 0, 0, 1}, {0, 0, 0, 1, 0, 1},
+      {0, 0, 0, 0, 1, 1},
+  };
+  if (UnitSignedPathLength(rows, 5, {1, 0, 0, 0, 0, 1}) != 1 ||
+      UnitSignedPathLength(rows, 5, {1, 1, 1, 0, 0, 1}) != 3 ||
+      UnitSignedPathLength(rows, 5, {1, 1, 1, 1, 1, 1}) != 5 ||
+      UnitSignedPathLength(rows, 1, {2, 0, 0, 0, 0, 1}) != 0) {
+    throw std::runtime_error("signed-path contract regression");
+  }
+}
+
 std::vector<int> QuotientCoefficients(const std::vector<Mask>& terms,
                                       const std::vector<int>& active,
                                       const RowLattice& lattice) {
@@ -486,6 +627,15 @@ struct Classification {
   std::map<int, int> term_histogram;
   int binomial_rows = 0;
   std::size_t lattice_rank = 0;
+  std::string portable_kind = "none";
+  int portable_path_length = 0;
+};
+
+struct ExceptionalSupport {
+  Mask support;
+  std::string outcome;
+  int binomial_rows = 0;
+  std::size_t lattice_rank = 0;
 };
 
 Classification Classify(const Model& model, Pattern pattern, Mask support) {
@@ -520,22 +670,41 @@ Classification Classify(const Model& model, Pattern pattern, Mask support) {
   std::vector<long> sign_target(active.size() + 1, 0);
   sign_target.back() = 1;
   if (lattice.Contains(sign_target)) {
+    const int path_length =
+        UnitSignedPathLength(generators, binomial_rows, sign_target);
     return Classification{"sign_inconsistency", histogram, binomial_rows,
-                          lattice.rank()};
+                          lattice.rank(),
+                          path_length ? "sign_cycle_" + std::to_string(path_length)
+                                      : "none",
+                          path_length};
   }
   for (const auto& terms : targets) {
     if (QuotientCoefficients(terms, active, lattice).empty()) {
+      if (terms.empty()) {
+        return Classification{"required_amplitude_zero", histogram, binomial_rows,
+                              lattice.rank(), "missing_required_amplitude", 0};
+      }
+      int path_length = 0;
+      if (terms.size() == 2) {
+        path_length = UnitSignedPathLength(
+            generators, binomial_rows,
+            ExponentDifference(terms[1], terms[0], active, 1));
+      }
       return Classification{"required_amplitude_zero", histogram, binomial_rows,
-                            lattice.rank()};
+                            lattice.rank(),
+                            path_length ? "required_path_" + std::to_string(path_length)
+                                        : "none",
+                            path_length};
     }
   }
   for (const auto& terms : longer) {
     if (QuotientCoefficients(terms, active, lattice).size() == 1) {
       return Classification{"quotient_unit", histogram, binomial_rows,
-                            lattice.rank()};
+                            lattice.rank(), "none", 0};
     }
   }
-  return Classification{"open", histogram, binomial_rows, lattice.rank()};
+  return Classification{"open", histogram, binomial_rows, lattice.rank(),
+                        "none", 0};
 }
 
 struct Arguments {
@@ -732,6 +901,13 @@ class Enumerator {
         ++frontier_count_;
         const Classification classification = Classify(model_, args_.pattern, support);
         ++outcome_counts_[classification.outcome];
+        if (classification.portable_kind != "none") {
+          ++portable_certificate_counts_[classification.portable_kind];
+        } else {
+          exceptional_supports_.push_back(ExceptionalSupport{
+              support, classification.outcome, classification.binomial_rows,
+              classification.lattice_rank});
+        }
         if (classification.outcome == "open") open_supports_.insert(support);
       }
       return;
@@ -789,7 +965,7 @@ class Enumerator {
     std::ofstream output(temporary, std::ios::binary | std::ios::trunc);
     if (!output) throw std::runtime_error("cannot open output");
     output << "{\n";
-    output << "  \"schema\": \"run083-native-frontier-v1\",\n";
+    output << "  \"schema\": \"run083-native-frontier-v2\",\n";
     output << "  \"run_id\": \"" << args_.run_id << "\",\n";
     output << "  \"spec_sha256\": \"" << args_.spec_sha256 << "\",\n";
     output << "  \"pattern\": \"" << PatternName(args_.pattern) << "\",\n";
@@ -817,7 +993,19 @@ class Enumerator {
     WriteMap(output, branches_);
     output << ",\n  \"outcome_counts\": ";
     WriteMap(output, outcome_counts_);
-    output << ",\n  \"open_support_masks\": [";
+    output << ",\n  \"portable_certificate_counts\": ";
+    WriteMap(output, portable_certificate_counts_);
+    output << ",\n  \"exceptional_supports\": [";
+    first = true;
+    for (const ExceptionalSupport& item : exceptional_supports_) {
+      if (!first) output << ',';
+      first = false;
+      output << "{\"support_mask\":\"" << Decimal(item.support)
+             << "\",\"outcome\":\"" << item.outcome
+             << "\",\"binomial_rows\":" << item.binomial_rows
+             << ",\"lattice_rank\":" << item.lattice_rank << '}';
+    }
+    output << "],\n  \"open_support_masks\": [";
     first = true;
     for (Mask support : open_supports_) {
       if (!first) output << ',';
@@ -847,6 +1035,8 @@ class Enumerator {
   std::map<int, std::uint64_t> states_by_remaining_;
   std::map<std::string, std::uint64_t> branches_;
   std::map<std::string, std::uint64_t> outcome_counts_;
+  std::map<std::string, std::uint64_t> portable_certificate_counts_;
+  std::vector<ExceptionalSupport> exceptional_supports_;
   std::set<Mask> open_supports_;
   std::uint64_t frontier_count_ = 0;
   std::uint64_t processed_bases_ = 0;
@@ -861,6 +1051,7 @@ int main(int argc, char** argv) {
   try {
     std::signal(SIGTERM, HandleSignal);
     std::signal(SIGINT, HandleSignal);
+    RunSignedPathContractTests();
     Arguments args = ParseArguments(argc, argv);
     Enumerator enumerator(std::move(args));
     enumerator.Run();
