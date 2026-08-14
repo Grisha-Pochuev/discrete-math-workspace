@@ -449,4 +449,661 @@ class RowLattice {
   std::vector<slong> nonzero_rows_;
 };
 
-std::vector<long> ß^y¶‰ËkºwµçI…¬¡Á…É¥Ñä¤ì(€I½İ1…ÑÑ¥”±…ÑÑ¥”¡•¹•É…Ñ½ÉÌ¤ì(€ÍÑèéÙ•Ñ½Èñ±½¹œøÍ¥¹}Ñ…É•Ğ¡…Ñ¥Ù”¹Í¥é” ¤€¬€Ä°€À¤ì(€Í¥¹}Ñ…É•Ğ¹‰…¬ ¤€ô€Äì(€¥˜€¡±…ÑÑ¥”¹½¹Ñ…¥¹Ì¡Í¥¹}Ñ…É•Ğ¤¤ì(€€€½¹ÍĞ¥¹ĞÁ…Ñ¡}±•¹Ñ €ô(€€€€€€€U¹¥ÑM¥¹•‘A…Ñ¡1•¹Ñ ¡•¹•É…Ñ½ÉÌ°‰¥¹½µ¥…±}É½İÌ°Í¥¹}Ñ…É•Ğ¤ì(€€€É•ÑÕÉ¸±…ÍÍ¥™¥…Ñ¥½¹ì‰Í¥¹}¥¹½¹Í¥ÍÑ•¹äˆ°¡¥ÍÑ½É…´°‰¥¹½µ¥…±}É½İÌ°(€€€€€€€€€€€€€€€€€€€€€€€€€±…ÑÑ¥”¹É…¹¬ ¤°(€€€€€€€€€€€€€€€€€€€€€€€€€Á…Ñ¡}±•¹Ñ €ü€‰Í¥¹}å±•|ˆ€¬ÍÑèéÑ½}ÍÑÉ¥¹œ¡Á…Ñ¡}±•¹Ñ ¤(€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€è€‰¹½¹”ˆ°(€€€€€€€€€€€€€€€€€€€€€€€€€Á…Ñ¡}±•¹Ñ¡ôì(€ô(€‰½½°É•ÅÕ¥É•‘}…µÁ±¥ÑÕ‘•}é•É¼€ô™…±Í”ì(€™½È€¡½¹ÍĞ…ÕÑ¼˜Ñ•ÉµÌ€èÑ…É•ÑÌ¤ì(€€€¥˜€ …EÕ½Ñ¥•¹Ñ½•™™¥¥•¹ÑÌ¡Ñ•ÉµÌ°…Ñ¥Ù”°±…ÑÑ¥”¤¹•µÁÑä ¤¤½¹Ñ¥¹Õ”ì(€€€É•ÅÕ¥É•‘}…µÁ±¥ÑÕ‘•}é•É¼€ôÑÉÕ”ì(€€€¥˜€¡Ñ•ÉµÌ¹•µÁÑä ¤¤ì(€€€€€É•ÑÕÉ¸±…ÍÍ¥™¥…Ñ¥½¹ì‰É•ÅÕ¥É•‘}…µÁ±¥ÑÕ‘•}é•É¼ˆ°¡¥ÍÑ½É…´°‰¥¹½µ¥…±}É½İÌ°(€€€€€€€€€€€€€€€€€€€€€€€€€€€±…ÑÑ¥”¹É…¹¬ ¤°€‰µ¥ÍÍ¥¹}É•ÅÕ¥É•‘}…µÁ±¥ÑÕ‘”ˆ°€Áôì(€€€ô(€€€¥˜€¡Ñ•ÉµÌ¹Í¥é” ¤€„ô€È¤½¹Ñ¥¹Õ”ì(€€€½¹ÍĞ¥¹ĞÁ…Ñ¡}±•¹Ñ €ôU¹¥ÑM¥¹•‘A…Ñ¡1•¹Ñ  (€€€€€€€•¹•É…Ñ½ÉÌ°‰¥¹½µ¥…±}É½İÌ°(€€€€€€€áÁ½¹•¹Ñ¥™™•É•¹”¡Ñ•ÉµÍlÅt°Ñ•ÉµÍlÁt°…Ñ¥Ù”°€Ä¤¤ì(€€€¥˜€¡Á…Ñ¡}±•¹Ñ ¤ì(€€€€€É•ÑÕÉ¸±…ÍÍ¥™¥…Ñ¥½¹ì‰É•ÅÕ¥É•‘}…µÁ±¥ÑÕ‘•}é•É¼ˆ°¡¥ÍÑ½É…´°‰¥¹½µ¥…±}É½İÌ°(€€€€€€€€€€€€€€€€€€€€€€€€€€€±…ÑÑ¥”¹É…¹¬ ¤°(€€€€€€€€€€€€€€€€€€€€€€€€€€€€‰É•ÅÕ¥É•‘}Á…Ñ¡|ˆ€¬ÍÑèéÑ½}ÍÑÉ¥¹œ¡Á…Ñ¡}±•¹Ñ ¤°(€€€€€€€€€€€€€€€€€€€€€€€€€€€Á…Ñ¡}±•¹Ñ¡ôì(€€€ô(€ô(€¥˜€¡É•ÅÕ¥É•‘}…µÁ±¥ÑÕ‘•}é•É¼¤ì(€€€É•ÑÕÉ¸±…ÍÍ¥™¥…Ñ¥½¹ì‰É•ÅÕ¥É•‘}…µÁ±¥ÑÕ‘•}é•É¼ˆ°¡¥ÍÑ½É…´°‰¥¹½µ¥…±}É½İÌ°(€€€€€€€€€€€€€€€€€€€€€€€€€±…ÑÑ¥”¹É…¹¬ ¤°€‰¹½¹”ˆ°€Áôì(€ô(€™½È€¡½¹ÍĞ…ÕÑ¼˜Ñ•ÉµÌ€è±½¹•È¤ì(€€€¥˜€¡EÕ½Ñ¥•¹Ñ½•™™¥¥•¹ÑÌ¡Ñ•ÉµÌ°…Ñ¥Ù”°±…ÑÑ¥”¤¹Í¥é” ¤€ôô€Ä¤ì(€€€€€É•ÑÕÉ¸±…ÍÍ¥™¥…Ñ¥½¹ì‰ÅÕ½Ñ¥•¹Ñ}Õ¹¥Ğˆ°¡¥ÍÑ½É…´°‰¥¹½µ¥…±}É½İÌ°(€€€€€€€€€€€€€€€€€€€€€€€€€€€±…ÑÑ¥”¹É…¹¬ ¤°€‰¹½¹”ˆ°€Áôì(€€€ô(€ô(€É•ÑÕÉ¸±…ÍÍ¥™¥…Ñ¥½¹ì‰½Á•¸ˆ°¡¥ÍÑ½É…´°‰¥¹½µ¥…±}É½İÌ°±…ÑÑ¥”¹É…¹¬ ¤°(€€€€€€€€€€€€€€€€€€€€€€€€‰¹½¹”ˆ°€Áôì)ô()ÍÑÉÕĞÉÕµ•¹ÑÌì(€ÍÑèéÍÑÉ¥¹œÉÕ¹}¥ì(€ÍÑèéÍÑÉ¥¹œÍÁ•}Í¡„ÈÔØì(€A…ÑÑ•É¸Á…ÑÑ•É¸€ôA…ÑÑ•É¸èé¬ÄÄÄì(€¥¹ĞÑ…É•Ñ}Í¥é”€ô€Ääì(€¥¹ĞÍ¡…É‘}¥€ô€Àì(€¥¹ĞÍ¡…É‘}½Õ¹Ğ€ô€Äì(€‘½Õ‰±”Í•½¹‘Ì€ô€äÀÀ¸Àì(€ÍÑèéÕ¥¹ĞØÑ}Ğµ…á}ÍÑ…Ñ•Ì€ô€Àì(€‘½Õ‰±”¡•­Á½¥¹Ñ}Í•½¹‘Ì€ô€ÄÈÀ¸Àì(€™ÌèéÁ…Ñ ½ÕÑÁÕĞì)ôì()ÉÕµ•¹ÑÌA…ÉÍ•ÉÕµ•¹ÑÌ¡¥¹Ğ…ÉŒ°¡…È¨¨…ÉØ¤ì(€ÉÕµ•¹ÑÌ…ÉÌì(€™½È€¡¥¹Ğ¥¹‘•à€ô€Äì¥¹‘•à€ğ…ÉŒì€¬­¥¹‘•à¤ì(€€€½¹ÍĞÍÑèéÍÑÉ¥¹œ­•ä€ô…ÉÙm¥¹‘•átì(€€€¥˜€¡¥¹‘•à€¬€Ä€øô…ÉŒ¤Ñ¡É½ÜÍÑèéÉÕ¹Ñ¥µ•}•ÉÉ½È ‰µ¥ÍÍ¥¹œÙ…±Õ”™½È€ˆ€¬­•ä¤ì(€€€½¹ÍĞÍÑèéÍÑÉ¥¹œÙ…±Õ”€ô…ÉÙl¬­¥¹‘•átì(€€€¥˜€¡­•ä€ôô€ˆ´µÉÕ¸µ¥ˆ¤…ÉÌ¹ÉÕ¹}¥€ôÙ…±Õ”ì(€€€•±Í”¥˜€¡­•ä€ôô€ˆ´µÍÁ•ŒµÍ¡„ÈÔØˆ¤…ÉÌ¹ÍÁ•}Í¡„ÈÔØ€ôÙ…±Õ”ì(€€€•±Í”¥˜€¡­•ä€ôô€ˆ´µÁ…ÑÑ•É¸ˆ¤…ÉÌ¹Á…ÑÑ•É¸€ôA…ÉÍ•A…ÑÑ•É¸¡Ù…±Õ”¤ì(€€€•±Í”¥˜€¡­•ä€ôô€ˆ´µÑ…É•ĞµÍ¥é”ˆ¤…ÉÌ¹Ñ…É•Ñ}Í¥é”€ôÍÑèéÍÑ½¤¡Ù…±Õ”¤ì(€€€•±Í”¥˜€¡­•ä€ôô€ˆ´µÍ¡…Éµ¥ˆ¤…ÉÌ¹Í¡…É‘}¥€ôÍÑèéÍÑ½¤¡Ù…±Õ”¤ì(€€€•±Í”¥˜€¡­•ä€ôô€ˆ´µÍ¡…Éµ½Õ¹Ğˆ¤…ÉÌ¹Í¡…É‘}½Õ¹Ğ€ôÍÑèéÍÑ½¤¡Ù…±Õ”¤ì(€€€•±Í”¥˜€¡­•ä€ôô€ˆ´µÍ•½¹‘Ìˆ¤…ÉÌ¹Í•½¹‘Ì€ôÍÑèéÍÑ½¡Ù…±Õ”¤ì(€€€•±Í”¥˜€¡­•ä€ôô€ˆ´µµ…àµÍÑ…Ñ•Ìˆ¤…ÉÌ¹µ…á}ÍÑ…Ñ•Ì€ôÍÑèéÍÑ½Õ±°¡Ù…±Õ”¤ì(€€€•±Í”¥˜€¡­•ä€ôô€ˆ´µ¡•­Á½¥¹ĞµÍ•½¹‘Ìˆ¤…ÉÌ¹¡•­Á½¥¹Ñ}Í•½¹‘Ì€ôÍÑèéÍÑ½¡Ù…±Õ”¤ì(€€€•±Í”¥˜€¡­•ä€ôô€ˆ´µ½ÕÑÁÕĞˆ¤…ÉÌ¹½ÕÑÁÕĞ€ôÙ…±Õ”ì(€€€•±Í”Ñ¡É½ÜÍÑèéÉÕ¹Ñ¥µ•}•ÉÉ½È ‰Õ¹­¹½İ¸…ÉÕµ•¹Ğè€ˆ€¬­•ä¤ì(€ô(€¥˜€¡…ÉÌ¹ÉÕ¹}¥¹•µÁÑä ¤ñğ…ÉÌ¹ÍÁ•}Í¡„ÈÔØ¹•µÁÑä ¤ñğ…ÉÌ¹½ÕÑÁÕĞ¹•µÁÑä ¤¤ì(€€€Ñ¡É½ÜÍÑèéÉÕ¹Ñ¥µ•}•ÉÉ½È ‰ÉÕ¸µ¥°ÍÁ•ŒµÍ¡„ÈÔØ°…¹½ÕÑÁÕĞ…É”É•ÅÕ¥É•ˆ¤ì(€ô(€¥˜€¡…ÉÌ¹Ñ…É•Ñ}Í¥é”€ğ€ÄÈñğ…ÉÌ¹Ñ…É•Ñ}Í¥é”€ø€ÈĞ¤ì(€€€Ñ¡É½ÜÍÑèéÉÕ¹Ñ¥µ•}•ÉÉ½È ‰Õ¹ÍÕÁÁ½ÉÑ•Ñ…É•ĞÍ¥é”ˆ¤ì(€ô(€¥˜€¡…ÉÌ¹Í¡…É‘}½Õ¹Ğ€ğô€Àñğ…ÉÌ¹Í¡…É‘}¥€ğ€Àñğ…ÉÌ¹Í¡…É‘}¥€øô…ÉÌ¹Í¡…É‘}½Õ¹Ğ¤ì(€€€Ñ¡É½ÜÍÑèéÉÕ¹Ñ¥µ•}•ÉÉ½È ‰¥¹Ù…±¥Í¡…É½¹ÑÉ…Ğˆ¤ì(€ô(€É•ÑÕÉ¸…ÉÌì)ô()±…ÍÌ¹Õµ•É…Ñ½Èì(ÁÕ‰±¥Œè(€•áÁ±¥¥Ğ¹Õµ•É…Ñ½È¡ÉÕµ•¹ÑÌ…ÉÌ¤(€€€€€€è…ÉÍ|¡ÍÑèéµ½Ù”¡…ÉÌ¤¤°(€€€€€€€É½ÕÁ|¡	Õ¥±‘É½ÕÀ¡…ÉÍ|¹Á…ÑÑ•É¸¤¤°(€€€€€€€‰…Í•Í|¡%¹¥Ñ¥…±	…Í•Ì¡µ½‘•±|°…ÉÍ|¹Á…ÑÑ•É¸°É½ÕÁ|¤¤°(€€€€€€€ÍÑ…ÉÑ•‘|¡ÍÑèé¡É½¹¼èéÍÑ•…‘å}±½¬èé¹½Ü ¤¤°(€€€€€€€±…ÍÑ}¡•­Á½¥¹Ñ|¡ÍÑ…ÉÑ•‘|¤ì(€€€™½È€¡¥¹Ğ‰¥Ğ€ô€Àì‰¥Ğ€ğ­	¥ÑÌì€¬­‰¥Ğ¤ì(€€€€€™½È€¡¥¹ĞÉ½ÕÁ}¥¹‘•à€ô€ÀìÉ½ÕÁ}¥¹‘•à€ğ­É½ÕÁM¥é”ì€¬­É½ÕÁ}¥¹‘•à¤ì(€€€€€€€¥˜€¡É½ÕÁ}mÉ½ÕÁ}¥¹‘•áum‰¥Ñt€øô€À¤ì(€€€€€€€€€‰¥Ñ}¥µ…•Í}mÉ½ÕÁ}¥¹‘•áum‰¥Ñt€ô	¥Ğ¡É½ÕÁ}mÉ½ÕÁ}¥¹‘•áum‰¥Ñt¤ì(€€€€€€€ô(€€€€€ô(€€€ô(€€€™½È€¡ÍÑèéÍ¥é•}Ğ¥¹‘•à€ô€Àì¥¹‘•à€ğ‰…Í•Í|¹Í¥é” ¤ì€¬­¥¹‘•à¤ì(€€€€€¥˜€¡ÍÑ…Ñ¥}…ÍĞñ¥¹Ğø¡¥¹‘•à€”…ÉÍ|¹Í¡…É‘}½Õ¹Ğ¤€ôô…ÉÍ|¹Í¡…É‘}¥¤ì(€€€€€€€…ÍÍ¥¹•‘}‰…Í•Í|¹ÁÕÍ¡}‰…¬¡‰…Í•Í}m¥¹‘•át¤ì(€€€€€ô(€€€ô(€ô((€Ù½¥IÕ¸ ¤ì(€€€™½È€¡5…Í¬ÍÕÁÁ½ÉĞ€è…ÍÍ¥¹•‘}‰…Í•Í|¤ì(€€€€€¥˜€¡MÑ½ÁI•ÅÕ•ÍÑ• ¤¤‰É•…¬ì(€€€€€I•ÕÉÍ”¡ÍÕÁÁ½ÉĞ°…ÉÍ|¹Ñ…É•Ñ}Í¥é”€´A½Á½Õ¹Ğ¡ÍÕÁÁ½ÉĞ¤¤ì(€€€€€¥˜€¡ÍÑ½ÁÁ•‘}É•…Í½¹|¹•µÁÑä ¤¤€¬­ÁÉ½•ÍÍ•‘}‰…Í•Í|ì(€€€ô(€€€¥˜€¡ÍÑ½ÁÁ•‘}É•…Í½¹|¹•µÁÑä ¤¤ÍÑ½ÁÁ•‘}É•…Í½¹|€ô€‰½µÁ±•Ñ”ˆì(€€€]É¥Ñ•M¹…ÁÍ¡½Ğ¡ÍÑ½ÁÁ•‘}É•…Í½¹|€ôô€‰½µÁ±•Ñ”ˆ¤ì(€ô((ÁÉ¥Ù…Ñ”è(€‰½½°MÑ½ÁI•ÅÕ•ÍÑ• ¤ì(€€€¥˜€ …ÍÑ½ÁÁ•‘}É•…Í½¹|¹•µÁÑä ¤¤É•ÑÕÉ¸ÑÉÕ”ì(€€€¥˜€¡}Í¥¹…±}É•ÅÕ•ÍÑ•¹±½… ¤¤ì(€€€€€ÍÑ½ÁÁ•‘}É•…Í½¹|€ô€‰Í¥¹…°ˆì(€€€€€É•ÑÕÉ¸ÑÉÕ”ì(€€€ô(€€€¥˜€¡…ÉÍ|¹µ…á}ÍÑ…Ñ•Ì€˜˜Í••¹|¹Í¥é” ¤€øô…ÉÍ|¹µ…á}ÍÑ…Ñ•Ì¤ì(€€€€€ÍÑ½ÁÁ•‘}É•…Í½¹|€ô€‰ÍÑ…Ñ•}…Àˆì(€€€€€É•ÑÕÉ¸ÑÉÕ”ì(€€€ô(€€€½¹ÍĞ…ÕÑ¼¹½Ü€ôÍÑèé¡É½¹¼èéÍÑ•…‘å}±½¬èé¹½Ü ¤ì(€€€½¹ÍĞ‘½Õ‰±”•±…ÁÍ•€ôÍÑèé¡É½¹¼èé‘ÕÉ…Ñ¥½¸ñ‘½Õ‰±”ø¡¹½Ü€´ÍÑ…ÉÑ•‘|¤¹½Õ¹Ğ ¤ì(€€€¥˜€¡•±…ÁÍ•€øô…ÉÍ|¹Í•½¹‘Ì¤ì(€€€€€ÍÑ½ÁÁ•‘}É•…Í½¹|€ô€‰‘•…‘±¥¹”ˆì(€€€€€É•ÑÕÉ¸ÑÉÕ”ì(€€€ô(€€€¥˜€¡ÍÑèé¡É½¹¼èé‘ÕÉ…Ñ¥½¸ñ‘½Õ‰±”ø¡¹½Ü€´±…ÍÑ}¡•­Á½¥¹Ñ|¤¹½Õ¹Ğ ¤€øô(€€€€€€€…ÉÍ|¹¡•­Á½¥¹Ñ}Í•½¹‘Ì¤ì(€€€€€]É¥Ñ•M¹…ÁÍ¡½Ğ¡™…±Í”¤ì(€€€€€±…ÍÑ}¡•­Á½¥¹Ñ|€ô¹½Üì(€€€ô(€€€É•ÑÕÉ¸™…±Í”ì(€ô((€ÍÑèé…ÉÉ…äñ5…Í¬°­É½ÕÁM¥é”ø%µ…•Ì¡5…Í¬ÍÕÁÁ½ÉĞ¤½¹ÍĞì(€€€ÍÑèé…ÉÉ…äñ5…Í¬°­É½ÕÁM¥é”øÉ•ÍÕ±Ñíôì(€€€™½È€¡¥¹ĞÉ½ÕÁ}¥¹‘•à€ô€ÀìÉ½ÕÁ}¥¹‘•à€ğ­É½ÕÁM¥é”ì€¬­É½ÕÁ}¥¹‘•à¤ì(€€€€€É•ÍÕ±ÑmÉ½ÕÁ}¥¹‘•át€ôQÉ…¹Í™½É´¡ÍÕÁÁ½ÉĞ°É½ÕÁ}mÉ½ÕÁ}¥¹‘•át¤ì(€€€ô(€€€É•ÑÕÉ¸É•ÍÕ±Ğì(€ô((€5…Í¬…¹½¹¥…±áÑ•¹Í¥½¸¡½¹ÍĞÍÑèé…ÉÉ…äñ5…Í¬°­É½ÕÁM¥é”ø˜Á…É•¹Ñ}¥µ…•Ì°(€€€€€€€€€€€€€€€€€€€€€€€€€5…Í¬µ¥ÍÍ¥¹œ¤½¹ÍĞì(€€€5…Í¬É•ÍÕ±Ğì(€€€‰½½°¥¹¥Ñ¥…±¥é•€ô™…±Í”ì(€€€½¹ÍĞÍÑèéÙ•Ñ½Èñ¥¹Ğø‰¥ÑÌ€ôM•Ñ	¥ÑÌ¡µ¥ÍÍ¥¹œ¤ì(€€€™½È€¡¥¹ĞÉ½ÕÁ}¥¹‘•à€ô€ÀìÉ½ÕÁ}¥¹‘•à€ğ­É½ÕÁM¥é”ì€¬­É½ÕÁ}¥¹‘•à¤ì(€€€€€5…Í¬¥µ…”€ôÁ…É•¹Ñ}¥µ…•ÍmÉ½ÕÁ}¥¹‘•átì(€€€€€™½È€¡¥¹Ğ‰¥Ğ€è‰¥ÑÌ¤¥µ…”ğô‰¥Ñ}¥µ…•Í}mÉ½ÕÁ}¥¹‘•áum‰¥Ñtì(€€€€€¥˜€ …¥¹¥Ñ¥…±¥é•ñğ¥µ…”€ğÉ•ÍÕ±Ğ¤ì(€€€€€€€É•ÍÕ±Ğ€ô¥µ…”ì(€€€€€€€¥¹¥Ñ¥…±¥é•€ôÑÉÕ”ì(€€€€€ô(€€€ô(€€€É•ÑÕÉ¸É•ÍÕ±Ğì(€ô((€¥¹Ğ	…‘=ÉÑ¡½½¹…±¥ÑåÉ½ÕÁÌ¡5…Í¬ÍÕÁÁ½ÉĞ¤½¹ÍĞì(€€€¥¹Ğ‰…€ô€Àì(€€€™½È€¡¥¹ĞÉ½Ü€ô€ÀìÉ½Ü€ğ­I½İÌì€¬­É½Ü¤ì(€€€€€™½È€¡¥¹ĞÑ•Éµ¥¹…°€ô€ÀìÑ•Éµ¥¹…°€ğ­I½İÌì€¬­Ñ•Éµ¥¹…°¤ì(€€€€€€€¥˜€¡É½Ü€ôôÑ•Éµ¥¹…°¤½¹Ñ¥¹Õ”ì(€€€€€€€¥¹Ğ½Õ¹Ğ€ô€Àì(€€€€€€€™½È€¡¥¹Ğ½±½ÕÈ€ô€Àì½±½ÕÈ€ğ­½±½ÕÉÌì€¬­½±½ÕÈ¤ì(€€€€€€€€€‰½½°•á±Õ‘•€ô™…±Í”ì(€€€€€€€€€¥˜€¡…ÉÍ|¹Á…ÑÑ•É¸€ôôA…ÑÑ•É¸èé¬ÄÄÄ¤ì(€€€€€€€€€€€•á±Õ‘•€ôÑ•Éµ¥¹…°€ğ€Ì€˜˜½±½ÕÈ€ôôÑ•Éµ¥¹…°ì(€€€€€€€€€ô•±Í”ì(€€€€€€€€€€€•á±Õ‘•€ô€¡Ñ•Éµ¥¹…°€ôô€À€˜˜€¡½±½ÕÈ€ôô€Àñğ½±½ÕÈ€ôô€Ä¤¤ñğ(€€€€€€€€€€€€€€€€€€€€€€€¡Ñ•Éµ¥¹…°€ôô€Ä€˜˜½±½ÕÈ€ôô€È¤ì(€€€€€€€€€ô(€€€€€€€€€¥˜€ …•á±Õ‘•€˜˜!…Í	¥Ğ¡ÍÕÁÁ½ÉĞ°¹ÑÉå%¡É½Ü°Ñ•Éµ¥¹…°°½±½ÕÈ¤¤¤€¬­½Õ¹Ğì(€€€€€€€ô(€€€€€€€¥˜€¡½Õ¹Ğ€ôô€Ä¤€¬­‰…ì(€€€€€ô(€€€ô(€€€É•ÑÕÉ¸‰…ì(€ô((€ÍÑÉÕĞM¥¹±•Ñ½¸ì(€€€‰½½°™½Õ¹€ô™…±Í”ì(€€€¥¹ĞÉ½½Ğ€ô€´Äì(€€€¥¹Ğİ½É€ô€´Äì(€€€5…Í¬½¹±äì(€ôì((€M¥¹±•Ñ½¸¥ÉÍÑM¥¹±•Ñ½¸¡5…Í¬ÍÕÁÁ½ÉĞ¤½¹ÍĞì(€€€™½È€¡¥¹ĞÉ½½Ğ€ô€ÀìÉ½½Ğ€ğ­I½İÌì€¬­É½½Ğ¤ì(€€€€€™½È€¡¥¹Ğİ½É€ô€Àìİ½É€ğ­]½É‘½Õ¹Ğì€¬­İ½É¤ì(€€€€€€€¥˜€¡áÁ•Ñ•‘]½É¡…ÉÍ|¹Á…ÑÑ•É¸°É½½Ğ°µ½‘•±|¹İ½É‘Ímİ½É‘t¤¤½¹Ñ¥¹Õ”ì(€€€€€€€¥¹Ğ½Õ¹Ğ€ô€Àì(€€€€€€€5…Í¬½¹±äì(€€€€€€€™½È€¡5…Í¬µ…Ñ¡¥¹œ€èµ½‘•±|¹µ…Ñ¡}µ…Í­ÍmÉ½½Ñumİ½É‘t¤ì(€€€€€€€€€¥˜€¡MÕ‰Í•Ğ¡µ…Ñ¡¥¹œ°ÍÕÁÁ½ÉĞ¤¤ì(€€€€€€€€€€€€¬­½Õ¹Ğì(€€€€€€€€€€€½¹±ä€ôµ…Ñ¡¥¹œì(€€€€€€€€€€€¥˜€¡½Õ¹Ğ€ø€Ä¤‰É•…¬ì(€€€€€€€€€ô(€€€€€€€ô(€€€€€€€¥˜€¡½Õ¹Ğ€ôô€Ä¤É•ÑÕÉ¸M¥¹±•Ñ½¹íÑÉÕ”°É½½Ğ°İ½É°½¹±åôì(€€€€€ô(€€€ô(€€€É•ÑÕÉ¸M¥¹±•Ñ½¹íôì(€ô((€Ù½¥I•ÕÉÍ”¡5…Í¬ÍÕÁÁ½ÉĞ°¥¹ĞÉ•µ…¥¹¥¹œ¤ì(€€€¥˜€ ¡Í••¹|¹Í¥é” ¤€˜€ÄÀÈÍT¤€ôô€À€˜˜MÑ½ÁI•ÅÕ•ÍÑ• ¤¤É•ÑÕÉ¸ì(€€€½¹ÍĞ…ÕÑ¼m|°¥¹Í•ÉÑ•‘t€ôÍ••¹|¹¥¹Í•ÉĞ¡ÍÕÁÁ½ÉĞ¤ì(€€€¥˜€ …¥¹Í•ÉÑ•¤ì(€€€€€€¬­‰É…¹¡•Í}l‰‘ÕÁ±¥…Ñ•}ÍÑ…Ñ”‰tì(€€€€€É•ÑÕÉ¸ì(€€€ô(€€€€¬­ÍÑ…Ñ•Í}‰å}É•µ…¥¹¥¹}mÉ•µ…¥¹¥¹tì(€€€½¹ÍĞ¥¹Ğ‰…€ô	…‘=ÉÑ¡½½¹…±¥ÑåÉ½ÕÁÌ¡ÍÕÁÁ½ÉĞ¤ì(€€€¥˜€¡‰…€øÉ•µ…¥¹¥¹œ¤ì(€€€€€€¬­‰É…¹¡•Í}l‰½ÉÑ¡½½¹…±¥Ñå}±½İ•É}‰½Õ¹‘}ÁÉÕ¹”‰tì(€€€€€É•ÑÕÉ¸ì(€€€ô(€€€½¹ÍĞM¥¹±•Ñ½¸Í¥¹±•Ñ½¸€ô¥ÉÍÑM¥¹±•Ñ½¸¡ÍÕÁÁ½ÉĞ¤ì(€€€¥˜€¡É•µ…¥¹¥¹œ€ôô€À¤ì(€€€€€¥˜€ …Í¥¹±•Ñ½¸¹™½Õ¹€˜˜‰…€ôô€À¤ì(€€€€€€€¥˜€¡A½Á½Õ¹Ğ¡ÍÕÁÁ½ÉĞ¤€„ô…ÉÍ|¹Ñ…É•Ñ}Í¥é”¤ì(€€€€€€€€€Ñ¡É½ÜÍÑèéÉÕ¹Ñ¥µ•}•ÉÉ½È ‰™É½¹Ñ¥•ÈÍÕÁÁ½ÉĞµÍ¥é”µ¥Íµ…Ñ ˆ¤ì(€€€€€€€ô(€€€€€€€€¬­™É½¹Ñ¥•É}½Õ¹Ñ|ì(€€€€€€€½¹ÍĞ±…ÍÍ¥™¥…Ñ¥½¸±…ÍÍ¥™¥…Ñ¥½¸€ô±…ÍÍ¥™ä¡µ½‘•±|°…ÉÍ|¹Á…ÑÑ•É¸°ÍÕÁÁ½ÉĞ¤ì(€€€€€€€€¬­½ÕÑ½µ•}½Õ¹ÑÍ}m±…ÍÍ¥™¥…Ñ¥½¸¹½ÕÑ½µ•tì(€€€€€€€¥˜€¡±…ÍÍ¥™¥…Ñ¥½¸¹Á½ÉÑ…‰±•}­¥¹€„ô€‰¹½¹”ˆ¤ì(€€€€€€€€€€¬­Á½ÉÑ…‰±•}•ÉÑ¥™¥…Ñ•}½Õ¹ÑÍ}m±…ÍÍ¥™¥…Ñ¥½¸¹Á½ÉÑ…‰±•}­¥¹‘tì(€€€€€€€ô•±Í”ì(€€€€€€€€€•á•ÁÑ¥½¹…±}ÍÕÁÁ½ÉÑÍ|¹ÁÕÍ¡}‰…¬¡á•ÁÑ¥½¹…±MÕÁÁ½ÉÑì(€€€€€€€€€€€€€ÍÕÁÁ½ÉĞ°±…ÍÍ¥™¥…Ñ¥½¸¹½ÕÑ½µ”°±…ÍÍ¥™¥…Ñ¥½¸¹‰¥¹½µ¥…±}É½İÌ°(€€€€€€€€€€€€€±…ÍÍ¥™¥…Ñ¥½¸¹±…ÑÑ¥•}É…¹­ô¤ì(€€€€€€€ô(€€€€€€€¥˜€¡±…ÍÍ¥™¥…Ñ¥½¸¹½ÕÑ½µ”€ôô€‰½Á•¸ˆ¤½Á•¹}ÍÕÁÁ½ÉÑÍ|¹¥¹Í•ÉĞ¡ÍÕÁÁ½ÉĞ¤ì(€€€€€ô(€€€€€É•ÑÕÉ¸ì(€€€ô((€€€½¹ÍĞ…ÕÑ¼Á…É•¹Ñ}¥µ…•Ì€ô%µ…•Ì¡ÍÕÁÁ½ÉĞ¤ì(€€€ÍÑèéÙ•Ñ½Èñ5…Í¬ø¡¥±‘É•¸ì(€€€¥˜€ …Í¥¹±•Ñ½¸¹™½Õ¹¤ì(€€€€€€¬­‰É…¹¡•Í}l‰™É••}ÍÑ…Ñ•Ì‰tì(€€€€€™½È€¡¥¹Ğ‰¥Ğ€èµ½‘•±|¹Ù…±¥‘}‰¥ÑÌ¤ì(€€€€€€€¥˜€ …!…Í	¥Ğ¡ÍÕÁÁ½ÉĞ°‰¥Ğ¤¤ì(€€€€€€€€€¡¥±‘É•¸¹ÁÕÍ¡}‰…¬¡…¹½¹¥…±áÑ•¹Í¥½¸¡Á…É•¹Ñ}¥µ…•Ì°	¥Ğ¡‰¥Ğ¤¤¤ì(€€€€€€€ô(€€€€€ô(€€€€€‰É…¹¡•Í}l‰™É••}¡¥±‘}½É‰¥ÑÌ‰t€¬ô¡¥±‘É•¸¹Í¥é” ¤ì(€€€ô•±Í”ì(€€€€€™½È€¡5…Í¬…±Ñ•É¹…Ñ¥Ù”€èµ½‘•±|¹µ…Ñ¡}µ…Í­ÍmÍ¥¹±•Ñ½¸¹É½½ÑumÍ¥¹±•Ñ½¸¹İ½É‘t¤ì(€€€€€€€¥˜€¡…±Ñ•É¹…Ñ¥Ù”€ôôÍ¥¹±•Ñ½¸¹½¹±ä¤½¹Ñ¥¹Õ”ì(€€€€€€€½¹ÍĞ5…Í¬µ¥ÍÍ¥¹œ€ô…±Ñ•É¹…Ñ¥Ù”€˜ùÍÕÁÁ½ÉĞì(€€€€€€€½¹ÍĞ¥¹ĞÕÍ•€ôA½Á½Õ¹Ğ¡µ¥ÍÍ¥¹œ¤ì(€€€€€€€¥˜€¡ÕÍ•€ø€À€˜˜ÕÍ•€ğôÉ•µ…¥¹¥¹œ¤ì(€€€€€€€€€¡¥±‘É•¸¹ÁÕÍ¡}‰…¬¡…¹½¹¥…±áÑ•¹Í¥½¸¡Á…É•¹Ñ}¥µ…•Ì°µ¥ÍÍ¥¹œ¤¤ì(€€€€€€€ô(€€€€€ô(€€€€€ÍÑèéÍ½ÉĞ¡¡¥±‘É•¸¹‰•¥¸ ¤°¡¥±‘É•¸¹•¹ ¤¤ì(€€€€€¡¥±‘É•¸¹•É…Í”¡ÍÑèéÕ¹¥ÅÕ”¡¡¥±‘É•¸¹‰•¥¸ ¤°¡¥±‘É•¸¹•¹ ¤¤°¡¥±‘É•¸¹•¹ ¤¤ì(€€€€€‰É…¹¡•Í}l‰µ…Ñ¡¥¹}¡¥±‘}½É‰¥ÑÌ‰t€¬ô¡¥±‘É•¸¹Í¥é” ¤ì(€€€ô(€€€ÍÑèéÍ½ÉĞ¡¡¥±‘É•¸¹‰•¥¸ ¤°¡¥±‘É•¸¹•¹ ¤¤ì(€€€¡¥±‘É•¸¹•É…Í”¡ÍÑèéÕ¹¥ÅÕ”¡¡¥±‘É•¸¹‰•¥¸ ¤°¡¥±‘É•¸¹•¹ ¤¤°¡¥±‘É•¸¹•¹ ¤¤ì(€€€™½È€¡5…Í¬¡¥±€è¡¥±‘É•¸¤ì(€€€€€½¹ÍĞ¥¹ĞÕÍ•€ôA½Á½Õ¹Ğ¡¡¥±¤€´A½Á½Õ¹Ğ¡ÍÕÁÁ½ÉĞ¤ì(€€€€€¥˜€¡ÕÍ•€ğô€ÀñğÕÍ•€øÉ•µ…¥¹¥¹œ¤ì(€€€€€€€Ñ¡É½ÜÍÑèéÉÕ¹Ñ¥µ•}•ÉÉ½È ‰…¹½¹¥…°¡¥±¥¹É•µ•¹Ğµ¥Íµ…Ñ ˆ¤ì(€€€€€ô(€€€€€I•ÕÉÍ”¡¡¥±°É•µ…¥¹¥¹œ€´ÕÍ•¤ì(€€€€€¥˜€ …ÍÑ½ÁÁ•‘}É•…Í½¹|¹•µÁÑä ¤¤É•ÑÕÉ¸ì(€€€ô(€ô((€ÍÑ…Ñ¥ŒÙ½¥]É¥Ñ•5…À¡ÍÑèé½ÍÑÉ•…´˜½ÕÑÁÕĞ°½¹ÍĞÍÑèéµ…ÀñÍÑèéÍÑÉ¥¹œ°ÍÑèéÕ¥¹ĞØÑ}Ğø˜µ…À¤ì(€€€‰½½°™¥ÉÍĞ€ôÑÉÕ”ì(€€€½ÕÑÁÕĞ€ğğ€ìœì(€€€™½È€¡½¹ÍĞ…ÕÑ¼˜m­•ä°Ù…±Õ•t€èµ…À¤ì(€€€€€¥˜€ …™¥ÉÍĞ¤½ÕÑÁÕĞ€ğğ€œ°œì(€€€€€™¥ÉÍĞ€ô™…±Í”ì(€€€€€½ÕÑÁÕĞ€ğğ€pˆœ€ğğ­•ä€ğğ€‰pˆèˆ€ğğÙ…±Õ”ì(€€€ô(€€€½ÕÑÁÕĞ€ğğ€ôœì(€ô((€Ù½¥]É¥Ñ•M¹…ÁÍ¡½Ğ¡‰½½°½µÁ±•Ñ”¤½¹ÍĞì(€€€½¹ÍĞ™ÌèéÁ…Ñ Ñ•µÁ½É…Éä€ô…ÉÍ|¹½ÕÑÁÕĞ¹ÍÑÉ¥¹œ ¤€¬€ˆ¹ÑµÀˆì(€€€™ÌèéÉ•…Ñ•}‘¥É•Ñ½É¥•Ì¡…ÉÍ|¹½ÕÑÁÕĞ¹Á…É•¹Ñ}Á…Ñ  ¤¤ì(€€€ÍÑèé½™ÍÑÉ•…´½ÕÑÁÕĞ¡Ñ•µÁ½É…Éä°ÍÑèé¥½Ìèé‰¥¹…ÉäğÍÑèé¥½ÌèéÑÉÕ¹Œ¤ì(€€€¥˜€ …½ÕÑÁÕĞ¤Ñ¡É½ÜÍÑèéÉÕ¹Ñ¥µ•}•ÉÉ½È ‰…¹¹½Ğ½Á•¸½ÕÑÁÕĞˆ¤ì(€€€½ÕÑÁÕĞ€ğğ€‰íq¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰Í¡•µ…pˆèp‰ÉÕ¸ÀàÌµ¹…Ñ¥Ù”µ™É½¹Ñ¥•ÈµØÉpˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰ÉÕ¹}¥‘pˆèpˆˆ€ğğ…ÉÍ|¹ÉÕ¹}¥€ğğ€‰pˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰ÍÁ•}Í¡„ÈÔÙpˆèpˆˆ€ğğ…ÉÍ|¹ÍÁ•}Í¡„ÈÔØ€ğğ€‰pˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰Á…ÑÑ•É¹pˆèpˆˆ€ğğA…ÑÑ•É¹9…µ”¡…ÉÍ|¹Á…ÑÑ•É¸¤€ğğ€‰pˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰Ñ…É•Ñ}Í¥é•pˆè€ˆ€ğğ…ÉÍ|¹Ñ…É•Ñ}Í¥é”€ğğ€ˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰Í¡…É‘}¥‘pˆè€ˆ€ğğ…ÉÍ|¹Í¡…É‘}¥€ğğ€ˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰Í¡…É‘}½Õ¹Ñpˆè€ˆ€ğğ…ÉÍ|¹Í¡…É‘}½Õ¹Ğ€ğğ€ˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰‰…Í•}½É‰¥Ñ}½Õ¹Ñpˆè€ˆ€ğğ‰…Í•Í|¹Í¥é” ¤€ğğ€ˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰…ÍÍ¥¹•‘}‰…Í•}½É‰¥ÑÍpˆè€ˆ€ğğ…ÍÍ¥¹•‘}‰…Í•Í|¹Í¥é” ¤€ğğ€ˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰ÁÉ½•ÍÍ•‘}‰…Í•}½É‰¥ÑÍpˆè€ˆ€ğğÁÉ½•ÍÍ•‘}‰…Í•Í|€ğğ€ˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰½µÁ±•Ñ•pˆè€ˆ€ğğ€¡½µÁ±•Ñ”€ü€‰ÑÉÕ”ˆ€è€‰™…±Í”ˆ¤€ğğ€ˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰ÍÑ½ÁÁ•‘}É•…Í½¹pˆèpˆˆ(€€€€€€€€€€€ğğ€¡½µÁ±•Ñ”€ü€‰½µÁ±•Ñ”ˆ€è€¡ÍÑ½ÁÁ•‘}É•…Í½¹|¹•µÁÑä ¤€ü€‰¡•­Á½¥¹Ğˆ€èÍÑ½ÁÁ•‘}É•…Í½¹|¤¤(€€€€€€€€€€€ğğ€‰pˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰Ù¥Í¥Ñ•‘}ÍÑ…Ñ•Ípˆè€ˆ€ğğÍ••¹|¹Í¥é” ¤€ğğ€ˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰™É½¹Ñ¥•É}½Õ¹Ñpˆè€ˆ€ğğ™É½¹Ñ¥•É}½Õ¹Ñ|€ğğ€ˆ±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰ÍÑ…Ñ•Í}‰å}É•µ…¥¹¥¹pˆèìˆì(€€€‰½½°™¥ÉÍĞ€ôÑÉÕ”ì(€€€™½È€¡½¹ÍĞ…ÕÑ¼˜m­•ä°Ù…±Õ•t€èÍÑ…Ñ•Í}‰å}É•µ…¥¹¥¹|¤ì(€€€€€¥˜€ …™¥ÉÍĞ¤½ÕÑÁÕĞ€ğğ€œ°œì(€€€€€™¥ÉÍĞ€ô™…±Í”ì(€€€€€½ÕÑÁÕĞ€ğğ€pˆœ€ğğ­•ä€ğğ€‰pˆèˆ€ğğÙ…±Õ”ì(€€€ô(€€€½ÕÑÁÕĞ€ğğ€‰ô±q¸ˆì(€€€½ÕÑÁÕĞ€ğğ€ˆ€p‰‰É…¹¡}½Õ¹ÑÍpˆè€ˆì(€€€]É¥Ñ•5…À¡½ÕÑÁÕĞ°‰É…¹¡•Í|¤ì(€€€½ÕÑÁÕĞ€ğğ€ˆ±q¸€p‰½ÕÑ½µ•}½Õ¹ÑÍpˆè€ˆì(€€€]É¥Ñ•5…À¡½ÕÑÁÕĞ°½ÕÑ½µ•}½Õ¹ÑÍ|¤ì(€€€½ÕÑÁÕĞ€ğğ€ˆ±q¸€p‰Á½ÉÑ…‰±•}•ÉÑ¥™¥…Ñ•}½Õ¹ÑÍpˆè€ˆì(€€€]É¥Ñ•5…À¡½ÕÑÁÕĞ°Á½ÉÑ…‰±•}•ÉÑ¥™¥…Ñ•}½Õ¹ÑÍ|¤ì(€€€½ÕÑÁÕĞ€ğğ€ˆ±q¸€p‰•á•ÁÑ¥½¹…±}ÍÕÁÁ½ÉÑÍpˆèlˆì(€€€™¥ÉÍĞ€ôÑÉÕ”ì(€€€™½È€¡½¹ÍĞá•ÁÑ¥½¹…±MÕÁÁ½ÉĞ˜¥Ñ•´€è•á•ÁÑ¥½¹…±}ÍÕÁÁ½ÉÑÍ|¤ì(€€€€€¥˜€ …™¥ÉÍĞ¤½ÕÑÁÕĞ€ğğ€œ°œì(€€€€€™¥ÉÍĞ€ô™…±Í”ì(€€€€€½ÕÑÁÕĞ€ğğ€‰íp‰ÍÕÁÁ½ÉÑ}µ…Í­pˆépˆˆ€ğğ•¥µ…°¡¥Ñ•´¹ÍÕÁÁ½ÉĞ¤(€€€€€€€€€€€€€ğğ€‰pˆ±p‰½ÕÑ½µ•pˆépˆˆ€ğğ¥Ñ•´¹½ÕÑ½µ”(€€€€€€€€€€€€€ğğ€‰pˆ±p‰‰¥¹½µ¥…±}É½İÍpˆèˆ€ğğ¥Ñ•´¹‰¥¹½µ¥…±}É½İÌ(€€€€€€€€€€€€€ğğ€ˆ±p‰±…ÑÑ¥•}É…¹­pˆèˆ€ğğ¥Ñ•´¹±…ÑÑ¥•}É…¹¬€ğğ€ôœì(€€€ô(€€€½ÕÑÁÕĞ€ğğ€‰t±q¸€p‰½Á•¹}ÍÕÁÁ½ÉÑ}µ…Í­Ípˆèlˆì(€€€™¥ÉÍĞ€ôÑÉÕ”ì(€€€™½È€¡5…Í¬ÍÕÁÁ½ÉĞ€è½Á•¹}ÍÕÁÁ½ÉÑÍ|¤ì(€€€€€¥˜€ …™¥ÉÍĞ¤½ÕÑÁÕĞ€ğğ€œ°œì(€€€€€™¥ÉÍĞ€ô™…±Í”ì(€€€€€½ÕÑÁÕĞ€ğğ€pˆœ€ğğ•¥µ…°¡ÍÕÁÁ½ÉĞ¤€ğğ€pˆœì(€€€ô(€€€½ÕÑÁÕĞ€ğğ€‰uq¹õq¸ˆì(€€€½ÕÑÁÕĞ¹±½Í” ¤ì(€€€¥˜€ …½ÕÑÁÕĞ¤Ñ¡É½ÜÍÑèéÉÕ¹Ñ¥µ•}•ÉÉ½È ‰™…¥±•İÉ¥Ñ¥¹œ½ÕÑÁÕĞˆ¤ì(€€€ÍÑèé•ÉÉ½É}½‘”•ÉÉ½Èì(€€€™ÌèéÉ•¹…µ”¡Ñ•µÁ½É…Éä°…ÉÍ|¹½ÕÑÁÕĞ°•ÉÉ½È¤ì(€€€¥˜€¡•ÉÉ½È¤ì(€€€€€™ÌèéÉ•µ½Ù”¡…ÉÍ|¹½ÕÑÁÕĞ°•ÉÉ½È¤ì(€€€€€•ÉÉ½È¹±•…È ¤ì(€€€€€™ÌèéÉ•¹…µ”¡Ñ•µÁ½É…Éä°…ÉÍ|¹½ÕÑÁÕĞ°•ÉÉ½È¤ì(€€€€€¥˜€¡•ÉÉ½È¤Ñ¡É½ÜÍÑèéÉÕ¹Ñ¥µ•}•ÉÉ½È ‰…Ñ½µ¥Œ½ÕÑÁÕĞÉ•Á±…•µ•¹Ğ™…¥±•ˆ¤ì(€€€ô(€ô((€ÉÕµ•¹ÑÌ…ÉÍ|ì(€5½‘•°µ½‘•±|ì(€ÍÑèéÙ•Ñ½Èñ5…ÁÁ¥¹œøÉ½ÕÁ|ì(€ÍÑèéÙ•Ñ½Èñ5…Í¬ø‰…Í•Í|ì(€ÍÑèéÙ•Ñ½Èñ5…Í¬ø…ÍÍ¥¹•‘}‰…Í•Í|ì(€ÍÑèé…ÉÉ…äñÍÑèé…ÉÉ…äñ5…Í¬°­	¥ÑÌø°­É½ÕÁM¥é”ø‰¥Ñ}¥µ…•Í}íôì(€ÍÑèéÕ¹½É‘•É•‘}Í•Ğñ5…Í¬°5…Í­!…Í øÍ••¹|ì(€ÍÑèéµ…Àñ¥¹Ğ°ÍÑèéÕ¥¹ĞØÑ}ĞøÍÑ…Ñ•Í}‰å}É•µ…¥¹¥¹|ì(€ÍÑèéµ…ÀñÍÑèéÍÑÉ¥¹œ°ÍÑèéÕ¥¹ĞØÑ}Ğø‰É…¹¡•Í|ì(€ÍÑèéµ…ÀñÍÑèéÍÑÉ¥¹œ°ÍÑèéÕ¥¹ĞØÑ}Ğø½ÕÑ½µ•}½Õ¹ÑÍ|ì(€ÍÑèéµ…ÀñÍÑèéÍÑÉ¥¹œ°ÍÑèéÕ¥¹ĞØÑ}ĞøÁ½ÉÑ…‰±•}•ÉÑ¥™¥…Ñ•}½Õ¹ÑÍ|ì(€ÍÑèéÙ•Ñ½Èñá•ÁÑ¥½¹…±MÕÁÁ½ÉĞø•á•ÁÑ¥½¹…±}ÍÕÁÁ½ÉÑÍ|ì(€ÍÑèéÍ•Ğñ5…Í¬ø½Á•¹}ÍÕÁÁ½ÉÑÍ|ì(€ÍÑèéÕ¥¹ĞØÑ}Ğ™É½¹Ñ¥•É}½Õ¹Ñ|€ô€Àì(€ÍÑèéÕ¥¹ĞØÑ}ĞÁÉ½•ÍÍ•‘}‰…Í•Í|€ô€Àì(€ÍÑèéÍÑÉ¥¹œÍÑ½ÁÁ•‘}É•…Í½¹|ì(€ÍÑèé¡É½¹¼èéÍÑ•…‘å}±½¬èéÑ¥µ•}Á½¥¹ĞÍÑ…ÉÑ•‘|ì(€ÍÑèé¡É½¹¼èéÍÑ•…‘å}±½¬èéÑ¥µ•}Á½¥¹Ğ±…ÍÑ}¡•­Á½¥¹Ñ|ì)ôì()ô€€¼¼¹…µ•ÍÁ…”()¥¹Ğµ…¥¸¡¥¹Ğ…ÉŒ°¡…È¨¨…ÉØ¤ì(€ÑÉäì(€€€ÍÑèéÍ¥¹…°¡M%QI4°!…¹‘±•M¥¹…°¤ì(€€€ÍÑèéÍ¥¹…°¡M%%9P°!…¹‘±•M¥¹…°¤ì(€€€IÕ¹M¥¹•‘A…Ñ¡½¹ÑÉ…ÑQ•ÍÑÌ ¤ì(€€€ÉÕµ•¹ÑÌ…ÉÌ€ôA…ÉÍ•ÉÕµ•¹ÑÌ¡…ÉŒ°…ÉØ¤ì(€€€¹Õµ•É…Ñ½È•¹Õµ•É…Ñ½È¡ÍÑèéµ½Ù”¡…ÉÌ¤¤ì(€€€•¹Õµ•É…Ñ½È¹IÕ¸ ¤ì(€€€™±¥¹Ñ}±•…¹ÕÀ ¤ì(€€€É•ÑÕÉ¸€Àì(€ô…Ñ €¡½¹ÍĞÍÑèé•á•ÁÑ¥½¸˜•ÉÉ½È¤ì(€€€ÍÑèé•ÉÈ€ğğ€‰•ÉÉ½Èè€ˆ€ğğ•ÉÉ½È¹İ¡…Ğ ¤€ğğ€q¸œì(€€€™±¥¹Ñ}±•…¹ÕÀ ¤ì(€€€É•ÑÕÉ¸€Äì(€ô)ô(
+std::vector<long> ExponentDifference(Mask first, Mask second,
+                                     const std::vector<int>& active,
+                                     long sign) {
+  std::vector<long> result;
+  result.reserve(active.size() + 1);
+  for (int bit : active) {
+    result.push_back(static_cast<long>(HasBit(first, bit)) -
+                     static_cast<long>(HasBit(second, bit)));
+  }
+  result.push_back(sign);
+  return result;
+}
+
+struct LongVectorHash {
+  std::size_t operator()(const std::vector<long>& values) const noexcept {
+    std::size_t result = 1469598103934665603ULL;
+    for (long value : values) {
+      result ^= static_cast<std::size_t>(value + 7);
+      result *= 1099511628211ULL;
+    }
+    return result;
+  }
+};
+
+struct SignedPair {
+  int first = -1;
+  int first_sign = 0;
+  int second = -1;
+  int second_sign = 0;
+  std::vector<long> sum;
+};
+
+bool UnitParityCoefficient(long mixed_sign_sum) {
+  const long numerator = 1 - mixed_sign_sum;
+  return numerator % 2 == 0 && std::abs(numerator / 2) <= 1;
+}
+
+std::vector<long> CoordinatePart(const std::vector<long>& augmented) {
+  if (augmented.empty()) throw std::runtime_error("empty augmented vector");
+  return std::vector<long>(augmented.begin(), augmented.end() - 1);
+}
+
+std::vector<long> SubtractScaled(const std::vector<long>& target,
+                                 const std::vector<long>& first,
+                                 long first_scale,
+                                 const std::vector<long>* second = nullptr) {
+  if (target.size() != first.size() ||
+      (second != nullptr && second->size() != target.size())) {
+    throw std::runtime_error("signed-path dimension mismatch");
+  }
+  std::vector<long> result(target.size());
+  for (std::size_t index = 0; index < target.size(); ++index) {
+    result[index] = target[index] - first_scale * first[index] -
+                    (second == nullptr ? 0 : (*second)[index]);
+  }
+  return result;
+}
+
+int UnitSignedPathLength(const std::vector<std::vector<long>>& augmented_rows,
+                         int row_count,
+                         const std::vector<long>& augmented_target) {
+  if (row_count < 0 || row_count > static_cast<int>(augmented_rows.size()) ||
+      augmented_target.empty() || augmented_target.back() != 1) {
+    throw std::runtime_error("invalid signed-path contract");
+  }
+  const std::vector<long> target = CoordinatePart(augmented_target);
+  std::vector<std::vector<long>> rows;
+  rows.reserve(row_count);
+  for (int index = 0; index < row_count; ++index) {
+    rows.push_back(CoordinatePart(augmented_rows[index]));
+  }
+  for (int index = 0; index < row_count; ++index) {
+    for (long sign : {-1L, 1L}) {
+      bool equal = true;
+      for (std::size_t coordinate = 0; coordinate < target.size(); ++coordinate) {
+        if (sign * rows[index][coordinate] != target[coordinate]) {
+          equal = false;
+          break;
+        }
+      }
+      if (equal) return 1;
+    }
+  }
+
+  std::vector<SignedPair> pairs;
+  std::unordered_map<std::vector<long>, std::vector<std::size_t>, LongVectorHash>
+      pair_lookup;
+  for (int first = 0; first < row_count; ++first) {
+    for (int second = first + 1; second < row_count; ++second) {
+      for (long first_sign : {-1L, 1L}) {
+        for (long second_sign : {-1L, 1L}) {
+          std::vector<long> sum(target.size());
+          for (std::size_t coordinate = 0; coordinate < target.size(); ++coordinate) {
+            sum[coordinate] = first_sign * rows[first][coordinate] +
+                              second_sign * rows[second][coordinate];
+          }
+          const std::size_t pair_index = pairs.size();
+          pairs.push_back(SignedPair{first, static_cast<int>(first_sign), second,
+                                     static_cast<int>(second_sign), sum});
+          pair_lookup[sum].push_back(pair_index);
+        }
+      }
+    }
+  }
+
+  for (int single = 0; single < row_count; ++single) {
+    for (long single_sign : {-1L, 1L}) {
+      const std::vector<long> needed =
+          SubtractScaled(target, rows[single], single_sign);
+      const auto found = pair_lookup.find(needed);
+      if (found == pair_lookup.end()) continue;
+      for (std::size_t pair_index : found->second) {
+        const SignedPair& pair = pairs[pair_index];
+        if (pair.first != single && pair.second != single &&
+            UnitParityCoefficient(single_sign + pair.first_sign +
+                                  pair.second_sign)) {
+          return 3;
+        }
+      }
+    }
+  }
+
+  for (int single = 0; single < row_count; ++single) {
+    for (long single_sign : {-1L, 1L}) {
+      for (const SignedPair& first_pair : pairs) {
+        if (first_pair.first == single || first_pair.second == single) continue;
+        const std::vector<long> needed =
+            SubtractScaled(target, rows[single], single_sign, &first_pair.sum);
+        const auto found = pair_lookup.find(needed);
+        if (found == pair_lookup.end()) continue;
+        for (std::size_t pair_index : found->second) {
+          const SignedPair& second_pair = pairs[pair_index];
+          if (second_pair.first == single || second_pair.second == single ||
+              second_pair.first == first_pair.first ||
+              second_pair.first == first_pair.second ||
+              second_pair.second == first_pair.first ||
+              second_pair.second == first_pair.second) {
+            continue;
+          }
+          if (UnitParityCoefficient(
+                  single_sign + first_pair.first_sign + first_pair.second_sign +
+                  second_pair.first_sign + second_pair.second_sign)) {
+            return 5;
+          }
+        }
+      }
+    }
+  }
+  return 0;
+}
+
+void RunSignedPathContractTests() {
+  const Mask first = Bit(0) | Bit(1) | Bit(2) | Bit(3);
+  const Mask second = Bit(0) | Bit(1) | Bit(4) | Bit(5);
+  const Mask different = Bit(0) | Bit(1) | Bit(4) | Bit(6);
+  if (UnorientedCircuit(first, second) != UnorientedCircuit(second, first) ||
+      UnorientedCircuit(first, second) == UnorientedCircuit(first, different)) {
+    throw std::runtime_error("global direct-collision key regression");
+  }
+  const std::vector<std::vector<long>> rows = {
+      {1, 0, 0, 0, 0, 1}, {0, 1, 0, 0, 0, 1},
+      {0, 0, 1, 0, 0, 1}, {0, 0, 0, 1, 0, 1},
+      {0, 0, 0, 0, 1, 1},
+  };
+  if (UnitSignedPathLength(rows, 5, {1, 0, 0, 0, 0, 1}) != 1 ||
+      UnitSignedPathLength(rows, 5, {1, 1, 1, 0, 0, 1}) != 3 ||
+      UnitSignedPathLength(rows, 5, {1, 1, 1, 1, -1, 1}) != 5 ||
+      UnitSignedPathLength(rows, 5, {1, 1, 1, 1, 1, 1}) != 0 ||
+      UnitSignedPathLength(rows, 1, {2, 0, 0, 0, 0, 1}) != 0) {
+    throw std::runtime_error("signed-path contract regression");
+  }
+}
+
+std::vector<int> QuotientCoefficients(const std::vector<Mask>& terms,
+                                      const std::vector<int>& active,
+                                      const RowLattice& lattice) {
+  struct Group {
+    Mask representative;
+    int coefficient;
+  };
+  std::vector<Group> groups;
+  for (Mask term : terms) {
+    bool placed = false;
+    for (Group& group : groups) {
+      if (lattice.Contains(ExponentDifference(term, group.representative, active, 0))) {
+        ++group.coefficient;
+        placed = true;
+        break;
+      }
+      if (lattice.Contains(ExponentDifference(term, group.representative, active, 1))) {
+        --group.coefficient;
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) groups.push_back(Group{term, 1});
+  }
+  std::vector<int> result;
+  for (const Group& group : groups) {
+    if (group.coefficient != 0) result.push_back(group.coefficient);
+  }
+  return result;
+}
+
+struct Classification {
+  std::string outcome;
+  std::map<int, int> term_histogram;
+  int binomial_rows = 0;
+  std::size_t lattice_rank = 0;
+  std::string portable_kind = "none";
+  int portable_path_length = 0;
+};
+
+struct ExceptionalSupport {
+  Mask support;
+  std::string outcome;
+  int binomial_rows = 0;
+  std::size_t lattice_rank = 0;
+};
+
+Classification Classify(const Model& model, Pattern pattern, Mask support) {
+  const std::vector<int> active = SetBits(support);
+  std::vector<std::vector<long>> generators;
+  std::vector<std::vector<Mask>> targets;
+  std::vector<std::vector<Mask>> longer;
+  std::set<CircuitKey> mixed_circuits;
+  std::map<int, int> histogram;
+  for (int root = 0; root < kRows; ++root) {
+    for (int word_index = 0; word_index < kWordCount; ++word_index) {
+      std::vector<Mask> terms;
+      for (Mask matching : model.match_masks[root][word_index]) {
+        if (Subset(matching, support)) terms.push_back(matching);
+      }
+      if (ExpectedWord(pattern, root, model.words[word_index])) {
+        targets.push_back(std::move(terms));
+      } else if (!terms.empty()) {
+        ++histogram[static_cast<int>(terms.size())];
+        if (terms.size() == 2) {
+          mixed_circuits.insert(UnorientedCircuit(terms[0], terms[1]));
+          generators.push_back(ExponentDifference(terms[0], terms[1], active, 1));
+        } else {
+          longer.push_back(std::move(terms));
+        }
+      }
+    }
+  }
+  const int binomial_rows = generators.size();
+  for (const auto& terms : targets) {
+    if (terms.size() == 2 &&
+        mixed_circuits.contains(UnorientedCircuit(terms[0], terms[1]))) {
+      return Classification{"required_amplitude_zero", histogram, binomial_rows,
+                            0, "global_direct_collision", 1};
+    }
+  }
+  std::vector<long> parity(active.size() + 1, 0);
+  parity.back() = 2;
+  generators.push_back(parity);
+  RowLattice lattice(generators);
+  std::vector<long> sign_target(active.size() + 1, 0);
+  sign_target.back() = 1;
+  if (lattice.Contains(sign_target)) {
+    const int path_length =
+        UnitSignedPathLength(generators, binomial_rows, sign_target);
+    return Classification{"sign_inconsistency", histogram, binomial_rows,
+                          lattice.rank(),
+                          path_length ? "sign_cycle_" + std::to_string(path_length)
+                                      : "none",
+                          path_length};
+  }
+  bool required_amplitude_zero = false;
+  for (const auto& terms : targets) {
+    if (!QuotientCoefficients(terms, active, lattice).empty()) continue;
+    required_amplitude_zero = true;
+    if (terms.empty()) {
+      return Classification{"required_amplitude_zero", histogram, binomial_rows,
+                            lattice.rank(), "missing_required_amplitude", 0};
+    }
+    if (terms.size() != 2) continue;
+    const int path_length = UnitSignedPathLength(
+        generators, binomial_rows,
+        ExponentDifference(terms[1], terms[0], active, 1));
+    if (path_length) {
+      return Classification{"required_amplitude_zero", histogram, binomial_rows,
+                            lattice.rank(),
+                            "required_path_" + std::to_string(path_length),
+                            path_length};
+    }
+  }
+  if (required_amplitude_zero) {
+    return Classification{"required_amplitude_zero", histogram, binomial_rows,
+                          lattice.rank(), "none", 0};
+  }
+  for (const auto& terms : longer) {
+    if (QuotientCoefficients(terms, active, lattice).size() == 1) {
+      return Classification{"quotient_unit", histogram, binomial_rows,
+                            lattice.rank(), "none", 0};
+    }
+  }
+  return Classification{"open", histogram, binomial_rows, lattice.rank(),
+                        "none", 0};
+}
+
+struct Arguments {
+  std::string run_id;
+  std::string spec_sha256;
+  Pattern pattern = Pattern::k111;
+  int target_size = 19;
+  int shard_id = 0;
+  int shard_count = 1;
+  double seconds = 900.0;
+  std::uint64_t max_states = 0;
+  double checkpoint_seconds = 120.0;
+  fs::path output;
+};
+
+Arguments ParseArguments(int argc, char** argv) {
+  Arguments args;
+  for (int index = 1; index < argc; ++index) {
+    const std::string key = argv[index];
+    if (index + 1 >= argc) throw std::runtime_error("missing value for " + key);
+    const std::string value = argv[++index];
+    if (key == "--run-id") args.run_id = value;
+    else if (key == "--spec-sha256") args.spec_sha256 = value;
+    else if (key == "--pattern") args.pattern = ParsePattern(value);
+    else if (key == "--target-size") args.target_size = std::stoi(value);
+    else if (key == "--shard-id") args.shard_id = std::stoi(value);
+    else if (key == "--shard-count") args.shard_count = std::stoi(value);
+    else if (key == "--seconds") args.seconds = std::stod(value);
+    else if (key == "--max-states") args.max_states = std::stoull(value);
+    else if (key == "--checkpoint-seconds") args.checkpoint_seconds = std::stod(value);
+    else if (key == "--output") args.output = value;
+    else throw std::runtime_error("unknown argument: " + key);
+  }
+  if (args.run_id.empty() || args.spec_sha256.empty() || args.output.empty()) {
+    throw std::runtime_error("run-id, spec-sha256, and output are required");
+  }
+  if (args.target_size < 12 || args.target_size > 24) {
+    throw std::runtime_error("unsupported target size");
+  }
+  if (args.shard_count <= 0 || args.shard_id < 0 || args.shard_id >= args.shard_count) {
+    throw std::runtime_error("invalid shard contract");
+  }
+  return args;
+}
+
+class Enumerator {
+ public:
+  explicit Enumerator(Arguments args)
+      : args_(std::move(args)),
+        group_(BuildGroup(args_.pattern)),
+        bases_(InitialBases(model_, args_.pattern, group_)),
+        started_(std::chrono::steady_clock::now()),
+        last_checkpoint_(started_) {
+    for (int bit = 0; bit < kBits; ++bit) {
+      for (int group_index = 0; group_index < kGroupSize; ++group_index) {
+        if (group_[group_index][bit] >= 0) {
+          bit_images_[group_index][bit] = Bit(group_[group_index][bit]);
+        }
+      }
+    }
+    for (std::size_t index = 0; index < bases_.size(); ++index) {
+      if (static_cast<int>(index % args_.shard_count) == args_.shard_id) {
+        assigned_bases_.push_back(bases_[index]);
+      }
+    }
+  }
+
+  void Run() {
+    for (Mask support : assigned_bases_) {
+      if (StopRequested()) break;
+      Recurse(support, args_.target_size - Popcount(support));
+      if (stopped_reason_.empty()) ++processed_bases_;
+    }
+    if (stopped_reason_.empty()) stopped_reason_ = "complete";
+    WriteSnapshot(stopped_reason_ == "complete");
+  }
+
+ private:
+  bool StopRequested() {
+    if (!stopped_reason_.empty()) return true;
+    if (g_signal_requested.load()) {
+      stopped_reason_ = "signal";
+      return true;
+    }
+    if (args_.max_states && seen_.size() >= args_.max_states) {
+      stopped_reason_ = "state_cap";
+      return true;
+    }
+    const auto now = std::chrono::steady_clock::now();
+    const double elapsed = std::chrono::duration<double>(now - started_).count();
+    if (elapsed >= args_.seconds) {
+      stopped_reason_ = "deadline";
+      return true;
+    }
+    if (std::chrono::duration<double>(now - last_checkpoint_).count() >=
+        args_.checkpoint_seconds) {
+      WriteSnapshot(false);
+      last_checkpoint_ = now;
+    }
+    return false;
+  }
+
+  std::array<Mask, kGroupSize> Images(Mask support) const {
+    std::array<Mask, kGroupSize> result{};
+    for (int group_index = 0; group_index < kGroupSize; ++group_index) {
+      result[group_index] = Transform(support, group_[group_index]);
+    }
+    return result;
+  }
+
+  Mask CanonicalExtension(const std::array<Mask, kGroupSize>& parent_images,
+                          Mask missing) const {
+    Mask result;
+    bool initialized = false;
+    const std::vector<int> bits = SetBits(missing);
+    for (int group_index = 0; group_index < kGroupSize; ++group_index) {
+      Mask image = parent_images[group_index];
+      for (int bit : bits) image |= bit_images_[group_index][bit];
+      if (!initialized || image < result) {
+        result = image;
+        initialized = true;
+      }
+    }
+    return result;
+  }
+
+  int BadOrthogonalityGroups(Mask support) const {
+    int bad = 0;
+    for (int row = 0; row < kRows; ++row) {
+      for (int terminal = 0; terminal < kRows; ++terminal) {
+        if (row == terminal) continue;
+        int count = 0;
+        for (int colour = 0; colour < kColours; ++colour) {
+          bool excluded = false;
+          if (args_.pattern == Pattern::k111) {
+            excluded = terminal < 3 && colour == terminal;
+          } else {
+            excluded = (terminal == 0 && (colour == 0 || colour == 1)) ||
+                       (terminal == 1 && colour == 2);
+          }
+          if (!excluded && HasBit(support, EntryId(row, terminal, colour))) ++count;
+        }
+        if (count == 1) ++bad;
+      }
+    }
+    return bad;
+  }
+
+  struct Singleton {
+    bool found = false;
+    int root = -1;
+    int word = -1;
+    Mask only;
+  };
+
+  Singleton FirstSingleton(Mask support) const {
+    for (int root = 0; root < kRows; ++root) {
+      for (int word = 0; word < kWordCount; ++word) {
+        if (ExpectedWord(args_.pattern, root, model_.words[word])) continue;
+        int count = 0;
+        Mask only;
+        for (Mask matching : model_.match_masks[root][word]) {
+          if (Subset(matching, support)) {
+            ++count;
+            only = matching;
+            if (count > 1) break;
+          }
+        }
+        if (count == 1) return Singleton{true, root, word, only};
+      }
+    }
+    return Singleton{};
+  }
+
+  void Recurse(Mask support, int remaining) {
+    if ((seen_.size() & 1023U) == 0 && StopRequested()) return;
+    const auto [_, inserted] = seen_.insert(support);
+    if (!inserted) {
+      ++branches_["duplicate_state"];
+      return;
+    }
+    ++states_by_remaining_[remaining];
+    const int bad = BadOrthogonalityGroups(support);
+    if (bad > remaining) {
+      ++branches_["orthogonality_lower_bound_prune"];
+      return;
+    }
+    const Singleton singleton = FirstSingleton(support);
+    if (remaining == 0) {
+      if (!singleton.found && bad == 0) {
+        if (Popcount(support) != args_.target_size) {
+          throw std::runtime_error("frontier support-size mismatch");
+        }
+        ++frontier_count_;
+        const Classification classification = Classify(model_, args_.pattern, support);
+        ++outcome_counts_[classification.outcome];
+        if (classification.portable_kind != "none") {
+          ++portable_certificate_counts_[classification.portable_kind];
+        } else {
+          exceptional_supports_.push_back(ExceptionalSupport{
+              support, classification.outcome, classification.binomial_rows,
+              classification.lattice_rank});
+        }
+        if (classification.outcome == "open") open_supports_.insert(support);
+      }
+      return;
+    }
+
+    const auto parent_images = Images(support);
+    std::vector<Mask> children;
+    if (!singleton.found) {
+      ++branches_["free_states"];
+      for (int bit : model_.valid_bits) {
+        if (!HasBit(support, bit)) {
+          children.push_back(CanonicalExtension(parent_images, Bit(bit)));
+        }
+      }
+      branches_["free_child_orbits"] += children.size();
+    } else {
+      for (Mask alternative : model_.match_masks[singleton.root][singleton.word]) {
+        if (alternative == singleton.only) continue;
+        const Mask missing = alternative & ~support;
+        const int used = Popcount(missing);
+        if (used > 0 && used <= remaining) {
+          children.push_back(CanonicalExtension(parent_images, missing));
+        }
+      }
+      std::sort(children.begin(), children.end());
+      children.erase(std::unique(children.begin(), children.end()), children.end());
+      branches_["matching_child_orbits"] += children.size();
+    }
+    std::sort(children.begin(), children.end());
+    children.erase(std::unique(children.begin(), children.end()), children.end());
+    for (Mask child : children) {
+      const int used = Popcount(child) - Popcount(support);
+      if (used <= 0 || used > remaining) {
+        throw std::runtime_error("canonical child increment mismatch");
+      }
+      Recurse(child, remaining - used);
+      if (!stopped_reason_.empty()) return;
+    }
+  }
+
+  static void WriteMap(std::ostream& output, const std::map<std::string, std::uint64_t>& map) {
+    bool first = true;
+    output << '{';
+    for (const auto& [key, value] : map) {
+      if (!first) output << ',';
+      first = false;
+      output << '\"' << key << "\":" << value;
+    }
+    output << '}';
+  }
+
+  void WriteSnapshot(bool complete) const {
+    const fs::path temporary = args_.output.string() + ".tmp";
+    fs::create_directories(args_.output.parent_path());
+    std::ofstream output(temporary, std::ios::binary | std::ios::trunc);
+    if (!output) throw std::runtime_error("cannot open output");
+    output << "{\n";
+    output << "  \"schema\": \"run083-native-frontier-v2\",\n";
+    output << "  \"run_id\": \"" << args_.run_id << "\",\n";
+    output << "  \"spec_sha256\": \"" << args_.spec_sha256 << "\",\n";
+    output << "  \"pattern\": \"" << PatternName(args_.pattern) << "\",\n";
+    output << "  \"target_size\": " << args_.target_size << ",\n";
+    output << "  \"shard_id\": " << args_.shard_id << ",\n";
+    output << "  \"shard_count\": " << args_.shard_count << ",\n";
+    output << "  \"base_orbit_count\": " << bases_.size() << ",\n";
+    output << "  \"assigned_base_orbits\": " << assigned_bases_.size() << ",\n";
+    output << "  \"processed_base_orbits\": " << processed_bases_ << ",\n";
+    output << "  \"complete\": " << (complete ? "true" : "false") << ",\n";
+    output << "  \"stopped_reason\": \""
+           << (complete ? "complete" : (stopped_reason_.empty() ? "checkpoint" : stopped_reason_))
+           << "\",\n";
+    output << "  \"visited_states\": " << seen_.size() << ",\n";
+    output << "  \"frontier_count\": " << frontier_count_ << ",\n";
+    output << "  \"states_by_remaining\": {";
+    bool first = true;
+    for (const auto& [key, value] : states_by_remaining_) {
+      if (!first) output << ',';
+      first = false;
+      output << '\"' << key << "\":" << value;
+    }
+    output << "},\n";
+    output << "  \"branch_counts\": ";
+    WriteMap(output, branches_);
+    output << ",\n  \"outcome_counts\": ";
+    WriteMap(output, outcome_counts_);
+    output << ",\n  \"portable_certificate_counts\": ";
+    WriteMap(output, portable_certificate_counts_);
+    output << ",\n  \"exceptional_supports\": [";
+    first = true;
+    for (const ExceptionalSupport& item : exceptional_supports_) {
+      if (!first) output << ',';
+      first = false;
+      output << "{\"support_mask\":\"" << Decimal(item.support)
+             << "\",\"outcome\":\"" << item.outcome
+             << "\",\"binomial_rows\":" << item.binomial_rows
+             << ",\"lattice_rank\":" << item.lattice_rank << '}';
+    }
+    output << "],\n  \"open_support_masks\": [";
+    first = true;
+    for (Mask support : open_supports_) {
+      if (!first) output << ',';
+      first = false;
+      output << '\"' << Decimal(support) << '\"';
+    }
+    output << "]\n}\n";
+    output.close();
+    if (!output) throw std::runtime_error("failed writing output");
+    std::error_code error;
+    fs::rename(temporary, args_.output, error);
+    if (error) {
+      fs::remove(args_.output, error);
+      error.clear();
+      fs::rename(temporary, args_.output, error);
+      if (error) throw std::runtime_error("atomic output replacement failed");
+    }
+  }
+
+  Arguments args_;
+  Model model_;
+  std::vector<Mapping> group_;
+  std::vector<Mask> bases_;
+  std::vector<Mask> assigned_bases_;
+  std::array<std::array<Mask, kBits>, kGroupSize> bit_images_{};
+  std::unordered_set<Mask, MaskHash> seen_;
+  std::map<int, std::uint64_t> states_by_remaining_;
+  std::map<std::string, std::uint64_t> branches_;
+  std::map<std::string, std::uint64_t> outcome_counts_;
+  std::map<std::string, std::uint64_t> portable_certificate_counts_;
+  std::vector<ExceptionalSupport> exceptional_supports_;
+  std::set<Mask> open_supports_;
+  std::uint64_t frontier_count_ = 0;
+  std::uint64_t processed_bases_ = 0;
+  std::string stopped_reason_;
+  std::chrono::steady_clock::time_point started_;
+  std::chrono::steady_clock::time_point last_checkpoint_;
+};
+
+}  // namespace
+
+int main(int argc, char** argv) {
+  try {
+    std::signal(SIGTERM, HandleSignal);
+    std::signal(SIGINT, HandleSignal);
+    RunSignedPathContractTests();
+    Arguments args = ParseArguments(argc, argv);
+    Enumerator enumerator(std::move(args));
+    enumerator.Run();
+    flint_cleanup();
+    return 0;
+  } catch (const std::exception& error) {
+    std::cerr << "error: " << error.what() << '\n';
+    flint_cleanup();
+    return 1;
+  }
+}
