@@ -599,7 +599,8 @@ void RunSignedPathContractTests() {
   };
   if (UnitSignedPathLength(rows, 5, {1, 0, 0, 0, 0, 1}) != 1 ||
       UnitSignedPathLength(rows, 5, {1, 1, 1, 0, 0, 1}) != 3 ||
-      UnitSignedPathLength(rows, 5, {1, 1, 1, 1, 1, 1}) != 5 ||
+      UnitSignedPathLength(rows, 5, {1, 1, 1, 1, -1, 1}) != 5 ||
+      UnitSignedPathLength(rows, 5, {1, 1, 1, 1, 1, 1}) != 0 ||
       UnitSignedPathLength(rows, 1, {2, 0, 0, 0, 0, 1}) != 0) {
     throw std::runtime_error("signed-path contract regression");
   }
