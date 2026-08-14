@@ -7,7 +7,7 @@
     "21"
   ],
   "source_files": {
-    "sixth approach/run083_frontier_worker.cpp": "242288802c79e3e5d5fa94c8899d822191675f704c4ed3f2a733d0185efa1321",
+    "sixth approach/run083_frontier_worker.cpp": "0ca301600e1bf30881cbfdb71b1ddd2967a3ebf38cd6ff782d77d6a2cded6355",
     "sixth approach/run083_collect.py": "aa2ec8e9ab146106109e359e6fea8fcb7409f95568acc01d34255e9091035d55"
   },
   "native_dependency": {
@@ -27,28 +27,27 @@
         "base_orbit_count": 209,
         "frontier_count": 5801,
         "outcome_counts": {
-          "required_amplitude_zero": 2258,
-          "sign_inconsistency": 3543
+          "required_amplitude_zero": 5706,
+          "sign_inconsistency": 95
         },
         "portable_certificate_counts": {
-          "required_path_1": 2131,
-          "required_path_3": 127,
-          "sign_cycle_3": 3535,
-          "sign_cycle_5": 8
+          "global_direct_collision": 5701,
+          "required_path_3": 5,
+          "sign_cycle_3": 93,
+          "sign_cycle_5": 2
         }
       },
       "21": {
         "base_orbit_count": 201,
         "frontier_count": 10074,
         "outcome_counts": {
-          "required_amplitude_zero": 5552,
-          "sign_inconsistency": 4522
+          "required_amplitude_zero": 9906,
+          "sign_inconsistency": 168
         },
         "portable_certificate_counts": {
-          "required_path_1": 5230,
-          "required_path_3": 322,
-          "sign_cycle_3": 4482,
-          "sign_cycle_5": 40
+          "global_direct_collision": 9906,
+          "sign_cycle_3": 166,
+          "sign_cycle_5": 2
         }
       }
     }
@@ -66,6 +65,7 @@
     "partition": "group i runs logical shards 2*i and 2*i+1 independently for both patterns"
   },
   "portable_certificate_contract": {
+    "priority": "test full exponent-difference collisions between every required two-term row and every mixed binomial before constructing the HNF lattice",
     "coefficient_set": [
       -1,
       1
