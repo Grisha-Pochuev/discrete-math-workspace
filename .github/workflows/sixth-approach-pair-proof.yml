@@ -41,19 +41,19 @@ jobs:
         run: |
           set -euo pipefail
           python 'sixth approach/run084_pair_proof.py' contract --spec "$RUN084_SPEC"
-          python 'sixth approach/run084_pair_proof_test.py' --spec "$RUN084_SPEC"
-          mkdir -p preflight
+          mkdir -p generated
           for row in 'case-a 111' 'case-b 21'; do
             read -r case_id pattern <<< "$row"
             python 'sixth approach/run084_pair_formula.py' \
               --pattern "$pattern" \
-              --cnf "preflight/$case_id.cnf" \
-              --manifest "preflight/$case_id.json"
+              --cnf "generated/$case_id.cnf" \
+              --manifest "generated/$case_id.json"
             python 'sixth approach/run084_pair_proof.py' contract \
               --spec "$RUN084_SPEC" --case-id "$case_id" \
-              --cnf "preflight/$case_id.cnf" \
-              --manifest "preflight/$case_id.json"
+              --cnf "generated/$case_id.cnf" \
+              --manifest "generated/$case_id.json"
           done
+          python 'sixth approach/run084_pair_proof_test.py' --spec "$RUN084_SPEC"
       - name: Verify pinned solver and independent checker
         shell: bash
         run: |
@@ -260,3 +260,4 @@ jobs:
           path: summary/
           if-no-files-found: error
           retention-days: 30
+
