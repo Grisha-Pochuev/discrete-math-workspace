@@ -1,0 +1,262 @@
+name: Sixth Approach Pair Proof
+run-name: run-084 neutral pair proof
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/sixth-approach-pair-proof.yml'
+      - 'sixth approach/run084_pair_formula.py'
+      - 'sixth approach/run084_pair_proof.py'
+      - 'sixth approach/run084_pair_proof_test.py'
+      - 'sixth approach/specs/run-084-pair-proof.json'
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: run-084-pair-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  RUN084_SPEC: sixth approach/specs/run-084-pair-proof.json
+
+jobs:
+  preflight:
+    name: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify frozen package and formula bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 'sixth approach/run084_pair_proof.py' contract --spec "$RUN084_SPEC"
+          python 'sixth approach/run084_pair_proof_test.py' --spec "$RUN084_SPEC"
+          mkdir -p preflight
+          for row in 'case-a 111' 'case-b 21'; do
+            read -r case_id pattern <<< "$row"
+            python 'sixth approach/run084_pair_formula.py' \
+              --pattern "$pattern" \
+              --cnf "preflight/$case_id.cnf" \
+              --manifest "preflight/$case_id.json"
+            python 'sixth approach/run084_pair_proof.py' contract \
+              --spec "$RUN084_SPEC" --case-id "$case_id" \
+              --cnf "preflight/$case_id.cnf" \
+              --manifest "preflight/$case_id.json"
+          done
+      - name: Verify pinned solver and independent checker
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            cadical=1.7.4-1 build-essential ca-certificates git
+          test "$(dpkg-query -W -f='${Version}' cadical)" = '1.7.4-1'
+          git clone --filter=blob:none --no-checkout \
+            https://github.com/marijnheule/drat-trim.git checker-source
+          git -C checker-source checkout --detach \
+            2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          test "$(git -C checker-source rev-parse HEAD)" = \
+            '2e3b2dc0ecf938addbd779d42877b6ed69d9a985'
+          cc -O2 -DLONGTYPE checker-source/lrat-check.c -o lrat-check
+
+          printf 'p cnf 1 2\n1 0\n-1 0\n' > tiny-unsat.cnf
+          set +e
+          cadical --lrat --no-binary tiny-unsat.cnf tiny-unsat.lrat \
+            > tiny-unsat-solver.log 2>&1
+          solver_code=$?
+          set -e
+          test "$solver_code" = 20
+          ./lrat-check tiny-unsat.cnf tiny-unsat.lrat > tiny-checker.log 2>&1
+          grep -Fx 'c VERIFIED' tiny-checker.log
+
+          printf 'p cnf 3 1\n1 0\n' > tiny-sat.cnf
+          set +e
+          cadical --lrat --no-binary tiny-sat.cnf tiny-sat.lrat \
+            > tiny-sat-solver.log 2>&1
+          solver_code=$?
+          set -e
+          test "$solver_code" = 10
+          PYTHONPATH='sixth approach' python - <<'PY'
+          from pathlib import Path
+          import run084_pair_proof as proof
+          assignment = proof.parse_model_text(
+              Path('tiny-sat-solver.log').read_text(encoding='ascii'), 3
+          )
+          proof.replay_dimacs_text(
+              Path('tiny-sat.cnf').read_text(encoding='ascii'), assignment, 3, 1
+          )
+          PY
+
+  solve:
+    name: solve-${{ matrix.case_id }}
+    needs: preflight
+    runs-on: ubuntu-24.04
+    timeout-minutes: 190
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - case_id: case-a
+            pattern: '111'
+          - case_id: case-b
+            pattern: '21'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install pinned tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            cadical=1.7.4-1 build-essential ca-certificates git
+          test "$(dpkg-query -W -f='${Version}' cadical)" = '1.7.4-1'
+          git clone --filter=blob:none --no-checkout \
+            https://github.com/marijnheule/drat-trim.git checker-source
+          git -C checker-source checkout --detach \
+            2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          test "$(git -C checker-source rev-parse HEAD)" = \
+            '2e3b2dc0ecf938addbd779d42877b6ed69d9a985'
+          cc -O2 -DLONGTYPE checker-source/lrat-check.c -o lrat-check
+      - name: Emit and verify immutable case
+        shell: bash
+        env:
+          CASE_ID: ${{ matrix.case_id }}
+          PATTERN: ${{ matrix.pattern }}
+        run: |
+          set -euo pipefail
+          mkdir -p "work/$CASE_ID"
+          python 'sixth approach/run084_pair_formula.py' \
+            --pattern "$PATTERN" \
+            --cnf "work/$CASE_ID/input.cnf" \
+            --manifest "work/$CASE_ID/manifest.json"
+          python 'sixth approach/run084_pair_proof.py' contract \
+            --spec "$RUN084_SPEC" --case-id "$CASE_ID" \
+            --cnf "work/$CASE_ID/input.cnf" \
+            --manifest "work/$CASE_ID/manifest.json"
+      - name: Solve and independently check any proof
+        id: solve_case
+        shell: bash
+        env:
+          CASE_ID: ${{ matrix.case_id }}
+        run: |
+          set -u
+          base="work/$CASE_ID"
+          set +e
+          timeout --signal=TERM --kill-after=30s 10800s \
+            cadical --lrat --no-binary "$base/input.cnf" "$base/proof.lrat" \
+              > "$base/solver.log" 2>&1
+          solver_code=$?
+          set -e
+          echo "$solver_code" > "$base/solver.exit"
+          echo "solver_code=$solver_code" >> "$GITHUB_OUTPUT"
+          if test "$solver_code" = 20; then
+            set +e
+            ./lrat-check "$base/input.cnf" "$base/proof.lrat" \
+              > "$base/checker.log" 2>&1
+            checker_code=$?
+            set -e
+            echo "$checker_code" > "$base/checker.exit"
+            echo "checker_code=$checker_code" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Build strictly classified case bundle
+        id: classify
+        continue-on-error: true
+        shell: bash
+        env:
+          CASE_ID: ${{ matrix.case_id }}
+        run: |
+          set -euo pipefail
+          base="work/$CASE_ID"
+          solver_code="$(cat "$base/solver.exit")"
+          command=(python 'sixth approach/run084_pair_proof.py' make-result
+            --spec "$RUN084_SPEC" --case-id "$CASE_ID"
+            --cnf "$base/input.cnf" --manifest "$base/manifest.json"
+            --solver-log "$base/solver.log" --solver-exit "$solver_code"
+            --source-sha "$GITHUB_SHA" --github-run-id "$GITHUB_RUN_ID"
+            --github-run-attempt "$GITHUB_RUN_ATTEMPT"
+            --output-dir "artifact/$CASE_ID")
+          if test "$solver_code" = 20; then
+            command+=(--proof "$base/proof.lrat"
+              --checker-log "$base/checker.log"
+              --checker-exit "$(cat "$base/checker.exit")")
+          fi
+          "${command[@]}"
+      - name: Preserve bounded diagnostics on technical failure
+        if: steps.classify.outcome != 'success'
+        shell: bash
+        env:
+          CASE_ID: ${{ matrix.case_id }}
+        run: |
+          set -euo pipefail
+          base="work/$CASE_ID"
+          mkdir -p "diagnostic/$CASE_ID"
+          for name in solver.log solver.exit checker.log checker.exit manifest.json; do
+            test ! -f "$base/$name" || cp "$base/$name" "diagnostic/$CASE_ID/$name"
+          done
+          if test -s "$base/proof.lrat"; then
+            gzip -9 -n -c "$base/proof.lrat" > "diagnostic/$CASE_ID/proof.lrat.gz"
+          fi
+      - name: Upload exact case package
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: run-084-${{ matrix.case_id }}
+          path: |
+            artifact/${{ matrix.case_id }}/
+            diagnostic/${{ matrix.case_id }}/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Require a classified exact outcome
+        if: always()
+        shell: bash
+        env:
+          CASE_ID: ${{ matrix.case_id }}
+        run: |
+          set -euo pipefail
+          test '${{ steps.classify.outcome }}' = 'success'
+          test -s "artifact/$CASE_ID/result.json"
+
+  collect:
+    name: collect-pair
+    needs: solve
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: run-084-case-*
+          path: downloaded
+          merge-multiple: false
+      - name: Strictly collect both cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p summary
+          python 'sixth approach/run084_pair_proof.py' collect \
+            --spec "$RUN084_SPEC" --root downloaded \
+            --output summary/result.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: run-084-pair-summary
+          path: summary/
+          if-no-files-found: error
+          retention-days: 30
