@@ -33,8 +33,7 @@
         "portable_certificate_counts": {
           "global_direct_collision": 5701,
           "required_path_3": 5,
-          "sign_cycle_3": 93,
-          "sign_cycle_5": 2
+          "sign_cycle_3": 95
         }
       },
       "21": {
@@ -46,8 +45,7 @@
         },
         "portable_certificate_counts": {
           "global_direct_collision": 9906,
-          "sign_cycle_3": 166,
-          "sign_cycle_5": 2
+          "sign_cycle_3": 168
         }
       }
     }
