@@ -8,6 +8,7 @@
 #include <compare>
 #include <csignal>
 #include <cstdint>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -471,6 +472,11 @@ struct SignedPair {
   std::vector<long> sum;
 };
 
+bool UnitParityCoefficient(long mixed_sign_sum) {
+  const long numerator = 1 - mixed_sign_sum;
+  return numerator % 2 == 0 && std::abs(numerator / 2) <= 1;
+}
+
 std::vector<long> CoordinatePart(const std::vector<long>& augmented) {
   if (augmented.empty()) throw std::runtime_error("empty augmented vector");
   return std::vector<long>(augmented.begin(), augmented.end() - 1);
@@ -547,7 +553,11 @@ int UnitSignedPathLength(const std::vector<std::vector<long>>& augmented_rows,
       if (found == pair_lookup.end()) continue;
       for (std::size_t pair_index : found->second) {
         const SignedPair& pair = pairs[pair_index];
-        if (pair.first != single && pair.second != single) return 3;
+        if (pair.first != single && pair.second != single &&
+            UnitParityCoefficient(single_sign + pair.first_sign +
+                                  pair.second_sign)) {
+          return 3;
+        }
       }
     }
   }
@@ -569,7 +579,11 @@ int UnitSignedPathLength(const std::vector<std::vector<long>>& augmented_rows,
               second_pair.second == first_pair.second) {
             continue;
           }
-          return 5;
+          if (UnitParityCoefficient(
+                  single_sign + first_pair.first_sign + first_pair.second_sign +
+                  second_pair.first_sign + second_pair.second_sign)) {
+            return 5;
+          }
         }
       }
     }

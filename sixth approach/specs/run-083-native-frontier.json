@@ -7,7 +7,7 @@
     "21"
   ],
   "source_files": {
-    "sixth approach/run083_frontier_worker.cpp": "a3f3ed4384825dd751769a207bc0e6f3c9673a61f6b48cf04e4ef936a32a00d0",
+    "sixth approach/run083_frontier_worker.cpp": "489d7fe0177a4abe744e86e1ac0c0545a7f33df5ae68f705e9baa5d740fe0305",
     "sixth approach/run083_collect.py": "782a48bc752bd4a4a35fca52f3250e08ae89625a20d6c16eff2cb0f2e4b77d06"
   },
   "native_dependency": {
