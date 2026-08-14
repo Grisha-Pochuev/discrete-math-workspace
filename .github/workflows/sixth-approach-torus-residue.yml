@@ -1,0 +1,127 @@
+name: Sixth Approach Torus Residue
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sixth-approach-heavy
+  cancel-in-progress: false
+
+env:
+  SPEC_PATH: sixth approach/specs/run-082-torus-residue.json
+  SPEC_SHA: e26e82a1e381a70694a7a160f9af6a53ae24616fc181183251a1f534067dfe7c
+  PYTHONHASHSEED: "0"
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate immutable inputs
+        shell: bash
+        run: |
+          python -m py_compile \
+            "sixth approach/run082_torus_certificate.py" \
+            "sixth approach/run082_torus_replay.py" \
+            "sixth approach/run082_torus_collect.py" \
+            "sixth approach/run082_contract_test.py"
+          python - <<'PY'
+          import hashlib, json, os, pathlib
+          path = pathlib.Path(os.environ["SPEC_PATH"])
+          payload = json.loads(path.read_text(encoding="utf-8"))
+          recorded = payload.pop("canonical_outcome_sha256")
+          observed = hashlib.sha256(json.dumps(
+              payload, sort_keys=True, separators=(",", ":")
+          ).encode()).hexdigest()
+          assert recorded == observed == os.environ["SPEC_SHA"]
+          assert payload["system_count"] == len(payload["systems"]) == 16
+          assert len({tuple(system["bits"]) for system in payload["systems"]}) == 16
+          print(json.dumps({"accepted": True, "systems": 16, "spec_sha": recorded}))
+          PY
+          python "sixth approach/run082_contract_test.py"
+
+  certify:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        pair:
+          - "8,32"
+          - "8,104"
+          - "18,42"
+          - "18,114"
+          - "19,43"
+          - "19,115"
+          - "32,104"
+          - "42,114"
+          - "43,115"
+          - "48,72"
+          - "52,76"
+          - "64,88"
+          - "65,89"
+          - "68,92"
+          - "69,93"
+          - "71,95"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Produce and replay exact identity
+        shell: bash
+        env:
+          PAIR: ${{ matrix.pair }}
+        run: |
+          set -euo pipefail
+          pair_id="${PAIR/,/-}"
+          mkdir -p output
+          python "sixth approach/run082_torus_certificate.py" \
+            --spec "$SPEC_PATH" \
+            --spec-sha "$SPEC_SHA" \
+            --pair "$PAIR" \
+            --output "output/certificate-${pair_id}.json"
+          python "sixth approach/run082_torus_replay.py" \
+            --spec "$SPEC_PATH" \
+            --spec-sha "$SPEC_SHA" \
+            --certificate "output/certificate-${pair_id}.json"
+      - name: Upload exact certificate
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-082-certificate-${{ strategy.job-index }}
+          path: output/certificate-*.json
+          if-no-files-found: error
+          retention-days: 30
+
+  collect:
+    if: always()
+    needs: [prepare, certify]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download available certificates
+        uses: actions/download-artifact@v4
+        with:
+          pattern: run-082-certificate-*
+          path: downloaded
+          merge-multiple: true
+      - name: Require complete independently replayed matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python "sixth approach/run082_torus_collect.py" \
+            --spec "$SPEC_PATH" \
+            --spec-sha "$SPEC_SHA" \
+            --certificate-dir downloaded \
+            --output-dir accepted-bundle
+      - name: Upload compact accepted bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-082-accepted-bundle
+          path: accepted-bundle
+          if-no-files-found: error
+          retention-days: 90
