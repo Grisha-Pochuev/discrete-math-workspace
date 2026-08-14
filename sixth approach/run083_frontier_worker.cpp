@@ -693,24 +693,28 @@ Classification Classify(const Model& model, Pattern pattern, Mask support) {
                                       : "none",
                           path_length};
   }
+  bool required_amplitude_zero = false;
   for (const auto& terms : targets) {
-    if (QuotientCoefficients(terms, active, lattice).empty()) {
-      if (terms.empty()) {
-        return Classification{"required_amplitude_zero", histogram, binomial_rows,
-                              lattice.rank(), "missing_required_amplitude", 0};
-      }
-      int path_length = 0;
-      if (terms.size() == 2) {
-        path_length = UnitSignedPathLength(
-            generators, binomial_rows,
-            ExponentDifference(terms[1], terms[0], active, 1));
-      }
+    if (!QuotientCoefficients(terms, active, lattice).empty()) continue;
+    required_amplitude_zero = true;
+    if (terms.empty()) {
+      return Classification{"required_amplitude_zero", histogram, binomial_rows,
+                            lattice.rank(), "missing_required_amplitude", 0};
+    }
+    if (terms.size() != 2) continue;
+    const int path_length = UnitSignedPathLength(
+        generators, binomial_rows,
+        ExponentDifference(terms[1], terms[0], active, 1));
+    if (path_length) {
       return Classification{"required_amplitude_zero", histogram, binomial_rows,
                             lattice.rank(),
-                            path_length ? "required_path_" + std::to_string(path_length)
-                                        : "none",
+                            "required_path_" + std::to_string(path_length),
                             path_length};
     }
+  }
+  if (required_amplitude_zero) {
+    return Classification{"required_amplitude_zero", histogram, binomial_rows,
+                          lattice.rank(), "none", 0};
   }
   for (const auto& terms : longer) {
     if (QuotientCoefficients(terms, active, lattice).size() == 1) {

@@ -122,6 +122,13 @@ def main() -> None:
                     "frontier regression")
             require(record["outcome_counts"] == contract["outcome_counts"],
                     "lattice outcome regression")
+            require(
+                record["portable_certificate_counts"] ==
+                contract["portable_certificate_counts"],
+                "portable certificate regression",
+            )
+            require(record["exceptional_supports"] == [],
+                    "calibration unexpectedly nonportable")
             require(record["open_support_masks"] == [], "calibration unexpectedly open")
             checksums[path.name] = sha256(path)
             records.append(record)

@@ -7,8 +7,8 @@
     "21"
   ],
   "source_files": {
-    "sixth approach/run083_frontier_worker.cpp": "3b3406bfa015507265c05287ed2e876186e24bf08f6be04d181d926b271123f2",
-    "sixth approach/run083_collect.py": "782a48bc752bd4a4a35fca52f3250e08ae89625a20d6c16eff2cb0f2e4b77d06"
+    "sixth approach/run083_frontier_worker.cpp": "242288802c79e3e5d5fa94c8899d822191675f704c4ed3f2a733d0185efa1321",
+    "sixth approach/run083_collect.py": "aa2ec8e9ab146106109e359e6fea8fcb7409f95568acc01d34255e9091035d55"
   },
   "native_dependency": {
     "ubuntu_package": "libflint-dev",
@@ -29,6 +29,12 @@
         "outcome_counts": {
           "required_amplitude_zero": 2258,
           "sign_inconsistency": 3543
+        },
+        "portable_certificate_counts": {
+          "required_path_1": 2131,
+          "required_path_3": 127,
+          "sign_cycle_3": 3535,
+          "sign_cycle_5": 8
         }
       },
       "21": {
@@ -37,6 +43,12 @@
         "outcome_counts": {
           "required_amplitude_zero": 5552,
           "sign_inconsistency": 4522
+        },
+        "portable_certificate_counts": {
+          "required_path_1": 5208,
+          "required_path_3": 344,
+          "sign_cycle_3": 4482,
+          "sign_cycle_5": 40
         }
       }
     }
