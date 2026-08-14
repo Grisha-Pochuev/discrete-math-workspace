@@ -1,0 +1,62 @@
+{
+  "schema": "run083-native-frontier-spec-v1",
+  "run_id": "run-083",
+  "purpose": "native symmetry-quotient frontier calibration and exploratory exact residue search",
+  "patterns": [
+    "111",
+    "21"
+  ],
+  "source_files": {
+    "sixth approach/run083_frontier_worker.cpp": "45f6105fe553cb541b4637dbd726987acc54a29ff14f9f5389430e65ebc284e0",
+    "sixth approach/run083_collect.py": "b6151908b8887e2d8fb9555457df54552eca5731f907666e3de1b3055062a560"
+  },
+  "native_dependency": {
+    "ubuntu_package": "libflint-dev",
+    "link_libraries": [
+      "flint",
+      "gmp",
+      "mpfr"
+    ]
+  },
+  "calibration": {
+    "target_size": 19,
+    "shard_count": 1,
+    "worker_seconds": 1200,
+    "expected": {
+      "111": {
+        "base_orbit_count": 209,
+        "frontier_count": 5801,
+        "outcome_counts": {
+          "required_amplitude_zero": 2258,
+          "sign_inconsistency": 3543
+        }
+      },
+      "21": {
+        "base_orbit_count": 201,
+        "frontier_count": 10074,
+        "outcome_counts": {
+          "required_amplitude_zero": 5552,
+          "sign_inconsistency": 4522
+        }
+      }
+    }
+  },
+  "full": {
+    "target_size": 20,
+    "logical_shards_per_pattern": 38,
+    "grouped_jobs": 19,
+    "workers_per_grouped_job": 4,
+    "max_parallel": 19,
+    "worker_seconds": 10080,
+    "shell_timeout_seconds": 10440,
+    "checkpoint_seconds": 120,
+    "memory_kib_per_worker": 2560000,
+    "partition": "group i runs logical shards 2*i and 2*i+1 independently for both patterns"
+  },
+  "scientific_outcome_table": {
+    "open_support": "preserve the exact support and subject it to independent private coefficient replay before any feasibility claim",
+    "zero_open_supports": "exploratory evidence only; extract portable lattice certificates and an independent complete semantic verifier before a size-20 theorem",
+    "technical_incomplete": "reject missing, duplicate, deadline, signal, cap, identity, or coverage failures and diagnose before retry"
+  },
+  "scope_boundary": "the run searches the first open common-matrix support size; it neither bounds larger supports nor proves the full target statement"
+}
