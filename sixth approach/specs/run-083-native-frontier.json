@@ -45,8 +45,8 @@
           "sign_inconsistency": 4522
         },
         "portable_certificate_counts": {
-          "required_path_1": 5208,
-          "required_path_3": 344,
+          "required_path_1": 5230,
+          "required_path_3": 322,
           "sign_cycle_3": 4482,
           "sign_cycle_5": 40
         }
