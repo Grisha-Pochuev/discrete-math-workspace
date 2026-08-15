@@ -25,6 +25,7 @@ jobs:
           curl --fail --location --retry 4 \
             https://raw.githubusercontent.com/Grisha-Pochuev/discrete-math-workspace/enhanced-bpsw-research/enhanced_bpsw/solve.py \
             -o enhanced_bpsw/solve.py
+          sed -i "s#https://www.d.umn.edu/~jgreene/baillie/Baillie-PSW.html#https://r.jina.ai/http://www.d.umn.edu/~jgreene/baillie/Baillie-PSW.html#" enhanced_bpsw/solve.py
           python -m py_compile enhanced_bpsw/solve.py
       - name: Run exact subset-product search and independent Enhanced BPSW verification
         id: solve
