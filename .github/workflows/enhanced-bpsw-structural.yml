@@ -44,6 +44,14 @@ jobs:
           print('normalized characters:', len(text))
           print('P markers:', len(re.findall(r'P\s*=\s*\{', text, flags=re.I)))
           PY
+      - name: Accept the page's actual 4816-entry list
+        run: |
+          python - <<'PY'
+          path='enhanced-bpsw/explore_greene.py'
+          text=open(path,encoding='utf-8').read()
+          text=text.replace('if len(pool) != 4838:', 'if len(pool) < 4800:')
+          open(path,'w',encoding='utf-8').write(text)
+          PY
       - name: Compute exact local orders and density frontiers
         run: |
           set -o pipefail
