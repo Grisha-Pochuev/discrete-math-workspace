@@ -1,0 +1,51 @@
+name: Enhanced BPSW exact subset solver
+
+on:
+  push:
+    branches:
+      - enhanced-bpsw-research
+    paths:
+      - '.github/workflows/enhanced-bpsw-solve.yml'
+      - 'enhanced_bpsw/solve.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  solve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Install solver dependencies
+        run: python -m pip install --disable-pip-version-check --quiet ortools sympy
+      - name: Download exact solver from research branch
+        run: |
+          mkdir -p enhanced_bpsw/out
+          curl --fail --location --retry 4 \
+            https://raw.githubusercontent.com/Grisha-Pochuev/discrete-math-workspace/enhanced-bpsw-research/enhanced_bpsw/solve.py \
+            -o enhanced_bpsw/solve.py
+          python -m py_compile enhanced_bpsw/solve.py
+      - name: Run exact subset-product search and independent Enhanced BPSW verification
+        id: solve
+        continue-on-error: true
+        env:
+          BPSW_OUT: enhanced_bpsw/out
+          BPSW_TIME_LIMIT: '600'
+          BPSW_SEEDS: '1,7'
+          BPSW_WORKERS: '4'
+          PYTHONUNBUFFERED: '1'
+        run: |
+          set -o pipefail
+          python enhanced_bpsw/solve.py 2>&1 | tee enhanced_bpsw/out/solver.log
+      - name: Upload all data, diagnostics, and any candidate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: enhanced-bpsw-exact-search
+          path: enhanced_bpsw/out/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Fail job if exact search did not produce a verified candidate
+        if: steps.solve.outcome != 'success'
+        run: exit 1
