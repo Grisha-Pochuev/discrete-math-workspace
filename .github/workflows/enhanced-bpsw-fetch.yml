@@ -1,0 +1,62 @@
+name: Enhanced BPSW data fetch
+
+on:
+  push:
+    branches:
+      - enhanced-bpsw-research
+    paths:
+      - '.github/workflows/enhanced-bpsw-fetch.yml'
+      - 'enhanced_bpsw/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fetch-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch and extract Chen-Greene prime pools
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p enhanced_bpsw/out
+          python - <<'PY'
+          import html
+          import re
+          import urllib.request
+          from pathlib import Path
+
+          url = 'https://www.d.umn.edu/~jgreene/baillie/Baillie-PSW.html'
+          req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+          raw = urllib.request.urlopen(req, timeout=60).read().decode('latin-1')
+          text = html.unescape(raw)
+          pools = []
+          for block in re.findall(r'P\s*=\s*\{(.*?)\}', text, flags=re.S | re.I):
+              nums = [int(x) for x in re.findall(r'\d+', block)]
+              if len(nums) >= 100:
+                  pools.append(nums)
+          if len(pools) < 2:
+              raise SystemExit(f'Expected at least two large P pools, got {[len(x) for x in pools]}')
+          pools.sort(key=len)
+          small, large = pools[-2], pools[-1]
+          if len(small) != 1248 or len(large) != 4838:
+              raise SystemExit(f'Unexpected pool sizes: small={len(small)}, large={len(large)}')
+          out = Path('enhanced_bpsw/out')
+          (out / 'chen_small_1248.txt').write_text('\n'.join(map(str, small)) + '\n')
+          (out / 'chen_large_4838.txt').write_text('\n'.join(map(str, large)) + '\n')
+          (out / 'metadata.txt').write_text(
+              f'source={url}\nsmall_count={len(small)}\nlarge_count={len(large)}\n'
+              f'small_first={small[0]}\nsmall_last={small[-1]}\n'
+              f'large_first={large[0]}\nlarge_last={large[-1]}\n'
+          )
+          print((out / 'metadata.txt').read_text())
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: enhanced-bpsw-prime-pools
+          path: enhanced_bpsw/out/
+          if-no-files-found: error
+          retention-days: 7
