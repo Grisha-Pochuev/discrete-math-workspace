@@ -1,0 +1,44 @@
+name: Enhanced BPSW pool analysis
+
+on:
+  push:
+    branches:
+      - enhanced-bpsw-research
+    paths:
+      - '.github/workflows/enhanced-bpsw-analyze.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - run: python -m pip install --disable-pip-version-check --quiet ortools sympy
+      - name: Download and patch analyzer
+        run: |
+          mkdir -p enhanced_bpsw/out
+          curl --fail --location --retry 4 \
+            https://raw.githubusercontent.com/Grisha-Pochuev/discrete-math-workspace/enhanced-bpsw-research/enhanced_bpsw/solve.py \
+            -o enhanced_bpsw/solve.py
+          sed -i "s#https://www.d.umn.edu/~jgreene/baillie/Baillie-PSW.html#https://r.jina.ai/http://www.d.umn.edu/~jgreene/baillie/Baillie-PSW.html#" enhanced_bpsw/solve.py
+          sed -i "s/len(pools\[-1\]) != 4838/len(pools[-1]) < 4800/" enhanced_bpsw/solve.py
+      - name: Analyze exact orders and finite abelian group
+        continue-on-error: true
+        env:
+          BPSW_OUT: enhanced_bpsw/out
+          BPSW_SEEDS: ''
+          BPSW_TIME_LIMIT: '0.1'
+          PYTHONUNBUFFERED: '1'
+        run: |
+          set -o pipefail
+          python enhanced_bpsw/solve.py 2>&1 | tee enhanced_bpsw/out/analysis.log
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: enhanced-bpsw-pool-analysis
+          path: enhanced_bpsw/out/
+          if-no-files-found: error
+          retention-days: 14
