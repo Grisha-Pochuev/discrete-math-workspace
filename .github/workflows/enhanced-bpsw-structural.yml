@@ -1,0 +1,47 @@
+name: Enhanced BPSW structural search
+
+on:
+  push:
+    branches:
+      - enhanced-bpsw-structural-search-2026-08-15
+    paths:
+      - enhanced-bpsw/**
+      - .github/workflows/enhanced-bpsw-structural.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: enhanced-bpsw-structural-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  explore-greene:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - name: Install mathematical dependencies
+        run: python -m pip install --disable-pip-version-check sympy requests
+      - name: Compute exact local orders and density frontiers
+        run: |
+          set -o pipefail
+          python enhanced-bpsw/explore_greene.py \
+            --output enhanced-bpsw/exploration.json \
+            --records enhanced-bpsw/greene-records.jsonl \
+            2>&1 | tee enhanced-bpsw/exploration.log
+      - name: Upload exact-order exploration
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: enhanced-bpsw-exploration
+          path: |
+            enhanced-bpsw/exploration.json
+            enhanced-bpsw/greene-records.jsonl
+            enhanced-bpsw/exploration.log
+          retention-days: 14
