@@ -22,10 +22,13 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            enhanced-bpsw
+          sparse-checkout-cone-mode: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: pip
       - name: Install mathematical dependencies
         run: python -m pip install --disable-pip-version-check sympy requests
       - name: Compute exact local orders and density frontiers
