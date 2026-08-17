@@ -1,22 +1,42 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "track": "exp-07",
-  "status": "ready_but_external_auth_missing",
-  "enabled": false,
+  "canonical_root": "exp-07/",
+  "status": "centralized_ready_manual",
+  "enabled": true,
   "full_run_auto_launch_allowed": false,
-  "automation_mode": "circle_api_after_smoke",
+  "automation_mode": "github_actions_manual_dispatch",
+  "launcher": ".github/workflows/exp-07.yml",
   "large_matrix_concurrency_guard": true,
   "smoke_required": true,
-  "active_spec_path": "exp-07/specs/run-000.md",
-  "target_jobs": 30,
-  "workers_per_job": 4,
-  "target_classes": 6,
-  "groups_per_class": 5,
-  "parameter_limit": 1100,
-  "worker_seconds": 840,
-  "job_timeout_minutes": 20,
-  "smoke_branch": "e07-r0",
-  "full_branch": "e07-f0",
-  "external_trigger_check": "no CircleCI API token found under seven standard GitHub Secret names; ordinary pushes produced no CircleCI check run",
-  "recommended_next_action": "provide CircleCI API authentication or connect the CircleCI Codex integration; trigger smoke branch first, then full branch with run_e07=true"
+  "active_spec_path": "exp-07/specs/run-001.md",
+  "latest_report_path": "exp-07/reports/compute-summary-2026-08-17.md",
+  "compute": {
+    "target_jobs": 20,
+    "workers_per_job": 1,
+    "target_classes": 6,
+    "class_job_counts": [4, 4, 3, 3, 3, 3],
+    "default_parameter_limit": 2350,
+    "default_worker_seconds": 19800,
+    "job_timeout_minutes": 360,
+    "observed_nproc_per_runner": 1
+  },
+  "latest_completed_run": {
+    "name": "g1",
+    "run_id": 32038711869,
+    "source_commit": "a725b02318289845dbda2cef5742104142f6f4ca",
+    "conclusion": "success",
+    "pair_tests": 1365872658020,
+    "exact_ratio_hits": 2,
+    "near_hits_le_1e-14": 0,
+    "exact_cancellations_reported": 0,
+    "accepted_solutions": 0,
+    "all_workers_timed_out_cleanly": true
+  },
+  "security": {
+    "public_key": "exp-07/k0.pub",
+    "private_key_committed": false,
+    "detail_artifacts_encrypted": true
+  },
+  "known_audit_issue": "Current src/w0.cpp persists a record only after the floating near-gap filter, even though exact multiplicative ratio hits are counted earlier. Persist every exact ratio hit and rationally replay it in a separate scientific-code revision before using a future null run as a strong certificate."
 }
