@@ -1,0 +1,51 @@
+name: e07-d1
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/e07-d1.yml'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        part: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: g++ -O3 -std=c++20 exp-07/src/d1.cpp -o d1
+
+      - name: Run
+        shell: bash
+        run: |
+          BASE=100000000000001
+          TOP=1000000000000000
+          N=40
+          P=${{ matrix.part }}
+          SPAN=$((TOP-BASE+1))
+          LO=$((BASE + SPAN*P/N))
+          HI=$((BASE + SPAN*(P+1)/N - 1))
+          echo "part=$P lo=$LO hi=$HI" | tee out.txt
+          set +e
+          ./d1 "$LO" "$HI" body.txt
+          RC=$?
+          set -e
+          cat body.txt >> out.txt
+          echo "rc=$RC" >> out.txt
+          if [ "$RC" -ne 0 ] && [ "$RC" -ne 10 ]; then
+            exit "$RC"
+          fi
+
+      - name: Upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: d1-${{ matrix.part }}
+          path: out.txt
+          retention-days: 7
