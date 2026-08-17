@@ -1,301 +1,54 @@
 version: 2.1
 
-parameters:
-  run_060:
-    type: boolean
-    default: false
-
 jobs:
-  prepare-short-pool:
-    machine:
-      image: ubuntu-2404:current
-    resource_class: large
-    steps:
-      - checkout
-      - run:
-          name: Verify immutable input
-          command: |
-            set -euo pipefail
-            python3 'sixth approach/run059_config.py' \
-              --spec 'sixth approach/specs/run-060-fine-rescue.json' \
-              --expected-run run-060 \
-              --verify
-      - restore_cache:
-          keys:
-            - short-pool-toolkit-v1
-      - run:
-          name: Prepare pinned toolkit
-          command: |
-            set -euo pipefail
-            cache_root="$HOME/ci-cache"
-            mkdir -p "$cache_root"
-            if [ ! -d "$cache_root/python/sympy" ]; then
-              python3 -m pip install --disable-pip-version-check \
-                --target "$cache_root/python" 'sympy==1.13.3'
-            fi
-            if [ ! -f "$cache_root/or-tools/lib/cmake/ortools/ortoolsConfig.cmake" ]; then
-              archive="$(mktemp)"
-              curl --fail --location --retry 3 \
-                'https://github.com/google/or-tools/releases/download/v9.15/or-tools_amd64_ubuntu-24.04_cpp_v9.15.6755.tar.gz' \
-                --output "$archive"
-              echo '6f389320672cee00b78aacefb2bde33fef0bb988c3b2735573b9fffd1047fbda  '"$archive" | sha256sum --check
-              mkdir -p "$cache_root/or-tools"
-              tar -xzf "$archive" -C "$cache_root/or-tools" --strip-components=1
-              rm -f "$archive"
-            fi
-      - save_cache:
-          key: short-pool-toolkit-v1
-          paths:
-            - ~/ci-cache
-      - run:
-          name: Compile the shared worker
-          command: |
-            set -euo pipefail
-            cmake \
-              -S "$CIRCLE_WORKING_DIRECTORY/sixth approach/run033_native" \
-              -B /tmp/frontier-build \
-              -DCMAKE_PREFIX_PATH="$HOME/ci-cache/or-tools" \
-              -Dortools_DIR="$HOME/ci-cache/or-tools/lib/cmake/ortools" \
-              -DCMAKE_BUILD_TYPE=Release
-            cmake --build /tmp/frontier-build --parallel 2
-            test -x /tmp/frontier-build/run033_boundary_worker
-      - run:
-          name: Record neutral diagnostics
-          command: |
-            mkdir -p diagnostics
-            {
-              date -u +%FT%TZ
-              uname -a
-              nproc
-              lscpu
-              free -h
-              df -h .
-              g++ --version
-              cmake --version
-              python3 --version
-              node --version
-              echo "CIRCLE_SHA1=$CIRCLE_SHA1"
-              echo "CIRCLE_TAG=${CIRCLE_TAG:-}"
-              sha256sum /tmp/frontier-build/run033_boundary_worker
-            } > diagnostics/prepare.log
-      - store_artifacts:
-          path: diagnostics
-          destination: prepare-diagnostics
-
-  short-group:
-    parameters:
-      cell:
-        type: string
-      group:
-        type: integer
+  s0:
     machine:
       image: ubuntu-2404:current
     resource_class: large
     environment:
-      CELL: << parameters.cell >>
-      GROUP: << parameters.group >>
-      RESOURCE_CLASS_NAME: large
       OMP_NUM_THREADS: "1"
       OPENBLAS_NUM_THREADS: "1"
       MKL_NUM_THREADS: "1"
       NUMEXPR_NUM_THREADS: "1"
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - short-pool-toolkit-v1
       - run:
-          name: Compile the shared worker
+          name: build
           command: |
             set -euo pipefail
-            test -f "$HOME/ci-cache/or-tools/lib/cmake/ortools/ortoolsConfig.cmake"
-            test -d "$HOME/ci-cache/python/sympy"
-            cmake \
-              -S "$CIRCLE_WORKING_DIRECTORY/sixth approach/run033_native" \
-              -B /tmp/frontier-build \
-              -DCMAKE_PREFIX_PATH="$HOME/ci-cache/or-tools" \
-              -Dortools_DIR="$HOME/ci-cache/or-tools/lib/cmake/ortools" \
-              -DCMAKE_BUILD_TYPE=Release
-            cmake --build /tmp/frontier-build --parallel 2
-            test -x /tmp/frontier-build/run033_boundary_worker
+            mkdir -p out
+            g++ -O3 -std=c++20 exp-07/src/w0.cpp -o /tmp/w0
+            python3 -m py_compile exp-07/src/v0.py exp-07/src/c0.py
+            { date -u +%FT%TZ; uname -a; nproc; lscpu; free -h; g++ --version; python3 --version; } > out/machine.txt
       - run:
-          name: Resolve the immutable matrix cell
+          name: smoke
           command: |
             set -euo pipefail
-            mkdir -p out/audits
-            case "$CELL" in
-              c3-s63|c3-s64|c9-s63|c9-s64) ;;
-              *) echo 'invalid neutral cell' >&2; exit 2 ;;
-            esac
-            python3 'sixth approach/run059_config.py' \
-              --spec 'sixth approach/specs/run-060-fine-rescue.json' \
-              --expected-run run-060 \
-              --cell "$CELL" > out/cell.env
-      - run:
-          name: Record machine diagnostics
-          command: |
-            set -euo pipefail
-            source out/cell.env
-            {
-              date -u +%FT%TZ
-              uname -a
-              nproc
-              lscpu
-              free -h
-              swapon --show
-              df -h .
-              ulimit -a
-              g++ --version
-              echo "CIRCLE_SHA1=$CIRCLE_SHA1"
-              echo "CIRCLE_TAG=${CIRCLE_TAG:-}"
-              echo "CELL=$CELL"
-              echo "GROUP=$GROUP"
-              sha256sum /tmp/frontier-build/run033_boundary_worker
-            } > out/diagnostics.log
-      - run:
-          name: Start bounded resource monitor
-          command: |
-            (
-              while true; do
-                date -u +%FT%TZ
-                grep -E 'MemTotal|MemAvailable|SwapTotal|SwapFree' /proc/meminfo
-                ps -eo pid,ppid,rss,etime,cmd --sort=-rss | head -25
-                sleep 60
-              done
-            ) > out/resource-monitor.log 2>&1 &
-            echo $! > out/resource-monitor.pid
-      - run:
-          name: Run four independent fine shards
-          command: |
-            set +e
-            source out/cell.env
-            export LD_LIBRARY_PATH="$HOME/ci-cache/or-tools/lib:${LD_LIBRARY_PATH:-}"
             pids=()
-            first_shard=$((GROUP * WORKERS_PER_JOB))
-            for offset in 0 1 2 3; do
-              shard=$((first_shard + offset))
-              (
-                ulimit -v $((WORKER_MEMORY_MIB * 1024))
-                timeout --signal=TERM --kill-after=30s $((WORKER_SECONDS + 60)) \
-                  /tmp/frontier-build/run033_boundary_worker \
-                    --run-id "$RUN_ID" \
-                    --symmetry-break 1 \
-                    --case "$CASE_ID" \
-                    --support "$SUPPORT" \
-                    --shard-id "$shard" \
-                    --shard-count "$SHARD_COUNT" \
-                    --seconds "$WORKER_SECONDS" \
-                    --cap "$WORKER_CAP" \
-                    --checkpoint-every "$CHECKPOINT_EVERY" \
-                    --checkpoint-seconds "$CHECKPOINT_SECONDS" \
-                    --output "out/shard-$shard.json" \
-                  > "out/shard-$shard.log" 2>&1
-                echo $? > "out/shard-$shard.exit"
-              ) &
+            for k in 0 1 2 3; do
+              /tmp/w0 0 "$k" 4 100 30 "out/near-$k.tsv" "out/summary-$k.json" 1e-10 > "out/worker-$k.log" 2>&1 &
               pids+=("$!")
             done
-            for pid in "${pids[@]}"; do
-              wait "$pid"
-            done
-            exit 0
-      - run:
-          name: Stop monitor and audit every completed shard
-          when: always
-          command: |
-            set +e
-            if [ -f out/resource-monitor.pid ]; then
-              kill "$(cat out/resource-monitor.pid)" 2>/dev/null || true
-            fi
-            source out/cell.env
-            node 'sixth approach/run035_hnf_context.js' out/context.json
-            audit_code=$?
-            first_shard=$((GROUP * WORKERS_PER_JOB))
-            for offset in 0 1 2 3; do
-              shard=$((first_shard + offset))
-              PYTHONPATH="$HOME/ci-cache/python" python3 'sixth approach/run035_hnf_audit.py' \
-                --input "out/shard-$shard.json" \
-                --context out/context.json \
-                --run-id "$AUDIT_RUN_ID" \
-                --source-run "$CIRCLE_PIPELINE_NUMBER" \
-                --source-logical-run "$RUN_ID" \
-                --expected-index "$CASE_ID" \
-                --expected-orbit "$ORBIT" \
-                --expected-support "$SUPPORT" \
-                --expected-missing-type "$MISSING_TYPE" \
-                --output "out/audits/audit-shard-$shard.json" \
-                > "out/audits/audit-shard-$shard.log" 2>&1
-              code=$?
-              if [ "$code" -ne 0 ]; then audit_code="$code"; fi
-            done
-            bundle="circle-work/$RUN_ID/case-$CASE_ID/support-$SUPPORT/group-$GROUP"
-            mkdir -p "$bundle/audits" "$bundle/logs" "$bundle/survivors"
-            python3 'sixth approach/run059_group_audit.py' \
-              --spec 'sixth approach/specs/run-060-fine-rescue.json' \
-              --case "$CASE_ID" \
-              --support "$SUPPORT" \
-              --group "$GROUP" \
-              --input-dir out \
-              --audit-dir out/audits \
-              --output "$bundle/group-summary.json" \
-              --survivor-dir "$bundle/survivors" \
-              --pipeline-number "$CIRCLE_PIPELINE_NUMBER" \
-              --vcs-revision "$CIRCLE_SHA1" \
-              --vcs-branch "${CIRCLE_BRANCH:-}" \
-              --resource-class "$RESOURCE_CLASS_NAME" \
-              > "$bundle/group-audit.log" 2>&1
-            group_code=$?
-            cp -f out/audits/*.json "$bundle/audits/" 2>/dev/null || true
-            cp -f out/*.log out/*.exit out/cell.env "$bundle/logs/" 2>/dev/null || true
-            cp -f out/audits/*.log "$bundle/logs/" 2>/dev/null || true
-            if [ "$audit_code" -ne 0 ]; then exit "$audit_code"; fi
-            exit "$group_code"
-      - persist_to_workspace:
-          root: circle-work
-          paths:
-            - run-060/case-*/support-*/group-*
+            for p in "${pids[@]}"; do wait "$p"; done
+            python3 exp-07/src/v0.py --type 0 --input out/near-0.tsv out/near-1.tsv out/near-2.tsv out/near-3.tsv --output out/verified.json
+            python3 - <<'PY'
+            import json,glob
+            ss=[json.load(open(p)) for p in glob.glob('out/summary-*.json')]
+            assert len(ss)==4
+            assert all(x['parameter_count']==1221 for x in ss)
+            assert sum(x['processed_assigned_u'] for x in ss)==1221
+            v=json.load(open('out/verified.json'))
+            assert v['exact_cancellations']==0
+            print({'workers':len(ss),'pairs':sum(x['pair_tests'] for x in ss),'ratio_hits':sum(x['ratio_hits'] for x in ss)})
+            PY
       - store_artifacts:
-          path: circle-work
-          destination: short-group
-
-  collect-short-pool:
-    machine:
-      image: ubuntu-2404:current
-    resource_class: large
-    steps:
-      - checkout
-      - attach_workspace:
-          at: circle-work
-      - run:
-          name: Strictly collect compact coverage
-          command: |
-            set -euo pipefail
-            archive="circle-result/run-060-${CIRCLE_PIPELINE_NUMBER}"
-            python3 'sixth approach/run059_collect.py' \
-              --spec 'sixth approach/specs/run-060-fine-rescue.json' \
-              --input-root circle-work \
-              --output-dir "$archive" \
-              --pipeline-number "$CIRCLE_PIPELINE_NUMBER" \
-              --vcs-revision "$CIRCLE_SHA1" \
-              --vcs-branch "${CIRCLE_BRANCH:-}"
-            (cd "$archive" && sha256sum -c checksums.sha256)
-      - store_artifacts:
-          path: circle-result
-          destination: accepted-short-pool
+          path: out
+          destination: s0
 
 workflows:
-  short-pool-v2:
-    when: << pipeline.parameters.run_060 >>
+  s0:
     jobs:
-      - prepare-short-pool
-      - short-group:
-          name: short-<< matrix.cell >>-g<< matrix.group >>
-          matrix:
-            alias: short-groups
-            parameters:
-              cell: [c3-s63, c3-s64, c9-s63, c9-s64]
-              group: [0, 1, 2, 3, 4, 5, 6, 7]
-          requires:
-            - prepare-short-pool
-      - collect-short-pool:
-          requires:
-            - short-groups
+      - s0:
+          filters:
+            branches:
+              only: e07-r0
