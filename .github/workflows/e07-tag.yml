@@ -1,0 +1,25 @@
+name: q0
+
+on:
+  push:
+    paths:
+      - '.github/workflows/e07-tag.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  q0:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag e07-s0a "$GITHUB_SHA"
+          git push origin refs/tags/e07-s0a
