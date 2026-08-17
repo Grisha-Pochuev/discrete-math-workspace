@@ -51,4 +51,6 @@ workflows:
       - s0:
           filters:
             branches:
-              only: main
+              ignore: /.*/
+            tags:
+              only: /^e07-s0a$/
