@@ -13,30 +13,12 @@ jobs:
   trigger:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
-    env:
-      T1: ${{ secrets.CIRCLE_TOKEN }}
-      T2: ${{ secrets.CIRCLECI_TOKEN }}
-      T3: ${{ secrets.CIRCLECI_API_TOKEN }}
-      T4: ${{ secrets.CIRCLE_API_TOKEN }}
-      T5: ${{ secrets.CCI_TOKEN }}
-      T6: ${{ secrets.CIRCLECI_PERSONAL_API_TOKEN }}
-      T7: ${{ secrets.CIRCLECI_PAT }}
     steps:
       - name: trigger
         shell: bash
         run: |
           set -euo pipefail
-          token=''
-          for name in T1 T2 T3 T4 T5 T6 T7; do
-            value="${!name:-}"
-            if [ -n "$value" ]; then token="$value"; break; fi
-          done
-          if [ -z "$token" ]; then
-            echo 'No configured external API token under the expected secret names.' >&2
-            exit 2
-          fi
           curl --fail-with-body --silent --show-error \
             -X POST 'https://circleci.com/api/v2/project/circleci/TnU6xPTn3bJog4b7KxfhCA/YQB6nBJVUKZPiUhmaiznzU/pipeline/run' \
-            -H "Circle-Token: $token" \
             -H 'content-type: application/json' \
             --data '{"definition_id":"14c2864b-6de2-4891-a87a-80b99c8efec5","config":{"branch":"e07-r0"},"checkout":{"branch":"e07-r0"}}'
