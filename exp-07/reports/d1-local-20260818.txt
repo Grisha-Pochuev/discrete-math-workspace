@@ -1,0 +1,7 @@
+range_complete_to=430000000000000
+hit=0
+groups_ge3=89347
+triples_checked=98231
+range_records_after_2124003354921=4870021832
+max_multiplicity_observed=6
+mode=exact
