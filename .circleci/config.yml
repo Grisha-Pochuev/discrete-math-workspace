@@ -53,4 +53,4 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /^e07-s0a$/
+              only: /^e07-s0b$/
