@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "track": "exp-07",
-  "status": "implementation_ready_smoke_pending",
+  "status": "ready_but_external_auth_missing",
   "enabled": false,
   "full_run_auto_launch_allowed": false,
-  "automation_mode": "branch_trigger_after_smoke",
+  "automation_mode": "circle_api_after_smoke",
   "large_matrix_concurrency_guard": true,
   "smoke_required": true,
   "active_spec_path": "exp-07/specs/run-000.md",
@@ -15,6 +15,8 @@
   "parameter_limit": 1100,
   "worker_seconds": 840,
   "job_timeout_minutes": 20,
-  "recommended_smoke_runtime_seconds": 30,
-  "recommended_next_action": "run one-VM smoke; if green, trigger the 30-job branch matrix"
+  "smoke_branch": "e07-r0",
+  "full_branch": "e07-f0",
+  "external_trigger_check": "no CircleCI API token found under seven standard GitHub Secret names; ordinary pushes produced no CircleCI check run",
+  "recommended_next_action": "provide CircleCI API authentication or connect the CircleCI Codex integration; trigger smoke branch first, then full branch with run_e07=true"
 }
