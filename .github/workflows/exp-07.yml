@@ -1,0 +1,105 @@
+name: exp-07
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: Parameter ceiling
+        required: true
+        default: '2350'
+        type: string
+      seconds:
+        description: Search seconds per worker (max 19800)
+        required: true
+        default: '19800'
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  MALLOC_ARENA_MAX: '2'
+
+concurrency:
+  group: exp-07-compute
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+      - name: smoke
+        shell: bash
+        run: bash exp-07/run/smoke.sh
+
+  compute:
+    needs: smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+      - name: run
+        shell: bash
+        run: bash exp-07/run/job.sh '${{ matrix.id }}' '${{ inputs.limit }}' '${{ inputs.seconds }}'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e07-${{ github.run_id }}-${{ matrix.id }}
+          path: |
+            out/package.json
+            out/checksums.sha256
+            out/d.enc
+            out/k.enc
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 0
+
+  collect:
+    needs: [smoke, compute]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: e07-${{ github.run_id }}-*
+          path: bundles
+          merge-multiple: false
+      - name: collect
+        shell: bash
+        run: python3 exp-07/run/collect.py --root bundles --output out/aggregate.json --expected 20
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e07-${{ github.run_id }}-aggregate
+          path: out/aggregate.json
+          retention-days: 7
