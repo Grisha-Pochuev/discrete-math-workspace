@@ -1,0 +1,59 @@
+name: x07 control 2
+
+on:
+  push:
+    branches: [r000-circle]
+    paths:
+      - '.github/workflows/x07-control2.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  control:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+      - name: Preflight
+        shell: bash
+        run: |
+          set -euo pipefail
+          g++ -O3 -std=c++20 exp-07/src/r0.cpp -o /tmp/r0
+          mkdir -p /tmp/r0-preflight
+          /tmp/r0 --worker 0 --workers 1 --seconds 1 --seed 2026081700 --out /tmp/r0-preflight/a.json
+          python3 exp-07/src/check.py /tmp/r0-preflight/a.json
+          python3 - <<'PY'
+          import json
+          d=json.load(open('/tmp/r0-preflight/a.json'))
+          assert d['attempts'] > 0
+          assert d['workers'] == 1
+          print('preflight_attempts', d['attempts'])
+          PY
+      - name: Trigger remote smoke
+        shell: bash
+        env:
+          T1: ${{ secrets.CIRCLE_TOKEN }}
+          T2: ${{ secrets.CIRCLECI_TOKEN }}
+          T3: ${{ secrets.CIRCLECI_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, urllib.request, urllib.error
+          token=os.environ.get('T1') or os.environ.get('T2') or os.environ.get('T3')
+          if not token: raise SystemExit('NO_CIRCLE_TOKEN_SECRET')
+          endpoint='https://circleci.com/api/v2/project/circleci/TnU6xPTn3bJog4b7KxfhCA/YQB6nBJVUKZPiUhmaiznzU/pipeline/run'
+          payload={'definition_id':'14c2864b-6de2-4891-a87a-80b99c8efec5','config':{'branch':'r000-circle'},'checkout':{'branch':'r000-circle'}}
+          req=urllib.request.Request(endpoint,data=json.dumps(payload,separators=(',',':')).encode(),headers={'Circle-Token':token,'Content-Type':'application/json','User-Agent':'x07-control/2'},method='POST')
+          try:
+              with urllib.request.urlopen(req,timeout=30) as r: body=r.read().decode()
+          except urllib.error.HTTPError as e:
+              raise SystemExit(f'REMOTE_HTTP_{e.code}: '+e.read().decode(errors='replace')[:1000])
+          data=json.loads(body) if body else {}
+          print('REMOTE_TRIGGERED',json.dumps({k:data.get(k) for k in ('id','state','number','created_at') if k in data},sort_keys=True))
+          PY
