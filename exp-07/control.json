@@ -8,9 +8,10 @@
   "large_matrix_concurrency_guard": true,
   "smoke_required": true,
   "active_spec_path": "exp-07/specs/run-000.md",
-  "target_jobs": 20,
+  "target_jobs": 30,
   "workers_per_job": 4,
-  "recommended_full_runtime_seconds_per_job": 19800,
-  "job_timeout_minutes": 360,
-  "recommended_next_action": "implement, validate, smoke-test, then explicitly enable run 000"
+  "recommended_full_runtime_seconds_per_job": 900,
+  "job_timeout_minutes": 25,
+  "recommended_smoke_runtime_seconds": 180,
+  "recommended_next_action": "implement, validate, short smoke-test, then explicitly enable run 000"
 }
