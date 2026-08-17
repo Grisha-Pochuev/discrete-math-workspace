@@ -1,0 +1,215 @@
+name: g0
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/e07-g0.yml'
+
+permissions:
+  contents: read
+
+env:
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  MALLOC_ARENA_MAX: '2'
+
+concurrency:
+  group: e07-g0
+  cancel-in-progress: false
+
+jobs:
+  s:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+      - name: s
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(nproc)" -ge 4
+          g++ -O3 -std=c++20 exp-07/src/w0.cpp -o /tmp/w0
+          python3 -m py_compile exp-07/src/v0.py exp-07/src/c0.py
+          mkdir -p out
+          pids=()
+          for k in 0 1 2 3; do
+            /tmp/w0 0 "$k" 4 100 30 "out/n-$k.tsv" "out/s-$k.json" 1e-14 >"out/w-$k.log" 2>&1 &
+            pids+=("$!")
+          done
+          for p in "${pids[@]}"; do wait "$p"; done
+          python3 exp-07/src/v0.py --type 0 \
+            --input out/n-0.tsv out/n-1.tsv out/n-2.tsv out/n-3.tsv \
+            --output out/v.json >out/v.log 2>&1
+          python3 - <<'PY'
+          import glob,json
+          ss=[json.load(open(p)) for p in sorted(glob.glob('out/s-*.json'))]
+          assert len(ss)==4, ss
+          assert all(x['parameter_count']==1221 for x in ss), ss
+          assert sum(x['processed_assigned_u'] for x in ss)==1221, ss
+          assert all(x['type']==0 and x['limit']==100 for x in ss), ss
+          v=json.load(open('out/v.json'))
+          assert v['exact_cancellations']==0, v
+          assert not v['solutions'], v
+          PY
+
+  w:
+    needs: s
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+      - name: b
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(nproc)" -ge 4
+          g++ -O3 -std=c++20 exp-07/src/w0.cpp -o /tmp/w0
+          python3 -m py_compile exp-07/src/v0.py exp-07/src/c0.py
+      - name: r
+        shell: bash
+        run: |
+          set -euo pipefail
+          id=${{ matrix.id }}
+          if   (( id < 4 )); then t=0; g=$id;       gs=4
+          elif (( id < 8 )); then t=1; g=$((id-4)); gs=4
+          elif (( id < 11)); then t=2; g=$((id-8)); gs=3
+          elif (( id < 14)); then t=3; g=$((id-11));gs=3
+          elif (( id < 17)); then t=4; g=$((id-14));gs=3
+          else                    t=5; g=$((id-17));gs=3
+          fi
+          sc=$((gs*4))
+          mkdir -p out/raw
+          {
+            date -u +%FT%TZ
+            uname -a
+            nproc
+            lscpu
+            free -h
+            g++ --version
+            python3 --version
+            echo "source=$GITHUB_SHA"
+            echo "id=$id t=$t g=$g gs=$gs sc=$sc"
+          } > out/raw/machine.txt
+          pids=()
+          for k in 0 1 2 3; do
+            sh=$((g*4+k))
+            (
+              set +e
+              ulimit -v $((2500*1024))
+              timeout --signal=TERM --kill-after=60s 19920s \
+                /tmp/w0 "$t" "$sh" "$sc" 1100 19800 \
+                  "out/raw/n-$k.tsv" "out/raw/s-$k.json" 1e-14 \
+                  >"out/raw/w-$k.log" 2>&1
+              echo $? >"out/raw/e-$k.txt"
+            ) &
+            pids+=("$!")
+          done
+          for p in "${pids[@]}"; do wait "$p" || true; done
+          python3 - "$t" "$g" "$sc" <<'PY'
+          import glob,json,sys
+          t,g,sc=map(int,sys.argv[1:])
+          ss=[]
+          for p in sorted(glob.glob('out/raw/s-*.json')):
+              ss.append(json.load(open(p)))
+          assert len(ss)==4, ss
+          want=set(range(g*4,g*4+4))
+          got={x['shard'] for x in ss}
+          assert got==want,(got,want)
+          assert all(x['type']==t and x['shards']==sc and x['limit']==1100 for x in ss),ss
+          for k in range(4):
+              code=int(open(f'out/raw/e-{k}.txt').read().strip())
+              assert code==0,(k,code)
+          PY
+          python3 exp-07/src/v0.py --type "$t" \
+            --input out/raw/n-0.tsv out/raw/n-1.tsv out/raw/n-2.tsv out/raw/n-3.tsv \
+            --output out/raw/v.json >out/raw/v.log 2>&1
+          tar -C out/raw -czf out/d.tgz .
+          key="$(openssl rand -hex 32)"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 \
+            -in out/d.tgz -out out/d.enc -pass pass:"$key"
+          printf '%s' "$key" > out/k.txt
+          openssl pkeyutl -encrypt -pubin -inkey exp-07/k0.pub \
+            -in out/k.txt -out out/k.enc \
+            -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
+          sha256sum out/d.enc out/k.enc > out/checksums.sha256
+          python3 - "$id" "$t" "$g" "$gs" "$sc" <<'PY'
+          import hashlib,json,sys
+          id,t,g,gs,sc=map(int,sys.argv[1:])
+          def h(p):
+              x=hashlib.sha256(); x.update(open(p,'rb').read()); return x.hexdigest()
+          data={'schema':1,'id':id,'class':t,'group':g,'groups':gs,'shards':sc,
+                'source':__import__('os').environ['GITHUB_SHA'],'validated':True,
+                'detail_sha256':h('out/d.enc'),'key_sha256':h('out/k.enc')}
+          open('out/package.json','w').write(json.dumps(data,sort_keys=True,indent=2)+'\n')
+          PY
+          rm -rf out/raw out/d.tgz out/k.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: g0-${{ matrix.id }}
+          path: |
+            out/package.json
+            out/checksums.sha256
+            out/d.enc
+            out/k.enc
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 0
+
+  c:
+    needs: [s, w]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: g0-*
+          path: bundles
+          merge-multiple: false
+      - name: c
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python3 - <<'PY'
+          import glob,json,os
+          ps=[]
+          for p in glob.glob('bundles/**/package.json',recursive=True):
+              try: ps.append(json.load(open(p)))
+              except Exception: pass
+          ids=sorted(x['id'] for x in ps if x.get('validated') is True)
+          src=sorted(set(x.get('source') for x in ps))
+          out={'schema':1,'packages':len(ps),'validated_ids':ids,
+               'missing_ids':[i for i in range(20) if i not in ids],
+               'sources':src}
+          open('out/aggregate.json','w').write(json.dumps(out,sort_keys=True,indent=2)+'\n')
+          assert ids==list(range(20)),out
+          assert len(src)==1,out
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: g0-aggregate
+          path: out/aggregate.json
+          retention-days: 7
