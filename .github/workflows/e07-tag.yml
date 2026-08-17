@@ -1,4 +1,4 @@
-name: q0
+name: q1
 
 on:
   push:
@@ -9,17 +9,20 @@ permissions:
   contents: write
 
 jobs:
-  q0:
+  q1:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 3
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - shell: bash
+      - name: q1
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git tag e07-s0a "$GITHUB_SHA"
-          git push origin refs/tags/e07-s0a
+          curl --fail-with-body --silent --show-error \
+            -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/git/refs" \
+            -d "{\"ref\":\"refs/tags/e07-s0b\",\"sha\":\"$GITHUB_SHA\"}"
