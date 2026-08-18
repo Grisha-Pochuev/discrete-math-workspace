@@ -26,6 +26,7 @@ on:
       - 'exp-07/src/r15.cpp'
       - 'exp-07/src/r16.cpp'
       - 'exp-07/src/r17.cpp'
+      - 'exp-07/src/r18.cpp'
       - 'exp-07/run/probe.sh'
       - 'exp-07/run/r8.cfg'
       - 'exp-07/run/r9.cfg'
@@ -68,7 +69,7 @@ jobs:
         run: |
           set -euo pipefail
           target=''
-          for t in r17 r16 r15 r14 r13 r11 r10 r9 r8 r7; do
+          for t in r18 r17 r16 r15 r14 r13 r11 r10 r9 r8 r7; do
             if [[ "$MSG" == *"$t"* ]]; then target="$t"; break; fi
           done
           test -n "$target"
@@ -119,7 +120,7 @@ jobs:
               'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],
               'Accept':'application/vnd.github+json',
               'X-GitHub-Api-Version':'2022-11-28',
-              'Content-Type':'application/json'})
+              'Content-Type':'application/vnd.github+json'})
           with urllib.request.urlopen(req) as rr: print(rr.status)
           PY
       - name: Enforce result
