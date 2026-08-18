@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# canonical probe runner; r14 source lists are fetched and then independently replayed
 set -euo pipefail
 
 target="${1:-}"
