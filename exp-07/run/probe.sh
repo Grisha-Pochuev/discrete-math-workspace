@@ -19,9 +19,13 @@ print('hits='+str(d['unique_hits']))
 print('elapsed_seconds='+str(d['elapsed_seconds']))
 PY
 else
-  if ! dpkg -s libgmp-dev >/dev/null 2>&1; then
+  need_apt=0
+  if ! dpkg -s libgmp-dev >/dev/null 2>&1; then need_apt=1; fi
+  if [ "$target" = r16 ] && [ ! -f /usr/include/boost/multiprecision/cpp_int.hpp ]; then need_apt=1; fi
+  if [ "$need_apt" -eq 1 ]; then
     sudo apt-get update -qq
     sudo apt-get install -y -qq libgmp-dev
+    if [ "$target" = r16 ]; then sudo apt-get install -y -qq libboost-dev; fi
   fi
   g++ -O3 -march=native -std=c++20 "exp-07/src/${target}.cpp" -lgmpxx -lgmp -o "/tmp/${target}"
   set +e
