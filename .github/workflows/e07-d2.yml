@@ -65,8 +65,8 @@ jobs:
         run: |
           set -euo pipefail
           P=${{ matrix.part }}
-          BASE=1000000000000001
-          TOP=4750000000000000000
+          BASE=4750000000000000001
+          TOP=12000000000000000000
           N=20
           CHUNKS=700
           SOFT_SECONDS=$((315*60))
