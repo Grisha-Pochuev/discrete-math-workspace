@@ -3,10 +3,12 @@
 set -euo pipefail
 
 target="${1:-}"
-case "$target" in r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19) ;; *) echo "bad target" >&2; exit 2;; esac
+case "$target" in meta|r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19) ;; *) echo "bad target" >&2; exit 2;; esac
 mkdir -p out/plain
 
-if [ "$target" = r7 ]; then
+if [ "$target" = meta ]; then
+  python3 exp-07/run/runmeta.py e07-d2.yml | tee out/plain/meta.json | tee out/summary.txt
+elif [ "$target" = r7 ]; then
   python3 -m pip install --disable-pip-version-check -q sympy==1.14.0
   python3 exp-07/src/r7.py --min-m 3 --max-m 5 --output out/plain/result.json >out/plain/stdout.txt 2>out/plain/stderr.txt
   python3 - <<'PY' | tee out/summary.txt
