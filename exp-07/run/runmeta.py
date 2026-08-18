@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# compact workflow-run lookup used by the browser-side probe
 import json, os, sys, urllib.request
 
 repo=os.environ['GITHUB_REPOSITORY']
