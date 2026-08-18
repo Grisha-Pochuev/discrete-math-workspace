@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# canonical probe runner; r16 tests proportional repeated-difference signatures exactly
+# canonical probe runner; clean r16 GMP trigger for proportional repeated-difference signatures
 set -euo pipefail
 
 target="${1:-}"
