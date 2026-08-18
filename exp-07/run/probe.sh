@@ -3,7 +3,7 @@
 set -euo pipefail
 
 target="${1:-}"
-case "$target" in r7|r8|r9|r10|r11|r13|r14|r15|r16|r17) ;; *) echo "bad target" >&2; exit 2;; esac
+case "$target" in r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18) ;; *) echo "bad target" >&2; exit 2;; esac
 mkdir -p out/plain
 
 if [ "$target" = r7 ]; then
@@ -51,6 +51,17 @@ else
       sha256sum out/plain/b3plus.txt > out/plain/sources.sha256
       set +e
       "/tmp/${target}" out/plain/b3plus.txt out/plain/result.txt >out/plain/stdout.txt 2>out/plain/stderr.txt
+      RC=$?
+      ;;
+    r18)
+      set -e
+      curl -fsSL --retry 3 https://oeis.org/A265625/b265625.txt -o out/plain/bplus.txt
+      curl -fsSL --retry 3 https://oeis.org/A014441/b014441.txt -o out/plain/b3.txt
+      curl -fsSL --retry 3 https://oeis.org/A333376/b333376.txt -o out/plain/b4.txt
+      curl -fsSL --retry 3 https://oeis.org/A333377/b333377.txt -o out/plain/b5.txt
+      sha256sum out/plain/bplus.txt out/plain/b3.txt out/plain/b4.txt out/plain/b5.txt > out/plain/sources.sha256
+      set +e
+      /tmp/r18 out/plain/bplus.txt out/plain/b3.txt out/plain/b4.txt out/plain/b5.txt out/plain/result.txt >out/plain/stdout.txt 2>out/plain/stderr.txt
       RC=$?
       ;;
   esac
