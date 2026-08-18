@@ -45,7 +45,7 @@ env:
   MALLOC_ARENA_MAX: '2'
 
 concurrency:
-  group: exp-07-${{ github.event_name }}
+  group: exp-07-${{ github.event_name }}-${{ github.sha }}
   cancel-in-progress: ${{ github.event_name == 'push' }}
 
 jobs:
