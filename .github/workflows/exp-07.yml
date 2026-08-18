@@ -17,6 +17,7 @@ on:
     paths:
       - '.github/workflows/exp-07.yml'
       - 'exp-07/src/r7.py'
+      - 'exp-07/src/r8.cpp'
 
 permissions:
   contents: read
@@ -35,7 +36,7 @@ concurrency:
 
 jobs:
   r7:
-    if: github.event_name == 'push'
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'r7') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     steps:
@@ -78,6 +79,59 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: e07-r7-${{ github.run_id }}
+          path: |
+            out/summary.txt
+            out/r.enc
+            out/k.enc
+            out/checksums.sha256
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 0
+
+  r8:
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'r8') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+      - name: Build and smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! dpkg -s libgmp-dev >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq libgmp-dev
+          fi
+          g++ -O3 -march=native -std=c++20 exp-07/src/r8.cpp -lgmpxx -lgmp -o /tmp/r8
+          mkdir -p out/plain
+          set +e
+          /tmp/r8 1000 0 1 out/plain/result.txt 6 \
+            > out/plain/stdout.txt 2> out/plain/stderr.txt
+          RC=$?
+          set -e
+          if [ "$RC" -ne 0 ] && [ "$RC" -ne 10 ]; then exit "$RC"; fi
+          grep '^STAT ' out/plain/result.txt | tail -1 | tee out/summary.txt
+          printf 'rc=%s\n' "$RC" >> out/summary.txt
+          tar -C out/plain -czf out/r.tgz .
+          key="$(openssl rand -hex 32)"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 \
+            -in out/r.tgz -out out/r.enc -pass pass:"$key"
+          printf '%s' "$key" > out/k.txt
+          openssl pkeyutl -encrypt -pubin -inkey exp-07/k0.pub \
+            -in out/k.txt -out out/k.enc \
+            -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
+          sha256sum out/r.enc out/k.enc > out/checksums.sha256
+          rm -rf out/plain out/r.tgz out/k.txt
+      - name: Upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e07-r8-${{ github.run_id }}
           path: |
             out/summary.txt
             out/r.enc
