@@ -3,13 +3,13 @@
 #include "d1.cpp"
 #undef main
 
-#include <boost/multiprecision/cpp_int.hpp>
+#include <gmpxx.h>
 #include <array>
 #include <sstream>
 #include <stdexcept>
 #include <unordered_map>
 
-using boost::multiprecision::cpp_int;
+using big16 = mpz_class;
 
 struct G16 { u64 D; std::vector<std::pair<u64,u64>> rp; };
 struct Occ16 { size_t gi; std::array<u64,3> x; u64 g; };
@@ -31,30 +31,30 @@ static std::vector<u64> read16(const std::string& path){
     return z;
 }
 static u64 up16(const G16&g,u64 x){for(auto [a,b]:g.rp)if(a==x)return b;return 0;}
-static cpp_int cube16(const cpp_int&x){return x*x*x;}
+static big16 cube16(const big16&x){return x*x*x;}
+static big16 z16(u64 x){return big16(std::to_string(x));}
 
 static bool replay16(const G16&A,const Occ16&oa,const G16&B,const Occ16&ob,std::ostream&out){
     const u64 gg=std::gcd(oa.g,ob.g);
     const u64 sa=ob.g/gg, sb=oa.g/gg;
-    std::array<cpp_int,3> low;
+    std::array<big16,3> low;
     for(int i=0;i<3;i++){
-        low[i]=cpp_int(sa)*oa.x[i];
-        cpp_int chk=cpp_int(sb)*ob.x[i];
+        low[i]=z16(sa)*z16(oa.x[i]);
+        big16 chk=z16(sb)*z16(ob.x[i]);
         if(low[i]!=chk)throw std::runtime_error("scale alignment failed");
     }
-    std::array<cpp_int,3> ua,ub;
+    std::array<big16,3> ua,ub;
     for(int i=0;i<3;i++){
         u64 xa=up16(A,oa.x[i]),xb=up16(B,ob.x[i]);
         if(!xa||!xb)throw std::runtime_error("missing upper");
-        ua[i]=cpp_int(sa)*xa;ub[i]=cpp_int(sb)*xb;
+        ua[i]=z16(sa)*z16(xa);ub[i]=z16(sb)*z16(xb);
     }
-    // D-family uppers are ua=(A,B,C), T-family uppers ub=(X,Q,P).
-    std::array<cpp_int,9> z={low[0],ub[2],ua[1],ub[1],ua[0],low[2],ua[2],low[1],ub[0]};
-    std::set<cpp_int> distinct(z.begin(),z.end());if(distinct.size()!=9||*distinct.begin()<=0)return false;
-    std::array<cpp_int,9> c;for(int i=0;i<9;i++)c[i]=cube16(z[i]);
-    std::array<cpp_int,6> s={c[0]+c[1]+c[2],c[3]+c[4]+c[5],c[6]+c[7]+c[8],c[0]+c[3]+c[6],c[1]+c[4]+c[7],c[2]+c[5]+c[8]};
+    std::array<big16,9> z={low[0],ub[2],ua[1],ub[1],ua[0],low[2],ua[2],low[1],ub[0]};
+    std::set<big16> distinct(z.begin(),z.end());if(distinct.size()!=9||*distinct.begin()<=0)return false;
+    std::array<big16,9> c;for(int i=0;i<9;i++)c[i]=cube16(z[i]);
+    std::array<big16,6> s={c[0]+c[1]+c[2],c[3]+c[4]+c[5],c[6]+c[7]+c[8],c[0]+c[3]+c[6],c[1]+c[4]+c[7],c[2]+c[5]+c[8]};
     for(int i=1;i<6;i++)if(s[i]!=s[0])throw std::runtime_error("six-sum replay failed");
-    cpp_int DA=cpp_int(sa)*sa*sa*A.D, DB=cpp_int(sb)*sb*sb*B.D;
+    big16 DA=z16(sa)*z16(sa)*z16(sa)*z16(A.D), DB=z16(sb)*z16(sb)*z16(sb)*z16(B.D);
     out<<"HIT D0="<<A.D<<" D1="<<B.D<<" scale0="<<sa<<" scale1="<<sb<<" scaledD0="<<DA<<" scaledD1="<<DB<<" key=";
     for(int i=0;i<3;i++){if(i)out<<',';out<<oa.x[i]/oa.g;}out<<" bases=";
     for(int i=0;i<9;i++){if(i)out<<',';out<<z[i];}out<<" S="<<s[0]<<"\n";
@@ -83,7 +83,7 @@ int main(int argc,char**argv){
                 normalized_collisions++;
                 if(prev.gi==gi){same_group++;continue;}
                 u64 gg=std::gcd(prev.g,g),sa=g/gg,sb=prev.g/gg;
-                cpp_int d0=cpp_int(sa)*sa*sa*gs[prev.gi].D,d1=cpp_int(sb)*sb*sb*gs[gi].D;
+                big16 d0=z16(sa)*z16(sa)*z16(sa)*z16(gs[prev.gi].D),d1=z16(sb)*z16(sb)*z16(sb)*z16(gs[gi].D);
                 if(d0==d1){equal_scaled_diff++;continue;}
                 Occ16 cur{gi,raw,g};
                 out<<"COLLISION D0="<<gs[prev.gi].D<<" D1="<<gs[gi].D<<" key="<<key[0]<<','<<key[1]<<','<<key[2]<<"\n";
