@@ -4,7 +4,7 @@
 #undef main
 
 #include <sstream>
-#include <unordered_set>
+#include <stdexcept>
 
 struct Group14 {
     u64 D;
@@ -53,8 +53,9 @@ static bool build_hit(const Group14& G,const Group14& H,const std::vector<u64>& 
 int main(int argc,char**argv){
     if(argc!=4){std::cerr<<"usage: r14 B4 B5 OUT\n";return 2;}
     auto t0=std::chrono::steady_clock::now();
-    auto a=read_bfile(argv[1],4), b=read_bfile(argv[2],5);
-    a.insert(a.end(),b.begin(),b.end());
+    auto g4=read_bfile(argv[1],4), g5=read_bfile(argv[2],5);
+    if(g4.size()!=1000 || g5.size()!=150){std::cerr<<"INPUT_COUNT_FAIL "<<g4.size()<<' '<<g5.size()<<"\n";return 11;}
+    auto a=g4; a.insert(a.end(),g5.begin(),g5.end());
     std::vector<Group14> gs; gs.reserve(a.size());
     size_t count_mismatch=0; bool anchor_ok=false;
     for(auto [expected,D]:a){
@@ -81,7 +82,7 @@ int main(int argc,char**argv){
         if(common.size()>=3){ge3++; if(build_hit(gs[i],gs[j],common,out)) hits++;}
     }
     auto ms=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()-t0).count();
-    out<<"STAT groups="<<gs.size()<<" groups4="<<read_bfile(argv[1],4).size()<<" groups5="<<read_bfile(argv[2],5).size()
+    out<<"STAT groups="<<gs.size()<<" groups4="<<g4.size()<<" groups5="<<g5.size()
        <<" pairs="<<pairs<<" max_intersection="<<max_inter<<" intersections_ge2="<<ge2<<" intersections_ge3="<<ge3<<" hits="<<hits<<" ms="<<ms<<"\n";
     std::cerr<<"STAT groups="<<gs.size()<<" pairs="<<pairs<<" max_intersection="<<max_inter<<" ge2="<<ge2<<" ge3="<<ge3<<" hits="<<hits<<" ms="<<ms<<"\n";
     return hits?10:0;
