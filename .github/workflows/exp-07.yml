@@ -13,6 +13,10 @@ on:
         required: true
         default: '19800'
         type: string
+  push:
+    paths:
+      - '.github/workflows/exp-07.yml'
+      - 'exp-07/src/r7.py'
 
 permissions:
   contents: read
@@ -26,11 +30,65 @@ env:
   MALLOC_ARENA_MAX: '2'
 
 concurrency:
-  group: exp-07-compute
+  group: exp-07-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
+  r7:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+      - name: Exact certificate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m pip install --disable-pip-version-check -q sympy==1.14.0
+          mkdir -p out/plain
+          python3 exp-07/src/r7.py --min-m 3 --max-m 5 --output out/plain/result.json \
+            > out/plain/stdout.txt 2> out/plain/stderr.txt
+          python3 - <<'PY' | tee out/summary.txt
+          import json
+          d=json.load(open('out/plain/result.json'))
+          print('schema_version='+str(d['schema_version']))
+          print('families='+str(d['families']))
+          print('roots_gt1='+str(d['rational_roots_gt1_with_multiplicity']))
+          print('positive_distinct_exact_candidates='+str(d['positive_distinct_exact_candidates']))
+          print('unique_hits='+str(d['unique_hits']))
+          print('elapsed_seconds='+str(d['elapsed_seconds']))
+          PY
+          tar -C out/plain -czf out/r.tgz .
+          key="$(openssl rand -hex 32)"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 \
+            -in out/r.tgz -out out/r.enc -pass pass:"$key"
+          printf '%s' "$key" > out/k.txt
+          openssl pkeyutl -encrypt -pubin -inkey exp-07/k0.pub \
+            -in out/k.txt -out out/k.enc \
+            -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
+          sha256sum out/r.enc out/k.enc > out/checksums.sha256
+          rm -rf out/plain out/r.tgz out/k.txt
+      - name: Upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e07-r7-${{ github.run_id }}
+          path: |
+            out/summary.txt
+            out/r.enc
+            out/k.enc
+            out/checksums.sha256
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 0
+
   smoke:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -45,6 +103,7 @@ jobs:
         run: bash exp-07/run/smoke.sh
 
   compute:
+    if: github.event_name == 'workflow_dispatch'
     needs: smoke
     runs-on: ubuntu-24.04
     timeout-minutes: 360
@@ -78,7 +137,7 @@ jobs:
 
   collect:
     needs: [smoke, compute]
-    if: always()
+    if: ${{ github.event_name == 'workflow_dispatch' && always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
