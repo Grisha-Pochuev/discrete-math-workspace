@@ -73,7 +73,7 @@ jobs:
         run: |
           set -euo pipefail
           target=''
-          for t in r21 meta r19 r18 r17 r16 r15 r14 r13 r11 r10 r9 r8 r7; do
+          for t in lit r21 meta r19 r18 r17 r16 r15 r14 r13 r11 r10 r9 r8 r7; do
             if [[ "$MSG" == *"$t"* ]]; then target="$t"; break; fi
           done
           test -n "$target"
