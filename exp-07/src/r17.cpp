@@ -40,6 +40,14 @@ static std::vector<u64> read17(const std::string& path){
     return z;
 }
 
+static mpq_class normalized_shift17(const G17& g,const O17& o){
+    Z17 den=z17(o.g); den=den*den*den;
+    mpq_class q(z17(g.D),den);
+    if(o.sign<0) q=-q;
+    q.canonicalize();
+    return q;
+}
+
 static bool replay17(const G17& A,const O17& oa,const G17& B,const O17& ob,std::ostream& out){
     const u64 gg=std::gcd(oa.g,ob.g), sa=ob.g/gg, sb=oa.g/gg;
     std::array<Z17,3> base, aa, bb;
@@ -88,8 +96,12 @@ int main(int argc,char**argv){
     }
     if(under3){std::cerr<<"UNDER3 "<<under3<<"\n";return 12;}if(!anchor)return 13;
     std::ofstream out(argv[2]);if(!out)return 3;
+    // For a fixed normalized base triple, scaled copies with the same
+    // normalized shift D/g^3 are geometrically identical after rescaling.
+    // Keep only one representative for each such shift; this removes the
+    // quadratic explosion from cube-scaled copies without losing candidates.
     std::unordered_map<std::array<u64,3>,std::vector<O17>,H17> tab;tab.reserve(gs.size()*4);
-    u64 signatures=0,collisions=0,equal_shift=0,degenerate=0,hits=0;
+    u64 signatures=0,collisions=0,duplicate_shift=0,degenerate=0,hits=0;
     for(size_t gi=0;gi<gs.size();gi++){
         auto const& rp=gs[gi].rp;
         for(size_t i=0;i<rp.size();i++)for(size_t j=i+1;j<rp.size();j++)for(size_t k=j+1;k<rp.size();k++){
@@ -106,12 +118,14 @@ int main(int argc,char**argv){
                 std::array<u64,3> key={base[0]/g,base[1]/g,base[2]/g};
                 O17 cur{gi,sign,base,alt,g};signatures++;
                 auto& vec=tab[key];
+                const mpq_class qcur=normalized_shift17(gs[gi],cur);
+                bool duplicate=false;
+                for(auto const& prev:vec){
+                    if(normalized_shift17(gs[prev.gi],prev)==qcur){duplicate=true;break;}
+                }
+                if(duplicate){duplicate_shift++;continue;}
                 for(auto const& prev:vec){
                     collisions++;
-                    const u64 gg=std::gcd(prev.g,g),sa=g/gg,sb=prev.g/gg;
-                    Z17 d0=z17(sa)*z17(sa)*z17(sa)*z17(gs[prev.gi].D),d1=z17(sb)*z17(sb)*z17(sb)*z17(gs[gi].D);
-                    if(prev.sign<0)d0=-d0;if(sign<0)d1=-d1;
-                    if(d0==d1){equal_shift++;continue;}
                     if(replay17(gs[prev.gi],prev,gs[gi],cur,out))hits++;else degenerate++;
                 }
                 vec.push_back(cur);
@@ -119,7 +133,7 @@ int main(int argc,char**argv){
         }
     }
     auto ms=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()-t0).count();
-    out<<"STAT listed="<<listed<<" groups="<<gs.size()<<" max_rep="<<maxrep<<" total_reps="<<total_reps<<" signatures="<<signatures<<" collisions="<<collisions<<" equal_shift="<<equal_shift<<" degenerate="<<degenerate<<" hits="<<hits<<" ms="<<ms<<"\n";
-    std::cerr<<"STAT listed="<<listed<<" groups="<<gs.size()<<" max_rep="<<maxrep<<" signatures="<<signatures<<" collisions="<<collisions<<" equal_shift="<<equal_shift<<" degenerate="<<degenerate<<" hits="<<hits<<" ms="<<ms<<"\n";
+    out<<"STAT listed="<<listed<<" groups="<<gs.size()<<" max_rep="<<maxrep<<" total_reps="<<total_reps<<" signatures="<<signatures<<" collisions="<<collisions<<" duplicate_shift="<<duplicate_shift<<" degenerate="<<degenerate<<" hits="<<hits<<" ms="<<ms<<"\n";
+    std::cerr<<"STAT listed="<<listed<<" groups="<<gs.size()<<" max_rep="<<maxrep<<" signatures="<<signatures<<" collisions="<<collisions<<" duplicate_shift="<<duplicate_shift<<" degenerate="<<degenerate<<" hits="<<hits<<" ms="<<ms<<"\n";
     return hits?10:0;
 }
