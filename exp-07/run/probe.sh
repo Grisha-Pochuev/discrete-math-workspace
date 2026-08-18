@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# canonical probe runner; r15 scans independently replayed repeated-difference signatures
+# canonical probe runner; repeated-difference lists are fetched and independently replayed
 set -euo pipefail
 
 target="${1:-}"
-case "$target" in r7|r8|r9|r10|r11|r13|r14|r15) ;; *) echo "bad target" >&2; exit 2;; esac
+case "$target" in r7|r8|r9|r10|r11|r13|r14|r15|r16) ;; *) echo "bad target" >&2; exit 2;; esac
 mkdir -p out/plain
 
 if [ "$target" = r7 ]; then
@@ -45,12 +45,12 @@ else
       /tmp/r14 out/plain/b4.txt out/plain/b5.txt out/plain/result.txt >out/plain/stdout.txt 2>out/plain/stderr.txt
       RC=$?
       ;;
-    r15)
+    r15|r16)
       set -e
       curl -fsSL --retry 3 https://oeis.org/A265625/b265625.txt -o out/plain/b3plus.txt
       sha256sum out/plain/b3plus.txt > out/plain/sources.sha256
       set +e
-      /tmp/r15 out/plain/b3plus.txt out/plain/result.txt >out/plain/stdout.txt 2>out/plain/stderr.txt
+      "/tmp/${target}" out/plain/b3plus.txt out/plain/result.txt >out/plain/stdout.txt 2>out/plain/stderr.txt
       RC=$?
       ;;
   esac
