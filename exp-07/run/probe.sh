@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# canonical probe runner; repeated-difference lists are fetched and independently replayed
+# canonical probe runner; r16 tests proportional repeated-difference signatures exactly
 set -euo pipefail
 
 target="${1:-}"
