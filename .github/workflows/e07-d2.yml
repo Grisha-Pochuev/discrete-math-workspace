@@ -1,0 +1,171 @@
+name: e07-d2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/e07-d2.yml'
+      - 'exp-07/src/d2.cpp'
+      - 'exp-07/src/d1.cpp'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e07-d2
+  cancel-in-progress: true
+
+env:
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  MALLOC_ARENA_MAX: '2'
+
+jobs:
+  run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        part: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+
+      - name: Build and cross-check
+        shell: bash
+        run: |
+          set -euo pipefail
+          g++ -O3 -march=native -std=c++20 exp-07/src/d1.cpp -o /tmp/d1
+          g++ -O3 -march=native -std=c++20 exp-07/src/d2.cpp -o /tmp/d2
+          /tmp/d1 1 100000000 /tmp/a.txt >/tmp/a.out 2>/tmp/a.err
+          /tmp/d2 1 100000000 /tmp/b.txt 1000000 5000000 >/tmp/b.out 2>/tmp/b.err
+          python3 - <<'PY'
+          import re
+          def read(path):
+              s=open(path).read()
+              m=re.search(r'STAT lo=(\d+) hi=(\d+) rec=(\d+) groups=(\d+) triples=(\d+) max=(\d+) sec=[^ ]+ hit=(\d+)',s)
+              if not m: raise SystemExit(f'missing STAT in {path}')
+              return tuple(map(int,m.groups()))
+          a=read('/tmp/a.txt'); b=read('/tmp/b.txt')
+          if a != b: raise SystemExit(f'cross-check mismatch: {a} != {b}')
+          if a[3] != 125 or a[4] != 137: raise SystemExit(f'unexpected reference counts: {a}')
+          PY
+
+      - name: Run
+        shell: bash
+        run: |
+          set -euo pipefail
+          P=${{ matrix.part }}
+          BASE=1000000000000001
+          TOP=4750000000000000000
+          N=20
+          CHUNKS=700
+          SOFT_SECONDS=$((315*60))
+          RESERVE=300000000
+          HARDCAP=300000000
+
+          mkdir -p out/plain
+
+          python3 - "$P" "$BASE" "$TOP" "$N" "$CHUNKS" > out/plain/ranges.txt <<'PY'
+          import math,sys
+          p=int(sys.argv[1]); BASE=int(sys.argv[2]); TOP=int(sys.argv[3]); N=int(sys.argv[4]); M=int(sys.argv[5])
+          def coord(x): return float(x) ** (2.0/3.0)
+          def inv(u): return int(u ** 1.5)
+          u0=coord(BASE); u1=coord(TOP+1)
+          shard=[BASE]
+          for i in range(1,N):
+              x=inv(u0+(u1-u0)*i/N)
+              if x<=shard[-1]: x=shard[-1]+1
+              shard.append(x)
+          shard.append(TOP+1)
+          lo,stop=shard[p],shard[p+1]
+          a,b=coord(lo),coord(stop)
+          bounds=[lo]
+          for j in range(1,M):
+              x=inv(a+(b-a)*j/M)
+              if x<=bounds[-1]: x=bounds[-1]+1
+              if x>=stop: x=stop-1
+              bounds.append(x)
+          bounds.append(stop)
+          if bounds[0]!=lo or bounds[-1]!=stop or any(y<=x for x,y in zip(bounds,bounds[1:])):
+              raise SystemExit('bad bounds')
+          for x,y in zip(bounds,bounds[1:]):
+              print(x,y-1)
+          PY
+
+          START=$(date +%s)
+          PLANNED=$(wc -l < out/plain/ranges.txt)
+          DONE=0
+          HIT=0
+          FAIL=0
+          PARTIAL=0
+          : > out/plain/body.txt
+          : > out/plain/stderr.txt
+
+          while read -r LO HI; do
+            NOW=$(date +%s)
+            if (( NOW - START >= SOFT_SECONDS )); then
+              PARTIAL=1
+              break
+            fi
+            set +e
+            /tmp/d2 "$LO" "$HI" /tmp/one.txt "$RESERVE" "$HARDCAP" >/tmp/one.out 2>/tmp/one.err
+            RC=$?
+            set -e
+            cat /tmp/one.txt >> out/plain/body.txt
+            cat /tmp/one.err >> out/plain/stderr.txt
+            printf 'chunk=%s lo=%s hi=%s rc=%s\n' "$DONE" "$LO" "$HI" "$RC" >> out/plain/progress.txt
+            DONE=$((DONE+1))
+            if [ "$RC" -eq 10 ]; then HIT=1; break; fi
+            if [ "$RC" -ne 0 ]; then FAIL=$RC; break; fi
+          done < out/plain/ranges.txt
+
+          END=$(date +%s)
+          {
+            printf 'part=%s\n' "$P"
+            printf 'base=%s\n' "$BASE"
+            printf 'top=%s\n' "$TOP"
+            printf 'planned=%s\n' "$PLANNED"
+            printf 'done=%s\n' "$DONE"
+            printf 'hit=%s\n' "$HIT"
+            printf 'fail=%s\n' "$FAIL"
+            printf 'partial=%s\n' "$PARTIAL"
+            printf 'elapsed=%s\n' "$((END-START))"
+          } > out/plain/meta.txt
+
+          tar -C out/plain -czf out/d.tgz .
+          key="$(openssl rand -hex 32)"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 \
+            -in out/d.tgz -out out/d.enc -pass pass:"$key"
+          printf '%s' "$key" > out/k.txt
+          openssl pkeyutl -encrypt -pubin -inkey exp-07/k0.pub \
+            -in out/k.txt -out out/k.enc \
+            -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
+          sha256sum out/d.enc out/k.enc > out/checksums.sha256
+          rm -rf out/plain out/d.tgz out/k.txt /tmp/one.txt /tmp/one.out /tmp/one.err
+
+          if [ "$HIT" -eq 1 ]; then exit 10; fi
+          if [ "$FAIL" -ne 0 ]; then exit "$FAIL"; fi
+          if [ "$PARTIAL" -ne 0 ]; then exit 124; fi
+
+      - name: Upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: d2-${{ matrix.part }}
+          path: |
+            out/d.enc
+            out/k.enc
+            out/checksums.sha256
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 0
