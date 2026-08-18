@@ -19,7 +19,7 @@ env:
 
 concurrency:
   group: e07-d1
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   run:
