@@ -1,5 +1,5 @@
 // r17: proportional signatures using either lower or upper endpoints.
-// Dormant until r16 is read; exact replay constructs a full 3x3 candidate.
+// Exact replay constructs a full 3x3 candidate; external D-values are only seeds.
 #define main d1_old_main
 #include "d1.cpp"
 #undef main
@@ -73,13 +73,20 @@ int main(int argc,char**argv){
     if(argc!=3){std::cerr<<"usage: r17 BFILE OUT\n";return 2;}
     auto t0=std::chrono::steady_clock::now(); auto ds=read17(argv[1]);
     if(ds.size()!=10000){std::cerr<<"INPUT_COUNT_FAIL "<<ds.size()<<"\n";return 11;}
-    std::vector<G17> gs;gs.reserve(ds.size());bool anchor=false;size_t under3=0,maxrep=0;
+    const size_t listed=ds.size();
+    // Additional high-multiplicity seeds from A098110.  We do not trust their
+    // claimed multiplicity for acceptance: reps(D) below reconstructs all
+    // positive representations independently and requires >=3.
+    for(u64 D:{424910390480793ULL,15490327057569000ULL,123922616460552000ULL})
+        if(std::find(ds.begin(),ds.end(),D)==ds.end()) ds.push_back(D);
+
+    std::vector<G17> gs;gs.reserve(ds.size());bool anchor=false;size_t under3=0,maxrep=0;u64 total_reps=0;
     for(u64 D:ds){
-        auto rp=reps(D);if(rp.size()<3)under3++;maxrep=std::max(maxrep,rp.size());
+        auto rp=reps(D);if(rp.size()<3)under3++;maxrep=std::max(maxrep,rp.size());total_reps+=rp.size();
         if(D==4118877ULL){std::set<std::pair<u64,u64>>q(rp.begin(),rp.end());anchor=q.count({51,162})&&q.count({72,165})&&q.count({115,178})&&q.count({675,678});}
         gs.push_back({D,std::move(rp)});
     }
-    if(under3)return 12;if(!anchor)return 13;
+    if(under3){std::cerr<<"UNDER3 "<<under3<<"\n";return 12;}if(!anchor)return 13;
     std::ofstream out(argv[2]);if(!out)return 3;
     std::unordered_map<std::array<u64,3>,std::vector<O17>,H17> tab;tab.reserve(gs.size()*4);
     u64 signatures=0,collisions=0,equal_shift=0,degenerate=0,hits=0;
@@ -93,7 +100,6 @@ int main(int argc,char**argv){
                     auto [lo,hi]=rp[ix[t]];
                     if(sign>0){base[t]=lo;alt[t]=hi;}else{base[t]=hi;alt[t]=lo;}
                 }
-                // All endpoints are positive, so sorting base also fixes the unique proportional bijection.
                 std::array<std::pair<u64,u64>,3> ba={{{base[0],alt[0]},{base[1],alt[1]},{base[2],alt[2]}}};
                 std::sort(ba.begin(),ba.end());for(int t=0;t<3;t++){base[t]=ba[t].first;alt[t]=ba[t].second;}
                 u64 g=std::gcd(base[0],std::gcd(base[1],base[2]));
@@ -113,7 +119,7 @@ int main(int argc,char**argv){
         }
     }
     auto ms=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()-t0).count();
-    out<<"STAT groups="<<gs.size()<<" max_rep="<<maxrep<<" signatures="<<signatures<<" collisions="<<collisions<<" equal_shift="<<equal_shift<<" degenerate="<<degenerate<<" hits="<<hits<<" ms="<<ms<<"\n";
-    std::cerr<<"STAT groups="<<gs.size()<<" signatures="<<signatures<<" collisions="<<collisions<<" equal_shift="<<equal_shift<<" degenerate="<<degenerate<<" hits="<<hits<<" ms="<<ms<<"\n";
+    out<<"STAT listed="<<listed<<" groups="<<gs.size()<<" max_rep="<<maxrep<<" total_reps="<<total_reps<<" signatures="<<signatures<<" collisions="<<collisions<<" equal_shift="<<equal_shift<<" degenerate="<<degenerate<<" hits="<<hits<<" ms="<<ms<<"\n";
+    std::cerr<<"STAT listed="<<listed<<" groups="<<gs.size()<<" max_rep="<<maxrep<<" signatures="<<signatures<<" collisions="<<collisions<<" equal_shift="<<equal_shift<<" degenerate="<<degenerate<<" hits="<<hits<<" ms="<<ms<<"\n";
     return hits?10:0;
 }
