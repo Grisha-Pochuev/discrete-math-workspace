@@ -19,6 +19,7 @@ on:
       - '.github/workflows/exp-07.yml'
       - 'exp-07/src/r7.py'
       - 'exp-07/src/r8.cpp'
+      - 'exp-07/run/r8.cfg'
 
 permissions:
   contents: read
@@ -134,7 +135,7 @@ jobs:
           sparse-checkout: |
             exp-07
           sparse-checkout-cone-mode: true
-      - name: Build and smoke
+      - name: Build and search
         id: r8_probe
         continue-on-error: true
         shell: bash
@@ -144,10 +145,12 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install -y -qq libgmp-dev
           fi
+          read H FILTERS < exp-07/run/r8.cfg
+          [[ "$H" =~ ^[0-9]+$ && "$FILTERS" =~ ^[0-9]+$ ]]
           g++ -O3 -march=native -std=c++20 exp-07/src/r8.cpp -lgmpxx -lgmp -o /tmp/r8
           mkdir -p out/plain
           set +e
-          /tmp/r8 1000 0 1 out/plain/result.txt 6 \
+          /tmp/r8 "$H" 0 1 out/plain/result.txt "$FILTERS" \
             > out/plain/stdout.txt 2> out/plain/stderr.txt
           RC=$?
           set -e
