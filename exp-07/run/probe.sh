@@ -3,10 +3,57 @@
 set -euo pipefail
 
 target="${1:-}"
-case "$target" in meta|r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19|r21) ;; *) echo "bad target" >&2; exit 2;; esac
+case "$target" in lit|meta|r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19|r21) ;; *) echo "bad target" >&2; exit 2;; esac
 mkdir -p out/plain
 
-if [ "$target" = meta ]; then
+if [ "$target" = lit ]; then
+  set -euo pipefail
+  urls=(
+    'https://www.sciencedirect.com/science/article/pii/S0022314X04001866/pdfft?isDTMRedir=true&download=true'
+    'https://api.elsevier.com/content/article/pii/S0022314X04001866?httpAccept=application/pdf'
+  )
+  ok=0
+  for u in "${urls[@]}"; do
+    if curl -fL --retry 2 --connect-timeout 20 --max-time 90 \
+      -A 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131 Safari/537.36' \
+      -H 'Accept: application/pdf,*/*;q=0.8' "$u" -o out/plain/paper.bin 2>>out/plain/curl.err; then
+      if head -c 5 out/plain/paper.bin | grep -q '%PDF-'; then ok=1; printf '%s\n' "$u" > out/plain/source.txt; break; fi
+    fi
+  done
+  if [ "$ok" -ne 1 ]; then
+    echo 'PDF_FETCH_FAIL' | tee out/summary.txt
+    wc -c out/plain/paper.bin 2>/dev/null || true
+    exit 21
+  fi
+  if ! command -v pdftotext >/dev/null 2>&1; then
+    sudo apt-get update -qq
+    sudo apt-get install -y -qq poppler-utils
+  fi
+  pdftotext -layout out/plain/paper.bin out/plain/paper.txt
+  python3 - <<'PY' | tee out/summary.txt
+import re, hashlib
+from pathlib import Path
+p=Path('out/plain/paper.bin').read_bytes()
+t=Path('out/plain/paper.txt').read_text(errors='replace')
+print('PDF_OK bytes=%d text_chars=%d sha256=%s' % (len(p),len(t),hashlib.sha256(p).hexdigest()))
+# Emit only a compact research-oriented extract around the construction.
+lines=t.splitlines()
+keys=('pairwise sums','six integers','eight integers','diophantine chain','we obtain','are cubes','is a cube')
+idx=[]
+for i,line in enumerate(lines):
+    low=line.lower()
+    if any(k in low for k in keys): idx.append(i)
+keep=[]
+for i in idx:
+    for j in range(max(0,i-3),min(len(lines),i+8)):
+        if j not in keep: keep.append(j)
+# cap the public diagnostic; full text remains transient and is deleted below
+for j in keep[:140]:
+    s=lines[j].rstrip()
+    if s: print(f'L{j+1}: {s[:300]}')
+PY
+  rm -f out/plain/paper.bin out/plain/paper.txt
+elif [ "$target" = meta ]; then
   python3 exp-07/run/runmeta.py e07-d2.yml | tee out/plain/meta.json | tee out/summary.txt
 elif [ "$target" = r7 ]; then
   python3 -m pip install --disable-pip-version-check -q sympy==1.14.0
