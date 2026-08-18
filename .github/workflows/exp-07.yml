@@ -21,6 +21,7 @@ on:
 
 permissions:
   contents: read
+  statuses: write
 
 env:
   OMP_NUM_THREADS: '1'
@@ -47,6 +48,8 @@ jobs:
             exp-07
           sparse-checkout-cone-mode: true
       - name: Exact certificate
+        id: r7_probe
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -87,6 +90,37 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
           compression-level: 0
+      - name: Publish compact status
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PROBE_OUTCOME: ${{ steps.r7_probe.outcome }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          state=failure
+          desc="fail run=${GITHUB_RUN_ID}"
+          if [ "$PROBE_OUTCOME" = success ] && [ -f out/summary.txt ]; then
+            hits="$(sed -n 's/^unique_hits=//p' out/summary.txt | tail -1)"
+            roots="$(sed -n 's/^roots_gt1=//p' out/summary.txt | tail -1)"
+            desc="ok h=${hits:-?} r=${roots:-?} run=${GITHUB_RUN_ID}"
+            state=success
+          fi
+          python3 - "$state" "$desc" <<'PY'
+          import json,os,sys,urllib.request
+          state,desc=sys.argv[1:3]
+          url=f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/statuses/{os.environ['GITHUB_SHA']}"
+          body=json.dumps({'state':state,'context':'e07-r7','description':desc[:140]}).encode()
+          req=urllib.request.Request(url,data=body,method='POST',headers={
+              'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],
+              'Accept':'application/vnd.github+json',
+              'X-GitHub-Api-Version':'2022-11-28',
+              'Content-Type':'application/json'})
+          with urllib.request.urlopen(req) as r: print(r.status)
+          PY
+      - name: Enforce result
+        if: ${{ always() && steps.r7_probe.outcome != 'success' }}
+        run: exit 1
 
   r8:
     if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'r8') }}
@@ -100,6 +134,8 @@ jobs:
             exp-07
           sparse-checkout-cone-mode: true
       - name: Build and smoke
+        id: r8_probe
+        continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
@@ -140,6 +176,37 @@ jobs:
           if-no-files-found: warn
           retention-days: 7
           compression-level: 0
+      - name: Publish compact status
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PROBE_OUTCOME: ${{ steps.r8_probe.outcome }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          state=failure
+          desc="fail run=${GITHUB_RUN_ID}"
+          if [ "$PROBE_OUTCOME" = success ] && [ -f out/summary.txt ]; then
+            hits="$(sed -n 's/.* hits=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"
+            surv="$(sed -n 's/.* modular_survivors=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"
+            desc="ok h=${hits:-?} m=${surv:-?} run=${GITHUB_RUN_ID}"
+            state=success
+          fi
+          python3 - "$state" "$desc" <<'PY'
+          import json,os,sys,urllib.request
+          state,desc=sys.argv[1:3]
+          url=f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/statuses/{os.environ['GITHUB_SHA']}"
+          body=json.dumps({'state':state,'context':'e07-r8','description':desc[:140]}).encode()
+          req=urllib.request.Request(url,data=body,method='POST',headers={
+              'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],
+              'Accept':'application/vnd.github+json',
+              'X-GitHub-Api-Version':'2022-11-28',
+              'Content-Type':'application/json'})
+          with urllib.request.urlopen(req) as r: print(r.status)
+          PY
+      - name: Enforce result
+        if: ${{ always() && steps.r8_probe.outcome != 'success' }}
+        run: exit 1
 
   smoke:
     if: github.event_name == 'workflow_dispatch'
