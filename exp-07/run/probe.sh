@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# canonical probe runner; source lists are fetched and independently replayed
+# canonical probe runner; r15 scans independently replayed repeated-difference signatures
 set -euo pipefail
 
 target="${1:-}"
