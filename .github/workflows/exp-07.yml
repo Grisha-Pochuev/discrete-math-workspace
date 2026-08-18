@@ -117,7 +117,7 @@ jobs:
               'Accept':'application/vnd.github+json',
               'X-GitHub-Api-Version':'2022-11-28',
               'Content-Type':'application/json'})
-          with urllib.request.urlopen(req) as r: print(r.status)
+          with urllib.request.urlopen(req) as rr: print(rr.status)
           PY
       - name: Enforce result
         if: ${{ always() && steps.r7_probe.outcome != 'success' }}
@@ -186,24 +186,25 @@ jobs:
         run: |
           set -euo pipefail
           state=failure
-          desc="fail run=${GITHUB_RUN_ID}"
+          desc="fail"
           if [ "$PROBE_OUTCOME" = success ] && [ -f out/summary.txt ]; then
             hits="$(sed -n 's/.* hits=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"
             surv="$(sed -n 's/.* modular_survivors=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"
-            desc="ok h=${hits:-?} m=${surv:-?} run=${GITHUB_RUN_ID}"
+            desc="ok-h${hits:-?}-m${surv:-?}"
             state=success
           fi
           python3 - "$state" "$desc" <<'PY'
           import json,os,sys,urllib.request
           state,desc=sys.argv[1:3]
           url=f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/statuses/{os.environ['GITHUB_SHA']}"
-          body=json.dumps({'state':state,'context':'e07-r8','description':desc[:140]}).encode()
+          context=f"e07-r8-{os.environ['GITHUB_RUN_ID']}"
+          body=json.dumps({'state':state,'context':context,'description':desc[:140]}).encode()
           req=urllib.request.Request(url,data=body,method='POST',headers={
               'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],
               'Accept':'application/vnd.github+json',
               'X-GitHub-Api-Version':'2022-11-28',
               'Content-Type':'application/json'})
-          with urllib.request.urlopen(req) as r: print(r.status)
+          with urllib.request.urlopen(req) as rr: print(rr.status)
           PY
       - name: Enforce result
         if: ${{ always() && steps.r8_probe.outcome != 'success' }}
