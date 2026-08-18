@@ -1,3 +1,4 @@
+// r8-r1
 #include <gmpxx.h>
 #include <algorithm>
 #include <array>
@@ -178,7 +179,11 @@ static bool reconstruct(const mpq_class& r, const Combo& c,
     const QMap &A=maps[c.mab-3], &B=maps[c.mbc-3];
     if(!A.ok||!B.ok||A.u<=0||A.v<=0||B.u<=0||B.v<=0) return false;
     mpq_class r3=r*r*r, r6=r3*r3;
-    mpq_class T=(c.sab>0?A.d:-A.d) + (c.sbc>0?r3*B.d:-r3*B.d);
+    mpq_class T=A.d;
+    if(c.sab<0) T=-T;
+    mpq_class TB=r3*B.d;
+    if(c.sbc<0) TB=-TB;
+    T += TB;
     mpq_class e3=(1+r6+T)/2, h3=(1+r6-T)/2, e,h;
     if(!qcube(e3,e)||!qcube(h3,h)) return false;
 
