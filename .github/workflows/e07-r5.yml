@@ -1,0 +1,132 @@
+name: e07-r5
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/e07-r5.yml'
+      - 'exp-07/src/r5.cpp'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e07-r5
+  cancel-in-progress: true
+
+env:
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+  MALLOC_ARENA_MAX: '2'
+
+jobs:
+  run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        part: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+
+      - name: Build and self-check
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! dpkg -s libgmp-dev >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq libgmp-dev
+          fi
+          g++ -O3 -march=native -std=c++20 exp-07/src/r5.cpp -lgmpxx -lgmp -o /tmp/r5
+          /tmp/r5 64 20 0 1 60 /tmp/check.tsv /tmp/check.progress
+          python3 - <<'PY'
+          import re
+          s=open('/tmp/check.tsv').read()
+          m=re.search(r'SUMMARY\t-\t(.*)', s)
+          if not m:
+              raise SystemExit('missing self-check summary')
+          d=dict(item.split('=',1) for item in m.group(1).split())
+          expected={
+              'triangles':'1', 'done':'1', 'pairs':'232960',
+              'modular_candidates':'0', 'exact_candidates':'0',
+              'bad_mod_den':'0', 'generated_alts':'836', 'partial':'0'
+          }
+          for k,v in expected.items():
+              if d.get(k)!=v:
+                  raise SystemExit(f'self-check mismatch {k}: {d.get(k)} != {v}')
+          PY
+
+      - name: Run
+        shell: bash
+        run: |
+          set -euo pipefail
+          P=${{ matrix.part }}
+          N=5000
+          R=15
+          PARTS=20
+          SOFT_SECONDS=$((300*60))
+          mkdir -p out/plain
+          {
+            printf 'part=%s\n' "$P"
+            printf 'N=%s\n' "$N"
+            printf 'R=%s\n' "$R"
+            printf 'parts=%s\n' "$PARTS"
+            printf 'nproc=%s\n' "$(nproc)"
+            g++ --version | head -1
+          } > out/plain/env.txt
+
+          set +e
+          /tmp/r5 "$N" "$R" "$P" "$PARTS" "$SOFT_SECONDS" \
+            out/plain/result.tsv out/plain/progress.txt \
+            > out/plain/stdout.txt 2> out/plain/stderr.txt
+          RC=$?
+          set -e
+          printf 'rc=%s\n' "$RC" > out/plain/rc.txt
+
+          if [ "$RC" -ne 0 ] && [ "$RC" -ne 10 ] && [ "$RC" -ne 124 ]; then
+            FAIL=1
+          else
+            FAIL=0
+          fi
+          if [ "$RC" -eq 124 ]; then
+            PARTIAL=1
+          else
+            PARTIAL=0
+          fi
+
+          tar -C out/plain -czf out/r.tgz .
+          key="$(openssl rand -hex 32)"
+          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 \
+            -in out/r.tgz -out out/r.enc -pass pass:"$key"
+          printf '%s' "$key" > out/k.txt
+          openssl pkeyutl -encrypt -pubin -inkey exp-07/k0.pub \
+            -in out/k.txt -out out/k.enc \
+            -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
+          sha256sum out/r.enc out/k.enc > out/checksums.sha256
+          rm -rf out/plain out/r.tgz out/k.txt
+
+          if [ "$FAIL" -ne 0 ]; then exit "$RC"; fi
+          if [ "$PARTIAL" -ne 0 ]; then exit 124; fi
+
+      - name: Upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: r5-${{ matrix.part }}
+          path: |
+            out/r.enc
+            out/k.enc
+            out/checksums.sha256
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 0
