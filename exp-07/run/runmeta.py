@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# compact workflow-run lookup used by the browser-side probe
+# compact workflow-run lookup used by the browser-side probe; current d2 checkpoint
 import json, os, sys, urllib.request
 
 repo=os.environ['GITHUB_REPOSITORY']
