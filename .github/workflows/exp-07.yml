@@ -1,4 +1,3 @@
-# status-enabled probe launcher
 name: exp-07
 
 on:
@@ -22,9 +21,12 @@ on:
       - 'exp-07/src/r9.cpp'
       - 'exp-07/src/r10.cpp'
       - 'exp-07/src/r11.cpp'
+      - 'exp-07/src/r13.cpp'
+      - 'exp-07/run/probe.sh'
       - 'exp-07/run/r8.cfg'
       - 'exp-07/run/r9.cfg'
       - 'exp-07/run/r10.cfg'
+      - 'exp-07/run/r13.cfg'
 
 permissions:
   contents: read
@@ -43,8 +45,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  r7:
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'r7') }}
+  probe:
+    if: ${{ github.event_name == 'push' && (contains(github.event.head_commit.message, 'r7') || contains(github.event.head_commit.message, 'r8') || contains(github.event.head_commit.message, 'r9') || contains(github.event.head_commit.message, 'r10') || contains(github.event.head_commit.message, 'r11') || contains(github.event.head_commit.message, 'r13')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     steps:
@@ -54,37 +56,29 @@ jobs:
           sparse-checkout: |
             exp-07
           sparse-checkout-cone-mode: true
-      - name: Exact certificate
-        id: r7_probe
-        continue-on-error: true
+      - name: Select probe
+        id: select
         shell: bash
+        env:
+          MSG: ${{ github.event.head_commit.message }}
         run: |
           set -euo pipefail
-          python3 -m pip install --disable-pip-version-check -q sympy==1.14.0
-          mkdir -p out/plain
-          python3 exp-07/src/r7.py --min-m 3 --max-m 5 --output out/plain/result.json > out/plain/stdout.txt 2> out/plain/stderr.txt
-          python3 - <<'PY' | tee out/summary.txt
-          import json
-          d=json.load(open('out/plain/result.json'))
-          print('schema_version='+str(d['schema_version']))
-          print('families='+str(d['families']))
-          print('roots_gt1='+str(d['rational_roots_gt1_with_multiplicity']))
-          print('positive_distinct_exact_candidates='+str(d['positive_distinct_exact_candidates']))
-          print('unique_hits='+str(d['unique_hits']))
-          print('elapsed_seconds='+str(d['elapsed_seconds']))
-          PY
-          tar -C out/plain -czf out/r.tgz .
-          key="$(openssl rand -hex 32)"
-          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -in out/r.tgz -out out/r.enc -pass pass:"$key"
-          printf '%s' "$key" > out/k.txt
-          openssl pkeyutl -encrypt -pubin -inkey exp-07/k0.pub -in out/k.txt -out out/k.enc -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
-          sha256sum out/r.enc out/k.enc > out/checksums.sha256
-          rm -rf out/plain out/r.tgz out/k.txt
-      - name: Upload
+          target=''
+          for t in r13 r11 r10 r9 r8 r7; do
+            if [[ "$MSG" == *"$t"* ]]; then target="$t"; break; fi
+          done
+          test -n "$target"
+          echo "target=$target" >> "$GITHUB_OUTPUT"
+      - name: Run probe
+        id: scientific
+        continue-on-error: true
+        shell: bash
+        run: bash exp-07/run/probe.sh '${{ steps.select.outputs.target }}'
+      - name: Upload protected details
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: e07-r7-${{ github.run_id }}
+          name: e07-${{ steps.select.outputs.target }}-${{ github.run_id }}
           path: |
             out/summary.txt
             out/r.enc
@@ -97,289 +91,32 @@ jobs:
         if: always()
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          PROBE_OUTCOME: ${{ steps.r7_probe.outcome }}
-        shell: bash
-        run: |
-          state=failure; desc=fail
-          if [ "$PROBE_OUTCOME" = success ] && [ -f out/summary.txt ]; then hits="$(sed -n 's/^unique_hits=//p' out/summary.txt | tail -1)"; roots="$(sed -n 's/^roots_gt1=//p' out/summary.txt | tail -1)"; desc="ok-h${hits:-?}-r${roots:-?}"; state=success; fi
-          python3 - "$state" "$desc" <<'PY'
-          import json,os,sys,urllib.request
-          state,desc=sys.argv[1:3]; url=f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/statuses/{os.environ['GITHUB_SHA']}"; context=f"e07-r7-{os.environ['GITHUB_RUN_ID']}"
-          req=urllib.request.Request(url,data=json.dumps({'state':state,'context':context,'description':desc[:140]}).encode(),method='POST',headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'})
-          with urllib.request.urlopen(req) as rr: print(rr.status)
-          PY
-      - name: Enforce result
-        if: ${{ always() && steps.r7_probe.outcome != 'success' }}
-        run: exit 1
-
-  r8:
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'r8') }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          sparse-checkout: |
-            exp-07
-          sparse-checkout-cone-mode: true
-      - name: Build and search
-        id: r8_probe
-        continue-on-error: true
+          PROBE_OUTCOME: ${{ steps.scientific.outcome }}
+          TARGET: ${{ steps.select.outputs.target }}
         shell: bash
         run: |
           set -euo pipefail
-          if ! dpkg -s libgmp-dev >/dev/null 2>&1; then sudo apt-get update -qq; sudo apt-get install -y -qq libgmp-dev; fi
-          read H FILTERS < exp-07/run/r8.cfg
-          [[ "$H" =~ ^[0-9]+$ && "$FILTERS" =~ ^[0-9]+$ ]]
-          g++ -O3 -march=native -std=c++20 exp-07/src/r8.cpp -lgmpxx -lgmp -o /tmp/r8
-          mkdir -p out/plain
-          set +e
-          /tmp/r8 "$H" 0 1 out/plain/result.txt "$FILTERS" > out/plain/stdout.txt 2> out/plain/stderr.txt
-          RC=$?
-          set -e
-          if [ "$RC" -ne 0 ] && [ "$RC" -ne 10 ]; then exit "$RC"; fi
-          grep '^STAT ' out/plain/result.txt | tail -1 | tee out/summary.txt
-          printf 'rc=%s\n' "$RC" >> out/summary.txt
-          tar -C out/plain -czf out/r.tgz .
-          key="$(openssl rand -hex 32)"
-          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -in out/r.tgz -out out/r.enc -pass pass:"$key"
-          printf '%s' "$key" > out/k.txt
-          openssl pkeyutl -encrypt -pubin -inkey exp-07/k0.pub -in out/k.txt -out out/k.enc -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
-          sha256sum out/r.enc out/k.enc > out/checksums.sha256
-          rm -rf out/plain out/r.tgz out/k.txt
-      - name: Upload
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: e07-r8-${{ github.run_id }}
-          path: |
-            out/summary.txt
-            out/r.enc
-            out/k.enc
-            out/checksums.sha256
-          if-no-files-found: warn
-          retention-days: 7
-          compression-level: 0
-      - name: Publish compact status
-        if: always()
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          PROBE_OUTCOME: ${{ steps.r8_probe.outcome }}
-        shell: bash
-        run: |
-          state=failure; desc=fail
-          if [ "$PROBE_OUTCOME" = success ] && [ -f out/summary.txt ]; then hits="$(sed -n 's/.* hits=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"; surv="$(sed -n 's/.* modular_survivors=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"; desc="ok-h${hits:-?}-m${surv:-?}"; state=success; fi
+          state=failure
+          desc=fail
+          if [ "$PROBE_OUTCOME" = success ] && [ -f out/summary.txt ]; then
+            state=success
+            desc=ok
+          fi
           python3 - "$state" "$desc" <<'PY'
           import json,os,sys,urllib.request
-          state,desc=sys.argv[1:3]; url=f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/statuses/{os.environ['GITHUB_SHA']}"; context=f"e07-r8-{os.environ['GITHUB_RUN_ID']}"
-          req=urllib.request.Request(url,data=json.dumps({'state':state,'context':context,'description':desc[:140]}).encode(),method='POST',headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'})
+          state,desc=sys.argv[1:3]
+          url=f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/statuses/{os.environ['GITHUB_SHA']}"
+          context=f"e07-{os.environ['TARGET']}-{os.environ['GITHUB_RUN_ID']}"
+          body=json.dumps({'state':state,'context':context,'description':desc}).encode()
+          req=urllib.request.Request(url,data=body,method='POST',headers={
+              'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],
+              'Accept':'application/vnd.github+json',
+              'X-GitHub-Api-Version':'2022-11-28',
+              'Content-Type':'application/json'})
           with urllib.request.urlopen(req) as rr: print(rr.status)
           PY
       - name: Enforce result
-        if: ${{ always() && steps.r8_probe.outcome != 'success' }}
-        run: exit 1
-
-  r9:
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'r9') }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          sparse-checkout: |
-            exp-07
-          sparse-checkout-cone-mode: true
-      - name: Build and search
-        id: r9_probe
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          if ! dpkg -s libgmp-dev >/dev/null 2>&1; then sudo apt-get update -qq; sudo apt-get install -y -qq libgmp-dev; fi
-          read H FILTERS < exp-07/run/r9.cfg
-          [[ "$H" =~ ^[0-9]+$ && "$FILTERS" =~ ^[0-9]+$ ]]
-          g++ -O3 -march=native -std=c++20 exp-07/src/r9.cpp -lgmpxx -lgmp -o /tmp/r9
-          mkdir -p out/plain
-          set +e
-          /tmp/r9 "$H" 0 1 out/plain/result.txt "$FILTERS" > out/plain/stdout.txt 2> out/plain/stderr.txt
-          RC=$?
-          set -e
-          if [ "$RC" -ne 0 ] && [ "$RC" -ne 10 ]; then exit "$RC"; fi
-          grep '^STAT ' out/plain/result.txt | tail -1 | tee out/summary.txt
-          printf 'rc=%s\n' "$RC" >> out/summary.txt
-          tar -C out/plain -czf out/r.tgz .
-          key="$(openssl rand -hex 32)"
-          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -in out/r.tgz -out out/r.enc -pass pass:"$key"
-          printf '%s' "$key" > out/k.txt
-          openssl pkeyutl -encrypt -pubin -inkey exp-07/k0.pub -in out/k.txt -out out/k.enc -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
-          sha256sum out/r.enc out/k.enc > out/checksums.sha256
-          rm -rf out/plain out/r.tgz out/k.txt
-      - name: Upload
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: e07-r9-${{ github.run_id }}
-          path: |
-            out/summary.txt
-            out/r.enc
-            out/k.enc
-            out/checksums.sha256
-          if-no-files-found: warn
-          retention-days: 7
-          compression-level: 0
-      - name: Publish compact status
-        if: always()
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          PROBE_OUTCOME: ${{ steps.r9_probe.outcome }}
-        shell: bash
-        run: |
-          state=failure; desc=fail
-          if [ "$PROBE_OUTCOME" = success ] && [ -f out/summary.txt ]; then hits="$(sed -n 's/.* hits=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"; surv="$(sed -n 's/.* modular_survivors=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"; desc="ok-h${hits:-?}-m${surv:-?}"; state=success; fi
-          python3 - "$state" "$desc" <<'PY'
-          import json,os,sys,urllib.request
-          state,desc=sys.argv[1:3]; url=f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/statuses/{os.environ['GITHUB_SHA']}"; context=f"e07-r9-{os.environ['GITHUB_RUN_ID']}"
-          req=urllib.request.Request(url,data=json.dumps({'state':state,'context':context,'description':desc[:140]}).encode(),method='POST',headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'})
-          with urllib.request.urlopen(req) as rr: print(rr.status)
-          PY
-      - name: Enforce result
-        if: ${{ always() && steps.r9_probe.outcome != 'success' }}
-        run: exit 1
-
-  r10:
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'r10') }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          sparse-checkout: |
-            exp-07
-          sparse-checkout-cone-mode: true
-      - name: Build and search
-        id: r10_probe
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          if ! dpkg -s libgmp-dev >/dev/null 2>&1; then sudo apt-get update -qq; sudo apt-get install -y -qq libgmp-dev; fi
-          read H FILTERS < exp-07/run/r10.cfg
-          [[ "$H" =~ ^[0-9]+$ && "$FILTERS" =~ ^[0-9]+$ ]]
-          g++ -O3 -march=native -std=c++20 exp-07/src/r10.cpp -lgmpxx -lgmp -o /tmp/r10
-          mkdir -p out/plain
-          set +e
-          /tmp/r10 "$H" 0 1 out/plain/result.txt "$FILTERS" > out/plain/stdout.txt 2> out/plain/stderr.txt
-          RC=$?
-          set -e
-          if [ "$RC" -ne 0 ] && [ "$RC" -ne 10 ]; then exit "$RC"; fi
-          grep '^STAT ' out/plain/result.txt | tail -1 | tee out/summary.txt
-          printf 'rc=%s\n' "$RC" >> out/summary.txt
-          tar -C out/plain -czf out/r.tgz .
-          key="$(openssl rand -hex 32)"
-          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -in out/r.tgz -out out/r.enc -pass pass:"$key"
-          printf '%s' "$key" > out/k.txt
-          openssl pkeyutl -encrypt -pubin -inkey exp-07/k0.pub -in out/k.txt -out out/k.enc -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
-          sha256sum out/r.enc out/k.enc > out/checksums.sha256
-          rm -rf out/plain out/r.tgz out/k.txt
-      - name: Upload
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: e07-r10-${{ github.run_id }}
-          path: |
-            out/summary.txt
-            out/r.enc
-            out/k.enc
-            out/checksums.sha256
-          if-no-files-found: warn
-          retention-days: 7
-          compression-level: 0
-      - name: Publish compact status
-        if: always()
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          PROBE_OUTCOME: ${{ steps.r10_probe.outcome }}
-        shell: bash
-        run: |
-          state=failure; desc=fail
-          if [ "$PROBE_OUTCOME" = success ] && [ -f out/summary.txt ]; then hits="$(sed -n 's/.* hits=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"; surv="$(sed -n 's/.* modular_survivors=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"; desc="ok-h${hits:-?}-m${surv:-?}"; state=success; fi
-          python3 - "$state" "$desc" <<'PY'
-          import json,os,sys,urllib.request
-          state,desc=sys.argv[1:3]; url=f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/statuses/{os.environ['GITHUB_SHA']}"; context=f"e07-r10-{os.environ['GITHUB_RUN_ID']}"
-          req=urllib.request.Request(url,data=json.dumps({'state':state,'context':context,'description':desc[:140]}).encode(),method='POST',headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'})
-          with urllib.request.urlopen(req) as rr: print(rr.status)
-          PY
-      - name: Enforce result
-        if: ${{ always() && steps.r10_probe.outcome != 'success' }}
-        run: exit 1
-
-  r11:
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'r11') }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          sparse-checkout: |
-            exp-07
-          sparse-checkout-cone-mode: true
-      - name: Build and scan
-        id: r11_probe
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          if ! dpkg -s libgmp-dev >/dev/null 2>&1; then sudo apt-get update -qq; sudo apt-get install -y -qq libgmp-dev; fi
-          g++ -O3 -march=native -std=c++20 exp-07/src/r11.cpp -lgmpxx -lgmp -o /tmp/r11
-          mkdir -p out/plain
-          set +e
-          /tmp/r11 100 out/plain/result.txt > out/plain/stdout.txt 2> out/plain/stderr.txt
-          RC=$?
-          set -e
-          if [ "$RC" -ne 0 ] && [ "$RC" -ne 10 ]; then exit "$RC"; fi
-          grep '^STAT ' out/plain/result.txt | tail -1 | tee out/summary.txt
-          printf 'rc=%s\n' "$RC" >> out/summary.txt
-          tar -C out/plain -czf out/r.tgz .
-          key="$(openssl rand -hex 32)"
-          openssl enc -aes-256-cbc -salt -pbkdf2 -iter 200000 -in out/r.tgz -out out/r.enc -pass pass:"$key"
-          printf '%s' "$key" > out/k.txt
-          openssl pkeyutl -encrypt -pubin -inkey exp-07/k0.pub -in out/k.txt -out out/k.enc -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
-          sha256sum out/r.enc out/k.enc > out/checksums.sha256
-          rm -rf out/plain out/r.tgz out/k.txt
-      - name: Upload
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: e07-r11-${{ github.run_id }}
-          path: |
-            out/summary.txt
-            out/r.enc
-            out/k.enc
-            out/checksums.sha256
-          if-no-files-found: warn
-          retention-days: 7
-          compression-level: 0
-      - name: Publish compact status
-        if: always()
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          PROBE_OUTCOME: ${{ steps.r11_probe.outcome }}
-        shell: bash
-        run: |
-          state=failure; desc=fail
-          if [ "$PROBE_OUTCOME" = success ] && [ -f out/summary.txt ]; then surv="$(sed -n 's/.* survivors=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"; unr="$(sed -n 's/.* unresolved=\([0-9][0-9]*\).*/\1/p' out/summary.txt | head -1)"; desc="ok-s${surv:-?}-u${unr:-?}"; state=success; fi
-          python3 - "$state" "$desc" <<'PY'
-          import json,os,sys,urllib.request
-          state,desc=sys.argv[1:3]; url=f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/statuses/{os.environ['GITHUB_SHA']}"; context=f"e07-r11-{os.environ['GITHUB_RUN_ID']}"
-          req=urllib.request.Request(url,data=json.dumps({'state':state,'context':context,'description':desc[:140]}).encode(),method='POST',headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','Content-Type':'application/json'})
-          with urllib.request.urlopen(req) as rr: print(rr.status)
-          PY
-      - name: Enforce result
-        if: ${{ always() && steps.r11_probe.outcome != 'success' }}
+        if: ${{ always() && steps.scientific.outcome != 'success' }}
         run: exit 1
 
   smoke:
