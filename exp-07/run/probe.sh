@@ -3,7 +3,7 @@
 set -euo pipefail
 
 target="${1:-}"
-case "$target" in lit|meta|r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19|r21|r22|r23) ;; *) echo "bad target" >&2; exit 2;; esac
+case "$target" in lit|meta|r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19|r21|r22|r23|r24) ;; *) echo "bad target" >&2; exit 2;; esac
 mkdir -p out/plain
 
 if [ "$target" = lit ]; then
@@ -66,7 +66,7 @@ print('hits='+str(d['unique_hits']))
 print('elapsed_seconds='+str(d['elapsed_seconds']))
 PY
 elif [ "$target" = r21 ]; then
-  python3 -m pip install --disable-pip-version-check -q sympy==1.14.0
+  python3 -m pip install --disable-pip-check-version -q sympy==1.14.0 2>/dev/null || python3 -m pip install --disable-pip-version-check -q sympy==1.14.0
   python3 exp-07/src/r21.py >out/plain/stdout.txt 2>out/plain/stderr.txt
   cat out/plain/stdout.txt | tee out/summary.txt
 else
@@ -113,6 +113,10 @@ else
       sha256sum out/plain/bplus.txt out/plain/b3.txt out/plain/b4.txt out/plain/b5.txt > out/plain/sources.sha256
       set +e
       "/tmp/${target}" out/plain/bplus.txt out/plain/b3.txt out/plain/b4.txt out/plain/b5.txt out/plain/result.txt >out/plain/stdout.txt 2>out/plain/stderr.txt
+      RC=$?
+      ;;
+    r24)
+      /tmp/r24 12000000000000000001 12000100000000000000 out/plain/result.txt >out/plain/stdout.txt 2>out/plain/stderr.txt
       RC=$?
       ;;
   esac
