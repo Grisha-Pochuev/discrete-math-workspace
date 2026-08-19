@@ -30,6 +30,7 @@ on:
       - 'exp-07/src/r19.cpp'
       - 'exp-07/src/r21.py'
       - 'exp-07/src/r22.cpp'
+      - 'exp-07/src/r23.cpp'
       - 'exp-07/run/probe.sh'
       - 'exp-07/run/runmeta.py'
       - 'exp-07/run/r8.cfg'
@@ -74,7 +75,7 @@ jobs:
         run: |
           set -euo pipefail
           target=''
-          for t in lit r22 r21 meta r19 r18 r17 r16 r15 r14 r13 r11 r10 r9 r8 r7; do
+          for t in lit r23 r22 r21 meta r19 r18 r17 r16 r15 r14 r13 r11 r10 r9 r8 r7; do
             if [[ "$MSG" == *"$t"* ]]; then target="$t"; break; fi
           done
           test -n "$target"
@@ -121,7 +122,7 @@ jobs:
           import json,os,sys,urllib.request
           state,desc=sys.argv[1:3]
           url=f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/statuses/{os.environ['GITHUB_SHA']}"
-          context=f"e07-{os.environ['TARGET']}-{os.environ['GITHUB_RUN_ID']}"
+          context=f"e07-{os.environ['TARGET']}-${{ github.run_id }}"
           body=json.dumps({'state':state,'context':context,'description':desc[:140]}).encode()
           req=urllib.request.Request(url,data=body,method='POST',headers={
               'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],
