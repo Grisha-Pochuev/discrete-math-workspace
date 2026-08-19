@@ -242,7 +242,7 @@ jobs:
           retention-days: 7
 
   smoke_r25:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.engine == 'r25' }}
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.engine == 'r25') || (github.event_name == 'push' && github.event.head_commit.message == '[r25-full-20260819-1902]') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -257,7 +257,7 @@ jobs:
         run: bash exp-07/run/smoke_r25.sh
 
   compute_r25:
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.engine == 'r25' }}
+    if: ${{ (github.event_name == 'workflow_dispatch' && inputs.engine == 'r25') || (github.event_name == 'push' && github.event.head_commit.message == '[r25-full-20260819-1902]') }}
     needs: smoke_r25
     runs-on: ubuntu-24.04
     timeout-minutes: 360
@@ -278,10 +278,10 @@ jobs:
         run: >-
           bash exp-07/run/r25_job.sh
           '${{ matrix.id }}'
-          '${{ inputs.lo }}'
-          '${{ inputs.hi }}'
-          '${{ inputs.chunk }}'
-          '${{ inputs.seconds }}'
+          '${{ github.event_name == 'workflow_dispatch' && inputs.lo || '12000000000000000001' }}'
+          '${{ github.event_name == 'workflow_dispatch' && inputs.hi || '18446744073709551615' }}'
+          '${{ github.event_name == 'workflow_dispatch' && inputs.chunk || '100000000000000' }}'
+          '${{ github.event_name == 'workflow_dispatch' && inputs.seconds || '19800' }}'
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -297,7 +297,7 @@ jobs:
 
   collect_r25:
     needs: [smoke_r25, compute_r25]
-    if: ${{ github.event_name == 'workflow_dispatch' && inputs.engine == 'r25' && always() }}
+    if: ${{ (((github.event_name == 'workflow_dispatch' && inputs.engine == 'r25') || (github.event_name == 'push' && github.event.head_commit.message == '[r25-full-20260819-1902]'))) && always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
