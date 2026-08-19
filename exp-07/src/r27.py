@@ -18,28 +18,21 @@ def Q(X,A,H,D):
 def rect(X,A,H,D):
     return sp.expand(X**3 + (X+A+H-D)**3 - (X+H)**3 - (X+A)**3)
 
-# One 2x2 rectangle is equivalent to Q=0.
 assert sp.expand(rect(x,a,h,d) + Q(x,a,h,d)) == 0
-
-# Q is quadratic in the absolute lower root x.
 P = sp.Poly(Q(x,a,h,d), x)
 assert P.degree() == 2
 assert P.LC() == 3*d
-
-# Exact discriminant factorization.
 Delta = sp.factor(sp.discriminant(P))
 Delta_expected = sp.factor(3*(12*a*h*(a-d)*(h-d) - d**4))
 assert sp.expand(Delta - Delta_expected) == 0
 
-# For integer roots, cube equality modulo 3 gives d == 0 mod 3 because
-# n^3 == n (mod 3) and d=(x+h)+(x+a)-x-(x+a+h-d).
+# For integer roots, n^3 == n (mod 6).  The exact identity below identifies
+# the root-sum deficit, so a cube rectangle forces d == 0 (mod 6).
 y=x+h
 z=x+a
 w=x+a+h-d
 assert sp.expand(y+z-x-w-d) == 0
 
-# Parameterize all nine roots by first-row gaps h,j, first-column gaps a,b,
-# and the four positive mixed deficits d,e,f,g.
 r00=x
 r01=x+h
 r02=x+h+j
@@ -64,8 +57,6 @@ rects=[
 for lhs,q in zip(rects,[Q00,Q01,Q10,Q11]):
     assert sp.expand(lhs + q) == 0
 
-# Four vanishing adjacent mixed differences imply q_ij=C_i+T_j.
-# Verify this by exact telescoping rather than a heavy Groebner computation.
 q=[[sp.expand(R[i][jj]**3) for jj in range(3)] for i in range(3)]
 M00=sp.expand(q[0][0]+q[1][1]-q[0][1]-q[1][0])
 M01=sp.expand(q[0][1]+q[1][2]-q[0][2]-q[1][1])
@@ -87,5 +78,5 @@ assert sp.expand(res22-M00-M01-M10-M11) == 0
 
 print('r27 exact root-grid certificate: PASS')
 print('generic discriminant =', Delta_expected)
-print('necessary congruence: each adjacent deficit d,e,f,g is 0 mod 3')
+print('necessary congruence for integer roots: each adjacent deficit d,e,f,g is 0 mod 6')
 print('four Q equations are equivalent to a 3x3 Cartesian additive cube grid')
