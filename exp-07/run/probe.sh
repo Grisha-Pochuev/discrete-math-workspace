@@ -66,7 +66,7 @@ print('hits='+str(d['unique_hits']))
 print('elapsed_seconds='+str(d['elapsed_seconds']))
 PY
 elif [ "$target" = r21 ]; then
-  python3 -m pip install --disable-pip-check-version -q sympy==1.14.0 2>/dev/null || python3 -m pip install --disable-pip-version-check -q sympy==1.14.0
+  python3 -m pip install --disable-pip-version-check -q sympy==1.14.0
   python3 exp-07/src/r21.py >out/plain/stdout.txt 2>out/plain/stderr.txt
   cat out/plain/stdout.txt | tee out/summary.txt
 else
