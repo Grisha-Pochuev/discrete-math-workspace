@@ -13,7 +13,6 @@ assert sp.expand(gap - (U-u)*(V-v)) == 0
 # K(u,v)K(U,V) > K(u,V)K(U,v).
 # The exact cube-root kernel is alpha=5/3 and c=2/9.
 
-# Verify the mixed derivative used in the integral representation.
 t=sp.symbols('t', positive=True)
 F=t**sp.Rational(1,3)
 K=sp.factor(-sp.diff(F,t,2))
@@ -23,4 +22,4 @@ print('r28 exact kernel certificate: PASS')
 print('cross-product gap =', gap)
 print('-F\'\'(t) =', K)
 print('therefore the 2x2 deficit matrix satisfies d*g > e*f')
-print('with d,e,f,g divisible by 3: d*g-e*f >= 9')
+print('for integer cube rectangles d,e,f,g are divisible by 6: d*g-e*f >= 36')
