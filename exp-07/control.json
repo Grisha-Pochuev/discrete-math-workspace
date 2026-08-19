@@ -1,42 +1,68 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "track": "exp-07",
   "canonical_root": "exp-07/",
-  "status": "centralized_ready_manual",
+  "status": "r25_ready_manual_not_launched",
   "enabled": true,
   "full_run_auto_launch_allowed": false,
   "automation_mode": "github_actions_manual_dispatch",
   "launcher": ".github/workflows/exp-07.yml",
   "large_matrix_concurrency_guard": true,
   "smoke_required": true,
-  "active_spec_path": "exp-07/specs/run-001.md",
-  "latest_report_path": "exp-07/reports/compute-summary-2026-08-17.md",
+  "active_spec_path": "exp-07/specs/run-002.md",
+  "latest_report_path": "exp-07/reports/r20.md",
+  "verified_contiguous_frontier": {
+    "lo": 1,
+    "hi": 12000000000000000000,
+    "accepted_solutions": 0,
+    "basis": "d1 plus two successful exact d2 matrices"
+  },
   "compute": {
+    "default_engine": "legacy",
+    "prepared_engine": "r25",
     "target_jobs": 20,
     "workers_per_job": 1,
-    "target_classes": 6,
-    "class_job_counts": [4, 4, 3, 3, 3, 3],
-    "default_parameter_limit": 2350,
     "default_worker_seconds": 19800,
     "job_timeout_minutes": 360,
-    "observed_nproc_per_runner": 1
+    "r25": {
+      "prepared_lo": 12000000000000000001,
+      "prepared_hi": 18446744073709551615,
+      "chunk_width": 100000000000000,
+      "chunks": 64468,
+      "part_chunk_counts": [3224, 3224, 3224, 3224, 3224, 3224, 3224, 3224, 3223, 3223, 3223, 3223, 3223, 3223, 3223, 3223, 3223, 3223, 3223, 3223],
+      "manual_launch_required": true,
+      "smoke": "exp-07/run/smoke_r25.sh",
+      "worker": "exp-07/run/r25_job.sh",
+      "collector": "exp-07/run/collect_r25.py"
+    }
   },
-  "latest_completed_run": {
-    "name": "g1",
-    "run_id": 32038711869,
-    "source_commit": "a725b02318289845dbda2cef5742104142f6f4ca",
+  "latest_completed_exact_run": {
+    "name": "d2-extension",
+    "run_id": 32189628988,
+    "source_commit": "3f515626d6a2c7914428a1283611e36e60622c1a",
     "conclusion": "success",
-    "pair_tests": 1365872658020,
-    "exact_ratio_hits": 2,
-    "near_hits_le_1e-14": 0,
-    "exact_cancellations_reported": 0,
+    "lo": 4750000000000000001,
+    "hi": 12000000000000000000,
+    "jobs": 20,
     "accepted_solutions": 0,
-    "all_workers_timed_out_cleanly": true
+    "all_jobs_success": true
+  },
+  "latest_r25_probe": {
+    "source_commit": "0201f5796b038d2e3765c151a8873aa4aa0c02f2",
+    "status_context": "e07-r25-32210019991",
+    "conclusion": "success",
+    "lo": 12000000000000000001,
+    "hi": 12000100000000000000,
+    "records": 25708123,
+    "groups": 7,
+    "triples": 7,
+    "orientation_survivors": 1,
+    "accepted_solutions": 0
   },
   "security": {
     "public_key": "exp-07/k0.pub",
     "private_key_committed": false,
     "detail_artifacts_encrypted": true
   },
-  "known_audit_issue": "Current src/w0.cpp persists a record only after the floating near-gap filter, even though exact multiplicative ratio hits are counted earlier. Persist every exact ratio hit and rationally replay it in a separate scientific-code revision before using a future null run as a strong certificate."
+  "legacy_known_audit_issue": "src/w0.cpp persists a record only after the floating near-gap filter, even though exact multiplicative ratio hits are counted earlier. Do not treat future legacy null runs as strong certificates until this is fixed."
 }
