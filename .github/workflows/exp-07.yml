@@ -56,6 +56,7 @@ on:
       - 'exp-07/src/r23.cpp'
       - 'exp-07/src/r24.cpp'
       - 'exp-07/src/r25.cpp'
+      - 'exp-07/src/r26.cpp'
       - 'exp-07/run/probe.sh'
       - 'exp-07/run/r25_job.sh'
       - 'exp-07/run/collect_r25.py'
@@ -79,8 +80,6 @@ env:
   PYTHONUNBUFFERED: '1'
   MALLOC_ARENA_MAX: '2'
 
-# Push probes are isolated by commit.  All manual matrices share one queue so
-# two large manual runs cannot overlap even if their source commits differ.
 concurrency:
   group: exp-07-${{ github.event_name }}-${{ github.event_name == 'workflow_dispatch' && 'manual' || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'push' }}
@@ -105,7 +104,7 @@ jobs:
         run: |
           set -euo pipefail
           target=''
-          for t in lit r25 r24 r23 r22 r21 meta r19 r18 r17 r16 r15 r14 r13 r11 r10 r9 r8 r7; do
+          for t in lit r25 r26 r24 r23 r22 r21 meta r19 r18 r17 r16 r15 r14 r13 r11 r10 r9 r8 r7; do
             if [[ "$MSG" == *"$t"* ]]; then target="$t"; break; fi
           done
           test -n "$target"
