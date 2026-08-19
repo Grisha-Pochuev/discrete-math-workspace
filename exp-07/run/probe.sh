@@ -3,7 +3,7 @@
 set -euo pipefail
 
 target="${1:-}"
-case "$target" in lit|meta|r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19|r21) ;; *) echo "bad target" >&2; exit 2;; esac
+case "$target" in lit|meta|r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19|r21|r22) ;; *) echo "bad target" >&2; exit 2;; esac
 mkdir -p out/plain
 
 if [ "$target" = lit ]; then
@@ -36,7 +36,6 @@ from pathlib import Path
 p=Path('out/plain/paper.bin').read_bytes()
 t=Path('out/plain/paper.txt').read_text(errors='replace')
 print('PDF_OK bytes=%d text_chars=%d sha256=%s' % (len(p),len(t),hashlib.sha256(p).hexdigest()))
-# Emit only a compact research-oriented extract around the construction.
 lines=t.splitlines()
 keys=('pairwise sums','six integers','eight integers','diophantine chain','we obtain','are cubes','is a cube')
 idx=[]
@@ -47,7 +46,6 @@ keep=[]
 for i in idx:
     for j in range(max(0,i-3),min(len(lines),i+8)):
         if j not in keep: keep.append(j)
-# cap the public diagnostic; full text remains transient and is deleted below
 for j in keep[:140]:
     s=lines[j].rstrip()
     if s: print(f'L{j+1}: {s[:300]}')
@@ -98,7 +96,7 @@ else
       /tmp/r14 out/plain/b4.txt out/plain/b5.txt out/plain/result.txt >out/plain/stdout.txt 2>out/plain/stderr.txt
       RC=$?
       ;;
-    r15|r16|r17)
+    r15|r16|r17|r22)
       set -e
       curl -fsSL --retry 3 https://oeis.org/A265625/b265625.txt -o out/plain/b3plus.txt
       sha256sum out/plain/b3plus.txt > out/plain/sources.sha256
