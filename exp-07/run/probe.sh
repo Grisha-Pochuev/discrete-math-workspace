@@ -3,7 +3,7 @@
 set -euo pipefail
 
 target="${1:-}"
-case "$target" in lit|meta|r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19|r21|r22|r23|r24|r25|r26|r27) ;; *) echo "bad target" >&2; exit 2;; esac
+case "$target" in lit|meta|r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19|r21|r22|r23|r24|r25|r26|r27|r28) ;; *) echo "bad target" >&2; exit 2;; esac
 mkdir -p out/plain
 
 if [ "$target" = lit ]; then
@@ -69,9 +69,9 @@ elif [ "$target" = r21 ]; then
   python3 -m pip install --disable-pip-version-check -q sympy==1.14.0
   python3 exp-07/src/r21.py >out/plain/stdout.txt 2>out/plain/stderr.txt
   cat out/plain/stdout.txt | tee out/summary.txt
-elif [ "$target" = r27 ]; then
+elif [ "$target" = r27 ] || [ "$target" = r28 ]; then
   python3 -m pip install --disable-pip-version-check -q sympy==1.14.0
-  python3 exp-07/src/r27.py >out/plain/stdout.txt 2>out/plain/stderr.txt
+  python3 "exp-07/src/${target}.py" >out/plain/stdout.txt 2>out/plain/stderr.txt
   cat out/plain/stdout.txt | tee out/summary.txt
 else
   if ! dpkg -s libgmp-dev >/dev/null 2>&1; then
