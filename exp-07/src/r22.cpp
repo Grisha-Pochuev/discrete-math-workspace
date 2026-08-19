@@ -155,6 +155,13 @@ int main(int argc,char**argv){
             if(edge[j][k].rp.size()<3){++fail_bc;continue;}
             if(edge[i][k].rp.size()<3){++fail_ac;continue;}
             ++all3;
+            out<<"SURV D="<<D
+               <<" lower="<<rp[i].first<<','<<rp[j].first<<','<<rp[k].first
+               <<" upper="<<rp[i].second<<','<<rp[j].second<<','<<rp[k].second
+               <<" mult="<<edge[i][j].rp.size()<<','<<edge[j][k].rp.size()<<','<<edge[i][k].rp.size()
+               <<" K="<<s128(c3(rp[j].first)-c3(rp[i].first))
+               <<','<<s128(c3(rp[k].first)-c3(rp[j].first))
+               <<','<<s128(c3(rp[k].first)-c3(rp[i].first))<<"\n";
             if(close22({D,rp},rp[i],rp[j],rp[k],edge[i][j].rp,out,closure_tests)){
                 ++hits;
                 out.flush();
