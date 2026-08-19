@@ -3,7 +3,7 @@
 set -euo pipefail
 
 target="${1:-}"
-case "$target" in lit|meta|r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19|r21|r22|r23|r24) ;; *) echo "bad target" >&2; exit 2;; esac
+case "$target" in lit|meta|r7|r8|r9|r10|r11|r13|r14|r15|r16|r17|r18|r19|r21|r22|r23|r24|r25) ;; *) echo "bad target" >&2; exit 2;; esac
 mkdir -p out/plain
 
 if [ "$target" = lit ]; then
@@ -117,6 +117,10 @@ else
       ;;
     r24)
       /tmp/r24 12000000000000000001 12000100000000000000 out/plain/result.txt >out/plain/stdout.txt 2>out/plain/stderr.txt
+      RC=$?
+      ;;
+    r25)
+      /tmp/r25 12000000000000000001 12000100000000000000 100000000000000 0 1 300 out/plain/result.txt out/plain/progress.txt >out/plain/stdout.txt 2>out/plain/stderr.txt
       RC=$?
       ;;
   esac
