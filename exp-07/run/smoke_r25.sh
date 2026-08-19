@@ -5,7 +5,7 @@ ROOT="${GITHUB_WORKSPACE:-$(pwd)}"
 cd "$ROOT"
 
 echo "nproc=$(nproc)"
-g++ -O3 -march=native -std=c++20 exp-07/src/r25.cpp -lgmpxx -lgmp -o /tmp/e07-r25
+g++ -O3 -march=native -std=c++20 exp-07/src/r25.cpp -o /tmp/e07-r25
 python3 -m py_compile exp-07/run/collect_r25.py
 
 rm -rf out
