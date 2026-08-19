@@ -19,7 +19,7 @@ cd "$ROOT"
 rm -rf out
 mkdir -p out/raw
 
-g++ -O3 -march=native -std=c++20 exp-07/src/r25.cpp -lgmpxx -lgmp -o /tmp/e07-r25
+g++ -O3 -march=native -std=c++20 exp-07/src/r25.cpp -o /tmp/e07-r25
 
 {
   date -u +%FT%TZ
@@ -41,9 +41,9 @@ set -e
 printf '%s\n' "$code" > out/raw/exit_code.txt
 
 python3 - "$id" "$parts" "$lo" "$hi" "$chunk" "$seconds" "$code" <<'PY'
-import json,re,sys
+import json,re,sys,os
 id,parts,lo,hi,chunk,seconds,code=map(int,sys.argv[1:])
-text=open('out/raw/result.txt',errors='replace').read() if __import__('os').path.exists('out/raw/result.txt') else ''
+text=open('out/raw/result.txt',errors='replace').read() if os.path.exists('out/raw/result.txt') else ''
 matches=re.findall(r'^STAT (.*)$',text,re.M)
 if not matches:
     raise SystemExit('missing STAT')
@@ -76,7 +76,6 @@ open('out/raw/parsed.json','w').write(json.dumps({
     'expected_chunks':expected,'stat':d,'scientific_exit':code
 },sort_keys=True,indent=2)+'\n')
 PY
-parse_code=$?
 
 # Package details even for a scientific hit/partial so the result is inspectable.
 tar -C out/raw -czf out/d.tgz .
