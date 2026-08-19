@@ -3,15 +3,38 @@ name: exp-07
 on:
   workflow_dispatch:
     inputs:
+      engine:
+        description: Execution mode
+        required: true
+        default: legacy
+        type: choice
+        options:
+          - legacy
+          - r25
       limit:
-        description: Parameter ceiling
+        description: Legacy parameter ceiling
         required: true
         default: '2350'
         type: string
       seconds:
-        description: Search seconds per worker (max 19800)
+        description: Per-worker soft seconds (max 19800)
         required: true
         default: '19800'
+        type: string
+      lo:
+        description: r25 lower bound
+        required: true
+        default: '12000000000000000001'
+        type: string
+      hi:
+        description: r25 upper bound
+        required: true
+        default: '18446744073709551615'
+        type: string
+      chunk:
+        description: r25 chunk width
+        required: true
+        default: '100000000000000'
         type: string
   push:
     paths:
@@ -34,6 +57,9 @@ on:
       - 'exp-07/src/r24.cpp'
       - 'exp-07/src/r25.cpp'
       - 'exp-07/run/probe.sh'
+      - 'exp-07/run/r25_job.sh'
+      - 'exp-07/run/collect_r25.py'
+      - 'exp-07/run/smoke_r25.sh'
       - 'exp-07/run/runmeta.py'
       - 'exp-07/run/r8.cfg'
       - 'exp-07/run/r9.cfg'
@@ -53,8 +79,10 @@ env:
   PYTHONUNBUFFERED: '1'
   MALLOC_ARENA_MAX: '2'
 
+# Push probes are isolated by commit.  All manual matrices share one queue so
+# two large manual runs cannot overlap even if their source commits differ.
 concurrency:
-  group: exp-07-${{ github.event_name }}-${{ github.sha }}
+  group: exp-07-${{ github.event_name }}-${{ github.event_name == 'workflow_dispatch' && 'manual' || github.sha }}
   cancel-in-progress: ${{ github.event_name == 'push' }}
 
 jobs:
@@ -137,8 +165,8 @@ jobs:
         if: ${{ always() && steps.scientific.outcome != 'success' }}
         run: exit 1
 
-  smoke:
-    if: github.event_name == 'workflow_dispatch'
+  smoke_legacy:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.engine == 'legacy' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
@@ -152,9 +180,9 @@ jobs:
         shell: bash
         run: bash exp-07/run/smoke.sh
 
-  compute:
-    if: github.event_name == 'workflow_dispatch'
-    needs: smoke
+  compute_legacy:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.engine == 'legacy' }}
+    needs: smoke_legacy
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     strategy:
@@ -185,9 +213,9 @@ jobs:
           retention-days: 7
           compression-level: 0
 
-  collect:
-    needs: [smoke, compute]
-    if: ${{ github.event_name == 'workflow_dispatch' && always() }}
+  collect_legacy:
+    needs: [smoke_legacy, compute_legacy]
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.engine == 'legacy' && always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -206,6 +234,88 @@ jobs:
       - name: collect
         shell: bash
         run: python3 exp-07/run/collect.py --root bundles --output out/aggregate.json --expected 20
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e07-${{ github.run_id }}-aggregate
+          path: out/aggregate.json
+          retention-days: 7
+
+  smoke_r25:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.engine == 'r25' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+      - name: smoke
+        shell: bash
+        run: bash exp-07/run/smoke_r25.sh
+
+  compute_r25:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.engine == 'r25' }}
+    needs: smoke_r25
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+      - name: run
+        shell: bash
+        run: >-
+          bash exp-07/run/r25_job.sh
+          '${{ matrix.id }}'
+          '${{ inputs.lo }}'
+          '${{ inputs.hi }}'
+          '${{ inputs.chunk }}'
+          '${{ inputs.seconds }}'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e07-${{ github.run_id }}-${{ matrix.id }}
+          path: |
+            out/package.json
+            out/checksums.sha256
+            out/d.enc
+            out/k.enc
+          if-no-files-found: warn
+          retention-days: 7
+          compression-level: 0
+
+  collect_r25:
+    needs: [smoke_r25, compute_r25]
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.engine == 'r25' && always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            exp-07
+          sparse-checkout-cone-mode: true
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: e07-${{ github.run_id }}-*
+          path: bundles
+          merge-multiple: false
+      - name: collect
+        shell: bash
+        run: python3 exp-07/run/collect_r25.py --root bundles --output out/aggregate.json --expected 20
       - uses: actions/upload-artifact@v4
         if: always()
         with:
