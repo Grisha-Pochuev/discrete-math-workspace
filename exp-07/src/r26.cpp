@@ -7,7 +7,7 @@
 #include <sstream>
 #include <stdexcept>
 
-using s128 = __int128_t;
+using i128 = __int128_t;
 
 static std::vector<u64> read26(const std::string& path){
     std::ifstream f(path);if(!f)throw std::runtime_error("open input");
@@ -25,7 +25,7 @@ static u128 c26(u64 x){return c3(x);}
 static bool verify26(const std::array<u64,3>& base,
                      const std::array<u64,3>& layer1,
                      const std::array<u64,3>& layer2,
-                     std::ostream&out,u64 D,s128 T){
+                     std::ostream&out,u64 D,i128 T){
     std::array<u64,9>z={
         base[0],layer2[2],layer1[1],
         layer2[1],layer1[0],base[2],
@@ -63,11 +63,11 @@ int main(int argc,char**argv){
             auto rr=reps_from_known(a,b);
             for(auto [p,q]:rr){
                 if(p==a)continue;
-                const s128 T=(s128)c26(p)-(s128)c26(a);
-                if(T==(s128)D)continue;
+                const i128 T=(i128)c26(p)-(i128)c26(a);
+                if(T==(i128)D)continue;
                 ++reps_tested;if(T>0)++pos;else ++neg;
-                if((s128)c26(q)-(s128)c26(b)!=T)throw std::runtime_error("r26 K replay");
-                const s128 rcube=(s128)c26(c)+T;
+                if((i128)c26(q)-(i128)c26(b)!=T)throw std::runtime_error("r26 K replay");
+                const i128 rcube=(i128)c26(c)+T;
                 if(rcube<=0)continue;
                 const u64 r=fcbrt((u128)rcube);if(c26(r)!=(u128)rcube)continue;
                 if(T>0){
@@ -75,7 +75,7 @@ int main(int argc,char**argv){
                     std::array<u64,3>B={a,b,c},U,V;
                     std::array<u64,3>Dlay={rp[i].second,rp[j].second,rp[k].second};
                     std::array<u64,3>Tlay={p,q,r};
-                    if(T<(s128)D){U=Tlay;V=Dlay;}else{U=Dlay;V=Tlay;}
+                    if(T<(i128)D){U=Tlay;V=Dlay;}else{U=Dlay;V=Tlay;}
                     if(verify26(B,U,V,out,D,T)){++hits;out.flush();}
                 }else{
                     ++valid_neg;
