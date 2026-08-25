@@ -1,0 +1,147 @@
+name: Williams 1029 lattice attack
+
+on:
+  push:
+    branches:
+      - agent/williams-lattice-2026-08-25
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lattice:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        include:
+          - { kind: embed, method: lll_fast, scale: 128,  embed: 8,  weight: 515, order: natural,  seed: 101 }
+          - { kind: embed, method: lll_wrap, scale: 512,  embed: 8,  weight: 515, order: shuffled, seed: 102 }
+          - { kind: embed, method: lll_fast, scale: 1024, embed: 8,  weight: 499, order: shuffled, seed: 103 }
+          - { kind: embed, method: lll_fast, scale: 4096, embed: 8,  weight: 531, order: modfirst, seed: 104 }
+          - { kind: embed, method: lll_wrap, scale: 1024, embed: 16, weight: -1,  order: natural,  seed: 105 }
+          - { kind: embed, method: bkz10,    scale: 2048, embed: 8,  weight: 515, order: shuffled, seed: 106 }
+          - { kind: cvp,   method: cvp,      scale: 512,  embed: 8,  weight: 515, order: shuffled, seed: 107 }
+          - { kind: cvp,   method: cvp,      scale: 2048, embed: 8,  weight: -1,  order: modfirst, seed: 108 }
+    runs-on: ubuntu-latest
+    timeout-minutes: 54
+    name: ${{ matrix.kind }}-${{ matrix.method }}-C${{ matrix.scale }}-T${{ matrix.embed }}-w${{ matrix.weight }}-${{ matrix.order }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/workflows/williams-lattice.yml
+            williams-number-search
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install and reconstruct exact model
+        working-directory: williams-number-search
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fplll-tools
+          gzip -dc prepare_data.py.gz > prepare_data.py
+          python -m pip install --disable-pip-version-check sympy==1.14.0
+          python -u prepare_data.py 2>&1 | tee prepare.log
+          fplll --help 2>&1 | head -80 > fplll-help.txt || true
+
+      - name: Build lattice
+        working-directory: williams-number-search
+        shell: bash
+        run: |
+          weight_arg=()
+          if [[ '${{ matrix.weight }}' != '-1' ]]; then
+            weight_arg=(--weight '${{ matrix.weight }}')
+          fi
+          python -u lattice_attack.py build \
+            --kind '${{ matrix.kind }}' \
+            --scale '${{ matrix.scale }}' \
+            --embed '${{ matrix.embed }}' \
+            --order '${{ matrix.order }}' \
+            --seed '${{ matrix.seed }}' \
+            "${weight_arg[@]}" \
+            --output lattice.txt \
+            --cvp-output cvp_input.txt \
+            --meta lattice_meta.json \
+            2>&1 | tee build.log
+          ls -lh lattice.txt cvp_input.txt lattice_meta.json 2>/dev/null || true
+
+      - name: Reduce/search lattice
+        id: reduce
+        working-directory: williams-number-search
+        shell: bash
+        run: |
+          set +e
+          code=99
+          case '${{ matrix.method }}' in
+            lll_fast)
+              timeout --signal=TERM 2850 \
+                fplll -a lll -m heuristic -f longdouble -d 0.999 -of b lattice.txt \
+                > reduced.txt 2> fplll.log
+              code=$?
+              ;;
+            lll_wrap)
+              timeout --signal=TERM 2850 \
+                fplll -a lll -d 0.999 -of b lattice.txt \
+                > reduced.txt 2> fplll.log
+              code=$?
+              ;;
+            bkz10)
+              timeout --signal=TERM 2850 \
+                fplll -a bkz -b 10 -bkzmaxloops 3 -bkzmaxtime 2700 -bkzautoabort -of b lattice.txt \
+                > reduced.txt 2> fplll.log
+              code=$?
+              ;;
+            cvp)
+              timeout --signal=TERM 2850 \
+                fplll -a cvp -of c cvp_input.txt \
+                > closest.txt 2> fplll.log
+              code=$?
+              ;;
+          esac
+          echo "fplll_exit_code=$code" | tee result_status.txt
+          tail -100 fplll.log 2>/dev/null || true
+          if [[ '${{ matrix.kind }}' == 'embed' && -s reduced.txt ]]; then
+            python -u lattice_attack.py scan --kind embed --input reduced.txt --meta lattice_meta.json \
+              --certificate lattice_certificate.json 2>&1 | tee scan.log
+          elif [[ '${{ matrix.kind }}' == 'cvp' && -s closest.txt ]]; then
+            python -u lattice_attack.py scan --kind cvp --input closest.txt --meta lattice_meta.json \
+              --certificate lattice_certificate.json 2>&1 | tee scan.log
+          else
+            echo NO_FPLLL_OUTPUT | tee scan.log
+          fi
+          ls -lh reduced.txt closest.txt lattice_certificate.json* 2>/dev/null || true
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Compress large output
+        if: always()
+        working-directory: williams-number-search
+        run: |
+          gzip -9 reduced.txt 2>/dev/null || true
+          gzip -9 lattice.txt 2>/dev/null || true
+          gzip -9 cvp_input.txt 2>/dev/null || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lattice-${{ matrix.kind }}-${{ matrix.method }}-C${{ matrix.scale }}-T${{ matrix.embed }}-w${{ matrix.weight }}-${{ matrix.order }}
+          path: |
+            williams-number-search/lattice_certificate.json*
+            williams-number-search/lattice_meta.json
+            williams-number-search/build.log
+            williams-number-search/fplll.log
+            williams-number-search/scan.log
+            williams-number-search/result_status.txt
+            williams-number-search/closest.txt
+            williams-number-search/reduced.txt.gz
+            williams-number-search/lattice.txt.gz
+          if-no-files-found: warn
+          compression-level: 0
+          retention-days: 7
