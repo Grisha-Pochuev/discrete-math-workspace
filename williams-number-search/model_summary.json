@@ -1,0 +1,11 @@
+{
+  "prime_count": 1029,
+  "prime_list_sha256": "fd7f67051b817842f5795fae812b852efa8007f5478a286365a7236a6a790cd8",
+  "global_rows": 120,
+  "split_rows": 313,
+  "xor_rank": 119,
+  "free_variables": 910,
+  "log2_group_order": 1003.7432018644148,
+  "expected_random_solution_exponent": 25.2567981355852,
+  "elapsed_seconds": 0.24886655807495117
+}
