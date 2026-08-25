@@ -1,0 +1,94 @@
+name: Williams 1029 exact CP-SAT search
+
+on:
+  push:
+    branches:
+      - agent/williams-cp-sat-2026-08-25
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  search:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        include:
+          - { mode: global,      weight: 499, seed: 11, flavour: default }
+          - { mode: global,      weight: 515, seed: 16, flavour: jump }
+          - { mode: global,      weight: 531, seed: 0,  flavour: no_presolve }
+          - { mode: split,       weight: 507, seed: 17, flavour: default }
+          - { mode: split,       weight: 523, seed: 8,  flavour: jump }
+          - { mode: hybrid,      weight: 515, seed: 16, flavour: default }
+          - { mode: hybrid,      weight: -1,  seed: 1,  flavour: jump }
+          - { mode: incremental, weight: 515, seed: 16, flavour: default }
+    runs-on: ubuntu-latest
+    timeout-minutes: 48
+    name: ${{ matrix.mode }} w${{ matrix.weight }} s${{ matrix.seed }} ${{ matrix.flavour }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/workflows/williams-cpsat.yml
+            williams-number-search
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore sources and install exact solver
+        working-directory: williams-number-search
+        run: |
+          gzip -dc prepare_data.py.gz > prepare_data.py
+          gzip -dc cpsat_search.py.gz > cpsat_search.py
+          python -m pip install --disable-pip-version-check sympy==1.14.0 ortools==9.15.6755
+
+      - name: Rebuild and verify the exact model
+        working-directory: williams-number-search
+        run: python -u prepare_data.py 2>&1 | tee prepare.log
+
+      - name: Run exact search
+        id: solve
+        working-directory: williams-number-search
+        shell: bash
+        run: |
+          set +e
+          python -u cpsat_search.py \
+            --mode '${{ matrix.mode }}' \
+            --weight '${{ matrix.weight }}' \
+            --seed '${{ matrix.seed }}' \
+            --flavour '${{ matrix.flavour }}' \
+            --workers 4 \
+            --seconds 2500 \
+            2>&1 | tee run.log
+          code=${PIPESTATUS[0]}
+          echo "solver_exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Summarize
+        if: always()
+        working-directory: williams-number-search
+        run: |
+          echo "solver exit: ${{ steps.solve.outputs.solver_exit_code }}"
+          find out -maxdepth 1 -type f -print 2>/dev/null || true
+          grep -E '^(STATUS|FOUND_WEIGHT|INCREMENTAL_STAGE)' run.log | tail -30 || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: williams-${{ matrix.mode }}-w${{ matrix.weight }}-s${{ matrix.seed }}-${{ matrix.flavour }}
+          path: |
+            williams-number-search/out
+            williams-number-search/prepare.log
+            williams-number-search/run.log
+          if-no-files-found: warn
+          compression-level: 9
+          retention-days: 7
