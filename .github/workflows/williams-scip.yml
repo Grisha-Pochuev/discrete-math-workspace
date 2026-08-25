@@ -1,0 +1,93 @@
+name: Williams 1029 SCIP portfolio
+
+on:
+  push:
+    branches:
+      - agent/williams-scip-2026-08-25
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  solve:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        include:
+          - { kind: global, mode: default,     weight: 515, seed: 201 }
+          - { kind: global, mode: feas,        weight: 499, seed: 202 }
+          - { kind: global, mode: aggressive,  weight: 531, seed: 203 }
+          - { kind: global, mode: randomobj,   weight: 515, seed: 204 }
+          - { kind: global, mode: nopresolve,  weight: 507, seed: 205 }
+          - { kind: global, mode: nolp,        weight: 523, seed: 206 }
+          - { kind: split,  mode: aggressive,  weight: 515, seed: 207 }
+          - { kind: split,  mode: branch,      weight: -1,  seed: 208 }
+    runs-on: ubuntu-latest
+    timeout-minutes: 52
+    name: ${{ matrix.kind }}-${{ matrix.mode }}-w${{ matrix.weight }}-s${{ matrix.seed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/workflows/williams-scip.yml
+            williams-number-search
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore model and install SCIP
+        working-directory: williams-number-search
+        run: |
+          gzip -dc prepare_data.py.gz > prepare_data.py
+          gzip -dc scip_search.py.gz > scip_search.py
+          python -m pip install --disable-pip-version-check sympy==1.14.0 pyscipopt
+          python -u prepare_data.py 2>&1 | tee prepare.log
+          python - <<'PY'
+          import pyscipopt
+          print('PySCIPOpt', pyscipopt.__version__)
+          PY
+
+      - name: Solve and verify
+        id: solve
+        working-directory: williams-number-search
+        shell: bash
+        run: |
+          set +e
+          python -u scip_search.py \
+            --kind '${{ matrix.kind }}' \
+            --mode '${{ matrix.mode }}' \
+            --weight '${{ matrix.weight }}' \
+            --seed '${{ matrix.seed }}' \
+            --workers 4 \
+            --seconds 2850 \
+            --output scip_certificate.json \
+            2>&1 | tee scip.log
+          code=${PIPESTATUS[0]}
+          echo "solver_exit_code=$code" | tee status.txt
+          exit 0
+
+      - name: Summarize
+        if: always()
+        working-directory: williams-number-search
+        run: |
+          grep -E '^(STATUS|FOUND_VERIFIED|CANDIDATE_WEIGHT|REJECTED_CANDIDATE)' scip.log | tail -20 || true
+          ls -lh scip_certificate.json* 2>/dev/null || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: scip-${{ matrix.kind }}-${{ matrix.mode }}-w${{ matrix.weight }}-s${{ matrix.seed }}
+          path: |
+            williams-number-search/scip_certificate.json*
+            williams-number-search/scip.log
+            williams-number-search/prepare.log
+            williams-number-search/status.txt
+          if-no-files-found: warn
+          compression-level: 9
+          retention-days: 7
