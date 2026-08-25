@@ -1,0 +1,50 @@
+name: Materialize Williams exact data
+
+on:
+  push:
+    branches:
+      - agent/williams-data-2026-08-25
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Reconstruct sources and exact modular data
+        working-directory: williams-number-search
+        run: |
+          gzip -dc prepare_data.py.gz > prepare_data.py
+          gzip -dc cpsat_search.py.gz > cpsat_search.py
+          python -m pip install --disable-pip-version-check sympy==1.14.0
+          python -u prepare_data.py 2>&1 | tee materialize.log
+          printf 'Generated files:\n' > MATERIALIZED_MANIFEST.txt
+          find . -maxdepth 1 -type f -printf '%f %s bytes\n' | sort >> MATERIALIZED_MANIFEST.txt
+          cat MATERIALIZED_MANIFEST.txt
+
+      - name: Commit generated text data
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add williams-number-search/prepare_data.py williams-number-search/cpsat_search.py
+          find williams-number-search -maxdepth 1 -type f \
+            \( -name '*.json' -o -name 'SET-1029-PRIMES.txt' -o -name 'primes.txt' -o -name 'MATERIALIZED_MANIFEST.txt' -o -name 'materialize.log' \) \
+            -print0 | xargs -0 -r git add
+          if git diff --cached --quiet; then
+            echo 'No generated changes to commit.'
+          else
+            git commit -m 'Materialize exact Williams modular data [skip ci]'
+            git push origin HEAD:agent/williams-data-2026-08-25
+          fi
