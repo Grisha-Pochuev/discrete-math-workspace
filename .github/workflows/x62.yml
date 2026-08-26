@@ -1,4 +1,5 @@
 name: x62
+
 on:
   workflow_dispatch:
   push:
@@ -10,8 +11,73 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: x62-main
+  cancel-in-progress: false
+
 jobs:
+  build:
+    name: build-and-smoke-test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            x62
+          sparse-checkout-cone-mode: true
+          fetch-depth: 1
+
+      - name: install-boost
+        shell: bash
+        run: |
+          set -euo pipefail
+          export DEBIAN_FRONTEND=noninteractive
+          for attempt in 1 2 3; do
+            if sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends libboost-dev; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "::error::failed to install libboost-dev after 3 attempts"
+              exit 1
+            fi
+            sleep $((attempt * 15))
+          done
+
+      - name: build
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s x62/a.cpp
+          test -s x62/d
+          test "$(wc -l < x62/d)" -ge 1029
+          g++ -O3 -DNDEBUG -std=c++17 -fopenmp x62/a.cpp -o x62/x
+          test -x x62/x
+
+      - name: smoke-test
+        shell: bash
+        run: |
+          set +e
+          timeout 120s ./x62/x x62/d 20 1 6 6
+          rc=$?
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then
+            echo "::error::smoke test exited with code $rc"
+            exit "$rc"
+          fi
+          exit 0
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: x62-runtime
+          path: |
+            x62/x
+            x62/d
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
   r:
+    needs: build
     strategy:
       fail-fast: false
       max-parallel: 20
@@ -39,29 +105,24 @@ jobs:
           - {id: 19, lo: 698, hi: 1026}
 
     name: ${{ matrix.id }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 350
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
-          sparse-checkout: |
-            x62
-          sparse-checkout-cone-mode: true
-          fetch-depth: 1
-
-      - name: deps
-        shell: bash
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq libboost-dev
+          name: x62-runtime
+          path: x62
 
       - name: run
         shell: bash
         run: |
-          g++ -O3 -DNDEBUG -march=native -std=c++17 -fopenmp x62/a.cpp -o x62/x
+          chmod +x x62/x
           set +e
           ./x62/x x62/d 1029 4 ${{ matrix.lo }} ${{ matrix.hi }}
           rc=$?
-          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then exit "$rc"; fi
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then
+            echo "::error::x62 exited with code $rc"
+            exit "$rc"
+          fi
           exit 0
