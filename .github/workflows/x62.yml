@@ -1,0 +1,50 @@
+name: x62
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'x62/**'
+      - '.github/workflows/x62.yml'
+permissions:
+  contents: read
+jobs:
+  r:
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        include:
+          - {id: 0, lo: 6, hi: 23}
+          - {id: 1, lo: 24, hi: 41}
+          - {id: 2, lo: 42, hi: 60}
+          - {id: 3, lo: 61, hi: 80}
+          - {id: 4, lo: 81, hi: 101}
+          - {id: 5, lo: 102, hi: 123}
+          - {id: 6, lo: 124, hi: 146}
+          - {id: 7, lo: 147, hi: 170}
+          - {id: 8, lo: 171, hi: 195}
+          - {id: 9, lo: 196, hi: 222}
+          - {id: 10, lo: 223, hi: 251}
+          - {id: 11, lo: 252, hi: 282}
+          - {id: 12, lo: 283, hi: 316}
+          - {id: 13, lo: 317, hi: 354}
+          - {id: 14, lo: 355, hi: 396}
+          - {id: 15, lo: 397, hi: 445}
+          - {id: 16, lo: 446, hi: 504}
+          - {id: 17, lo: 505, hi: 580}
+          - {id: 18, lo: 581, hi: 697}
+          - {id: 19, lo: 698, hi: 1026}
+    name: ${{ matrix.id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        run: |
+          g++ -O3 -DNDEBUG -march=native -std=c++17 -fopenmp x62/a.cpp -o x62/x
+          set +e
+          ./x62/x x62/d 1029 4 ${{ matrix.lo }} ${{ matrix.hi }}
+          rc=$?
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then exit "$rc"; fi
+          exit 0
