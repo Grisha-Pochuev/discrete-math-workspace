@@ -6,8 +6,10 @@ on:
     paths:
       - 'x62/**'
       - '.github/workflows/x62.yml'
+
 permissions:
   contents: read
+
 jobs:
   r:
     strategy:
@@ -35,12 +37,27 @@ jobs:
           - {id: 17, lo: 505, hi: 580}
           - {id: 18, lo: 581, hi: 697}
           - {id: 19, lo: 698, hi: 1026}
+
     name: ${{ matrix.id }}
     runs-on: ubuntu-latest
     timeout-minutes: 350
+
     steps:
       - uses: actions/checkout@v4
-      - shell: bash
+        with:
+          sparse-checkout: |
+            x62
+          sparse-checkout-cone-mode: true
+          fetch-depth: 1
+
+      - name: deps
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libboost-dev
+
+      - name: run
+        shell: bash
         run: |
           g++ -O3 -DNDEBUG -march=native -std=c++17 -fopenmp x62/a.cpp -o x62/x
           set +e
