@@ -1,0 +1,47 @@
+name: Export portable fplll bundle
+
+on:
+  push:
+    branches:
+      - agent/williams-data-2026-08-25
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Install fplll
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fplll-tools
+          fplll --help | head -80
+          ldd /usr/bin/fplll | tee /tmp/ldd.txt
+
+      - name: Build relocatable bundle
+        run: |
+          set -eux
+          mkdir -p /tmp/fplll-portable/bin /tmp/fplll-portable/lib /tmp/fplll-portable/share
+          cp /usr/bin/fplll /tmp/fplll-portable/bin/
+          cp -a /usr/lib/x86_64-linux-gnu/libfplll.so.8* /tmp/fplll-portable/lib/
+          if [ -d /usr/share/fplll ]; then cp -a /usr/share/fplll /tmp/fplll-portable/share/; fi
+          cp /tmp/ldd.txt /tmp/fplll-portable/
+          cat > /tmp/fplll-portable/run-fplll <<'EOF'
+          #!/usr/bin/env bash
+          HERE="$(cd "$(dirname "$0")" && pwd)"
+          export LD_LIBRARY_PATH="$HERE/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          exec "$HERE/bin/fplll" "$@"
+          EOF
+          chmod +x /tmp/fplll-portable/run-fplll
+          tar -C /tmp -czf /tmp/fplll-portable.tar.gz fplll-portable
+          sha256sum /tmp/fplll-portable.tar.gz
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fplll-portable-ubuntu-noble
+          path: /tmp/fplll-portable.tar.gz
+          compression-level: 0
+          retention-days: 7
