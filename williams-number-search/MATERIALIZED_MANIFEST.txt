@@ -8,7 +8,7 @@ factors.json 119953 bytes
 global_rows.json 446802 bytes
 hints.json 166551 bytes
 materialize.log 947 bytes
-model_summary.json 344 bytes
+model_summary.json 343 bytes
 prepare_data.py 14132 bytes
 prepare_data.py.gz 8451 bytes
 split_rows.json 753150 bytes
