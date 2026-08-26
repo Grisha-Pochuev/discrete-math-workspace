@@ -16,10 +16,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    name: build-and-smoke-test
+  prep:
+    name: prep
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,86 +28,92 @@ jobs:
           sparse-checkout-cone-mode: true
           fetch-depth: 1
 
-      - name: install-boost
+      - name: check
         shell: bash
         run: |
           set -euo pipefail
-          export DEBIAN_FRONTEND=noninteractive
+          test -s x62/b.py
+          test -s x62/d
+          test "$(wc -l < x62/d)" -eq 1029
+          echo "fd7f67051b817842f5795fae812b852efa8007f5478a286365a7236a6a790cd8  x62/d" | sha256sum -c -
+          python3 x62/b.py x62/d check
+
+      - name: deps
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p x62/w
           for attempt in 1 2 3; do
-            if sudo apt-get update -qq && sudo apt-get install -y -qq --no-install-recommends libboost-dev; then
+            rm -f x62/w/*
+            if python3 -m pip download --disable-pip-version-check --only-binary=:all: --dest x62/w ortools==9.15.6755; then
               exit 0
             fi
             if [ "$attempt" -eq 3 ]; then
-              echo "::error::failed to install libboost-dev after 3 attempts"
+              echo "::error::dependency download failed after 3 attempts"
               exit 1
             fi
             sleep $((attempt * 15))
           done
 
-      - name: build
+      - name: smoke
         shell: bash
         run: |
           set -euo pipefail
-          test -s x62/a.cpp
-          test -s x62/d
-          test "$(wc -l < x62/d)" -ge 1029
-          g++ -O3 -DNDEBUG -std=c++17 -fopenmp x62/a.cpp -o x62/x
-          test -x x62/x
-
-      - name: smoke-test
-        shell: bash
-        run: |
+          rm -rf x62/s
+          python3 -m pip install --disable-pip-version-check --no-index --find-links x62/w --target x62/s ortools==9.15.6755
+          PYTHONPATH="$PWD/x62/s" python3 -c 'import ortools; print(ortools.__version__)'
+          PYTHONPATH="$PWD/x62/s" python3 x62/b.py x62/d check
           set +e
-          timeout 120s ./x62/x x62/d 20 1 6 6
+          PYTHONPATH="$PWD/x62/s" python3 x62/b.py x62/d 0 1 20 x62/t
           rc=$?
+          set -e
           if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then
-            echo "::error::smoke test exited with code $rc"
+            echo "::error::smoke exited with code $rc"
             exit "$rc"
           fi
-          exit 0
 
       - uses: actions/upload-artifact@v4
         with:
           name: x62-runtime
           path: |
-            x62/x
+            x62/b.py
             x62/d
+            x62/w
           if-no-files-found: error
           retention-days: 1
           compression-level: 0
 
   r:
-    needs: build
+    needs: prep
     strategy:
       fail-fast: false
       max-parallel: 20
       matrix:
         include:
-          - {id: 0, lo: 6, hi: 23}
-          - {id: 1, lo: 24, hi: 41}
-          - {id: 2, lo: 42, hi: 60}
-          - {id: 3, lo: 61, hi: 80}
-          - {id: 4, lo: 81, hi: 101}
-          - {id: 5, lo: 102, hi: 123}
-          - {id: 6, lo: 124, hi: 146}
-          - {id: 7, lo: 147, hi: 170}
-          - {id: 8, lo: 171, hi: 195}
-          - {id: 9, lo: 196, hi: 222}
-          - {id: 10, lo: 223, hi: 251}
-          - {id: 11, lo: 252, hi: 282}
-          - {id: 12, lo: 283, hi: 316}
-          - {id: 13, lo: 317, hi: 354}
-          - {id: 14, lo: 355, hi: 396}
-          - {id: 15, lo: 397, hi: 445}
-          - {id: 16, lo: 446, hi: 504}
-          - {id: 17, lo: 505, hi: 580}
-          - {id: 18, lo: 581, hi: 697}
-          - {id: 19, lo: 698, hi: 1026}
+          - {id: 0,  k: 497, seed: 6202600}
+          - {id: 1,  k: 499, seed: 6202601}
+          - {id: 2,  k: 501, seed: 6202602}
+          - {id: 3,  k: 503, seed: 6202603}
+          - {id: 4,  k: 505, seed: 6202604}
+          - {id: 5,  k: 507, seed: 6202605}
+          - {id: 6,  k: 509, seed: 6202606}
+          - {id: 7,  k: 511, seed: 6202607}
+          - {id: 8,  k: 513, seed: 6202608}
+          - {id: 9,  k: 515, seed: 6202609}
+          - {id: 10, k: 517, seed: 6202610}
+          - {id: 11, k: 519, seed: 6202611}
+          - {id: 12, k: 521, seed: 6202612}
+          - {id: 13, k: 523, seed: 6202613}
+          - {id: 14, k: 525, seed: 6202614}
+          - {id: 15, k: 527, seed: 6202615}
+          - {id: 16, k: 529, seed: 6202616}
+          - {id: 17, k: 531, seed: 6202617}
+          - {id: 18, k: 533, seed: 6202618}
+          - {id: 19, k: 535, seed: 6202619}
 
     name: ${{ matrix.id }}
     runs-on: ubuntu-24.04
     timeout-minutes: 350
-
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -117,12 +123,27 @@ jobs:
       - name: run
         shell: bash
         run: |
-          chmod +x x62/x
+          set -euo pipefail
+          rm -rf x62/s
+          python3 -m pip install --disable-pip-version-check --no-index --find-links x62/w --target x62/s ortools==9.15.6755
           set +e
-          ./x62/x x62/d 1029 4 ${{ matrix.lo }} ${{ matrix.hi }}
+          PYTHONPATH="$PWD/x62/s" python3 x62/b.py x62/d ${{ matrix.k }} ${{ matrix.seed }} 19000 x62/z >x62/l 2>&1
           rc=$?
+          set -e
+          cat x62/l
           if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then
             echo "::error::x62 exited with code $rc"
             exit "$rc"
           fi
           exit 0
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: x62-${{ matrix.id }}
+          path: |
+            x62/z
+            x62/l
+          if-no-files-found: ignore
+          retention-days: 1
+          compression-level: 0
