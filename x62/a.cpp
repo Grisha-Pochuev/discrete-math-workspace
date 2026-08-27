@@ -10,11 +10,38 @@ static bool crtT3(const CTX&C,int j,int t,int u,const uint512_t&B,T3C*out,int&nc
 static bool crt4from3(const CTX&C,int j,int t,int u,int v,const T3C*st,int ns,const uint512_t&B,uint512_t&x,uint512_t&M){size_t a=0,b=0;x=0;M=1;while(a<(size_t)ns||b<C.F[v].size()){int r1=a<(size_t)ns?st[a].rank:INT_MAX,r2=b<C.F[v].size()?C.F[v][b].rank:INT_MAX;int base,e;u64 res,m;if(r1<r2){base=st[a].b;e=st[a].e;m=C.bs[base].pw[e];res=(u128n)st[a].r*C.inv[base][e][v]%m;a++;}else if(r2<r1){base=C.F[v][b].b;e=C.F[v][b].e;m=C.bs[base].pw[e];res=(u128n)C.inv[base][e][j]*C.inv[base][e][t]%m*C.inv[base][e][u]%m;b++;}else{base=st[a].b;int e3=st[a].e,ev=C.F[v][b].e;if(ev>e3){e=ev;m=C.bs[base].pw[e];res=(u128n)C.inv[base][e][j]*C.inv[base][e][t]%m*C.inv[base][e][u]%m;}else{e=e3;m=C.bs[base].pw[e];res=(u128n)st[a].r*C.inv[base][e][v]%m;}a++;b++;}if(!crtstep(x,M,B,m,res))return false;}return x<=B;}
 static bool crtH(const CTX&C,const int*top,int H,const uint512_t&B,uint512_t&x,uint512_t&M){size_t p[8]={};x=0;M=1;while(1){int rank=INT_MAX;bool any=0;for(int h=0;h<H;h++)if(p[h]<C.F[top[h]].size()){any=1;rank=min(rank,C.F[top[h]][p[h]].rank);}if(!any)break;int base=-1,e=0,src=-1;for(int h=0;h<H;h++)if(p[h]<C.F[top[h]].size()&&C.F[top[h]][p[h]].rank==rank){auto z=C.F[top[h]][p[h]++];base=z.b;if(z.e>e){e=z.e;src=h;}}u64 m=C.bs[base].pw[e],r=1;for(int h=0;h<H;h++)if(h!=src)r=(u128n)r*C.inv[base][e][top[h]]%m;if(!crtstep(x,M,B,m,r))return false;}return x<=B;}
 static uint512_t prodBelow(const CTX&C,int idx,int k){uint512_t z=1;for(int a=1;a<=k;a++)z*=C.P[idx-a];return z;}
-int main(int ac,char**av){if(ac<2)return 1;ifstream in(av[1]);CTX C;string s;while(in>>s)C.P.push_back(parse128(s));C.n=ac>2?min<int>(stoi(av[2]),C.P.size()):C.P.size();C.P.resize(C.n);int th=ac>3?stoi(av[3]):4,U0=ac>4?stoi(av[4]):6,U1=ac>5?min(stoi(av[5]),C.n-3):C.n-3;cerr<<"loaded n="<<C.n<<" u="<<U0<<".."<<U1<<"\n";vector<map<u64,int>>fm(C.n);map<u64,int>gm;for(int i=0;i<C.n;i++){for(auto[q,e]:fac(C.P[i]-1))fm[i][q]+=e;for(auto[q,e]:fac(C.P[i]+1))fm[i][q]+=e;auto it=fm[i].find(2);if(--it->second==0)fm[i].erase(it);for(auto[q,e]:fm[i])gm[q]=max(gm[q],e);}for(auto[q,e]:gm){BI z{q,e,vector<u64>(e+1,1)};for(int k=1;k<=e;k++)z.pw[k]=z.pw[k-1]*q;C.bs.push_back(move(z));}C.B=C.bs.size();unordered_map<u64,int>id;for(int b=0;b<C.B;b++)id[C.bs[b].q]=b;vector<int>ord(C.B);iota(ord.begin(),ord.end(),0);sort(ord.begin(),ord.end(),[&](int a,int b){u64 x=C.bs[a].pw[C.bs[a].maxe],y=C.bs[b].pw[C.bs[b].maxe];return x!=y?x>y:C.bs[a].q>C.bs[b].q;});vector<int>rank(C.B);for(int r=0;r<C.B;r++)rank[ord[r]]=r;C.F.resize(C.n);for(int i=0;i<C.n;i++){for(auto[q,e]:fm[i]){int b=id[q];C.F[i].push_back({rank[b],b,(uint8_t)e});}sort(C.F[i].begin(),C.F[i].end(),[](auto&a,auto&b){return a.rank<b.rank;});}C.inv.resize(C.B);for(int b=0;b<C.B;b++){C.inv[b].resize(C.bs[b].maxe+1);for(int e=1;e<=C.bs[b].maxe;e++){u64 m=C.bs[b].pw[e];C.inv[b][e].resize(C.n);for(int i=0;i<C.n;i++)C.inv[b][e][i]=invmod((C.P[i]%m).convert_to<u64>(),m);}}
- vector<uint512_t>max6(C.n),max5(C.n);for(int i=5;i<C.n;i++)max6[i]=uint512_t(C.P[i])*prodBelow(C,i,5);for(int i=4;i<C.n;i++)max5[i]=uint512_t(C.P[i])*prodBelow(C,i,4);
- unsigned long long tri=0,s3=0,vt=0,s4=0,wt=0,s5=0;auto stime=chrono::steady_clock::now();omp_set_num_threads(th);
- #pragma omp parallel for schedule(dynamic,1) reduction(+:tri,s3,vt,s4,wt,s5)
- for(int u=U0;u<=U1;u++){uint512_t B6=prodBelow(C,u,6);T3C state[64];for(int t=u+1;t<C.n-1;t++)for(int j=t+1;j<C.n;j++){tri++;int ns;uint512_t x3,M3;if(!crtT3(C,j,t,u,B6,state,ns,x3,M3))continue;s3++;int v0=max(5,(int)(lower_bound(max6.begin()+5,max6.begin()+u,x3)-max6.begin()));for(int v=v0;v<u;v++){vt++;uint512_t B5=prodBelow(C,v,5),x4,M4;if(!crt4from3(C,j,t,u,v,state,ns,B5,x4,M4))continue;s4++;int w0=max(4,(int)(lower_bound(max5.begin()+4,max5.begin()+v,x4)-max5.begin()));for(int w=w0;w<v;w++){wt++;uint512_t B4=prodBelow(C,w,4),x5,M5;int top[5]={j,t,u,v,w};if(!crtH(C,top,5,B4,x5,M5))continue;s5++;
+int main(int ac,char**av){if(ac<2)return 1;ifstream in(av[1]);CTX C;string s;while(in>>s)C.P.push_back(parse128(s));C.n=ac>2?min<int>(stoi(av[2]),C.P.size()):C.P.size();C.P.resize(C.n);int th=ac>3?stoi(av[3]):4,sh=ac>4?stoi(av[4]):0,nsh=ac>5?stoi(av[5]):1,U0=8+sh,U1=C.n-3;cerr<<"loaded n="<<C.n<<" sh="<<sh<<"/"<<nsh<<" u="<<U0<<".."<<U1<<"\n";vector<map<u64,int>>fm(C.n);map<u64,int>gm;for(int i=0;i<C.n;i++){for(auto[q,e]:fac(C.P[i]-1))fm[i][q]+=e;for(auto[q,e]:fac(C.P[i]+1))fm[i][q]+=e;auto it=fm[i].find(2);if(--it->second==0)fm[i].erase(it);for(auto[q,e]:fm[i])gm[q]=max(gm[q],e);}for(auto[q,e]:gm){BI z{q,e,vector<u64>(e+1,1)};for(int k=1;k<=e;k++)z.pw[k]=z.pw[k-1]*q;C.bs.push_back(move(z));}C.B=C.bs.size();unordered_map<u64,int>id;for(int b=0;b<C.B;b++)id[C.bs[b].q]=b;vector<int>ord(C.B);iota(ord.begin(),ord.end(),0);sort(ord.begin(),ord.end(),[&](int a,int b){u64 x=C.bs[a].pw[C.bs[a].maxe],y=C.bs[b].pw[C.bs[b].maxe];return x!=y?x>y:C.bs[a].q>C.bs[b].q;});vector<int>rank(C.B);for(int r=0;r<C.B;r++)rank[ord[r]]=r;C.F.resize(C.n);for(int i=0;i<C.n;i++){for(auto[q,e]:fm[i]){int b=id[q];C.F[i].push_back({rank[b],b,(uint8_t)e});}sort(C.F[i].begin(),C.F[i].end(),[](auto&a,auto&b){return a.rank<b.rank;});}C.inv.resize(C.B);for(int b=0;b<C.B;b++){C.inv[b].resize(C.bs[b].maxe+1);for(int e=1;e<=C.bs[b].maxe;e++){u64 m=C.bs[b].pw[e];C.inv[b][e].resize(C.n);for(int i=0;i<C.n;i++)C.inv[b][e][i]=invmod((C.P[i]%m).convert_to<u64>(),m);}}
+ vector<uint512_t>max8(C.n),max7(C.n),max6(C.n),max5(C.n);
+ for(int i=7;i<C.n;i++)max8[i]=uint512_t(C.P[i])*prodBelow(C,i,7);
+ for(int i=6;i<C.n;i++)max7[i]=uint512_t(C.P[i])*prodBelow(C,i,6);
+ for(int i=5;i<C.n;i++)max6[i]=uint512_t(C.P[i])*prodBelow(C,i,5);
+ for(int i=4;i<C.n;i++)max5[i]=uint512_t(C.P[i])*prodBelow(C,i,4);
+ unsigned long long tri=0,s3=0,vt=0,s4=0,wt=0,s5=0,yt=0,s6=0,zt=0,s7=0;
+ auto stime=chrono::steady_clock::now();omp_set_num_threads(th);
+ #pragma omp parallel for schedule(dynamic,1) reduction(+:tri,s3,vt,s4,wt,s5,yt,s6,zt,s7)
+ for(int u=U0;u<=U1;u+=nsh){
+   uint512_t B8=prodBelow(C,u,8);T3C state[128];
+   for(int t=u+1;t<C.n-1;t++)for(int j=t+1;j<C.n;j++){
+     tri++;int ns;uint512_t x3,M3;if(!crtT3(C,j,t,u,B8,state,ns,x3,M3))continue;s3++;
+     int v0=max(7,(int)(lower_bound(max8.begin()+7,max8.begin()+u,x3)-max8.begin()));
+     for(int v=v0;v<u;v++){
+       vt++;uint512_t B7=prodBelow(C,v,7),x4,M4;if(!crt4from3(C,j,t,u,v,state,ns,B7,x4,M4))continue;s4++;
+       int w0=max(6,(int)(lower_bound(max7.begin()+6,max7.begin()+v,x4)-max7.begin()));
+       for(int w=w0;w<v;w++){
+         wt++;uint512_t B6=prodBelow(C,w,6),x5,M5;int top5[5]={j,t,u,v,w};if(!crtH(C,top5,5,B6,x5,M5))continue;s5++;
+         int y0=max(5,(int)(lower_bound(max6.begin()+5,max6.begin()+w,x5)-max6.begin()));
+         for(int y=y0;y<w;y++){
+           yt++;uint512_t B5=prodBelow(C,y,5),x6,M6;int top6[6]={j,t,u,v,w,y};if(!crtH(C,top6,6,B5,x6,M6))continue;s6++;
+           int z0=max(4,(int)(lower_bound(max5.begin()+4,max5.begin()+y,x6)-max5.begin()));
+           for(int z=z0;z<y;z++){
+             zt++;uint512_t B4=prodBelow(C,z,4),x7,M7;int top7[7]={j,t,u,v,w,y,z};if(!crtH(C,top7,7,B4,x7,M7))continue;s7++;
 #pragma omp critical
- {cerr<<"TOP5 "<<j<<","<<t<<","<<u<<","<<v<<","<<w<<"\n";}}}}}
- double sec=chrono::duration<double>(chrono::steady_clock::now()-stime).count();cerr<<"DONE triples="<<tri<<" s3="<<s3<<" vtests="<<vt<<" s4="<<s4<<" wtests="<<wt<<" s5="<<s5<<" sec="<<sec<<"\n";return 2;}
+             {cerr<<"TOP7 "<<j<<","<<t<<","<<u<<","<<v<<","<<w<<","<<y<<","<<z<<"\n";}
+           }
+         }
+       }
+     }
+   }
+ }
+ double sec=chrono::duration<double>(chrono::steady_clock::now()-stime).count();
+ cerr<<"DONE triples="<<tri<<" s3="<<s3<<" vtests="<<vt<<" s4="<<s4<<" wtests="<<wt<<" s5="<<s5<<" ytests="<<yt<<" s6="<<s6<<" ztests="<<zt<<" s7="<<s7<<" sec="<<sec<<"\n";return 2;}
