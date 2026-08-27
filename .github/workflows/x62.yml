@@ -33,11 +33,11 @@ jobs:
         run: |
           set -euo pipefail
           test -s x62/b.py
-          test -s x62/c.py
+          test -s x62/e.py
           test -s x62/d
           test "$(wc -l < x62/d)" -eq 1029
           echo "fd7f67051b817842f5795fae812b852efa8007f5478a286365a7236a6a790cd8  x62/d" | sha256sum -c -
-          python3 -m py_compile x62/b.py x62/c.py
+          python3 -m py_compile x62/b.py x62/e.py
           python3 x62/b.py x62/d check
 
       - name: deps
@@ -65,7 +65,7 @@ jobs:
           python3 -m pip install --disable-pip-version-check --no-index --find-links x62/w --target x62/s ortools==9.15.6755
           PYTHONPATH="$PWD/x62/s" python3 -c 'import ortools; print(ortools.__version__)'
           set +e
-          PYTHONPATH="$PWD/x62/s:$PWD/x62" python3 x62/c.py x62/d 6204999 30 x62/t d 1 0 0
+          PYTHONPATH="$PWD/x62/s:$PWD/x62" python3 x62/e.py x62/d 6205999 40 x62/t a 0 0
           rc=$?
           set -e
           if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then
@@ -78,7 +78,7 @@ jobs:
           name: x62-runtime
           path: |
             x62/b.py
-            x62/c.py
+            x62/e.py
             x62/d
             x62/w
           if-no-files-found: error
@@ -92,26 +92,26 @@ jobs:
       max-parallel: 20
       matrix:
         include:
-          - {id: 0,  seed: 6204100, order: d, rref: 1, quick: 0, fix: 0}
-          - {id: 1,  seed: 6204101, order: d, rref: 1, quick: 0, fix: 0}
-          - {id: 2,  seed: 6204102, order: d, rref: 1, quick: 0, fix: 0}
-          - {id: 3,  seed: 6204103, order: d, rref: 1, quick: 0, fix: 0}
-          - {id: 4,  seed: 6204104, order: d, rref: 1, quick: 0, fix: 0}
-          - {id: 5,  seed: 6204105, order: d, rref: 1, quick: 0, fix: 0}
-          - {id: 6,  seed: 6204110, order: a, rref: 1, quick: 0, fix: 0}
-          - {id: 7,  seed: 6204111, order: a, rref: 1, quick: 0, fix: 0}
-          - {id: 8,  seed: 6204112, order: a, rref: 1, quick: 0, fix: 0}
-          - {id: 9,  seed: 6204113, order: a, rref: 1, quick: 0, fix: 0}
-          - {id: 10, seed: 6204114, order: a, rref: 1, quick: 0, fix: 0}
-          - {id: 11, seed: 6204115, order: a, rref: 1, quick: 0, fix: 0}
-          - {id: 12, seed: 6204120, order: r, rref: 1, quick: 0, fix: 0}
-          - {id: 13, seed: 6204121, order: r, rref: 1, quick: 0, fix: 0}
-          - {id: 14, seed: 6204122, order: r, rref: 1, quick: 0, fix: 0}
-          - {id: 15, seed: 6204123, order: r, rref: 1, quick: 0, fix: 0}
-          - {id: 16, seed: 6204130, order: d, rref: 0, quick: 0, fix: 0}
-          - {id: 17, seed: 6204131, order: a, rref: 0, quick: 0, fix: 0}
-          - {id: 18, seed: 6204138, order: d, rref: 1, quick: 1, fix: 0}
-          - {id: 19, seed: 6204139, order: d, rref: 1, quick: 0, fix: 8}
+          - {id: 0,  seed: 6205100, order: a, mode: 0, fix: 0}
+          - {id: 1,  seed: 6205101, order: a, mode: 0, fix: 0}
+          - {id: 2,  seed: 6205102, order: a, mode: 0, fix: 0}
+          - {id: 3,  seed: 6205103, order: a, mode: 0, fix: 0}
+          - {id: 4,  seed: 6205104, order: a, mode: 0, fix: 0}
+          - {id: 5,  seed: 6205105, order: a, mode: 0, fix: 0}
+          - {id: 6,  seed: 6205106, order: a, mode: 0, fix: 0}
+          - {id: 7,  seed: 6205107, order: a, mode: 0, fix: 0}
+          - {id: 8,  seed: 6205110, order: d, mode: 0, fix: 0}
+          - {id: 9,  seed: 6205111, order: d, mode: 0, fix: 0}
+          - {id: 10, seed: 6205112, order: d, mode: 0, fix: 0}
+          - {id: 11, seed: 6205113, order: d, mode: 0, fix: 0}
+          - {id: 12, seed: 6205114, order: d, mode: 0, fix: 0}
+          - {id: 13, seed: 6205115, order: d, mode: 0, fix: 0}
+          - {id: 14, seed: 6205120, order: r, mode: 0, fix: 0}
+          - {id: 15, seed: 6205121, order: r, mode: 0, fix: 0}
+          - {id: 16, seed: 6205122, order: r, mode: 0, fix: 0}
+          - {id: 17, seed: 6205130, order: a, mode: 1, fix: 0}
+          - {id: 18, seed: 6205131, order: a, mode: 2, fix: 0}
+          - {id: 19, seed: 6205139, order: a, mode: 0, fix: 8}
 
     name: ${{ matrix.id }}
     runs-on: ubuntu-24.04
@@ -129,7 +129,7 @@ jobs:
           rm -rf x62/s
           python3 -m pip install --disable-pip-version-check --no-index --find-links x62/w --target x62/s ortools==9.15.6755
           set +e
-          PYTHONPATH="$PWD/x62/s:$PWD/x62" python3 x62/c.py x62/d ${{ matrix.seed }} 600 x62/z ${{ matrix.order }} ${{ matrix.rref }} ${{ matrix.quick }} ${{ matrix.fix }} >x62/l 2>&1
+          PYTHONPATH="$PWD/x62/s:$PWD/x62" python3 x62/e.py x62/d ${{ matrix.seed }} 600 x62/z ${{ matrix.order }} ${{ matrix.mode }} ${{ matrix.fix }} >x62/l 2>&1
           rc=$?
           set -e
           cat x62/l
