@@ -45,24 +45,36 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -s x62/a.cpp
+          test -s x62/c.cpp
           test -s x62/d
           test "$(wc -l < x62/d)" -eq 1029
           echo "fd7f67051b817842f5795fae812b852efa8007f5478a286365a7236a6a790cd8  x62/d" | sha256sum -c -
-          g++ -O3 -DNDEBUG -std=c++17 -fopenmp x62/a.cpp -o x62/x
+          g++ -O3 -DNDEBUG -std=c++17 -fopenmp x62/c.cpp -o x62/x
           test -x x62/x
 
       - name: smoke
         shell: bash
         run: |
+          set -euo pipefail
           set +e
-          timeout 60s ./x62/x x62/d 200 4 0 20 >x62/t 2>&1
-          rc=$?
-          cat x62/t
-          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then exit "$rc"; fi
-          grep -q 'DONE ' x62/t || exit 1
-          grep -q 's7=0' x62/t || exit 1
-          exit 0
+          timeout 60s ./x62/x x62/d 60 4 0 1 11 >x62/t1 2>&1
+          r1=$?
+          timeout 60s ./x62/x x62/d 60 4 0 1 13 >x62/t2 2>&1
+          r2=$?
+          set -e
+          cat x62/t1
+          cat x62/t2
+          if [ "$r1" -ne 0 ] && [ "$r1" -ne 2 ]; then exit "$r1"; fi
+          if [ "$r2" -ne 0 ] && [ "$r2" -ne 2 ]; then exit "$r2"; fi
+          grep -q 'triples=22100 s3=22100' x62/t1
+          grep -q 's4=120212' x62/t1
+          grep -q 's5=213' x62/t1
+          grep -q 's6=0' x62/t1
+          grep -q 'triples=19600 s3=19600' x62/t2
+          grep -q 's4=248734' x62/t2
+          grep -q 's5=401827' x62/t2
+          grep -q 's6=654' x62/t2
+          grep -q 's7=0' x62/t2
 
       - uses: actions/upload-artifact@v4
         with:
@@ -96,10 +108,14 @@ jobs:
         run: |
           chmod +x x62/x
           set +e
-          ./x62/x x62/d 1029 4 ${{ matrix.id }} 20 >x62/l 2>&1
+          timeout 340m ./x62/x x62/d 1029 4 ${{ matrix.id }} 20 13 >x62/l 2>&1
           rc=$?
           set -e
           cat x62/l
+          if [ "$rc" -eq 124 ]; then
+            echo CUT >>x62/l
+            exit 124
+          fi
           if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then exit "$rc"; fi
           exit 0
 
