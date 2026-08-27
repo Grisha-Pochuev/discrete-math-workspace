@@ -33,12 +33,11 @@ jobs:
         run: |
           set -euo pipefail
           test -s x62/b.py
-          test -s x62/f.py
           test -s x62/d
           test "$(wc -l < x62/d)" -eq 1029
           echo "fd7f67051b817842f5795fae812b852efa8007f5478a286365a7236a6a790cd8  x62/d" | sha256sum -c -
-          python3 -m py_compile x62/b.py x62/f.py
-          PYTHONPATH="$PWD/x62" python3 x62/f.py x62/d check
+          python3 -m py_compile x62/b.py
+          python3 x62/b.py x62/d check
 
       - name: deps
         shell: bash
@@ -51,7 +50,6 @@ jobs:
               exit 0
             fi
             if [ "$attempt" -eq 3 ]; then
-              echo "::error::dependency download failed after 3 attempts"
               exit 1
             fi
             sleep $((attempt * 15))
@@ -65,20 +63,16 @@ jobs:
           python3 -m pip install --disable-pip-version-check --no-index --find-links x62/w --target x62/s ortools==9.15.6755
           PYTHONPATH="$PWD/x62/s" python3 -c 'import ortools; print(ortools.__version__)'
           set +e
-          PYTHONPATH="$PWD/x62/s:$PWD/x62" python3 x62/f.py x62/d 3 6206999 10 x62/t 0
+          PYTHONPATH="$PWD/x62/s:$PWD/x62" python3 x62/b.py x62/d 6207999 8 x62/t s 0 0
           rc=$?
           set -e
-          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then
-            echo "::error::smoke exited with code $rc"
-            exit "$rc"
-          fi
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then exit "$rc"; fi
 
       - uses: actions/upload-artifact@v4
         with:
           name: x62-runtime
           path: |
             x62/b.py
-            x62/f.py
             x62/d
             x62/w
           if-no-files-found: error
@@ -92,30 +86,30 @@ jobs:
       max-parallel: 20
       matrix:
         include:
-          - {id: 0,  k: 3,  seed: 6206100, sec: 60,  mode: 0}
-          - {id: 1,  k: 5,  seed: 6206101, sec: 120, mode: 0}
-          - {id: 2,  k: 7,  seed: 6206102, sec: 180, mode: 0}
-          - {id: 3,  k: 9,  seed: 6206103, sec: 300, mode: 0}
-          - {id: 4,  k: 11, seed: 6206110, sec: 600, mode: 0}
-          - {id: 5,  k: 11, seed: 6206111, sec: 600, mode: 0}
-          - {id: 6,  k: 11, seed: 6206112, sec: 600, mode: 0}
-          - {id: 7,  k: 11, seed: 6206113, sec: 600, mode: 0}
-          - {id: 8,  k: 11, seed: 6206114, sec: 600, mode: 0}
-          - {id: 9,  k: 11, seed: 6206115, sec: 600, mode: 0}
-          - {id: 10, k: 11, seed: 6206120, sec: 600, mode: 1}
-          - {id: 11, k: 11, seed: 6206121, sec: 600, mode: 1}
-          - {id: 12, k: 11, seed: 6206122, sec: 600, mode: 1}
-          - {id: 13, k: 11, seed: 6206123, sec: 600, mode: 1}
-          - {id: 14, k: 11, seed: 6206130, sec: 600, mode: 2}
-          - {id: 15, k: 11, seed: 6206131, sec: 600, mode: 2}
-          - {id: 16, k: 11, seed: 6206132, sec: 600, mode: 2}
-          - {id: 17, k: 11, seed: 6206133, sec: 600, mode: 2}
-          - {id: 18, k: 11, seed: 6206140, sec: 600, mode: 0}
-          - {id: 19, k: 11, seed: 6206141, sec: 600, mode: 1}
+          - {id: 0,  seed: 6207100, form: s, mode: 0, fix: 0}
+          - {id: 1,  seed: 6207101, form: s, mode: 0, fix: 8}
+          - {id: 2,  seed: 6207102, form: s, mode: 0, fix: 12}
+          - {id: 3,  seed: 6207103, form: s, mode: 0, fix: 16}
+          - {id: 4,  seed: 6207104, form: s, mode: 3, fix: 0}
+          - {id: 5,  seed: 6207105, form: s, mode: 3, fix: 8}
+          - {id: 6,  seed: 6207106, form: s, mode: 3, fix: 12}
+          - {id: 7,  seed: 6207107, form: s, mode: 3, fix: 16}
+          - {id: 8,  seed: 6207108, form: s, mode: 1, fix: 12}
+          - {id: 9,  seed: 6207109, form: s, mode: 2, fix: 12}
+          - {id: 10, seed: 6207110, form: c, mode: 0, fix: 0}
+          - {id: 11, seed: 6207111, form: c, mode: 0, fix: 8}
+          - {id: 12, seed: 6207112, form: c, mode: 0, fix: 12}
+          - {id: 13, seed: 6207113, form: c, mode: 0, fix: 16}
+          - {id: 14, seed: 6207114, form: c, mode: 3, fix: 0}
+          - {id: 15, seed: 6207115, form: c, mode: 3, fix: 8}
+          - {id: 16, seed: 6207116, form: c, mode: 3, fix: 12}
+          - {id: 17, seed: 6207117, form: c, mode: 3, fix: 16}
+          - {id: 18, seed: 6207118, form: c, mode: 1, fix: 12}
+          - {id: 19, seed: 6207119, form: c, mode: 2, fix: 12}
 
     name: ${{ matrix.id }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 14
+    timeout-minutes: 6
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -129,14 +123,11 @@ jobs:
           rm -rf x62/s
           python3 -m pip install --disable-pip-version-check --no-index --find-links x62/w --target x62/s ortools==9.15.6755
           set +e
-          PYTHONPATH="$PWD/x62/s:$PWD/x62" python3 x62/f.py x62/d ${{ matrix.k }} ${{ matrix.seed }} ${{ matrix.sec }} x62/z ${{ matrix.mode }} >x62/l 2>&1
+          PYTHONPATH="$PWD/x62/s:$PWD/x62" python3 x62/b.py x62/d ${{ matrix.seed }} 180 x62/z ${{ matrix.form }} ${{ matrix.mode }} ${{ matrix.fix }} >x62/l 2>&1
           rc=$?
           set -e
           cat x62/l
-          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then
-            echo "::error::x62 exited with code $rc"
-            exit "$rc"
-          fi
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then exit "$rc"; fi
           exit 0
 
       - uses: actions/upload-artifact@v4
