@@ -4,31 +4,315 @@
 using namespace std;
 using boost::multiprecision::uint128_t;
 using boost::multiprecision::uint1024_t;
-using u64=uint64_t; using u128n=__uint128_t; using U=uint1024_t; using boost::multiprecision::uint256_t; using boost::multiprecision::int256_t;
-struct FE{int rank,b;uint8_t e;}; struct BI{u64 q;int maxe;vector<u64>pw;};
-struct CTX{int n,B;vector<uint128_t>P;vector<vector<FE>>F;vector<BI>bs;vector<vector<vector<u64>>>inv;};
-struct ST{int rank,b,e;u64 r;};
-struct CNT{unsigned long long tri=0,s[10]{},t[10]{};};
-static uint128_t parse128(const string&s){uint128_t x=0;for(char c:s)x=x*10+(c-'0');return x;}
-static u64 invmod(u64 a,u64 m){__int128 t=0,nt=1,r=m,nr=a%m;while(nr){u64 q=r/nr;__int128 z=t-(__int128)q*nt;t=nt;nt=z;z=r-(__int128)q*nr;r=nr;nr=z;}if(r!=1)return 0;t%=m;if(t<0)t+=m;return(u64)t;}
-static vector<pair<u64,int>>fac(uint128_t n){vector<pair<u64,int>>f;for(u64 q=2;q<=100000&&uint128_t(q)*q<=n;q+=(q==2?1:2)){if(n%q)continue;int e=0;do{n/=q;e++;}while(n%q==0);f.push_back({q,e});}if(n>1)f.push_back({n.convert_to<u64>(),1});return f;}
-static bool crtstep(U&x,U&M,const U&B,u64 m,u64 r){if(!r&&m!=1)return false;if(M>B)return (x%m).convert_to<u64>()==r;u64 xm=(x%m).convert_to<u64>(),Mm=(M%m).convert_to<u64>(),iv=invmod(Mm,m);if(!iv)return false;u64 k=(u128n)((r+m-xm)%m)*iv%m;x+=M*k;M*=m;return !(M>B&&x>B);}
-static uint128_t invmod128(uint128_t a,uint128_t m){int256_t t=0,nt=1;uint128_t r=m,nr=a%m;while(nr!=0){uint128_t q=r/nr;int256_t z=t-int256_t(q)*nt;t=nt;nt=z;uint128_t z2=r-q*nr;r=nr;nr=z2;}if(r!=1)return 0;int256_t mm=m;t%=mm;if(t<0)t+=mm;return t.convert_to<uint128_t>();}
-static bool inherited_ok(const U&x,const U&M,const uint128_t&q,const U&B){if(M==1)return true;uint128_t mm=(M%q).convert_to<uint128_t>();uint128_t iv=invmod128(mm,q);if(iv==0)return false;uint128_t xm=(x%q).convert_to<uint128_t>();uint128_t d=xm? q-xm:0;uint128_t k=(uint256_t(d)*iv%q).convert_to<uint128_t>();U y=(x+M*k)/q;return y<=B;}
-static bool crtState(const CTX&C,const ST*st,int ns,const U&B,U&x,U&M){x=0;M=1;for(int i=0;i<ns;i++){u64 m=C.bs[st[i].b].pw[st[i].e];if(!crtstep(x,M,B,m,st[i].r))return false;}return x<=B;}
-static int build3(const CTX&C,int j,int t,int u,ST*out){size_t a=0,b=0,c=0;int n=0;while(a<C.F[j].size()||b<C.F[t].size()||c<C.F[u].size()){int rank=INT_MAX;if(a<C.F[j].size())rank=min(rank,C.F[j][a].rank);if(b<C.F[t].size())rank=min(rank,C.F[t][b].rank);if(c<C.F[u].size())rank=min(rank,C.F[u][c].rank);int ej=0,et=0,eu=0,base=-1;if(a<C.F[j].size()&&C.F[j][a].rank==rank){ej=C.F[j][a].e;base=C.F[j][a].b;a++;}if(b<C.F[t].size()&&C.F[t][b].rank==rank){et=C.F[t][b].e;base=C.F[t][b].b;b++;}if(c<C.F[u].size()&&C.F[u][c].rank==rank){eu=C.F[u][c].e;base=C.F[u][c].b;c++;}int e=max({ej,et,eu}),src=(ej==e?0:(et==e?1:2));u64 m=C.bs[base].pw[e],r=src==0?(u128n)C.inv[base][e][t]*C.inv[base][e][u]%m:src==1?(u128n)C.inv[base][e][j]*C.inv[base][e][u]%m:(u128n)C.inv[base][e][j]*C.inv[base][e][t]%m;out[n++]={rank,base,e,r};}return n;}
-static u64 invTopProd(const CTX&C,int base,int e,const int*top,int H){u64 m=C.bs[base].pw[e],r=1;for(int h=0;h<H;h++)r=(u128n)r*C.inv[base][e][top[h]]%m;return r;}
-static int extendState(const CTX&C,const ST*pa,int np,const int*top,int H,int q,ST*out){size_t a=0,b=0;int n=0;while(a<(size_t)np||b<C.F[q].size()){int r1=a<(size_t)np?pa[a].rank:INT_MAX,r2=b<C.F[q].size()?C.F[q][b].rank:INT_MAX;int base,e;u64 r,m;if(r1<r2){base=pa[a].b;e=pa[a].e;m=C.bs[base].pw[e];r=(u128n)pa[a].r*C.inv[base][e][q]%m;a++;}else if(r2<r1){base=C.F[q][b].b;e=C.F[q][b].e;r=invTopProd(C,base,e,top,H);b++;}else{base=pa[a].b;int ep=pa[a].e,eq=C.F[q][b].e;if(eq>ep){e=eq;r=invTopProd(C,base,e,top,H);}else{e=ep;m=C.bs[base].pw[e];r=(u128n)pa[a].r*C.inv[base][e][q]%m;}a++;b++;}out[n++]={min(r1,r2),base,e,r};}return n;}
-struct Searcher{const CTX&C;int K;const vector<vector<U>>&mx,&below;CNT&ct;
- void dfs(int*top,int H,int smallest,const U&xH,const U&MH,const ST*st,int ns){int rem=K-H;if(rem<=4)return;int lo=rem-1;int q0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+smallest,xH)-mx[rem].begin()));for(int q=q0;q<smallest;q++){if(!inherited_ok(xH,MH,C.P[q],below[rem-1][q]))continue;ct.t[H+1]++;ST ch[128];int nc=extendState(C,st,ns,top,H,q,ch);U x,M;if(!crtState(C,ch,nc,below[rem-1][q],x,M))continue;ct.s[H+1]++;top[H]=q;if(rem-1==4){
-#pragma omp critical
- {cerr<<"TOP"<<(H+1);for(int h=0;h<=H;h++)cerr<<(h?",":" ")<<top[h];cerr<<"\n";}}
- else dfs(top,H+1,q,x,M,ch,nc);}}
+using boost::multiprecision::uint256_t;
+using boost::multiprecision::int256_t;
+using u64 = uint64_t;
+using u128n = __uint128_t;
+using U = uint1024_t;
+
+struct FE { int rank,b; uint8_t e; };
+struct BI { u64 q; int maxe; vector<u64> pw; };
+struct CTX {
+    int n,B;
+    vector<uint128_t> P;
+    vector<vector<FE>> F;
+    vector<BI> bs;
+    vector<vector<vector<u64>>> inv;
 };
-int main(int ac,char**av){if(ac<2)return 1;ifstream in(av[1]);CTX C;string s;while(in>>s)C.P.push_back(parse128(s));C.n=ac>2?min<int>(stoi(av[2]),C.P.size()):C.P.size();C.P.resize(C.n);int th=ac>3?stoi(av[3]):4,sh=ac>4?stoi(av[4]):0,nsh=ac>5?stoi(av[5]):1,K=ac>6?stoi(av[6]):13;if(K!=11&&K!=13)return 3;int U0=K-3+sh,U1=C.n-3;cerr<<"loaded n="<<C.n<<" sh="<<sh<<"/"<<nsh<<" k="<<K<<" u="<<U0<<".."<<U1<<"\n";
- vector<map<u64,int>>fm(C.n);map<u64,int>gm;for(int i=0;i<C.n;i++){for(auto[q,e]:fac(C.P[i]-1))fm[i][q]+=e;for(auto[q,e]:fac(C.P[i]+1))fm[i][q]+=e;auto it=fm[i].find(2);if(it==fm[i].end())return 4;if(--it->second==0)fm[i].erase(it);for(auto[q,e]:fm[i])gm[q]=max(gm[q],e);}for(auto[q,e]:gm){BI z{q,e,vector<u64>(e+1,1)};for(int k=1;k<=e;k++)z.pw[k]=z.pw[k-1]*q;C.bs.push_back(move(z));}C.B=C.bs.size();unordered_map<u64,int>id;for(int b=0;b<C.B;b++)id[C.bs[b].q]=b;vector<int>ord(C.B);iota(ord.begin(),ord.end(),0);sort(ord.begin(),ord.end(),[&](int a,int b){u64 x=C.bs[a].pw[C.bs[a].maxe],y=C.bs[b].pw[C.bs[b].maxe];return x!=y?x>y:C.bs[a].q>C.bs[b].q;});vector<int>rank(C.B);for(int r=0;r<C.B;r++)rank[ord[r]]=r;C.F.resize(C.n);for(int i=0;i<C.n;i++){for(auto[q,e]:fm[i]){int b=id[q];C.F[i].push_back({rank[b],b,(uint8_t)e});}sort(C.F[i].begin(),C.F[i].end(),[](auto&a,auto&b){return a.rank<b.rank;});}C.inv.resize(C.B);for(int b=0;b<C.B;b++){C.inv[b].resize(C.bs[b].maxe+1);for(int e=1;e<=C.bs[b].maxe;e++){u64 m=C.bs[b].pw[e];C.inv[b][e].resize(C.n);for(int i=0;i<C.n;i++)C.inv[b][e][i]=invmod((C.P[i]%m).convert_to<u64>(),m);}}
- vector<vector<U>> below(K+1,vector<U>(C.n)),mx(K+1,vector<U>(C.n));for(int i=0;i<C.n;i++){U z=1;for(int k=1;k<=K;k++){if(i-k<0)break;z*=C.P[i-k];below[k][i]=z;if(k+1<=K)mx[k+1][i]=z*C.P[i];}}
- vector<CNT> cc(max(1,th));auto stime=chrono::steady_clock::now();omp_set_num_threads(th);
+struct ST { int rank,b,e; u64 r; };
+struct CNT { unsigned long long tri=0, s[10]{}, t[10]{}; };
+struct TASK { int u,t; u64 id; };
+
+static uint128_t parse128(const string& s){
+    uint128_t x=0;
+    for(char c:s) x=x*10+(c-'0');
+    return x;
+}
+
+static u64 invmod(u64 a,u64 m){
+    __int128 t=0,nt=1,r=m,nr=a%m;
+    while(nr){
+        u64 q=r/nr;
+        __int128 z=t-(__int128)q*nt; t=nt; nt=z;
+        z=r-(__int128)q*nr; r=nr; nr=z;
+    }
+    if(r!=1) return 0;
+    t%=m; if(t<0) t+=m;
+    return (u64)t;
+}
+
+static vector<pair<u64,int>> fac(uint128_t n){
+    vector<pair<u64,int>> f;
+    for(u64 q=2;q<=100000 && uint128_t(q)*q<=n;q+=(q==2?1:2)){
+        if(n%q) continue;
+        int e=0;
+        do { n/=q; e++; } while(n%q==0);
+        f.push_back({q,e});
+    }
+    if(n>1) f.push_back({n.convert_to<u64>(),1});
+    return f;
+}
+
+static bool crtstep(U& x,U& M,const U& B,u64 m,u64 r){
+    if(!r && m!=1) return false;
+    if(M>B) return (x%m).convert_to<u64>()==r;
+    u64 xm=(x%m).convert_to<u64>();
+    u64 Mm=(M%m).convert_to<u64>();
+    u64 iv=invmod(Mm,m);
+    if(!iv) return false;
+    u64 k=(u128n)((r+m-xm)%m)*iv%m;
+    x+=M*k;
+    M*=m;
+    return !(M>B && x>B);
+}
+
+static uint128_t invmod128(uint128_t a,uint128_t m){
+    int256_t t=0,nt=1;
+    uint128_t r=m,nr=a%m;
+    while(nr!=0){
+        uint128_t q=r/nr;
+        int256_t z=t-int256_t(q)*nt; t=nt; nt=z;
+        uint128_t z2=r-q*nr; r=nr; nr=z2;
+    }
+    if(r!=1) return 0;
+    int256_t mm=m;
+    t%=mm; if(t<0) t+=mm;
+    return t.convert_to<uint128_t>();
+}
+
+static bool inherited_ok(const U& x,const U& M,const uint128_t& q,const U& B){
+    if(M==1) return true;
+    uint128_t mm=(M%q).convert_to<uint128_t>();
+    uint128_t iv=invmod128(mm,q);
+    if(iv==0) return false;
+    uint128_t xm=(x%q).convert_to<uint128_t>();
+    uint128_t d=xm ? q-xm : 0;
+    uint128_t k=(uint256_t(d)*iv%q).convert_to<uint128_t>();
+    U y=(x+M*k)/q;
+    return y<=B;
+}
+
+static bool crtState(const CTX& C,const ST* st,int ns,const U& B,U& x,U& M){
+    x=0; M=1;
+    for(int i=0;i<ns;i++){
+        u64 m=C.bs[st[i].b].pw[st[i].e];
+        if(!crtstep(x,M,B,m,st[i].r)) return false;
+    }
+    return x<=B;
+}
+
+static int build3(const CTX& C,int j,int t,int u,ST* out){
+    size_t a=0,b=0,c=0;
+    int n=0;
+    while(a<C.F[j].size() || b<C.F[t].size() || c<C.F[u].size()){
+        int rank=INT_MAX;
+        if(a<C.F[j].size()) rank=min(rank,C.F[j][a].rank);
+        if(b<C.F[t].size()) rank=min(rank,C.F[t][b].rank);
+        if(c<C.F[u].size()) rank=min(rank,C.F[u][c].rank);
+        int ej=0,et=0,eu=0,base=-1;
+        if(a<C.F[j].size() && C.F[j][a].rank==rank){ ej=C.F[j][a].e; base=C.F[j][a].b; a++; }
+        if(b<C.F[t].size() && C.F[t][b].rank==rank){ et=C.F[t][b].e; base=C.F[t][b].b; b++; }
+        if(c<C.F[u].size() && C.F[u][c].rank==rank){ eu=C.F[u][c].e; base=C.F[u][c].b; c++; }
+        int e=max({ej,et,eu});
+        int src=(ej==e?0:(et==e?1:2));
+        u64 m=C.bs[base].pw[e];
+        u64 r=src==0 ? (u128n)C.inv[base][e][t]*C.inv[base][e][u]%m
+             : src==1 ? (u128n)C.inv[base][e][j]*C.inv[base][e][u]%m
+                      : (u128n)C.inv[base][e][j]*C.inv[base][e][t]%m;
+        out[n++]={rank,base,e,r};
+    }
+    return n;
+}
+
+static u64 invTopProd(const CTX& C,int base,int e,const int* top,int H){
+    u64 m=C.bs[base].pw[e],r=1;
+    for(int h=0;h<H;h++) r=(u128n)r*C.inv[base][e][top[h]]%m;
+    return r;
+}
+
+static int extendState(const CTX& C,const ST* pa,int np,const int* top,int H,int q,ST* out){
+    size_t a=0,b=0;
+    int n=0;
+    while(a<(size_t)np || b<C.F[q].size()){
+        int r1=a<(size_t)np ? pa[a].rank : INT_MAX;
+        int r2=b<C.F[q].size() ? C.F[q][b].rank : INT_MAX;
+        int base,e; u64 r,m;
+        if(r1<r2){
+            base=pa[a].b; e=pa[a].e; m=C.bs[base].pw[e];
+            r=(u128n)pa[a].r*C.inv[base][e][q]%m; a++;
+        } else if(r2<r1){
+            base=C.F[q][b].b; e=C.F[q][b].e;
+            r=invTopProd(C,base,e,top,H); b++;
+        } else {
+            base=pa[a].b;
+            int ep=pa[a].e,eq=C.F[q][b].e;
+            if(eq>ep){ e=eq; r=invTopProd(C,base,e,top,H); }
+            else { e=ep; m=C.bs[base].pw[e]; r=(u128n)pa[a].r*C.inv[base][e][q]%m; }
+            a++; b++;
+        }
+        out[n++]={min(r1,r2),base,e,r};
+    }
+    return n;
+}
+
+struct Searcher {
+    const CTX& C;
+    int K;
+    const vector<vector<U>>& mx;
+    const vector<vector<U>>& below;
+    CNT& ct;
+
+    void dfs(int* top,int H,int smallest,const U& xH,const U& MH,const ST* st,int ns){
+        int rem=K-H;
+        if(rem<=4) return;
+        int lo=rem-1;
+        int q0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+smallest,xH)-mx[rem].begin()));
+        for(int q=q0;q<smallest;q++){
+            if(!inherited_ok(xH,MH,C.P[q],below[rem-1][q])) continue;
+            ct.t[H+1]++;
+            ST ch[128];
+            int nc=extendState(C,st,ns,top,H,q,ch);
+            U x,M;
+            if(!crtState(C,ch,nc,below[rem-1][q],x,M)) continue;
+            ct.s[H+1]++;
+            top[H]=q;
+            if(rem-1==4){
+#pragma omp critical(out)
+                {
+                    cerr<<"TOP"<<(H+1);
+                    for(int h=0;h<=H;h++) cerr<<(h?",":" ")<<top[h];
+                    cerr<<"\n";
+                }
+            } else {
+                dfs(top,H+1,q,x,M,ch,nc);
+            }
+        }
+    }
+};
+
+int main(int ac,char** av){
+    if(ac<2) return 1;
+    ifstream in(av[1]);
+    CTX C;
+    string s;
+    while(in>>s) C.P.push_back(parse128(s));
+    C.n=ac>2 ? min<int>(stoi(av[2]),C.P.size()) : C.P.size();
+    C.P.resize(C.n);
+    int th=ac>3 ? stoi(av[3]) : 4;
+    int sh=ac>4 ? stoi(av[4]) : 0;
+    int nsh=ac>5 ? stoi(av[5]) : 1;
+    int K=ac>6 ? stoi(av[6]) : 13;
+    int mode=ac>7 ? stoi(av[7]) : 0;
+    if(K!=11 && K!=13) return 3;
+    if(sh<0 || nsh<1 || sh>=nsh || (mode!=0 && mode!=1)) return 5;
+
+    vector<map<u64,int>> fm(C.n);
+    map<u64,int> gm;
+    for(int i=0;i<C.n;i++){
+        for(auto [q,e]:fac(C.P[i]-1)) fm[i][q]+=e;
+        for(auto [q,e]:fac(C.P[i]+1)) fm[i][q]+=e;
+        auto it=fm[i].find(2);
+        if(it==fm[i].end()) return 4;
+        if(--it->second==0) fm[i].erase(it);
+        for(auto [q,e]:fm[i]) gm[q]=max(gm[q],e);
+    }
+    for(auto [q,e]:gm){
+        BI z{q,e,vector<u64>(e+1,1)};
+        for(int k=1;k<=e;k++) z.pw[k]=z.pw[k-1]*q;
+        C.bs.push_back(move(z));
+    }
+    C.B=C.bs.size();
+    unordered_map<u64,int> id;
+    for(int b=0;b<C.B;b++) id[C.bs[b].q]=b;
+    vector<int> ord(C.B); iota(ord.begin(),ord.end(),0);
+    sort(ord.begin(),ord.end(),[&](int a,int b){
+        u64 x=C.bs[a].pw[C.bs[a].maxe],y=C.bs[b].pw[C.bs[b].maxe];
+        return x!=y ? x>y : C.bs[a].q>C.bs[b].q;
+    });
+    vector<int> rank(C.B);
+    for(int r=0;r<C.B;r++) rank[ord[r]]=r;
+    C.F.resize(C.n);
+    for(int i=0;i<C.n;i++){
+        for(auto [q,e]:fm[i]){
+            int b=id[q];
+            C.F[i].push_back({rank[b],b,(uint8_t)e});
+        }
+        sort(C.F[i].begin(),C.F[i].end(),[](auto& a,auto& b){ return a.rank<b.rank; });
+    }
+    C.inv.resize(C.B);
+    for(int b=0;b<C.B;b++){
+        C.inv[b].resize(C.bs[b].maxe+1);
+        for(int e=1;e<=C.bs[b].maxe;e++){
+            u64 m=C.bs[b].pw[e];
+            C.inv[b][e].resize(C.n);
+            for(int i=0;i<C.n;i++) C.inv[b][e][i]=invmod((C.P[i]%m).convert_to<u64>(),m);
+        }
+    }
+
+    vector<vector<U>> below(K+1,vector<U>(C.n)),mx(K+1,vector<U>(C.n));
+    for(int i=0;i<C.n;i++){
+        U z=1;
+        for(int k=1;k<=K;k++){
+            if(i-k<0) break;
+            z*=C.P[i-k];
+            below[k][i]=z;
+            if(k+1<=K) mx[k+1][i]=z*C.P[i];
+        }
+    }
+
+    vector<TASK> tasks;
+    u64 tid=0;
+    for(int u=K-3;u<=C.n-3;u++){
+        for(int t=u+1;t<C.n-1;t++,tid++){
+            bool take = mode==0 ? ((u-(K-3))%nsh==sh) : ((int)(tid%(u64)nsh)==sh);
+            if(take) tasks.push_back({u,t,tid});
+        }
+    }
+    cerr<<"loaded n="<<C.n<<" sh="<<sh<<"/"<<nsh<<" k="<<K<<" m="<<mode<<" q="<<tasks.size()<<"\n";
+
+    vector<CNT> cc(max(1,th));
+    auto stime=chrono::steady_clock::now();
+    omp_set_num_threads(th);
 #pragma omp parallel for schedule(dynamic,1)
- for(int u=U0;u<=U1;u+=nsh){CNT&ct=cc[omp_get_thread_num()];U B0=below[K-3][u];ST st3[128];for(int t=u+1;t<C.n-1;t++)for(int j=t+1;j<C.n;j++){ct.tri++;int n3=build3(C,j,t,u,st3);U x3,M3;if(!crtState(C,st3,n3,B0,x3,M3))continue;ct.s[3]++;int rem=K-3,lo=rem-1;int v0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+u,x3)-mx[rem].begin()));int top[12]={j,t,u};for(int v=v0;v<u;v++){if(!inherited_ok(x3,M3,C.P[v],below[rem-1][v]))continue;ct.t[4]++;ST st4[128];int n4=extendState(C,st3,n3,top,3,v,st4);U x4,M4;if(!crtState(C,st4,n4,below[rem-1][v],x4,M4))continue;ct.s[4]++;top[3]=v;Searcher S{C,K,mx,below,ct};S.dfs(top,4,v,x4,M4,st4,n4);}}}
- CNT Z;for(auto&c:cc){Z.tri+=c.tri;for(int h=3;h<10;h++){Z.s[h]+=c.s[h];Z.t[h]+=c.t[h];}}double sec=chrono::duration<double>(chrono::steady_clock::now()-stime).count();cerr<<"DONE triples="<<Z.tri<<" s3="<<Z.s[3];for(int h=4;h<=K-4;h++)cerr<<" t"<<h<<"="<<Z.t[h]<<" s"<<h<<"="<<Z.s[h];cerr<<" sec="<<sec<<"\n";return 2;}
+    for(long long z=0;z<(long long)tasks.size();z++){
+        CNT& ct=cc[omp_get_thread_num()];
+        int u=tasks[z].u, t=tasks[z].t;
+        U B0=below[K-3][u];
+        ST st3[128];
+        for(int j=t+1;j<C.n;j++){
+            ct.tri++;
+            int n3=build3(C,j,t,u,st3);
+            U x3,M3;
+            if(!crtState(C,st3,n3,B0,x3,M3)) continue;
+            ct.s[3]++;
+            int rem=K-3,lo=rem-1;
+            int v0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+u,x3)-mx[rem].begin()));
+            int top[12]={j,t,u};
+            for(int v=v0;v<u;v++){
+                if(!inherited_ok(x3,M3,C.P[v],below[rem-1][v])) continue;
+                ct.t[4]++;
+                ST st4[128];
+                int n4=extendState(C,st3,n3,top,3,v,st4);
+                U x4,M4;
+                if(!crtState(C,st4,n4,below[rem-1][v],x4,M4)) continue;
+                ct.s[4]++;
+                top[3]=v;
+                Searcher S{C,K,mx,below,ct};
+                S.dfs(top,4,v,x4,M4,st4,n4);
+            }
+        }
+#pragma omp critical(out)
+        { cerr<<"D "<<tasks[z].id<<"\n"; }
+    }
+
+    CNT Z;
+    for(auto& c:cc){
+        Z.tri+=c.tri;
+        for(int h=3;h<10;h++){ Z.s[h]+=c.s[h]; Z.t[h]+=c.t[h]; }
+    }
+    double sec=chrono::duration<double>(chrono::steady_clock::now()-stime).count();
+    cerr<<"DONE triples="<<Z.tri<<" s3="<<Z.s[3];
+    for(int h=4;h<=K-4;h++) cerr<<" t"<<h<<"="<<Z.t[h]<<" s"<<h<<"="<<Z.s[h];
+    cerr<<" sec="<<sec<<"\n";
+    return 2;
+}
