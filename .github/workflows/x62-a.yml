@@ -28,7 +28,7 @@ jobs:
           logs=sorted(glob.glob('z/x62-[0-9]*/l'))
           print('files',len(logs))
           if len(logs)!=160: raise SystemExit('bad file count')
-          ids=[]; tops=[]; agg={}; secs=0.0
+          ids=[]; tops=[]; agg={}; secs=0.0; hit=[]
           for p in logs:
               m=re.search(r'x62-(\d+)/l$',p); sh=int(m.group(1))
               lines=open(p,encoding='utf-8').read().splitlines()
@@ -39,24 +39,20 @@ jobs:
               tops += [(sh,x) for x in lines if x.startswith('TOP')]
               dl=[x for x in lines if x.startswith('DONE ')]
               if len(dl)!=1: raise SystemExit(f'bad DONE shard {sh}: {len(dl)}')
+              vals={}
               for tok in dl[0].split()[1:]:
                   if '=' not in tok: continue
                   k,v=tok.split('=',1)
                   if k=='sec': secs += float(v)
-                  else: agg[k]=agg.get(k,0)+int(v)
+                  else:
+                      vals[k]=int(v); agg[k]=agg.get(k,0)+int(v)
+              if vals.get('s7',0): hit.append((sh,vals.get('t7',0),vals.get('s7',0),vals.get('s6',0)))
           s=sorted(ids)
-          if len(s)!=517653 or s!=list(range(517653)):
-              miss=[]; prev=-1
-              for x in s:
-                  if x>prev+1: miss.extend(range(prev+1,min(x,prev+11)))
-                  prev=x
-              print('bad coverage',len(s),len(set(s)),s[:1],s[-1:],miss[:20])
-              raise SystemExit(3)
+          if len(s)!=517653 or s!=list(range(517653)): raise SystemExit('bad coverage')
           print('coverage',len(s),len(set(s)),s[0],s[-1])
           print('done',len(logs))
           print('tops',len(tops))
-          if tops:
-              for x in tops[:20]: print('TOPREC',x[0],x[1])
+          print('hitshards',hit)
           print('sumsec',round(secs,3))
           for k in ['triples','s3','t4','s4','t5','s5','t6','s6','t7','s7','t8','s8','t9','s9']:
               print(k,agg.get(k,0))
