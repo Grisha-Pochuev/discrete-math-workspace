@@ -1,0 +1,99 @@
+name: x62-h
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/x62-h.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  r:
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        include:
+          - {id: 0, seed: 101,  order: 0, mode: 0, form: 0, chunk: 32, k: 515}
+          - {id: 1, seed: 211,  order: 1, mode: 0, form: 0, chunk: 32, k: 515}
+          - {id: 2, seed: 307,  order: 2, mode: 0, form: 0, chunk: 32, k: 515}
+          - {id: 3, seed: 401,  order: 3, mode: 0, form: 0, chunk: 40, k: 515}
+          - {id: 4, seed: 503,  order: 0, mode: 1, form: 0, chunk: 24, k: 515}
+          - {id: 5, seed: 601,  order: 2, mode: 2, form: 0, chunk: 32, k: 515}
+          - {id: 6, seed: 701,  order: 0, mode: 0, form: 1, chunk: 32, k: 515}
+          - {id: 7, seed: 809,  order: 1, mode: 0, form: 1, chunk: 32, k: 515}
+          - {id: 8, seed: 907,  order: 2, mode: 1, form: 1, chunk: 24, k: 515}
+          - {id: 9, seed: 1009, order: 3, mode: 3, form: 1, chunk: 40, k: 515}
+          - {id: 10, seed: 1103, order: 2, mode: 4, form: 0, chunk: 20, k: 519}
+          - {id: 11, seed: 1201, order: 2, mode: 3, form: 0, chunk: 40, k: 511}
+    name: h-${{ matrix.id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 36
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            x62
+          sparse-checkout-cone-mode: true
+          fetch-depth: 1
+      - name: r
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv .v
+          . .v/bin/activate
+          python -m pip install -q --disable-pip-version-check ortools
+          set +e
+          timeout 29m python x62/h.py x62/d \
+            ${{ matrix.seed }} 1700 out \
+            ${{ matrix.order }} ${{ matrix.mode }} ${{ matrix.form }} \
+            ${{ matrix.chunk }} ${{ matrix.k }}
+          rc=$?
+          set -e
+          tail -30 out || true
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ] && [ "$rc" -ne 124 ]; then
+            exit "$rc"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: h-${{ matrix.id }}
+          path: out
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 0
+
+  a:
+    needs: r
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: h-*
+          path: z
+          merge-multiple: false
+      - name: a
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import glob, os
+          fs=sorted(glob.glob('z/h-*/out'))
+          print('files',len(fs))
+          found=[]
+          for p in fs:
+              lines=open(p,encoding='utf-8').read().splitlines()
+              status=next((x for x in lines if x.startswith('status=')),'status=MISSING')
+              reached=next((x for x in lines if x.startswith('reached=')),'reached=FOUND')
+              phases=next((x for x in lines if x.startswith('phases=')),'phases=?')
+              print(os.path.basename(os.path.dirname(p)),status,reached,phases)
+              if status=='status=FOUND': found.append(p)
+          print('found',len(found))
+          for p in found:
+              print('RESULT',p)
+              print(open(p,encoding='utf-8').read())
+          PY
