@@ -15,4 +15,4 @@ jobs:
       - name: k
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh run cancel 33268610649 -R Grisha-Pochuev/discrete-math-workspace || true
+        run: gh run cancel 33269157307 -R Grisha-Pochuev/discrete-math-workspace || true
