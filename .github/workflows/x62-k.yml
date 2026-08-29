@@ -1,0 +1,18 @@
+name: x62-k
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/x62-k.yml'
+permissions:
+  actions: write
+  contents: read
+jobs:
+  k:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: k
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run cancel 33268610649 -R Grisha-Pochuev/discrete-math-workspace || true
