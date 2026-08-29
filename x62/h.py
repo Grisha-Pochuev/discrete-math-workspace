@@ -26,7 +26,7 @@ def add_xors(model, x, rows):
 def row_bits(row, form):
     q = row[0]
     z = math.log2(q)
-    if form == 1 and q % 2 == 0:
+    if q % 2 == 0:
         z -= 1.0
     return max(0.0, z)
 
@@ -63,11 +63,18 @@ def grouped_rows(coords, split, seed, order, form):
     return groups
 
 
-def add_row(model, x, row, k, ri):
+def add_row(model, x, row, k, ri, enc):
     q, aa, target, _ = row
-    vals = sorted(aa)
-    lo = sum(vals[:k])
-    hi = sum(vals[-k:])
+    if enc:
+        model.AddModuloEquality(target, sum(a * x[i] for i, a in enumerate(aa) if a), q)
+        return
+    if k:
+        vals = sorted(aa)
+        lo = sum(vals[:k])
+        hi = sum(vals[-k:])
+    else:
+        lo = 0
+        hi = sum(aa)
     zlo = max(0, (lo - target + q - 1) // q)
     zhi = max(zlo, (hi - target) // q)
     z = model.NewIntVar(zlo, zhi, 'z%d' % ri)
@@ -109,8 +116,11 @@ def solve(path, seed, seconds, out_path, order, mode, form, chunk, k):
         cuts.append(len(groups))
 
     rng = random.Random(seed ^ 62026)
-    hs = set(rng.sample(range(n), k))
-    prev = [int(i in hs) for i in range(n)]
+    if k:
+        hs = set(rng.sample(range(n), k))
+        prev = [int(i in hs) for i in range(n)]
+    else:
+        prev = [rng.getrandbits(1) for _ in range(n)]
     start = time.time()
     lines = [
         'seed=%d' % seed, 'order=%d' % order, 'mode=%d' % mode,
@@ -127,12 +137,13 @@ def solve(path, seed, seconds, out_path, order, mode, form, chunk, k):
         budget = max(8.0, left / (len(cuts) - ph))
         model = cp_model.CpModel()
         x = [model.NewBoolVar('x%d' % i) for i in range(n)]
-        model.Add(sum(x) == k)
+        if k:
+            model.Add(sum(x) == k)
         add_xors(model, x, xb)
         ri = 0
         for group in groups[:cut]:
             for row in group:
-                add_row(model, x, row, k, ri)
+                add_row(model, x, row, k, ri, mode in (7, 8))
                 ri += 1
         for i, v in enumerate(prev):
             model.AddHint(x[i], v)
@@ -162,7 +173,14 @@ def solve(path, seed, seconds, out_path, order, mode, form, chunk, k):
         elif mode == 4:
             solver.parameters.use_ls_only = True
             solver.parameters.use_feasibility_jump = True
-        elif mode not in (0, 1, 2):
+        elif mode == 5:
+            solver.parameters.linearization_level = 0
+        elif mode == 6:
+            solver.parameters.linearization_level = 0
+            solver.parameters.cp_model_presolve = False
+        elif mode == 8:
+            solver.parameters.linearization_level = 0
+        elif mode not in (0, 1, 2, 7):
             raise RuntimeError(('mode', mode))
 
         t0 = time.time()
