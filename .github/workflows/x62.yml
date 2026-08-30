@@ -11,29 +11,27 @@ permissions:
   contents: read
 
 concurrency:
-  group: x62-main
+  group: x62-q20
   cancel-in-progress: false
 
 jobs:
-  z:
+  q:
     strategy:
       fail-fast: false
-      max-parallel: 12
+      max-parallel: 10
       matrix:
         include:
-          - {id: 101,   t: m, s: 101,   a: 0, b: 0, k: 515, f: 0}
-          - {id: 109,   t: m, s: 1009,  a: 1, b: 0, k: 515, f: 0}
-          - {id: 117,   t: m, s: 10007, a: 0, b: 1, k: 0,   f: 0}
-          - {id: 125,   t: m, s: 20011, a: 1, b: 1, k: 0,   f: 0}
-          - {id: 133,   t: m, s: 30013, a: 0, b: 2, k: 0,   f: 0}
-          - {id: 141,   t: m, s: 40009, a: 0, b: 0, k: 515, f: 180}
-          - {id: 501,   t: p, s: 501,   a: 0, b: 0, k: 515, f: 0}
-          - {id: 509,   t: p, s: 509,   a: 1, b: 0, k: 515, f: 0}
-          - {id: 517,   t: p, s: 517,   a: 2, b: 0, k: 515, f: 0}
-          - {id: 525,   t: p, s: 525,   a: 1, b: 0, k: 499, f: 0}
-          - {id: 533,   t: p, s: 533,   a: 2, b: 0, k: 531, f: 0}
-          - {id: 541,   t: p, s: 541,   a: 0, b: 0, k: 487, f: 0}
-    name: z-${{ matrix.id }}
+          - {id: 701, s: 701, st: 0, m: 0, b: 18, g: 8}
+          - {id: 709, s: 709, st: 0, m: 1, b: 24, g: 10}
+          - {id: 717, s: 717, st: 1, m: 0, b: 18, g: 12}
+          - {id: 725, s: 725, st: 1, m: 2, b: 28, g: 8}
+          - {id: 733, s: 733, st: 2, m: 1, b: 24, g: 15}
+          - {id: 741, s: 741, st: 3, m: 0, b: 20, g: 10}
+          - {id: 749, s: 749, st: 3, m: 2, b: 30, g: 5}
+          - {id: 757, s: 757, st: 4, m: 1, b: 20, g: 12}
+          - {id: 765, s: 765, st: 4, m: 0, b: 30, g: 15}
+          - {id: 773, s: 773, st: 2, m: 2, b: 16, g: 5}
+    name: q-${{ matrix.id }}
     runs-on: ubuntu-24.04
     timeout-minutes: 47
     steps:
@@ -45,29 +43,23 @@ jobs:
           fetch-depth: 1
       - name: d
         shell: bash
-        run: |
-          python3 -m pip install -q scipy==1.16.1
-          python3 -m pip install -q pyscipopt || true
+        run: python3 -m pip install -q ortools==9.14.6206
       - name: r
         shell: bash
         run: |
           set +e
-          if [ "${{ matrix.t }}" = "m" ]; then
-            timeout 44m python3 x62/m.py x62/d ${{ matrix.s }} 2520 x62/r ${{ matrix.a }} ${{ matrix.b }} ${{ matrix.k }} ${{ matrix.f }} 0 >x62/stdout 2>&1
-          else
-            timeout 44m python3 x62/p.py x62/d ${{ matrix.s }} 2520 x62/r ${{ matrix.k }} ${{ matrix.a }} >x62/stdout 2>&1
-          fi
+          timeout 44m python3 x62/q.py x62/d ${{ matrix.s }} 2520 x62/r 515 ${{ matrix.st }} ${{ matrix.m }} ${{ matrix.b }} ${{ matrix.g }} >x62/stdout 2>&1
           rc=$?
           set -e
           cat x62/stdout || true
           cat x62/r || true
           if grep -q '^FOUND$' x62/r 2>/dev/null; then exit 0; fi
-          if [ "$rc" -eq 124 ] || [ "$rc" -eq 2 ] || [ "$rc" -eq 3 ]; then exit 0; fi
+          if [ "$rc" -eq 124 ] || [ "$rc" -eq 2 ]; then exit 0; fi
           exit "$rc"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: z-${{ matrix.id }}
+          name: q-${{ matrix.id }}
           path: |
             x62/r
             x62/stdout
