@@ -15,19 +15,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  j:
+  k:
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 6
       matrix:
         include:
-          - {s: 6201, m: 0}
-          - {s: 6209, m: 1}
-          - {s: 6221, m: 2}
-          - {s: 6229, m: 3}
-    name: j-${{ matrix.s }}
+          - {s: 101,   k: 515, f: 160, o: 0, m: 0, b: 8}
+          - {s: 1009,  k: 515, f: 192, o: 1, m: 1, b: 8}
+          - {s: 10007, k: 515, f: 224, o: 2, m: 2, b: 8}
+          - {s: 20011, k: 343, f: 96,  o: 0, m: 1, b: 8}
+          - {s: 30013, k: 343, f: 128, o: 1, m: 2, b: 8}
+          - {s: 40009, k: 251, f: 24,  o: 2, m: 0, b: 8}
+    name: k-${{ matrix.s }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 32
+    timeout-minutes: 42
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,12 +39,12 @@ jobs:
           fetch-depth: 1
       - name: d
         shell: bash
-        run: python3 -m pip install -q ortools==9.14.6206
+        run: python3 -m pip install -q ortools==9.14.6206 scipy==1.16.1
       - name: r
         shell: bash
         run: |
           set +e
-          timeout 27m python3 x62/j.py x62/d ${{ matrix.s }} 1560 x62/r ${{ matrix.m }} >x62/stdout 2>&1
+          timeout 37m python3 x62/k.py x62/d ${{ matrix.s }} 2160 x62/r ${{ matrix.k }} ${{ matrix.f }} ${{ matrix.o }} ${{ matrix.m }} ${{ matrix.b }} >x62/stdout 2>&1
           rc=$?
           set -e
           cat x62/stdout || true
@@ -53,7 +55,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: j-${{ matrix.s }}
+          name: k-${{ matrix.s }}
           path: |
             x62/r
             x62/stdout
