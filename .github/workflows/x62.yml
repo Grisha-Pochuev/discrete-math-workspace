@@ -21,15 +21,15 @@ jobs:
       max-parallel: 6
       matrix:
         include:
-          - {s: 101,   o: 0, m: 0, xc: 30, lc: 16}
-          - {s: 1009,  o: 1, m: 0, xc: 30, lc: 16}
-          - {s: 10007, o: 2, m: 0, xc: 30, lc: 16}
-          - {s: 20011, o: 0, m: 2, xc: 24, lc: 12}
-          - {s: 30013, o: 2, m: 3, xc: 24, lc: 12}
-          - {s: 40009, o: 2, m: 1, xc: 20, lc: 10}
+          - {s: 101,   k: 515, o: 0, m: 0, b: 24}
+          - {s: 1009,  k: 515, o: 1, m: 1, b: 24}
+          - {s: 10007, k: 515, o: 2, m: 2, b: 24}
+          - {s: 20011, k: 515, o: 2, m: 0, b: 16}
+          - {s: 30013, k: 513, o: 0, m: 1, b: 24}
+          - {s: 40009, k: 517, o: 1, m: 2, b: 24}
     name: i-${{ matrix.s }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 31
+    timeout-minutes: 32
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,7 +46,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          timeout 26m python3 x62/i.py x62/d ${{ matrix.s }} 1500 x62/r ${{ matrix.o }} ${{ matrix.m }} ${{ matrix.xc }} ${{ matrix.lc }} >x62/stdout 2>&1
+          timeout 27m python3 x62/i.py x62/d ${{ matrix.s }} 1560 x62/r ${{ matrix.k }} ${{ matrix.o }} ${{ matrix.m }} ${{ matrix.b }} >x62/stdout 2>&1
           rc=$?
           set -e
           cat x62/stdout || true
