@@ -15,21 +15,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  k:
+  z:
     strategy:
       fail-fast: false
-      max-parallel: 6
+      max-parallel: 12
       matrix:
         include:
-          - {s: 101,   k: 515, f: 160, o: 0, m: 0, b: 8}
-          - {s: 1009,  k: 515, f: 192, o: 1, m: 1, b: 8}
-          - {s: 10007, k: 515, f: 224, o: 2, m: 2, b: 8}
-          - {s: 20011, k: 343, f: 96,  o: 0, m: 1, b: 8}
-          - {s: 30013, k: 343, f: 128, o: 1, m: 2, b: 8}
-          - {s: 40009, k: 251, f: 24,  o: 2, m: 0, b: 8}
-    name: k-${{ matrix.s }}
+          - {id: 101,   t: m, s: 101,   a: 0, b: 0, k: 515, f: 0}
+          - {id: 109,   t: m, s: 1009,  a: 1, b: 0, k: 515, f: 0}
+          - {id: 117,   t: m, s: 10007, a: 0, b: 1, k: 0,   f: 0}
+          - {id: 125,   t: m, s: 20011, a: 1, b: 1, k: 0,   f: 0}
+          - {id: 133,   t: m, s: 30013, a: 0, b: 2, k: 0,   f: 0}
+          - {id: 141,   t: m, s: 40009, a: 0, b: 0, k: 515, f: 180}
+          - {id: 501,   t: p, s: 501,   a: 0, b: 0, k: 515, f: 0}
+          - {id: 509,   t: p, s: 509,   a: 1, b: 0, k: 515, f: 0}
+          - {id: 517,   t: p, s: 517,   a: 2, b: 0, k: 515, f: 0}
+          - {id: 525,   t: p, s: 525,   a: 1, b: 0, k: 499, f: 0}
+          - {id: 533,   t: p, s: 533,   a: 2, b: 0, k: 531, f: 0}
+          - {id: 541,   t: p, s: 541,   a: 0, b: 0, k: 487, f: 0}
+    name: z-${{ matrix.id }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 42
+    timeout-minutes: 47
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,23 +45,29 @@ jobs:
           fetch-depth: 1
       - name: d
         shell: bash
-        run: python3 -m pip install -q ortools==9.14.6206 scipy==1.16.1
+        run: |
+          python3 -m pip install -q scipy==1.16.1
+          python3 -m pip install -q pyscipopt || true
       - name: r
         shell: bash
         run: |
           set +e
-          timeout 37m python3 x62/k.py x62/d ${{ matrix.s }} 2160 x62/r ${{ matrix.k }} ${{ matrix.f }} ${{ matrix.o }} ${{ matrix.m }} ${{ matrix.b }} >x62/stdout 2>&1
+          if [ "${{ matrix.t }}" = "m" ]; then
+            timeout 44m python3 x62/m.py x62/d ${{ matrix.s }} 2520 x62/r ${{ matrix.a }} ${{ matrix.b }} ${{ matrix.k }} ${{ matrix.f }} 0 >x62/stdout 2>&1
+          else
+            timeout 44m python3 x62/p.py x62/d ${{ matrix.s }} 2520 x62/r ${{ matrix.k }} ${{ matrix.a }} >x62/stdout 2>&1
+          fi
           rc=$?
           set -e
           cat x62/stdout || true
           cat x62/r || true
           if grep -q '^FOUND$' x62/r 2>/dev/null; then exit 0; fi
-          if [ "$rc" -eq 124 ] || [ "$rc" -eq 2 ]; then exit 0; fi
+          if [ "$rc" -eq 124 ] || [ "$rc" -eq 2 ] || [ "$rc" -eq 3 ]; then exit 0; fi
           exit "$rc"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: k-${{ matrix.s }}
+          name: z-${{ matrix.id }}
           path: |
             x62/r
             x62/stdout
