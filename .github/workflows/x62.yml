@@ -15,110 +15,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  v:
-    name: v
-    runs-on: ubuntu-24.04
-    timeout-minutes: 35
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            x62
-          sparse-checkout-cone-mode: true
-          fetch-depth: 1
-      - name: deps
-        shell: bash
-        run: |
-          set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq --no-install-recommends libboost-dev
-      - name: build
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path('x62/c.cpp')
-          s=p.read_text()
-          s=s.replace('struct CNT { unsigned long long tri=0, s[10]{}, t[10]{}; };','struct CNT { unsigned long long tri=0, s[16]{}, t[16]{}; };')
-          s=s.replace('if(K!=11 && K!=13) return 3;','if(K!=11 && K!=13 && K!=15) return 3;')
-          marker='\nstatic bool crtState(const CTX& C,const ST* st,int ns,const U& B,U& x,U& M){'
-          helper='''\nstatic bool first_feasible(const U& x,const U& M,const U& L,const U& B,U& y){\n    if(x>B || L>B) return false;\n    if(x>=L){ y=x; return true; }\n    if(M>B) return false;\n    U d=L-x;\n    y=x+((d+M-1)/M)*M;\n    return y<=B;\n}\n\nstatic bool crtState(const CTX& C,const ST* st,int ns,const U& B,U& x,U& M){'''
-          if marker not in s: raise SystemExit('marker1')
-          s=s.replace(marker,helper,1)
-          old='''    const vector<vector<U>>& below;\n    CNT& ct;'''
-          new='''    const vector<vector<U>>& below;\n    const vector<U>& gmin;\n    CNT& ct;'''
-          if old not in s: raise SystemExit('marker2')
-          s=s.replace(old,new,1)
-          old='''        int rem=K-H;\n        if(rem<=4) return;\n        int lo=rem-1;\n        int q0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+smallest,xH)-mx[rem].begin()));'''
-          new='''        int rem=K-H;\n        if(rem<=4) return;\n        U fH;\n        if(!first_feasible(xH,MH,gmin[rem],below[rem][smallest],fH)) return;\n        int lo=rem-1;\n        int q0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+smallest,fH)-mx[rem].begin()));'''
-          if old not in s: raise SystemExit('marker3')
-          s=s.replace(old,new,1)
-          old='''            U x,M;\n            if(!crtState(C,ch,nc,below[rem-1][q],x,M)) continue;\n            ct.s[H+1]++;'''
-          new='''            U x,M;\n            if(!crtState(C,ch,nc,below[rem-1][q],x,M)) continue;\n            U fnext;\n            if(!first_feasible(x,M,gmin[rem-1],below[rem-1][q],fnext)) continue;\n            ct.s[H+1]++;'''
-          if old not in s: raise SystemExit('marker4')
-          s=s.replace(old,new,1)
-          old='''    vector<TASK> tasks;'''
-          new='''    vector<U> gmin(K+1,1);\n    for(int k=1;k<=K;k++) gmin[k]=gmin[k-1]*C.P[k-1];\n\n    vector<TASK> tasks;'''
-          if old not in s: raise SystemExit('marker5')
-          s=s.replace(old,new,1)
-          old='''            U x3,M3;\n            if(!crtState(C,st3,n3,B0,x3,M3)) continue;\n            ct.s[3]++;\n            int rem=K-3,lo=rem-1;\n            int v0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+u,x3)-mx[rem].begin()));'''
-          new='''            U x3,M3;\n            if(!crtState(C,st3,n3,B0,x3,M3)) continue;\n            int rem=K-3,lo=rem-1;\n            U f3;\n            if(!first_feasible(x3,M3,gmin[rem],B0,f3)) continue;\n            ct.s[3]++;\n            int v0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+u,f3)-mx[rem].begin()));'''
-          if old not in s: raise SystemExit('marker6')
-          s=s.replace(old,new,1)
-          old='''                U x4,M4;\n                if(!crtState(C,st4,n4,below[rem-1][v],x4,M4)) continue;\n                ct.s[4]++;\n                top[3]=v;\n                Searcher S{C,K,mx,below,ct};'''
-          new='''                U x4,M4;\n                if(!crtState(C,st4,n4,below[rem-1][v],x4,M4)) continue;\n                U f4;\n                if(!first_feasible(x4,M4,gmin[rem-1],below[rem-1][v],f4)) continue;\n                ct.s[4]++;\n                top[3]=v;\n                Searcher S{C,K,mx,below,gmin,ct};'''
-          if old not in s: raise SystemExit('marker7')
-          s=s.replace(old,new,1)
-          s=s.replace('int top[12]={j,t,u};','int top[16]={j,t,u};')
-          s=s.replace('for(int h=3;h<10;h++){ Z.s[h]+=c.s[h]; Z.t[h]+=c.t[h]; }','for(int h=3;h<16;h++){ Z.s[h]+=c.s[h]; Z.t[h]+=c.t[h]; }')
-          Path('x62/e.cpp').write_text(s)
-          PY
-          g++ -O3 -DNDEBUG -std=c++17 -fopenmp x62/e.cpp -o x62/e
-      - name: validate
-        shell: bash
-        run: |
-          set -euo pipefail
-          runone(){
-            name=$1; shift
-            set +e
-            timeout 9m ./x62/e x62/d "$@" >"x62/$name" 2>&1
-            rc=$?
-            set -e
-            if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then cat "x62/$name"; exit "$rc"; fi
-            grep '^DONE' "x62/$name"
-          }
-          runone k11a 200 4 0 20 11 0
-          runone k11b 200 4 7 20 11 0
-          grep -q 's6=0' x62/k11a
-          grep -q 's6=0' x62/k11b
-          runone k13 60 4 0 1 13 1
-          grep -q 's7=0' x62/k13
-          runone k15a 60 4 0 1 15 1
-          runone k15b 80 4 0 1 15 1
-      - uses: actions/upload-artifact@v4
-        with:
-          name: e
-          path: |
-            x62/e.cpp
-            x62/k11a
-            x62/k11b
-            x62/k13
-            x62/k15a
-            x62/k15b
-          if-no-files-found: error
-          retention-days: 1
-          compression-level: 0
-
-  k:
+  i:
     strategy:
       fail-fast: false
       max-parallel: 6
       matrix:
-        r: [101, 10007, 20011, 30013, 40009, 50021]
-    name: k-${{ matrix.r }}
+        include:
+          - {s: 101,   o: 0, m: 0, xc: 30, lc: 16}
+          - {s: 1009,  o: 1, m: 0, xc: 30, lc: 16}
+          - {s: 10007, o: 2, m: 0, xc: 30, lc: 16}
+          - {s: 20011, o: 0, m: 2, xc: 24, lc: 12}
+          - {s: 30013, o: 2, m: 3, xc: 24, lc: 12}
+          - {s: 40009, o: 2, m: 1, xc: 20, lc: 10}
+    name: i-${{ matrix.s }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 35
+    timeout-minutes: 31
     steps:
       - uses: actions/checkout@v4
         with:
@@ -126,51 +37,30 @@ jobs:
             x62
           sparse-checkout-cone-mode: true
           fetch-depth: 1
-      - name: deps
+      - name: d
         shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq --no-install-recommends libboost-dev
-      - name: build
-        shell: bash
-        run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-          s=Path('x62/c.cpp').read_text()
-          s=s.replace('struct CNT { unsigned long long tri=0, s[10]{}, t[10]{}; };','struct CNT { unsigned long long tri=0, s[16]{}, t[16]{}; };')
-          s=s.replace('if(K!=11 && K!=13) return 3;','if(K!=11 && K!=13 && K!=15) return 3;')
-          marker='\nstatic bool crtState(const CTX& C,const ST* st,int ns,const U& B,U& x,U& M){'
-          helper='''\nstatic bool first_feasible(const U& x,const U& M,const U& L,const U& B,U& y){\n    if(x>B || L>B) return false;\n    if(x>=L){ y=x; return true; }\n    if(M>B) return false;\n    U d=L-x;\n    y=x+((d+M-1)/M)*M;\n    return y<=B;\n}\n\nstatic bool crtState(const CTX& C,const ST* st,int ns,const U& B,U& x,U& M){'''
-          s=s.replace(marker,helper,1)
-          s=s.replace('''    const vector<vector<U>>& below;\n    CNT& ct;''','''    const vector<vector<U>>& below;\n    const vector<U>& gmin;\n    CNT& ct;''',1)
-          s=s.replace('''        int rem=K-H;\n        if(rem<=4) return;\n        int lo=rem-1;\n        int q0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+smallest,xH)-mx[rem].begin()));''','''        int rem=K-H;\n        if(rem<=4) return;\n        U fH;\n        if(!first_feasible(xH,MH,gmin[rem],below[rem][smallest],fH)) return;\n        int lo=rem-1;\n        int q0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+smallest,fH)-mx[rem].begin()));''',1)
-          s=s.replace('''            U x,M;\n            if(!crtState(C,ch,nc,below[rem-1][q],x,M)) continue;\n            ct.s[H+1]++;''','''            U x,M;\n            if(!crtState(C,ch,nc,below[rem-1][q],x,M)) continue;\n            U fnext;\n            if(!first_feasible(x,M,gmin[rem-1],below[rem-1][q],fnext)) continue;\n            ct.s[H+1]++;''',1)
-          s=s.replace('''    vector<TASK> tasks;''','''    vector<U> gmin(K+1,1);\n    for(int k=1;k<=K;k++) gmin[k]=gmin[k-1]*C.P[k-1];\n\n    vector<TASK> tasks;''',1)
-          s=s.replace('''            U x3,M3;\n            if(!crtState(C,st3,n3,B0,x3,M3)) continue;\n            ct.s[3]++;\n            int rem=K-3,lo=rem-1;\n            int v0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+u,x3)-mx[rem].begin()));''','''            U x3,M3;\n            if(!crtState(C,st3,n3,B0,x3,M3)) continue;\n            int rem=K-3,lo=rem-1;\n            U f3;\n            if(!first_feasible(x3,M3,gmin[rem],B0,f3)) continue;\n            ct.s[3]++;\n            int v0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+u,f3)-mx[rem].begin()));''',1)
-          s=s.replace('''                U x4,M4;\n                if(!crtState(C,st4,n4,below[rem-1][v],x4,M4)) continue;\n                ct.s[4]++;\n                top[3]=v;\n                Searcher S{C,K,mx,below,ct};''','''                U x4,M4;\n                if(!crtState(C,st4,n4,below[rem-1][v],x4,M4)) continue;\n                U f4;\n                if(!first_feasible(x4,M4,gmin[rem-1],below[rem-1][v],f4)) continue;\n                ct.s[4]++;\n                top[3]=v;\n                Searcher S{C,K,mx,below,gmin,ct};''',1)
-          s=s.replace('int top[12]={j,t,u};','int top[16]={j,t,u};')
-          s=s.replace('for(int h=3;h<10;h++){ Z.s[h]+=c.s[h]; Z.t[h]+=c.t[h]; }','for(int h=3;h<16;h++){ Z.s[h]+=c.s[h]; Z.t[h]+=c.t[h]; }')
-          Path('x62/e.cpp').write_text(s)
-          PY
-          g++ -O3 -DNDEBUG -std=c++17 -fopenmp x62/e.cpp -o x62/e
-      - name: run
+          python3 -m pip install -q ortools==9.14.6206
+      - name: r
         shell: bash
         run: |
           set +e
-          timeout 25m ./x62/e x62/d 1029 4 ${{ matrix.r }} 65536 15 1 >x62/l 2>&1
+          timeout 26m python3 x62/i.py x62/d ${{ matrix.s }} 1500 x62/r ${{ matrix.o }} ${{ matrix.m }} ${{ matrix.xc }} ${{ matrix.lc }} >x62/stdout 2>&1
           rc=$?
           set -e
-          grep '^DONE' x62/l || true
-          grep '^TOP' x62/l | head -5 || true
-          if [ "$rc" -eq 124 ]; then echo CUT; exit 0; fi
-          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then exit "$rc"; fi
+          cat x62/stdout || true
+          cat x62/r || true
+          if grep -q '^FOUND$' x62/r 2>/dev/null; then exit 0; fi
+          if [ "$rc" -eq 124 ] || [ "$rc" -eq 2 ]; then exit 0; fi
+          exit "$rc"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: k-${{ matrix.r }}
-          path: x62/l
-          if-no-files-found: error
+          name: i-${{ matrix.s }}
+          path: |
+            x62/r
+            x62/stdout
+          if-no-files-found: warn
           retention-days: 1
           compression-level: 0
