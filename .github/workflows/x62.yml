@@ -11,27 +11,27 @@ permissions:
   contents: read
 
 concurrency:
-  group: x62-q20
+  group: x62-s20
   cancel-in-progress: false
 
 jobs:
-  q:
+  s:
     strategy:
       fail-fast: false
       max-parallel: 10
       matrix:
         include:
-          - {id: 701, s: 701, st: 0, m: 0, b: 18, g: 8}
-          - {id: 709, s: 709, st: 0, m: 1, b: 24, g: 10}
-          - {id: 717, s: 717, st: 1, m: 0, b: 18, g: 12}
-          - {id: 725, s: 725, st: 1, m: 2, b: 28, g: 8}
-          - {id: 733, s: 733, st: 2, m: 1, b: 24, g: 15}
-          - {id: 741, s: 741, st: 3, m: 0, b: 20, g: 10}
-          - {id: 749, s: 749, st: 3, m: 2, b: 30, g: 5}
-          - {id: 757, s: 757, st: 4, m: 1, b: 20, g: 12}
-          - {id: 765, s: 765, st: 4, m: 0, b: 30, g: 15}
-          - {id: 773, s: 773, st: 2, m: 2, b: 16, g: 5}
-    name: q-${{ matrix.id }}
+          - {id: 801, s: 801, k: 501, st: 0, m: 0, b: 18, g: 8, l: 8}
+          - {id: 809, s: 809, k: 505, st: 0, m: 1, b: 24, g: 10, l: 10}
+          - {id: 817, s: 817, k: 509, st: 1, m: 0, b: 18, g: 12, l: 12}
+          - {id: 825, s: 825, k: 513, st: 1, m: 2, b: 28, g: 8, l: 14}
+          - {id: 833, s: 833, k: 515, st: 2, m: 1, b: 24, g: 15, l: 10}
+          - {id: 841, s: 841, k: 517, st: 3, m: 0, b: 20, g: 10, l: 8}
+          - {id: 849, s: 849, k: 521, st: 3, m: 2, b: 30, g: 5, l: 16}
+          - {id: 857, s: 857, k: 525, st: 4, m: 1, b: 20, g: 12, l: 12}
+          - {id: 865, s: 865, k: 529, st: 4, m: 0, b: 30, g: 15, l: 16}
+          - {id: 873, s: 873, k: 533, st: 2, m: 3, b: 16, g: 5, l: 8}
+    name: s-${{ matrix.id }}
     runs-on: ubuntu-24.04
     timeout-minutes: 47
     steps:
@@ -48,7 +48,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          timeout 44m python3 x62/q.py x62/d ${{ matrix.s }} 2520 x62/r 515 ${{ matrix.st }} ${{ matrix.m }} ${{ matrix.b }} ${{ matrix.g }} >x62/stdout 2>&1
+          timeout 44m python3 x62/s.py x62/d ${{ matrix.s }} 2520 x62/r ${{ matrix.k }} ${{ matrix.st }} ${{ matrix.m }} ${{ matrix.b }} ${{ matrix.g }} ${{ matrix.l }} >x62/stdout 2>&1
           rc=$?
           set -e
           cat x62/stdout || true
@@ -59,7 +59,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: q-${{ matrix.id }}
+          name: s-${{ matrix.id }}
           path: |
             x62/r
             x62/stdout
