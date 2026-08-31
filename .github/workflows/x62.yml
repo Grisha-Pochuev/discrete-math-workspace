@@ -9,29 +9,40 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
-  group: x62-o27
+  group: x62-w28
   cancel-in-progress: false
 
 jobs:
-  o:
+  w:
     strategy:
       fail-fast: false
-      max-parallel: 10
+      max-parallel: 20
       matrix:
         include:
-          - {id: 1201, s: 1201, d: 38, o: 0, m: 1, b: 3}
-          - {id: 1209, s: 1209, d: 40, o: 4, m: 2, b: 2}
-          - {id: 1217, s: 1217, d: 40, o: 1, m: 1, b: 3}
-          - {id: 1225, s: 1225, d: 42, o: 2, m: 2, b: 4}
-          - {id: 1233, s: 1233, d: 42, o: 0, m: 0, b: 3}
-          - {id: 1241, s: 1241, d: 44, o: 4, m: 1, b: 2}
-          - {id: 1249, s: 1249, d: 44, o: 1, m: 2, b: 4}
-          - {id: 1257, s: 1257, d: 46, o: 3, m: 1, b: 3}
-          - {id: 1265, s: 1265, d: 46, o: 2, m: 0, b: 4}
-          - {id: 1273, s: 1273, d: 48, o: 4, m: 2, b: 3}
-    name: o-${{ matrix.id }}
+          - {id: 1301, s: 1301}
+          - {id: 1309, s: 1309}
+          - {id: 1317, s: 1317}
+          - {id: 1325, s: 1325}
+          - {id: 1333, s: 1333}
+          - {id: 1341, s: 1341}
+          - {id: 1349, s: 1349}
+          - {id: 1357, s: 1357}
+          - {id: 1365, s: 1365}
+          - {id: 1373, s: 1373}
+          - {id: 1381, s: 1381}
+          - {id: 1389, s: 1389}
+          - {id: 1397, s: 1397}
+          - {id: 1405, s: 1405}
+          - {id: 1413, s: 1413}
+          - {id: 1421, s: 1421}
+          - {id: 1429, s: 1429}
+          - {id: 1437, s: 1437}
+          - {id: 1445, s: 1445}
+          - {id: 1453, s: 1453}
+    name: w-${{ matrix.id }}
     runs-on: ubuntu-24.04
     timeout-minutes: 47
     steps:
@@ -41,28 +52,34 @@ jobs:
             x62
           sparse-checkout-cone-mode: true
           fetch-depth: 1
-      - name: d
-        shell: bash
-        run: python3 -m pip install -q ortools==9.14.6206
       - name: r
         shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          mkdir -p x62/a
+          for b in 0 1 2 3 4 5 6 7; do
+            gh run download 33345107048 -n "z-$b" -D "x62/a/z-$b"
+          done
+          python3 x62/t.py x62/d x62/z x62/f
+          g++ -O3 -march=native -std=c++17 x62/w.cpp -o x62/w
           set +e
-          timeout 44m python3 x62/o.py x62/d ${{ matrix.s }} 2520 x62/out ${{ matrix.d }} ${{ matrix.o }} ${{ matrix.m }} ${{ matrix.b }} >x62/stdout 2>&1
-          rc=$?
+          pids=""
+          for j in 0 1 2 3; do
+            sd=$(( ${{ matrix.s }} + 100003*j ))
+            timeout 40m x62/w x62/z x62/f "$sd" 460 "x62/out$j" x62/a/z-0/o x62/a/z-1/o x62/a/z-2/o x62/a/z-3/o x62/a/z-4/o x62/a/z-5/o x62/a/z-6/o x62/a/z-7/o >"x62/log$j" 2>&1 &
+            pids="$pids $!"
+          done
+          for p in $pids; do wait "$p" || true; done
           set -e
-          cat x62/stdout || true
-          cat x62/out || true
-          if grep -q '^FOUND$' x62/out 2>/dev/null; then exit 0; fi
-          if [ "$rc" -eq 124 ] || [ "$rc" -eq 2 ]; then exit 0; fi
-          exit "$rc"
+          cat x62/out* 2>/dev/null || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: o-${{ matrix.id }}
+          name: w-${{ matrix.id }}
           path: |
-            x62/out
-            x62/stdout
+            x62/out*
+            x62/log*
           if-no-files-found: warn
           retention-days: 1
           compression-level: 0
