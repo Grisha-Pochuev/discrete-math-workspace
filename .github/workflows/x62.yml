@@ -11,19 +11,29 @@ permissions:
   contents: read
 
 concurrency:
-  group: x62-z22
+  group: x62-y23
   cancel-in-progress: false
 
 jobs:
-  g:
+  y:
     strategy:
       fail-fast: false
-      max-parallel: 8
+      max-parallel: 10
       matrix:
-        b: [0, 1, 2, 3, 4, 5, 6, 7]
-    name: z-${{ matrix.b }}
+        include:
+          - {id: 801, s: 801, w: 0,   o: 0, m: 2, b: 4}
+          - {id: 809, s: 809, w: 0,   o: 2, m: 4, b: 3}
+          - {id: 817, s: 817, w: 0,   o: 3, m: 2, b: 2}
+          - {id: 825, s: 825, w: 900, o: 0, m: 2, b: 4}
+          - {id: 833, s: 833, w: 800, o: 1, m: 4, b: 3}
+          - {id: 841, s: 841, w: 700, o: 2, m: 2, b: 4}
+          - {id: 849, s: 849, w: 600, o: 0, m: 0, b: 3}
+          - {id: 857, s: 857, w: 500, o: 4, m: 2, b: 2}
+          - {id: 865, s: 865, w: 0,   o: 0, m: 3, b: 4}
+          - {id: 873, s: 873, w: 800, o: 3, m: 5, b: 2}
+    name: y-${{ matrix.id }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 47
     steps:
       - uses: actions/checkout@v4
         with:
@@ -31,47 +41,14 @@ jobs:
             x62
           sparse-checkout-cone-mode: true
           fetch-depth: 1
+      - name: d
+        shell: bash
+        run: python3 -m pip install -q ortools==9.14.6206
       - name: r
         shell: bash
         run: |
-          python3 x62/t.py x62/d x62/z
-          g++ -O3 -march=native -fopenmp -std=c++17 x62/u.cpp -o x62/u
-          timeout 26m x62/u x62/z 424242 ${{ matrix.b }} 700 x62/o >x62/stdout 2>&1
-          cat x62/stdout
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: z-${{ matrix.b }}
-          path: |
-            x62/o
-            x62/stdout
-          if-no-files-found: error
-          retention-days: 1
-          compression-level: 0
-
-  v:
-    needs: g
-    name: z-8
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            x62
-          sparse-checkout-cone-mode: true
-          fetch-depth: 1
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: z-*
-          path: x62/a
-      - name: r
-        shell: bash
-        run: |
-          python3 x62/t.py x62/d x62/z
-          g++ -O3 -march=native -std=c++17 x62/w.cpp -o x62/w
           set +e
-          timeout 16m x62/w x62/z 62031 24 x62/r x62/a/z-0/o x62/a/z-1/o x62/a/z-2/o x62/a/z-3/o x62/a/z-4/o x62/a/z-5/o x62/a/z-6/o x62/a/z-7/o >x62/stdout 2>&1
+          timeout 44m python3 x62/y.py x62/d ${{ matrix.s }} 2520 x62/r ${{ matrix.w }} ${{ matrix.o }} ${{ matrix.m }} ${{ matrix.b }} >x62/stdout 2>&1
           rc=$?
           set -e
           cat x62/stdout || true
@@ -82,7 +59,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: z-8
+          name: y-${{ matrix.id }}
           path: |
             x62/r
             x62/stdout
