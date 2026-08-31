@@ -11,27 +11,27 @@ permissions:
   contents: read
 
 concurrency:
-  group: x62-n24
+  group: x62-r25
   cancel-in-progress: false
 
 jobs:
-  n:
+  r:
     strategy:
       fail-fast: false
       max-parallel: 10
       matrix:
         include:
-          - {id: 901, s: 901, w: 180, d: 2,   u: 80,  m: 0, t: 4}
-          - {id: 909, s: 909, w: 200, d: 4,   u: 100, m: 4, t: 4}
-          - {id: 917, s: 917, w: 220, d: 10,  u: 120, m: 0, t: 4}
-          - {id: 925, s: 925, w: 260, d: 20,  u: 160, m: 1, t: 4}
-          - {id: 933, s: 933, w: 320, d: 20,  u: 200, m: 4, t: 4}
-          - {id: 941, s: 941, w: 400, d: 50,  u: 0,   m: 0, t: 4}
-          - {id: 949, s: 949, w: 500, d: 50,  u: 0,   m: 1, t: 4}
-          - {id: 957, s: 957, w: 600, d: 100, u: 0,   m: 4, t: 4}
-          - {id: 965, s: 965, w: 800, d: 100, u: 0,   m: 0, t: 4}
-          - {id: 973, s: 973, w: 1029,d: 100, u: 0,   m: 4, t: 4}
-    name: n-${{ matrix.id }}
+          - {id: 1001, s: 1001, t: 20, o: 0, m: 1, b: 4, f: 0}
+          - {id: 1009, s: 1009, t: 21, o: 1, m: 2, b: 4, f: 0}
+          - {id: 1017, s: 1017, t: 22, o: 2, m: 1, b: 5, f: 0}
+          - {id: 1025, s: 1025, t: 23, o: 3, m: 2, b: 5, f: 0}
+          - {id: 1033, s: 1033, t: 24, o: 0, m: 0, b: 7, f: 0}
+          - {id: 1041, s: 1041, t: 20, o: 2, m: 1, b: 4, f: 1}
+          - {id: 1049, s: 1049, t: 21, o: 0, m: 2, b: 5, f: 1}
+          - {id: 1057, s: 1057, t: 22, o: 3, m: 1, b: 5, f: 1}
+          - {id: 1065, s: 1065, t: 23, o: 1, m: 0, b: 7, f: 1}
+          - {id: 1073, s: 1073, t: 24, o: 2, m: 2, b: 7, f: 1}
+    name: r-${{ matrix.id }}
     runs-on: ubuntu-24.04
     timeout-minutes: 47
     steps:
@@ -48,20 +48,20 @@ jobs:
         shell: bash
         run: |
           set +e
-          timeout 44m python3 x62/n.py x62/d ${{ matrix.s }} 2520 x62/r ${{ matrix.w }} ${{ matrix.d }} ${{ matrix.u }} ${{ matrix.m }} ${{ matrix.t }} >x62/stdout 2>&1
+          timeout 44m python3 x62/r.py x62/d ${{ matrix.s }} 2520 x62/out ${{ matrix.t }} ${{ matrix.o }} ${{ matrix.m }} ${{ matrix.b }} ${{ matrix.f }} >x62/stdout 2>&1
           rc=$?
           set -e
           cat x62/stdout || true
-          cat x62/r || true
-          if grep -q '^FOUND$' x62/r 2>/dev/null; then exit 0; fi
+          cat x62/out || true
+          if grep -q '^FOUND$' x62/out 2>/dev/null; then exit 0; fi
           if [ "$rc" -eq 124 ] || [ "$rc" -eq 2 ]; then exit 0; fi
           exit "$rc"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: n-${{ matrix.id }}
+          name: r-${{ matrix.id }}
           path: |
-            x62/r
+            x62/out
             x62/stdout
           if-no-files-found: warn
           retention-days: 1
