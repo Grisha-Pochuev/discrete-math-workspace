@@ -47,7 +47,7 @@ def run(path,seed,seconds,out,t,style,mode,batch,form):
  else:raise RuntimeError(style)
  cuts=list(range(0,len(R5),batch))+[len(R5)]
  if cuts[0]!=0:cuts=[0]+cuts
- prev=[0]*(len(rem)+len(add));
+ prev=[0]*(len(rem)+len(add))
  for j in rng.sample(range(len(rem)),t):prev[j]=1
  for j in rng.sample(range(len(add)),t):prev[len(rem)+j]=1
  st=time.time();L=['seed=%d'%seed,'t=%d'%t,'style=%d'%style,'mode=%d'%mode,'batch=%d'%batch,'form=%d'%form,'r3=%d'%len(R3),'r5=%d'%len(R5),'phases=%d'%len(cuts)]
@@ -83,5 +83,5 @@ def run(path,seed,seconds,out,t,style,mode,batch,form):
    L+=['FOUND','verified=1','k=%d'%len(sel),'diff=%d'%(2*t),'bits='+base64.b64encode(bb).decode(),'indices='+','.join(map(str,sel))];open(out,'w').write('\n'.join(L)+'\n');print('FOUND',t);return 0
  L+=['OPEN','reached=%d'%re,'sec=%.2f'%(time.time()-st)];emit();print('OPEN',re);return 2
 if __name__=='__main__':
- if len(sys.argv)!=11:raise SystemExit(1)
+ if len(sys.argv)!=10:raise SystemExit(1)
  raise SystemExit(run(sys.argv[1],int(sys.argv[2]),float(sys.argv[3]),sys.argv[4],int(sys.argv[5]),int(sys.argv[6]),int(sys.argv[7]),int(sys.argv[8]),int(sys.argv[9])))
