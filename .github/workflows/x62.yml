@@ -12,37 +12,37 @@ permissions:
   actions: read
 
 concurrency:
-  group: x62-w28
+  group: x62-v29
   cancel-in-progress: false
 
 jobs:
-  w:
+  v:
     strategy:
       fail-fast: false
       max-parallel: 20
       matrix:
         include:
-          - {id: 1301, s: 1301}
-          - {id: 1309, s: 1309}
-          - {id: 1317, s: 1317}
-          - {id: 1325, s: 1325}
-          - {id: 1333, s: 1333}
-          - {id: 1341, s: 1341}
-          - {id: 1349, s: 1349}
-          - {id: 1357, s: 1357}
-          - {id: 1365, s: 1365}
-          - {id: 1373, s: 1373}
-          - {id: 1381, s: 1381}
-          - {id: 1389, s: 1389}
-          - {id: 1397, s: 1397}
-          - {id: 1405, s: 1405}
-          - {id: 1413, s: 1413}
-          - {id: 1421, s: 1421}
-          - {id: 1429, s: 1429}
-          - {id: 1437, s: 1437}
-          - {id: 1445, s: 1445}
-          - {id: 1453, s: 1453}
-    name: w-${{ matrix.id }}
+          - {id: 1501, s: 1501, f: 13}
+          - {id: 1509, s: 1509, f: 13}
+          - {id: 1517, s: 1517, f: 13}
+          - {id: 1525, s: 1525, f: 13}
+          - {id: 1533, s: 1533, f: 14}
+          - {id: 1541, s: 1541, f: 14}
+          - {id: 1549, s: 1549, f: 14}
+          - {id: 1557, s: 1557, f: 20}
+          - {id: 1565, s: 1565, f: 20}
+          - {id: 1573, s: 1573, f: 20}
+          - {id: 1581, s: 1581, f: 21}
+          - {id: 1589, s: 1589, f: 21}
+          - {id: 1597, s: 1597, f: 21}
+          - {id: 1605, s: 1605, f: 24}
+          - {id: 1613, s: 1613, f: 24}
+          - {id: 1621, s: 1621, f: 15}
+          - {id: 1629, s: 1629, f: 15}
+          - {id: 1637, s: 1637, f: 11}
+          - {id: 1645, s: 1645, f: 4}
+          - {id: 1653, s: 1653, f: 22}
+    name: v-${{ matrix.id }}
     runs-on: ubuntu-24.04
     timeout-minutes: 47
     steps:
@@ -67,7 +67,7 @@ jobs:
           pids=""
           for j in 0 1 2 3; do
             sd=$(( ${{ matrix.s }} + 100003*j ))
-            timeout 40m x62/w x62/z x62/f "$sd" 460 "x62/out$j" x62/a/z-0/o x62/a/z-1/o x62/a/z-2/o x62/a/z-3/o x62/a/z-4/o x62/a/z-5/o x62/a/z-6/o x62/a/z-7/o >"x62/log$j" 2>&1 &
+            timeout 40m x62/w x62/z x62/f "$sd" 460 ${{ matrix.f }} "x62/out$j" x62/a/z-0/o x62/a/z-1/o x62/a/z-2/o x62/a/z-3/o x62/a/z-4/o x62/a/z-5/o x62/a/z-6/o x62/a/z-7/o >"x62/log$j" 2>&1 &
             pids="$pids $!"
           done
           for p in $pids; do wait "$p" || true; done
@@ -76,7 +76,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: w-${{ matrix.id }}
+          name: v-${{ matrix.id }}
           path: |
             x62/out*
             x62/log*
