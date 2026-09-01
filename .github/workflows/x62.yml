@@ -12,69 +12,37 @@ permissions:
   actions: read
 
 concurrency:
-  group: x62-ac33
+  group: x62-ae34
   cancel-in-progress: false
 
 jobs:
-  g:
-    strategy:
-      fail-fast: false
-      max-parallel: 8
-      matrix:
-        b: [0,1,2,3,4,5,6,7]
-    name: c-${{ matrix.b }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 25
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            x62
-          sparse-checkout-cone-mode: true
-          fetch-depth: 1
-      - name: r
-        shell: bash
-        run: |
-          python3 x62/t.py x62/d x62/z
-          g++ -O3 -march=native -fopenmp -std=c++17 x62/u.cpp -o x62/u
-          OMP_NUM_THREADS=4 x62/u x62/z 424242 ${{ matrix.b }} 700 x62/o >x62/log 2>&1
-      - uses: actions/upload-artifact@v4
-        with:
-          name: c-${{ matrix.b }}
-          path: |
-            x62/o
-            x62/log
-          retention-days: 1
-          compression-level: 0
-
-  b:
-    needs: g
+  e:
     strategy:
       fail-fast: false
       max-parallel: 20
       matrix:
         include:
-          - {id: 2301, b: 0}
-          - {id: 2309, b: 4}
-          - {id: 2317, b: 8}
-          - {id: 2325, b: 12}
-          - {id: 2333, b: 16}
-          - {id: 2341, b: 20}
-          - {id: 2349, b: 24}
-          - {id: 2357, b: 28}
-          - {id: 2365, b: 32}
-          - {id: 2373, b: 36}
-          - {id: 2381, b: 40}
-          - {id: 2389, b: 44}
-          - {id: 2397, b: 48}
-          - {id: 2405, b: 52}
-          - {id: 2413, b: 56}
-          - {id: 2421, b: 60}
-          - {id: 2429, b: 64}
-          - {id: 2437, b: 68}
-          - {id: 2445, b: 72}
-          - {id: 2453, b: 76}
-    name: d-${{ matrix.id }}
+          - {id: 2501, b: 0}
+          - {id: 2509, b: 4}
+          - {id: 2517, b: 8}
+          - {id: 2525, b: 12}
+          - {id: 2533, b: 16}
+          - {id: 2541, b: 20}
+          - {id: 2549, b: 24}
+          - {id: 2557, b: 28}
+          - {id: 2565, b: 32}
+          - {id: 2573, b: 36}
+          - {id: 2581, b: 40}
+          - {id: 2589, b: 44}
+          - {id: 2597, b: 48}
+          - {id: 2605, b: 52}
+          - {id: 2613, b: 56}
+          - {id: 2621, b: 60}
+          - {id: 2629, b: 64}
+          - {id: 2637, b: 68}
+          - {id: 2645, b: 72}
+          - {id: 2653, b: 76}
+    name: e-${{ matrix.id }}
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     steps:
@@ -91,17 +59,25 @@ jobs:
         run: |
           mkdir -p x62/a
           for k in 0 1 2 3 4 5 6 7; do
-            gh run download "$GITHUB_RUN_ID" -n "c-$k" -D "x62/a/z-$k"
+            gh run download 33535808668 -n "c-$k" -D "x62/a/z-$k"
           done
           python3 x62/t.py x62/d x62/z x62/f
-          sed 's/const int f1=14,f2=6;/const int f1=14,f2=14;/' x62/aa.cpp > x62/ab.cpp
-          grep -q 'const int f1=14,f2=14;' x62/ab.cpp
-          g++ -O3 -march=native -std=c++20 x62/ab.cpp -o x62/ab
+          sed \
+            -e 's/mod\[20\]=625;mod\[21\]=mod\[22\]=5;/mod[20]=625;mod[21]=mod[22]=1;/' \
+            -e 's/o.c\[20\]=s0%625;o.c\[21\]=s1%5;o.c\[22\]=s2%5;/o.c[20]=s0%625;o.c[21]=0;o.c[22]=0;/' \
+            -e 's/tar\[20\]=0;tar\[21\]=t5\[f1\]%5;tar\[22\]=t5\[f2\]%5;/tar[20]=0;tar[21]=0;tar[22]=0;/' \
+            -e 's/if(lev\[f1\]<1||lev\[f2\]<1)abort();//' \
+            x62/aa.cpp > x62/ae.cpp
+          grep -q 'mod\[21\]=mod\[22\]=1;' x62/ae.cpp
+          grep -q 'o.c\[21\]=0;o.c\[22\]=0;' x62/ae.cpp
+          grep -q 'tar\[21\]=0;tar\[22\]=0;' x62/ae.cpp
+          if grep -q 'if(lev\[f1\]<1||lev\[f2\]<1)abort();' x62/ae.cpp; then exit 9; fi
+          g++ -O3 -march=native -std=c++20 x62/ae.cpp -o x62/ae
           set +e
           pids=""
           for j in 0 1 2 3; do
             sl=$(( ${{ matrix.b }} + j ))
-            timeout 110m x62/ab x62/z x62/f "$sl" 80 "x62/out$j" x62/a/z-0/o x62/a/z-1/o x62/a/z-2/o x62/a/z-3/o x62/a/z-4/o x62/a/z-5/o x62/a/z-6/o x62/a/z-7/o >"x62/log$j" 2>&1 &
+            timeout 110m x62/ae x62/z x62/f "$sl" 80 "x62/out$j" x62/a/z-0/o x62/a/z-1/o x62/a/z-2/o x62/a/z-3/o x62/a/z-4/o x62/a/z-5/o x62/a/z-6/o x62/a/z-7/o >"x62/log$j" 2>&1 &
             pids="$pids $!"
           done
           for p in $pids; do wait "$p" || true; done
@@ -110,7 +86,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: d-${{ matrix.id }}
+          name: e-${{ matrix.id }}
           path: |
             x62/out*
             x62/log*
