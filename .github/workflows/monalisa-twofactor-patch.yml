@@ -1,0 +1,191 @@
+name: Mona Lisa exact 2-factor patch search
+
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - 'monalisa-tsp-search/twofactor_patch_search.py'
+      - '.github/workflows/monalisa-twofactor-patch.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  patch:
+    name: patch-k${{ matrix.nearest }}-s${{ matrix.seed }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 31
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {nearest: 12, seed: 260903, random_patches: 4}
+          - {nearest: 24, seed: 731927, random_patches: 5}
+          - {nearest: 40, seed: 991027, random_patches: 6}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install exact solver and geometric search library
+        run: python -m pip install --disable-pip-version-check 'ortools==9.14.6206' 'scipy==1.16.1'
+
+      - name: Download instance and nine historical tours
+        shell: bash
+        run: |
+          set -euo pipefail
+          data='monalisa-tsp-search/patch-data'
+          out='monalisa-tsp-search/patch-output/k${{ matrix.nearest }}-s${{ matrix.seed }}'
+          mkdir -p "$data" "$out"
+          base='https://raw.githubusercontent.com/Hermann-SW/RR/main/data/tsp/extra'
+          files=(
+            mona-lisa100K.tsp
+            mona-lisa100K.opt.tour
+            monalisa_5757199.tour
+            monalisa_5757200.tour
+            monalisa_5757203.tour
+            monalisa_5757204.tour
+            monalisa_5757205.tour
+            monalisa_5757241.tour
+            monalisa_5757245.tour
+            monalisa_5758831.tour
+          )
+          for f in "${files[@]}"; do
+            curl -fL --retry 5 --retry-all-errors "$base/$f" -o "$data/$f"
+          done
+          sha256sum "$data"/* | tee "$out/input-sha256.txt"
+
+      - name: Generate exact cycle covers and patch them
+        shell: bash
+        run: |
+          set -euo pipefail
+          data='monalisa-tsp-search/patch-data'
+          out='monalisa-tsp-search/patch-output/k${{ matrix.nearest }}-s${{ matrix.seed }}'
+          python monalisa-tsp-search/twofactor_patch_search.py \
+            --instance "$data/mona-lisa100K.tsp" \
+            --tours "$data/mona-lisa100K.opt.tour" "$data"/monalisa_*.tour \
+            --output "$out" \
+            --seconds 920 \
+            --workers 4 \
+            --nearest '${{ matrix.nearest }}' \
+            --max-factor-iterations 8 \
+            --random-patches '${{ matrix.random_patches }}' \
+            --seed '${{ matrix.seed }}' \
+            --target 5757191 \
+            2>&1 | tee "$out/patch.log"
+
+      - name: Select the shortest independently checked patched tour
+        shell: bash
+        run: |
+          set -euo pipefail
+          out='monalisa-tsp-search/patch-output/k${{ matrix.nearest }}-s${{ matrix.seed }}'
+          data='monalisa-tsp-search/patch-data'
+          python - "$out" "$data" <<'PY'
+          import json, re, subprocess, sys
+          from pathlib import Path
+          out, data = map(Path, sys.argv[1:])
+          tours = []
+          for p in out.glob('factor*_run*_*.tour'):
+              m = re.search(r'_(\d+)\.tour$', p.name)
+              if m:
+                  tours.append((int(m.group(1)), p))
+          if not tours:
+              raise SystemExit('no patched tours were emitted')
+          claimed, best = min(tours)
+          report = out / 'best-patched-verification.json'
+          normalized = out / 'best-patched-normalized.tour'
+          subprocess.run([
+              sys.executable, 'monalisa-tsp-search/verify_lkh_tour.py',
+              '--instance', str(data / 'mona-lisa100K.tsp'),
+              '--candidate', str(best),
+              '--reference', str(data / 'mona-lisa100K.opt.tour'),
+              '--report', str(report),
+              '--normalized-tour', str(normalized),
+              '--target', '5757191',
+          ], check=True)
+          got = json.loads(report.read_text())['verified_candidate_length']
+          if got != claimed:
+              raise SystemExit(f'filename length {claimed} != verifier {got}')
+          (out / 'best-patched-path.txt').write_text(str(normalized.resolve()) + '\n')
+          print(json.dumps({'best_patched': got, 'source': str(best)}, indent=2))
+          PY
+
+      - name: Build pinned LKH and search from the patched basin
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="$PWD/monalisa-tsp-search/patch-output/k${{ matrix.nearest }}-s${{ matrix.seed }}"
+          data="$PWD/monalisa-tsp-search/patch-data"
+          commit='3c99645b60c406372fb88ddb4e4e311636475791'
+          curl -fL --retry 5 --retry-all-errors \
+            "https://codeload.github.com/k1ngofdarks/TSP-Solvers/tar.gz/$commit" \
+            -o /tmp/TSP-Solvers.tar.gz
+          tar -xzf /tmp/TSP-Solvers.tar.gz -C /tmp
+          src="/tmp/TSP-Solvers-$commit/LKH-2.0.11"
+          mkdir -p "$src/SRC/OBJ"
+          make -C "$src"
+          initial="$(cat "$out/best-patched-path.txt")"
+          cat >"$out/patched-lkh.par" <<EOF
+          PROBLEM_FILE = $data/mona-lisa100K.tsp
+          INITIAL_TOUR_FILE = $initial
+          TOUR_FILE = $out/patched-lkh-result.tour
+          TRACE_LEVEL = 2
+          SEED = ${{ matrix.seed }}
+          RUNS = 1
+          MAX_TRIALS = 1000000
+          TIME_LIMIT = 300
+          MOVE_TYPE = 5
+          SUBSEQUENT_MOVE_TYPE = 5
+          NONSEQUENTIAL_MOVE_TYPE = 9
+          PATCHING_C = 5
+          PATCHING_A = 2
+          MAX_BREADTH = 500
+          BACKTRACKING = NO
+          GAIN23 = YES
+          RESTRICTED_SEARCH = NO
+          KICK_TYPE = 4
+          KICKS = 4
+          CANDIDATE_SET_TYPE = DELAUNAY PURE
+          MAX_CANDIDATES = 25
+          EXTRA_CANDIDATES = 10 SYMMETRIC
+          EXTRA_CANDIDATE_SET_TYPE = QUADRANT
+          EOF
+          set +e
+          timeout --signal=INT --kill-after=30s 7m "$src/LKH" "$out/patched-lkh.par" \
+            2>&1 | tee "$out/patched-lkh.log"
+          echo "${PIPESTATUS[0]}" >"$out/patched-lkh-exit-code.txt"
+          set -e
+          if [ ! -s "$out/patched-lkh-result.tour" ]; then
+            cp "$initial" "$out/patched-lkh-result.tour"
+            echo 'No LKH output; patched initial tour copied for safe verification.' >"$out/patched-lkh-note.txt"
+          fi
+
+      - name: Independently verify the post-patching LKH result
+        shell: bash
+        run: |
+          set -euo pipefail
+          out='monalisa-tsp-search/patch-output/k${{ matrix.nearest }}-s${{ matrix.seed }}'
+          data='monalisa-tsp-search/patch-data'
+          python monalisa-tsp-search/verify_lkh_tour.py \
+            --instance "$data/mona-lisa100K.tsp" \
+            --candidate "$out/patched-lkh-result.tour" \
+            --reference "$data/mona-lisa100K.opt.tour" \
+            --report "$out/patched-lkh-verified.json" \
+            --normalized-tour "$out/patched-lkh-verified.tour" \
+            --target 5757191
+          cat "$out/best-patched-verification.json"
+          cat "$out/patched-lkh-verified.json"
+
+      - name: Upload complete evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monalisa-twofactor-patch-k${{ matrix.nearest }}-s${{ matrix.seed }}
+          path: monalisa-tsp-search/patch-output/k${{ matrix.nearest }}-s${{ matrix.seed }}/
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 1
