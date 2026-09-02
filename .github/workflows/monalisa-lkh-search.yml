@@ -115,16 +115,22 @@ jobs:
             --candidate monalisa-tsp-search/lkh-data/mona.cand \
             --report monalisa-tsp-search/lkh-output/${{ matrix.name }}/candidate-report.json
 
-      - name: Build LKH 2.0.11 from the official source
+      - name: Build pinned LKH 2.0.11 source mirror
         shell: bash
         run: |
           set -euo pipefail
+          commit='3c99645b60c406372fb88ddb4e4e311636475791'
           curl --fail --location --retry 5 --retry-all-errors \
-            'https://webhotel4.ruc.dk/~keld/research/LKH/LKH-2.0.11.tgz' \
-            -o /tmp/LKH-2.0.11.tgz
-          tar -xzf /tmp/LKH-2.0.11.tgz -C /tmp
-          make -C /tmp/LKH-2.0.11 -j2
-          /tmp/LKH-2.0.11/LKH 2>&1 | head -n 3 || true
+            "https://codeload.github.com/k1ngofdarks/TSP-Solvers/tar.gz/$commit" \
+            -o /tmp/TSP-Solvers.tar.gz
+          tar -xzf /tmp/TSP-Solvers.tar.gz -C /tmp
+          src="/tmp/TSP-Solvers-$commit/LKH-2.0.11"
+          test -f "$src/README.txt"
+          sha256sum /tmp/TSP-Solvers.tar.gz "$src/README.txt" \
+            | tee monalisa-tsp-search/lkh-output/${{ matrix.name }}/lkh-source-sha256.txt
+          make -C "$src" -j2
+          test -x "$src/LKH"
+          echo "$src" > /tmp/lkh-src-path
 
       - name: Write targeted search parameters
         shell: bash
@@ -188,8 +194,9 @@ jobs:
         run: |
           set +e
           out="$PWD/monalisa-tsp-search/lkh-output/${{ matrix.name }}"
+          lkh="$(cat /tmp/lkh-src-path)/LKH"
           timeout --signal=INT --kill-after=30s 22m \
-            /tmp/LKH-2.0.11/LKH "$out/search.par" \
+            "$lkh" "$out/search.par" \
             2>&1 | tee "$out/lkh.log"
           code=${PIPESTATUS[0]}
           echo "$code" > "$out/lkh-exit-code.txt"
