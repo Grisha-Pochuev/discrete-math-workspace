@@ -1,0 +1,87 @@
+name: Mona Lisa Concorde toolchain audit
+
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - '.github/workflows/monalisa-concorde-toolchain.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch official Concorde source, binary, and Mona Lisa state
+        shell: bash
+        run: |
+          set -euo pipefail
+          out='monalisa-tsp-search/concorde-toolchain'
+          mkdir -p "$out/source" "$out/data"
+          curl -fL --retry 5 --retry-all-errors \
+            'https://math.uwaterloo.ca/tsp/concorde/downloads/codes/src/co031219.tgz' \
+            -o "$out/co031219.tgz"
+          curl -fL --retry 5 --retry-all-errors \
+            'https://math.uwaterloo.ca/tsp/concorde/downloads/codes/linux24/concorde.gz' \
+            -o "$out/concorde.gz"
+          base='https://www.math.uwaterloo.ca/tsp/data/ml/x'
+          for f in mona-lisa100K.mas sav.6n.sub mona.6nsub.x; do
+            curl -fL --retry 5 --retry-all-errors "$base/$f" -o "$out/data/$f"
+          done
+          tar -xzf "$out/co031219.tgz" -C "$out/source"
+          gzip -dc "$out/concorde.gz" > "$out/concorde"
+          chmod +x "$out/concorde"
+          sha256sum "$out/co031219.tgz" "$out/concorde.gz" "$out/concorde" "$out/data"/* \
+            | tee "$out/sha256.txt"
+          file "$out/concorde" "$out/data"/* | tee "$out/file-types.txt"
+
+      - name: Inspect commands and save-file interfaces
+        shell: bash
+        run: |
+          set -uo pipefail
+          out='monalisa-tsp-search/concorde-toolchain'
+          "$out/concorde" >"$out/concorde-help.txt" 2>&1
+          echo $? >"$out/concorde-help-exit.txt"
+          grep -RniE 'master|restart|save|probfile|probnum|CCtsp_prob_read|Usage' \
+            "$out/source" >"$out/source-save-interface-grep.txt" || true
+          find "$out/source" -maxdepth 3 -type f -printf '%P\n' | sort >"$out/source-file-list.txt"
+          sed -n '1,240p' "$out/concorde-help.txt"
+          sed -n '1,300p' "$out/source-save-interface-grep.txt"
+          exit 0
+
+      - name: Probe likely restart invocations without committing to a long solve
+        shell: bash
+        run: |
+          set -uo pipefail
+          out="$PWD/monalisa-tsp-search/concorde-toolchain"
+          cd "$out/data"
+          commands=(
+            "../concorde -M mona-lisa100K.mas sav.6n.sub"
+            "../concorde -M mona-lisa100K.mas -r sav.6n.sub"
+            "../concorde -M mona-lisa100K.mas -R sav.6n.sub"
+            "../concorde -M mona-lisa100K.mas -s sav.6n.sub"
+            "../concorde -M mona-lisa100K.mas mona.6nsub.x"
+          )
+          : > ../restart-probes.txt
+          for cmd in "${commands[@]}"; do
+            echo "=== $cmd ===" | tee -a ../restart-probes.txt
+            timeout --signal=INT --kill-after=5s 20s bash -lc "$cmd" \
+              >>../restart-probes.txt 2>&1
+            echo "exit=$?" | tee -a ../restart-probes.txt
+          done
+          sed -n '1,600p' ../restart-probes.txt
+          exit 0
+
+      - name: Upload toolchain audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monalisa-concorde-toolchain-audit
+          path: monalisa-tsp-search/concorde-toolchain/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 1
