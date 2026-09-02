@@ -1,0 +1,98 @@
+name: Mona Lisa resume official Concorde LP
+
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - '.github/workflows/monalisa-concorde-resume.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  resume:
+    name: concorde-${{ matrix.mode }}-s${{ matrix.seed }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 29
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {mode: reload, seed: 103, flags: '-q -B', limit: '360'}
+          - {mode: default-cuts, seed: 260903, flags: '-B', limit: '1200'}
+          - {mode: multiple-cuts, seed: 731927, flags: '-B -m', limit: '1200'}
+          - {mode: fast-cuts, seed: 991027, flags: '-V', limit: '1200'}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch official 2012 state and official Concorde executable
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$PWD/monalisa-tsp-search/concorde-resume/${{ matrix.mode }}-s${{ matrix.seed }}"
+          mkdir -p "$root/data" "$root/run"
+          base='https://www.math.uwaterloo.ca/tsp/data/ml/x'
+          for f in mona-lisa100K.mas sav.6n.sub mona.6nsub.x; do
+            curl -fL --retry 5 --retry-all-errors "$base/$f" -o "$root/data/$f"
+          done
+          curl -fL --retry 5 --retry-all-errors \
+            'https://math.uwaterloo.ca/tsp/concorde/downloads/codes/linux24/concorde.gz' \
+            -o "$root/concorde.gz"
+          gzip -dc "$root/concorde.gz" >"$root/concorde"
+          chmod +x "$root/concorde"
+          sha256sum "$root/concorde.gz" "$root/concorde" "$root/data"/* \
+            | tee "$root/input-sha256.txt"
+          file "$root/concorde" "$root/data"/* | tee "$root/file-types.txt"
+          set +e
+          "$root/concorde" >"$root/concorde-help.txt" 2>&1
+          echo "$?" >"$root/concorde-help-exit.txt"
+          set -e
+          sed -n '1,160p' "$root/concorde-help.txt"
+
+      - name: Resume the saved LP and seek stronger cuts
+        shell: bash
+        run: |
+          set +e
+          root="$PWD/monalisa-tsp-search/concorde-resume/${{ matrix.mode }}-s${{ matrix.seed }}"
+          cd "$root/run"
+          timeout --signal=INT --kill-after=30s '${{ matrix.limit }}' \
+            ../concorde \
+              -M ../data/mona-lisa100K.mas \
+              -S ../data/sav.6n.sub \
+              -u 5757191 \
+              -s '${{ matrix.seed }}' \
+              -n 'mona-${{ matrix.mode }}-s${{ matrix.seed }}' \
+              -X final.x \
+              -v \
+              ${{ matrix.flags }} \
+            2>&1 | tee concorde.log
+          code=${PIPESTATUS[0]}
+          echo "$code" >concorde-exit-code.txt
+          exit 0
+
+      - name: Extract all reported bounds and model sizes
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$PWD/monalisa-tsp-search/concorde-resume/${{ matrix.mode }}-s${{ matrix.seed }}"
+          cd "$root/run"
+          grep -Ei \
+            'bound|objective|LP has|rows|columns|nonzeros|cut|upper|optimal|pricing|infeasible|error|fail|time' \
+            concorde.log >bound-summary.txt || true
+          tail -n 300 concorde.log >concorde-tail.txt || true
+          ls -lAh >run-files.txt
+          sha256sum * >run-sha256.txt 2>/dev/null || true
+          cat bound-summary.txt
+          cat concorde-tail.txt
+
+      - name: Upload the complete resumed state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monalisa-concorde-${{ matrix.mode }}-s${{ matrix.seed }}
+          path: monalisa-tsp-search/concorde-resume/${{ matrix.mode }}-s${{ matrix.seed }}/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 1
