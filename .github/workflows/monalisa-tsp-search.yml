@@ -5,7 +5,7 @@ on:
     branches:
       - monalisa-tsp-search-2026-09-03
     paths:
-      - 'monalisa-tsp-search/**'
+      - 'monalisa-tsp-search/tour_union_search.py'
       - '.github/workflows/monalisa-tsp-search.yml'
 
 permissions:
