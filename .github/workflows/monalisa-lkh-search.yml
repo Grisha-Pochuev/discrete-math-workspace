@@ -1,0 +1,224 @@
+name: Mona Lisa TSP LKH record search
+
+on:
+  push:
+    branches:
+      - monalisa-tsp-search-2026-09-03
+    paths:
+      - 'monalisa-tsp-search/prepare_lkh_data.py'
+      - 'monalisa-tsp-search/verify_lkh_tour.py'
+      - '.github/workflows/monalisa-lkh-search.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  improve-tour:
+    name: LKH ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: sparse-fast
+            seed: 1103
+            candidate_mode: sparse
+            move_type: 5
+            subsequent_move_type: 5
+            nonsequential_move_type: 9
+            patching_c: 5
+            patching_a: 2
+            max_breadth: 100
+            backtracking: 'NO'
+            kicks: 1
+          - name: sparse-wide
+            seed: 2207
+            candidate_mode: sparse
+            move_type: 5
+            subsequent_move_type: 5
+            nonsequential_move_type: 9
+            patching_c: 5
+            patching_a: 2
+            max_breadth: 1000
+            backtracking: 'YES'
+            kicks: 1
+          - name: sparse-six-opt
+            seed: 3301
+            candidate_mode: sparse
+            move_type: 6
+            subsequent_move_type: 5
+            nonsequential_move_type: 12
+            patching_c: 6
+            patching_a: 3
+            max_breadth: 200
+            backtracking: 'NO'
+            kicks: 4
+          - name: full-delaunay
+            seed: 4409
+            candidate_mode: delaunay
+            move_type: 5
+            subsequent_move_type: 5
+            nonsequential_move_type: 9
+            patching_c: 5
+            patching_a: 2
+            max_breadth: 300
+            backtracking: 'NO'
+            kicks: 4
+          - name: full-popmusic
+            seed: 5501
+            candidate_mode: popmusic
+            move_type: 5
+            subsequent_move_type: 5
+            nonsequential_move_type: 9
+            patching_c: 5
+            patching_a: 2
+            max_breadth: 300
+            backtracking: 'NO'
+            kicks: 4
+
+    steps:
+      - name: Check out isolated research branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Download instance, record tour, and published sparse graph
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p monalisa-tsp-search/lkh-data monalisa-tsp-search/lkh-output/${{ matrix.name }}
+          rr='https://raw.githubusercontent.com/Hermann-SW/RR/main/data/tsp/extra'
+          elim='https://raw.githubusercontent.com/bicobico2/ElimTSP/main/results'
+          curl --fail --location --retry 5 --retry-all-errors \
+            "$rr/mona-lisa100K.tsp" \
+            -o monalisa-tsp-search/lkh-data/mona-lisa100K.tsp
+          curl --fail --location --retry 5 --retry-all-errors \
+            "$rr/mona-lisa100K.opt.tour" \
+            -o monalisa-tsp-search/lkh-data/record.tour
+          curl --fail --location --retry 5 --retry-all-errors \
+            "$elim/mona.248972.edg.gz" \
+            -o monalisa-tsp-search/lkh-data/mona.248972.edg.gz
+          sha256sum monalisa-tsp-search/lkh-data/* \
+            | tee monalisa-tsp-search/lkh-output/${{ matrix.name }}/input-sha256.txt
+
+      - name: Build exact published candidate set
+        shell: bash
+        run: |
+          set -euo pipefail
+          python monalisa-tsp-search/prepare_lkh_data.py \
+            --edges monalisa-tsp-search/lkh-data/mona.248972.edg.gz \
+            --tour monalisa-tsp-search/lkh-data/record.tour \
+            --candidate monalisa-tsp-search/lkh-data/mona.cand \
+            --report monalisa-tsp-search/lkh-output/${{ matrix.name }}/candidate-report.json
+
+      - name: Build LKH 2.0.11 from the official source
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 5 --retry-all-errors \
+            'https://webhotel4.ruc.dk/~keld/research/LKH/LKH-2.0.11.tgz' \
+            -o /tmp/LKH-2.0.11.tgz
+          tar -xzf /tmp/LKH-2.0.11.tgz -C /tmp
+          make -C /tmp/LKH-2.0.11 -j2
+          /tmp/LKH-2.0.11/LKH 2>&1 | head -n 3 || true
+
+      - name: Write targeted search parameters
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="$PWD/monalisa-tsp-search/lkh-output/${{ matrix.name }}"
+          data="$PWD/monalisa-tsp-search/lkh-data"
+          cat > "$out/search.par" <<EOF
+          PROBLEM_FILE = $data/mona-lisa100K.tsp
+          INITIAL_TOUR_FILE = $data/record.tour
+          TOUR_FILE = $out/result.tour
+          TRACE_LEVEL = 2
+          SEED = ${{ matrix.seed }}
+          RUNS = 1
+          MAX_TRIALS = 1000000
+          TIME_LIMIT = 1000
+          MOVE_TYPE = ${{ matrix.move_type }}
+          SUBSEQUENT_MOVE_TYPE = ${{ matrix.subsequent_move_type }}
+          NONSEQUENTIAL_MOVE_TYPE = ${{ matrix.nonsequential_move_type }}
+          PATCHING_C = ${{ matrix.patching_c }}
+          PATCHING_A = ${{ matrix.patching_a }}
+          MAX_BREADTH = ${{ matrix.max_breadth }}
+          BACKTRACKING = ${{ matrix.backtracking }}
+          GAIN23 = YES
+          RESTRICTED_SEARCH = NO
+          KICK_TYPE = 4
+          KICKS = ${{ matrix.kicks }}
+          EOF
+          case '${{ matrix.candidate_mode }}' in
+            sparse)
+              cat >> "$out/search.par" <<EOF
+          CANDIDATE_FILE = $data/mona.cand
+          MAX_CANDIDATES = 20
+          EOF
+              ;;
+            delaunay)
+              cat >> "$out/search.par" <<EOF
+          CANDIDATE_SET_TYPE = DELAUNAY PURE
+          MAX_CANDIDATES = 20
+          EXTRA_CANDIDATES = 8 SYMMETRIC
+          EXTRA_CANDIDATE_SET_TYPE = QUADRANT
+          EOF
+              ;;
+            popmusic)
+              cat >> "$out/search.par" <<EOF
+          CANDIDATE_SET_TYPE = POPMUSIC
+          MAX_CANDIDATES = 20
+          POPMUSIC_SAMPLE_SIZE = 100
+          POPMUSIC_SOLUTIONS = 50
+          POPMUSIC_MAX_NEIGHBORS = 20
+          POPMUSIC_TRIALS = 5
+          EXTRA_CANDIDATES = 5 SYMMETRIC
+          EXTRA_CANDIDATE_SET_TYPE = QUADRANT
+          EOF
+              ;;
+          esac
+          cat "$out/search.par"
+
+      - name: Search for a shorter tour
+        shell: bash
+        run: |
+          set +e
+          out="$PWD/monalisa-tsp-search/lkh-output/${{ matrix.name }}"
+          timeout --signal=INT --kill-after=30s 22m \
+            /tmp/LKH-2.0.11/LKH "$out/search.par" \
+            2>&1 | tee "$out/lkh.log"
+          code=${PIPESTATUS[0]}
+          echo "$code" > "$out/lkh-exit-code.txt"
+          if [ ! -s "$out/result.tour" ]; then
+            cp monalisa-tsp-search/lkh-data/record.tour "$out/result.tour"
+            echo 'LKH did not emit a tour; the verified reference was substituted for reporting.' \
+              > "$out/no-result-note.txt"
+          fi
+          exit 0
+
+      - name: Independently verify the resulting cycle
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="$PWD/monalisa-tsp-search/lkh-output/${{ matrix.name }}"
+          python monalisa-tsp-search/verify_lkh_tour.py \
+            --instance monalisa-tsp-search/lkh-data/mona-lisa100K.tsp \
+            --candidate "$out/result.tour" \
+            --reference monalisa-tsp-search/lkh-data/record.tour \
+            --report "$out/verified-result.json" \
+            --normalized-tour "$out/verified-result.tour" \
+            --target 5757191
+          cat "$out/verified-result.json"
+
+      - name: Upload complete reproducible result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monalisa-lkh-${{ matrix.name }}
+          path: monalisa-tsp-search/lkh-output/${{ matrix.name }}/
+          if-no-files-found: error
+          retention-days: 30
