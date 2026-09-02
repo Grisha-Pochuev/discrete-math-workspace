@@ -1,0 +1,56 @@
+name: Mona Lisa fetch official LP assets
+
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - '.github/workflows/monalisa-fetch-official-lp.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch official Waterloo 2012 LP assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          out='monalisa-tsp-search/official-lp-assets'
+          mkdir -p "$out"
+          base='https://www.math.uwaterloo.ca/tsp/data/ml/x'
+          files=(
+            mona-lisa100K.mas
+            sav.6n.sub
+            mona.6nsub.x
+          )
+          for f in "${files[@]}"; do
+            echo "=== $f headers ===" | tee -a "$out/fetch.log"
+            curl -fIL --retry 5 --retry-all-errors "$base/$f" 2>&1 | tee -a "$out/fetch.log"
+            curl -fL --retry 5 --retry-all-errors "$base/$f" -o "$out/$f"
+          done
+          ls -lAh "$out" | tee "$out/file-sizes.txt"
+          file "$out"/* | tee "$out/file-types.txt"
+          sha256sum "$out"/mona-lisa100K.mas "$out"/sav.6n.sub "$out"/mona.6nsub.x \
+            | tee "$out/sha256.txt"
+          python - <<'PY' | tee "$out/first-bytes.txt"
+          from pathlib import Path
+          for p in sorted(Path('monalisa-tsp-search/official-lp-assets').iterdir()):
+              if p.is_file() and p.name not in {'first-bytes.txt'}:
+                  print('\n===', p.name, p.stat().st_size, '===')
+                  print(p.read_bytes()[:128].hex())
+          PY
+
+      - name: Upload official inputs with checksums
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monalisa-official-lp-assets
+          path: monalisa-tsp-search/official-lp-assets/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 1
