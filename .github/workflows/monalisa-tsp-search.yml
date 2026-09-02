@@ -1,0 +1,84 @@
+name: Mona Lisa TSP exact tour-union search
+
+on:
+  push:
+    branches:
+      - monalisa-tsp-search-2026-09-03
+    paths:
+      - 'monalisa-tsp-search/**'
+      - '.github/workflows/monalisa-tsp-search.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-union-search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Check out the isolated research branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install exact sparse solver
+        run: python -m pip install --disable-pip-version-check 'ortools==9.14.6206'
+
+      - name: Download the public Mona Lisa instance and historical tours
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p monalisa-tsp-search/data monalisa-tsp-search/output
+          base='https://raw.githubusercontent.com/Hermann-SW/RR/main/data/tsp/extra'
+          files=(
+            mona-lisa100K.tsp
+            mona-lisa100K.opt.tour
+            monalisa_5757199.tour
+            monalisa_5757200.tour
+            monalisa_5757203.tour
+            monalisa_5757204.tour
+            monalisa_5757205.tour
+            monalisa_5757241.tour
+            monalisa_5757245.tour
+            monalisa_5758831.tour
+          )
+          for f in "${files[@]}"; do
+            curl --fail --location --retry 5 --retry-all-errors \
+              "$base/$f" -o "monalisa-tsp-search/data/$f"
+          done
+          sha256sum monalisa-tsp-search/data/* | tee monalisa-tsp-search/output/sha256.txt
+
+      - name: Verify and exactly recombine historical tours
+        shell: bash
+        run: |
+          set -euo pipefail
+          python monalisa-tsp-search/tour_union_search.py \
+            --instance monalisa-tsp-search/data/mona-lisa100K.tsp \
+            --tours monalisa-tsp-search/data/*.tour \
+            --output monalisa-tsp-search/output \
+            --pair-seconds 35 \
+            --multi-seconds 150 \
+            --workers 4 \
+            --target 5757191 \
+            2>&1 | tee monalisa-tsp-search/output/run.log
+
+      - name: Show compact result
+        if: always()
+        shell: bash
+        run: |
+          test -f monalisa-tsp-search/output/report.md && cat monalisa-tsp-search/output/report.md || true
+          test -f monalisa-tsp-search/output/results.json && cat monalisa-tsp-search/output/results.json || true
+
+      - name: Upload reproducible evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monalisa-tsp-exact-union-results
+          path: monalisa-tsp-search/output/
+          if-no-files-found: warn
+          retention-days: 30
