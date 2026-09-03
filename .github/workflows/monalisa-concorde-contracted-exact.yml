@@ -4,7 +4,6 @@ on:
   push:
     branches: [monalisa-tsp-search-2026-09-03]
     paths:
-      - 'monalisa-tsp-search/build_public_contracted.py'
       - '.github/workflows/monalisa-concorde-contracted-exact.yml'
 
 permissions:
@@ -19,54 +18,128 @@ jobs:
       - name: Check out the isolated research branch
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Download the public instance and nine historical tours
+      - name: Restore the byte-exact 1,493-vertex subproblem
         shell: bash
         run: |
           set -euo pipefail
-          data='monalisa-tsp-search/concorde-exact-data'
-          out='monalisa-tsp-search/concorde-exact-output'
-          mkdir -p "$data" "$out"
-          base='https://raw.githubusercontent.com/Hermann-SW/RR/main/data/tsp/extra'
-          files=(
-            mona-lisa100K.tsp
-            mona-lisa100K.opt.tour
-            monalisa_5757199.tour
-            monalisa_5757200.tour
-            monalisa_5757203.tour
-            monalisa_5757204.tour
-            monalisa_5757205.tour
-            monalisa_5757241.tour
-            monalisa_5757245.tour
-            monalisa_5758831.tour
-          )
-          for f in "${files[@]}"; do
-            curl -fL --retry 5 --retry-all-errors "$base/$f" -o "$data/$f"
-          done
-          sha256sum "$data"/* | tee "$out/public-input-sha256.txt"
+          out="$PWD/monalisa-tsp-search/concorde-exact-output"
+          mkdir -p "$out/data" "$out/run"
+          python - "$out/data" <<'PY'
+          import base64
+          import hashlib
+          import io
+          import json
+          import sys
+          import tarfile
+          import urllib.request
+          import zlib
+          from pathlib import Path
 
-      - name: Reconstruct and verify the 1,493-vertex exact subproblem
+          destination = Path(sys.argv[1])
+          shas = [
+              'e33a5fdb9e48596fd0890f5d4481b1acd2bf7b40',
+              '20598bef54276dbc905d5e0a3392a2c4d205523f',
+              'e06f2bdf6491804b2512fa138d243937eff17e36',
+              '1160675714c4b6096badb907c0a9170eb9bf6b6c',
+              '732f343de5390d49cb89f9de031c9fa58370fe47',
+              '1e2b7068bd8f562ca9e25cfd7a3842e504074896',
+              '92ff6449749e54523963a43d2283f31a134e3c22',
+              'fec5cb2b961564b31bc9147c84c1c83a0fd41c2c',
+          ]
+          parts = []
+          headers = {'User-Agent': 'monalisa-exact-search'}
+          for sha in shas:
+              url = f'https://api.github.com/repos/Grisha-Pochuev/discrete-math-workspace/git/blobs/{sha}'
+              request = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(request) as response:
+                  payload = json.load(response)
+              if payload.get('sha') != sha or payload.get('encoding') != 'base64':
+                  raise RuntimeError(f'unexpected blob response for {sha}')
+              parts.append(base64.b64decode(payload['content']).decode('ascii'))
+
+          encoded = ''.join(parts)
+          encoded_sha = hashlib.sha256(encoded.encode('ascii')).hexdigest()
+          if len(encoded) != 56189:
+              raise RuntimeError(f'encoded length {len(encoded)} != 56189')
+          if encoded_sha != '2bd59ea2a3deb989d62baf2b09c7c19a716719d3976d9026a08cf7c2464520e4':
+              raise RuntimeError(f'encoded checksum mismatch: {encoded_sha}')
+
+          archive = zlib.decompress(base64.b85decode(encoded))
+          archive_sha = hashlib.sha256(archive).hexdigest()
+          if archive_sha != '1b9030006ab2aa3ae3d73803acfa59546796e4f32e1fd5713c844df18ad57978':
+              raise RuntimeError(f'archive checksum mismatch: {archive_sha}')
+
+          with tarfile.open(fileobj=io.BytesIO(archive), mode='r:') as tf:
+              names = {member.name for member in tf.getmembers()}
+              if names != {'contracted.edg', 'initial.node_tour'}:
+                  raise RuntimeError(f'unexpected archive members: {sorted(names)}')
+              tf.extractall(destination, filter='data')
+          PY
+
+          sha256sum "$out/data/contracted.edg" "$out/data/initial.node_tour" \
+            | tee "$out/data-sha256.txt"
+          test "$(sha256sum "$out/data/contracted.edg" | cut -d' ' -f1)" = \
+            '908e642ad7f48e7c6ca1b70fc5b323bd28a4f352b27666d5f0eba874e8ec5ece'
+          test "$(sha256sum "$out/data/initial.node_tour" | cut -d' ' -f1)" = \
+            'ee1d36d161e69032baf13e9d349f464ff4541efd10168fd6abf06b00ecfb26f5'
+
+      - name: Verify graph structure and the 5,757,191 starting cycle
         shell: bash
         run: |
           set -euo pipefail
-          data='monalisa-tsp-search/concorde-exact-data'
-          out='monalisa-tsp-search/concorde-exact-output'
-          python monalisa-tsp-search/build_public_contracted.py build \
-            --instance "$data/mona-lisa100K.tsp" \
-            --tours "$data/mona-lisa100K.opt.tour" "$data"/monalisa_*.tour \
-            --output "$out/contracted"
-          python monalisa-tsp-search/build_public_contracted.py decode \
-            --instance "$data/mona-lisa100K.tsp" \
-            --mapping "$out/contracted/mapping.json" \
-            --candidate "$out/contracted/initial.node_tour" \
-            --output "$out/initial-verification" \
-            --target 5757191
-          cat "$out/contracted/build-report.json"
-          cat "$out/initial-verification/decode-report.json"
+          out="$PWD/monalisa-tsp-search/concorde-exact-output"
+          python - "$out/data/contracted.edg" "$out/data/initial.node_tour" \
+            "$out/input-verification.json" <<'PY'
+          import hashlib
+          import json
+          import sys
+          from pathlib import Path
+
+          graph, tour_path, report_path = map(Path, sys.argv[1:])
+          with graph.open() as f:
+              n, expected_m = map(int, f.readline().split())
+              weights = {}
+              degree = [0] * n
+              for line_no, line in enumerate(f, 2):
+                  if not line.strip():
+                      continue
+                  a, b, w = map(int, line.split())
+                  if not (0 <= a < b < n):
+                      raise RuntimeError(f'bad edge at line {line_no}: {(a, b)}')
+                  if (a, b) in weights:
+                      raise RuntimeError(f'duplicate edge {(a, b)}')
+                  weights[a, b] = w
+                  degree[a] += 1
+                  degree[b] += 1
+          if n != 1493 or expected_m != 9455 or len(weights) != 9455:
+              raise RuntimeError(f'bad graph size: n={n}, m={len(weights)}, header={expected_m}')
+          vals = [int(x) for x in tour_path.read_text().split()]
+          if vals[0] == n and len(vals) == n + 1:
+              vals = vals[1:]
+          if len(vals) != n or set(vals) != set(range(n)):
+              raise RuntimeError('invalid initial tour permutation')
+          length = 0
+          for i, a in enumerate(vals):
+              b = vals[(i + 1) % n]
+              edge = (a, b) if a < b else (b, a)
+              if edge not in weights:
+                  raise RuntimeError(f'initial tour uses absent edge {edge}')
+              length += weights[edge]
+          if length != 5757191:
+              raise RuntimeError(f'initial length {length} != 5757191')
+          report = {
+              'vertices': n,
+              'edges': len(weights),
+              'minimum_degree': min(degree),
+              'maximum_degree': max(degree),
+              'zero_weight_edges': sum(w == 0 for w in weights.values()),
+              'initial_tour_length': length,
+              'graph_sha256': hashlib.sha256(graph.read_bytes()).hexdigest(),
+              'tour_sha256': hashlib.sha256(tour_path.read_bytes()).hexdigest(),
+          }
+          report_path.write_text(json.dumps(report, indent=2) + '\n')
+          print(json.dumps(report, indent=2))
+          PY
 
       - name: Build a 64-bit Concorde exact solver with QSopt
         shell: bash
@@ -80,11 +153,21 @@ jobs:
           tar -xzf /tmp/co031219.tgz -C /tmp
           cd /tmp/concorde
           curl -fL --retry 5 --retry-all-errors \
-            'https://www.math.uwaterloo.ca/~bico/qsopt/downloads/codes/ubuntu/qsopt.a' \
+            'https://www.math.uwaterloo.ca/~bico/qsopt/beta/codes/PIC/qsopt.PIC.a' \
             -o qsopt.a
           curl -fL --retry 5 --retry-all-errors \
-            'https://www.math.uwaterloo.ca/~bico/qsopt/downloads/codes/ubuntu/qsopt.h' \
+            'https://www.math.uwaterloo.ca/~bico/qsopt/beta/codes/PIC/qsopt.h' \
             -o qsopt.h
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('TSP/tsp_call.c')
+          text = path.read_text()
+          old = 'CLEANUP:\n\n    if (rval == 0) {\n        char buf[1024];'
+          new = 'CLEANUP:\n\n    /* Keep .sav/.pul so a time-limited exact run remains resumable. */\n    if (0 && rval == 0) {\n        char buf[1024];'
+          if text.count(old) != 1:
+              raise RuntimeError(f'unexpected cleanup marker count: {text.count(old)}')
+          path.write_text(text.replace(old, new))
+          PY
           CFLAGS='-O3 -g -fPIC' ./configure --with-qsopt="$PWD" \
             2>&1 | tee "$out/configure.log"
           make -j2 everything 2>&1 | tee "$out/build.log"
@@ -93,14 +176,13 @@ jobs:
           sha256sum /tmp/co031219.tgz qsopt.a qsopt.h TSP/test_tsp \
             | tee "$out/solver-sha256.txt"
 
-      - name: Run Concorde branch-and-cut below the record
+      - name: Run exact branch-and-cut under the strict record threshold
         shell: bash
         run: |
           set +e
           root="$PWD/monalisa-tsp-search/concorde-exact-output"
-          graph="$root/contracted/contracted.edg"
-          tour="$root/contracted/initial.node_tour"
-          mkdir -p "$root/run"
+          graph="$root/data/contracted.edg"
+          tour="$root/data/initial.node_tour"
           cd "$root/run"
           timeout --signal=INT --kill-after=45s 23m \
             ../test_tsp \
@@ -113,31 +195,58 @@ jobs:
             2>&1 | tee concorde.log
           code=${PIPESTATUS[0]}
           echo "$code" >concorde-exit-code.txt
-          grep -Ei 'lowerbound|optimal tour|found|infeasible|time bound|limit|LP value|exact' \
+          grep -Ei 'lowerbound|optimal tour|found|infeasible|time bound|limit|LP value|exact|tour uses' \
             concorde.log >concorde-summary.txt || true
-          tail -n 400 concorde.log >concorde-tail.txt || true
+          tail -n 500 concorde.log >concorde-tail.txt || true
           ls -lAh >run-files.txt
+          sha256sum * >run-sha256.txt 2>/dev/null || true
           exit 0
 
-      - name: Independently decode any tour found by Concorde
+      - name: Verify any contracted tour emitted by Concorde
         if: always()
         shell: bash
         run: |
           set -euo pipefail
-          data='monalisa-tsp-search/concorde-exact-data'
-          root='monalisa-tsp-search/concorde-exact-output'
-          if [ -s "$root/run/candidate.node_tour" ]; then
-            python monalisa-tsp-search/build_public_contracted.py decode \
-              --instance "$data/mona-lisa100K.tsp" \
-              --mapping "$root/contracted/mapping.json" \
-              --candidate "$root/run/candidate.node_tour" \
-              --output "$root/candidate-verification" \
-              --target 5757191
-            cat "$root/candidate-verification/decode-report.json"
-          else
-            printf '%s\n' '{"candidate_emitted":false}' \
-              >"$root/candidate-verification.json"
-          fi
+          root="$PWD/monalisa-tsp-search/concorde-exact-output"
+          python - "$root/data/contracted.edg" "$root/run/candidate.node_tour" \
+            "$root/candidate-verification.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          graph, candidate, report_path = map(Path, sys.argv[1:])
+          if not candidate.exists() or candidate.stat().st_size == 0:
+              report_path.write_text(json.dumps({'candidate_emitted': False}, indent=2) + '\n')
+              print(report_path.read_text())
+              raise SystemExit(0)
+          with graph.open() as f:
+              n, m = map(int, f.readline().split())
+              weights = {}
+              for line in f:
+                  if line.strip():
+                      a, b, w = map(int, line.split())
+                      weights[a, b] = w
+          vals = [int(x) for x in candidate.read_text().split()]
+          if vals and vals[0] == n and len(vals) == n + 1:
+              vals = vals[1:]
+          if len(vals) != n or set(vals) != set(range(n)):
+              raise RuntimeError('Concorde emitted an invalid permutation')
+          length = 0
+          for i, a in enumerate(vals):
+              b = vals[(i + 1) % n]
+              edge = (a, b) if a < b else (b, a)
+              if edge not in weights:
+                  raise RuntimeError(f'candidate uses an absent edge: {edge}')
+              length += weights[edge]
+          report = {
+              'candidate_emitted': True,
+              'vertices': n,
+              'exact_contracted_length': length,
+              'strict_improvement': length <= 5757190,
+          }
+          report_path.write_text(json.dumps(report, indent=2) + '\n')
+          print(json.dumps(report, indent=2))
+          PY
           cat "$root/run/concorde-summary.txt" || true
           cat "$root/run/concorde-tail.txt" || true
 
