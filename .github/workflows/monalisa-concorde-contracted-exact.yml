@@ -1,0 +1,152 @@
+name: Mona Lisa exact contracted Concorde search
+
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - 'monalisa-tsp-search/build_public_contracted.py'
+      - '.github/workflows/monalisa-concorde-contracted-exact.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out the isolated research branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Download the public instance and nine historical tours
+        shell: bash
+        run: |
+          set -euo pipefail
+          data='monalisa-tsp-search/concorde-exact-data'
+          out='monalisa-tsp-search/concorde-exact-output'
+          mkdir -p "$data" "$out"
+          base='https://raw.githubusercontent.com/Hermann-SW/RR/main/data/tsp/extra'
+          files=(
+            mona-lisa100K.tsp
+            mona-lisa100K.opt.tour
+            monalisa_5757199.tour
+            monalisa_5757200.tour
+            monalisa_5757203.tour
+            monalisa_5757204.tour
+            monalisa_5757205.tour
+            monalisa_5757241.tour
+            monalisa_5757245.tour
+            monalisa_5758831.tour
+          )
+          for f in "${files[@]}"; do
+            curl -fL --retry 5 --retry-all-errors "$base/$f" -o "$data/$f"
+          done
+          sha256sum "$data"/* | tee "$out/public-input-sha256.txt"
+
+      - name: Reconstruct and verify the 1,493-vertex exact subproblem
+        shell: bash
+        run: |
+          set -euo pipefail
+          data='monalisa-tsp-search/concorde-exact-data'
+          out='monalisa-tsp-search/concorde-exact-output'
+          python monalisa-tsp-search/build_public_contracted.py build \
+            --instance "$data/mona-lisa100K.tsp" \
+            --tours "$data/mona-lisa100K.opt.tour" "$data"/monalisa_*.tour \
+            --output "$out/contracted"
+          python monalisa-tsp-search/build_public_contracted.py decode \
+            --instance "$data/mona-lisa100K.tsp" \
+            --mapping "$out/contracted/mapping.json" \
+            --candidate "$out/contracted/initial.node_tour" \
+            --output "$out/initial-verification" \
+            --target 5757191
+          cat "$out/contracted/build-report.json"
+          cat "$out/initial-verification/decode-report.json"
+
+      - name: Build a 64-bit Concorde exact solver with QSopt
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="$PWD/monalisa-tsp-search/concorde-exact-output"
+          curl -fL --retry 5 --retry-all-errors \
+            'https://www.math.uwaterloo.ca/tsp/concorde/downloads/codes/src/co031219.tgz' \
+            -o /tmp/co031219.tgz
+          rm -rf /tmp/concorde
+          tar -xzf /tmp/co031219.tgz -C /tmp
+          cd /tmp/concorde
+          curl -fL --retry 5 --retry-all-errors \
+            'https://www.math.uwaterloo.ca/~bico/qsopt/downloads/codes/ubuntu/qsopt.a' \
+            -o qsopt.a
+          curl -fL --retry 5 --retry-all-errors \
+            'https://www.math.uwaterloo.ca/~bico/qsopt/downloads/codes/ubuntu/qsopt.h' \
+            -o qsopt.h
+          CFLAGS='-O3 -g -fPIC' ./configure --with-qsopt="$PWD" \
+            2>&1 | tee "$out/configure.log"
+          make -j2 everything 2>&1 | tee "$out/build.log"
+          test -x TSP/test_tsp
+          cp TSP/test_tsp "$out/test_tsp"
+          sha256sum /tmp/co031219.tgz qsopt.a qsopt.h TSP/test_tsp \
+            | tee "$out/solver-sha256.txt"
+
+      - name: Run Concorde branch-and-cut below the record
+        shell: bash
+        run: |
+          set +e
+          root="$PWD/monalisa-tsp-search/concorde-exact-output"
+          graph="$root/contracted/contracted.edg"
+          tour="$root/contracted/initial.node_tour"
+          mkdir -p "$root/run"
+          cd "$root/run"
+          timeout --signal=INT --kill-after=45s 23m \
+            ../test_tsp \
+              -s 149327 \
+              -t "$tour" \
+              -u 5757190 \
+              -z 1320 \
+              -o candidate.node_tour \
+              "$graph" \
+            2>&1 | tee concorde.log
+          code=${PIPESTATUS[0]}
+          echo "$code" >concorde-exit-code.txt
+          grep -Ei 'lowerbound|optimal tour|found|infeasible|time bound|limit|LP value|exact' \
+            concorde.log >concorde-summary.txt || true
+          tail -n 400 concorde.log >concorde-tail.txt || true
+          ls -lAh >run-files.txt
+          exit 0
+
+      - name: Independently decode any tour found by Concorde
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          data='monalisa-tsp-search/concorde-exact-data'
+          root='monalisa-tsp-search/concorde-exact-output'
+          if [ -s "$root/run/candidate.node_tour" ]; then
+            python monalisa-tsp-search/build_public_contracted.py decode \
+              --instance "$data/mona-lisa100K.tsp" \
+              --mapping "$root/contracted/mapping.json" \
+              --candidate "$root/run/candidate.node_tour" \
+              --output "$root/candidate-verification" \
+              --target 5757191
+            cat "$root/candidate-verification/decode-report.json"
+          else
+            printf '%s\n' '{"candidate_emitted":false}' \
+              >"$root/candidate-verification.json"
+          fi
+          cat "$root/run/concorde-summary.txt" || true
+          cat "$root/run/concorde-tail.txt" || true
+
+      - name: Upload all exact-search evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monalisa-contracted-concorde-exact
+          path: monalisa-tsp-search/concorde-exact-output/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 1
