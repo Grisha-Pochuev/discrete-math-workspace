@@ -1,0 +1,203 @@
+name: Mona Lisa analyze verified sparse graph
+
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - '.github/workflows/monalisa-analyze-verified-sparse.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download verified reduced graph, fixed edges, instance and record tour
+        shell: bash
+        run: |
+          set -euo pipefail
+          out='monalisa-tsp-search/verified-sparse-analysis'
+          mkdir -p "$out"
+          elim='https://raw.githubusercontent.com/bicobico2/ElimTSP/main/results'
+          rr='https://raw.githubusercontent.com/Hermann-SW/RR/main/data/tsp/extra'
+          curl -fL --retry 5 --retry-all-errors "$elim/mona.248972.edg.gz" -o "$out/mona.248972.edg.gz"
+          curl -fL --retry 5 --retry-all-errors "$elim/mona.1635.fix.gz" -o "$out/mona.1635.fix.gz"
+          curl -fL --retry 5 --retry-all-errors "$rr/mona-lisa100K.tsp" -o "$out/mona-lisa100K.tsp"
+          curl -fL --retry 5 --retry-all-errors "$rr/mona-lisa100K.opt.tour" -o "$out/mona-lisa100K.opt.tour"
+          gzip -t "$out/mona.248972.edg.gz"
+          gzip -t "$out/mona.1635.fix.gz"
+          gzip -cd "$out/mona.1635.fix.gz" | head -30 | tee "$out/fix-head.txt"
+          sha256sum "$out"/* | tee "$out/sha256.txt"
+
+      - name: Analyze forced-edge propagation, incumbent, and planarity
+        shell: bash
+        run: |
+          set -euo pipefail
+          out='monalisa-tsp-search/verified-sparse-analysis'
+          python - "$out" <<'PY'
+          import gzip, json, math, sys
+          from collections import defaultdict, deque, Counter
+          from pathlib import Path
+
+          out = Path(sys.argv[1])
+          graph_path = out/'mona.248972.edg.gz'
+          fix_path = out/'mona.1635.fix.gz'
+
+          with gzip.open(graph_path, 'rt') as f:
+              n, m = map(int, f.readline().split())
+              edges = {}
+              adj = [set() for _ in range(n)]
+              for line in f:
+                  if not line.strip(): continue
+                  a,b,w = map(int,line.split())
+                  e=(a,b) if a<b else (b,a)
+                  edges[e]=w; adj[a].add(b); adj[b].add(a)
+          assert n==100000 and len(edges)==m==248972
+
+          raw=[]
+          with gzip.open(fix_path,'rt') as f:
+              for line in f:
+                  s=line.strip()
+                  if not s or s.startswith('#'): continue
+                  vals=[int(x) for x in s.split()]
+                  raw.append(vals)
+          # Known ElimTSP result contains 1,635 fixed edges. Accept common header shapes.
+          rows=raw
+          if rows and len(rows[0])>=2 and rows[0][0]==n and rows[0][1] in (1635, len(rows)-1):
+              rows=rows[1:]
+          fixed=set()
+          unparsable=[]
+          for vals in rows:
+              if len(vals)<2:
+                  unparsable.append(vals); continue
+              a,b=vals[0],vals[1]
+              if not (0<=a<n and 0<=b<n and a!=b):
+                  unparsable.append(vals); continue
+              e=(a,b) if a<b else (b,a)
+              if e not in edges:
+                  raise RuntimeError(f'fixed edge absent from reduced graph: {e}')
+              fixed.add(e)
+          if len(fixed)!=1635:
+              raise RuntimeError(f'parsed {len(fixed)} fixed edges, expected 1635; first rows={raw[:5]}')
+
+          active=set(edges)
+          fadj=[set() for _ in range(n)]
+          for a,b in fixed:
+              fadj[a].add(b); fadj[b].add(a)
+          if max(map(len,fadj))>2:
+              raise RuntimeError('fixed degree exceeds 2')
+
+          # Safe Hamilton-cycle degree propagation on the verified sparse graph.
+          q=deque(range(n)); inq=[True]*n
+          newly_fixed=0; removed=0
+          while q:
+              v=q.popleft(); inq[v]=False
+              fdeg=len(fadj[v])
+              possible=[u for u in adj[v] if ((v,u) if v<u else (u,v)) in active]
+              if fdeg>2 or len(possible)<2:
+                  raise RuntimeError(f'inconsistent degree state at {v}: fixed={fdeg}, possible={len(possible)}')
+              if fdeg==2:
+                  for u in list(possible):
+                      e=(v,u) if v<u else (u,v)
+                      if e in fixed: continue
+                      active.remove(e); adj[v].discard(u); adj[u].discard(v); removed+=1
+                      for x in (u,):
+                          if not inq[x]: q.append(x); inq[x]=True
+              else:
+                  need=2-fdeg
+                  optional=[]
+                  for u in possible:
+                      e=(v,u) if v<u else (u,v)
+                      if e not in fixed: optional.append((e,u))
+                  if len(optional)==need:
+                      for e,u in optional:
+                          if e in fixed: continue
+                          fixed.add(e); newly_fixed+=1
+                          a,b=e; fadj[a].add(b); fadj[b].add(a)
+                          if len(fadj[a])>2 or len(fadj[b])>2:
+                              raise RuntimeError('propagation fixed degree exceeds 2')
+                          for x in (a,b):
+                              if not inq[x]: q.append(x); inq[x]=True
+
+          # Detect fixed components and whether any forbidden proper cycle appeared.
+          seen=set(); comps=[]; fixed_cycles=[]
+          for s in range(n):
+              if s in seen or not fadj[s]: continue
+              stack=[s]; seen.add(s); verts=[]; e2=0
+              while stack:
+                  v=stack.pop(); verts.append(v); e2+=len(fadj[v])
+                  for u in fadj[v]:
+                      if u not in seen: seen.add(u); stack.append(u)
+              ec=e2//2
+              comps.append((len(verts),ec))
+              if ec==len(verts) and len(verts)<n: fixed_cycles.append((len(verts),ec))
+          if fixed_cycles:
+              raise RuntimeError(f'proper fixed cycles detected: {fixed_cycles[:5]}')
+
+          # Parse record tour and verify it lies in reduced graph and respects fixed edges.
+          tour=[]; insec=False
+          for line in (out/'mona-lisa100K.opt.tour').read_text().splitlines():
+              s=line.strip()
+              if s=='TOUR_SECTION': insec=True; continue
+              if not insec: continue
+              if s in ('-1','EOF'): break
+              if s: tour.append(int(s)-1)
+          assert len(tour)==n and len(set(tour))==n
+          tour_edges=set(); tour_len=0
+          absent=[]
+          for i,a in enumerate(tour):
+              b=tour[(i+1)%n]; e=(a,b) if a<b else (b,a); tour_edges.add(e)
+              if e not in edges: absent.append(e)
+              else: tour_len+=edges[e]
+          if absent: raise RuntimeError(f'record tour has {len(absent)} edges absent from reduced graph')
+          if tour_len!=5757191: raise RuntimeError(f'record length {tour_len}')
+          if not fixed.issubset(tour_edges):
+              bad=list(fixed-tour_edges)[:10]
+              raise RuntimeError(f'fixed edges not all in record tour; examples {bad}')
+
+          deg=Counter(len(x) for x in adj)
+          comp_sizes=Counter(v for v,e in comps)
+          report={
+              'vertices':n,'original_sparse_edges':m,'initial_fixed_edges':1635,
+              'propagated_new_fixed_edges':newly_fixed,'total_fixed_edges_after_propagation':len(fixed),
+              'edges_removed_by_degree_propagation':removed,'remaining_edges_after_propagation':len(active),
+              'fixed_components':len(comps),'largest_fixed_component_vertices':max([v for v,e in comps],default=1),
+              'contracted_vertex_count_if_fixed_paths_contracted':n-len(fixed),
+              'degree_distribution_after_propagation':dict(sorted(deg.items())),
+              'record_tour_length':tour_len,'record_contains_all_fixed_edges':True,
+              'fixed_component_size_counts_small':{str(k):v for k,v in sorted(comp_sizes.items()) if k<=20},
+          }
+          (out/'analysis.json').write_text(json.dumps(report,indent=2)+'\n')
+          print(json.dumps(report,indent=2))
+          PY
+
+          python -m pip -q install 'networkx>=3.4,<4'
+          python - "$out" <<'PY'
+          import gzip,json,sys
+          from pathlib import Path
+          import networkx as nx
+          out=Path(sys.argv[1]); G=nx.Graph()
+          with gzip.open(out/'mona.248972.edg.gz','rt') as f:
+              n,m=map(int,f.readline().split()); G.add_nodes_from(range(n))
+              for line in f:
+                  if line.strip():
+                      a,b,w=map(int,line.split()); G.add_edge(a,b)
+          planar,_=nx.check_planarity(G,counterexample=False)
+          (out/'planarity.json').write_text(json.dumps({'planar':planar,'vertices':n,'edges':m},indent=2)+'\n')
+          print({'planar':planar,'vertices':n,'edges':m})
+          if not planar: raise SystemExit('expected verified reduced graph to be planar')
+          PY
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monalisa-verified-sparse-analysis
+          path: monalisa-tsp-search/verified-sparse-analysis/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 1
