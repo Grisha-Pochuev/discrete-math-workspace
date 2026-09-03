@@ -1,0 +1,41 @@
+name: Mona Lisa fetch public sparse graph
+
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - '.github/workflows/monalisa-fetch-public-graph.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download public instance, record tour, and eliminated graph
+        shell: bash
+        run: |
+          set -euo pipefail
+          out='monalisa-tsp-search/public-graph'
+          mkdir -p "$out"
+          rr='https://raw.githubusercontent.com/Hermann-SW/RR/main/data/tsp/extra'
+          elim='https://raw.githubusercontent.com/bicobico2/ElimTSP/main/results'
+          curl -fL --retry 5 --retry-all-errors "$rr/mona-lisa100K.tsp" -o "$out/mona-lisa100K.tsp"
+          curl -fL --retry 5 --retry-all-errors "$rr/mona-lisa100K.opt.tour" -o "$out/mona-lisa100K.opt.tour"
+          curl -fL --retry 5 --retry-all-errors "$elim/mona.248972.edg.gz" -o "$out/mona.248972.edg.gz"
+          gzip -t "$out/mona.248972.edg.gz"
+          sha256sum "$out"/* | tee "$out/sha256.txt"
+          ls -lAh "$out" | tee "$out/sizes.txt"
+
+      - name: Upload the public data
+        uses: actions/upload-artifact@v4
+        with:
+          name: monalisa-public-sparse-graph
+          path: monalisa-tsp-search/public-graph/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 1
