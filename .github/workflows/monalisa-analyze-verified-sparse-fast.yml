@@ -1,0 +1,138 @@
+name: Mona Lisa fast verified sparse diagnostic
+
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - '.github/workflows/monalisa-analyze-verified-sparse-fast.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Download verified graph, fixed edges, and record tour
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          elim='https://raw.githubusercontent.com/bicobico2/ElimTSP/main/results'
+          rr='https://raw.githubusercontent.com/Hermann-SW/RR/main/data/tsp/extra'
+          curl -fL --retry 5 --retry-all-errors "$elim/mona.248972.edg.gz" -o out/mona.edg.gz
+          curl -fL --retry 5 --retry-all-errors "$elim/mona.1635.fix.gz" -o out/mona.fix.gz
+          curl -fL --retry 5 --retry-all-errors "$rr/mona-lisa100K.opt.tour" -o out/record.tour
+          gzip -t out/mona.edg.gz
+          gzip -t out/mona.fix.gz
+          echo 'FIX FILE HEAD:'
+          gzip -cd out/mona.fix.gz | head -20 || true
+
+      - name: Propagate forced degree constraints and verify record
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import gzip,json
+          from collections import Counter,deque
+          n=100000
+          with gzip.open('out/mona.edg.gz','rt') as f:
+              nn,m=map(int,f.readline().split()); assert nn==n
+              edges={}; adj=[set() for _ in range(n)]
+              for line in f:
+                  a,b,w=map(int,line.split()); e=(a,b) if a<b else (b,a)
+                  edges[e]=w; adj[a].add(b); adj[b].add(a)
+          raw=[]
+          with gzip.open('out/mona.fix.gz','rt') as f:
+              for line in f:
+                  s=line.strip()
+                  if s and not s.startswith('#'):
+                      try: raw.append([int(x) for x in s.split()])
+                      except ValueError: pass
+          rows=raw
+          if rows and len(rows[0])>=2 and rows[0][0]==n: rows=rows[1:]
+          fixed=set()
+          for r in rows:
+              if len(r)>=2 and 0<=r[0]<n and 0<=r[1]<n and r[0]!=r[1]:
+                  a,b=r[:2]; e=(a,b) if a<b else (b,a)
+                  if e in edges: fixed.add(e)
+          print('raw first rows',raw[:5]); print('parsed fixed',len(fixed))
+          assert len(fixed)==1635
+          active=set(edges); fadj=[set() for _ in range(n)]
+          for a,b in fixed: fadj[a].add(b); fadj[b].add(a)
+          q=deque(range(n)); inq=[True]*n; added=removed=0
+          while q:
+              v=q.popleft(); inq[v]=False
+              poss=list(adj[v]); fdeg=len(fadj[v])
+              if fdeg>2 or len(poss)<2: raise RuntimeError((v,fdeg,len(poss)))
+              if fdeg==2:
+                  for u in poss:
+                      e=(v,u) if v<u else (u,v)
+                      if e not in fixed and e in active:
+                          active.remove(e); adj[v].remove(u); adj[u].remove(v); removed+=1
+                          if not inq[u]: q.append(u); inq[u]=True
+              else:
+                  opt=[]
+                  for u in poss:
+                      e=(v,u) if v<u else (u,v)
+                      if e not in fixed: opt.append((e,u))
+                  if len(opt)==2-fdeg:
+                      for e,u in opt:
+                          if e not in fixed:
+                              fixed.add(e); added+=1; a,b=e; fadj[a].add(b); fadj[b].add(a)
+                              for x in (a,b):
+                                  if not inq[x]: q.append(x); inq[x]=True
+          # TSPLIB tour parser
+          vals=[]; sec=False
+          for line in open('out/record.tour'):
+              s=line.strip()
+              if s=='TOUR_SECTION': sec=True; continue
+              if not sec: continue
+              if s in ('-1','EOF'): break
+              if s: vals.append(int(s)-1)
+          assert len(vals)==n and len(set(vals))==n
+          te=set(); length=0
+          for i,a in enumerate(vals):
+              b=vals[(i+1)%n]; e=(a,b) if a<b else (b,a); te.add(e); length+=edges[e]
+          assert length==5757191
+          bad=fixed-te
+          report={
+            'vertices':n,'sparse_edges':m,'initial_fixed':1635,
+            'new_fixed_by_degree_propagation':added,'total_fixed':len(fixed),
+            'removed_by_degree_propagation':removed,'remaining_edges':len(active),
+            'contracted_vertices_if_all_fixed_paths_contract':n-len(fixed),
+            'degree_distribution_after':dict(sorted(Counter(map(len,adj)).items())),
+            'record_length':length,'all_propagated_fixed_in_record':not bad,
+            'bad_fixed_examples':list(map(list,list(bad)[:10]))
+          }
+          print(json.dumps(report,indent=2)); open('out/analysis.json','w').write(json.dumps(report,indent=2)+'\n')
+          if bad: raise RuntimeError('safe propagation produced fixed edge outside record')
+          PY
+
+      - name: Check planarity
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip -q install 'networkx>=3.4,<4'
+          python - <<'PY'
+          import gzip,json,networkx as nx
+          G=nx.Graph(); G.add_nodes_from(range(100000))
+          with gzip.open('out/mona.edg.gz','rt') as f:
+              n,m=map(int,f.readline().split())
+              for line in f:
+                  a,b,w=map(int,line.split()); G.add_edge(a,b)
+          ok,_=nx.check_planarity(G,counterexample=False)
+          print('planar',ok); open('out/planarity.json','w').write(json.dumps({'planar':ok,'n':n,'m':m},indent=2)+'\n')
+          assert ok
+          PY
+
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: monalisa-fast-verified-sparse-diagnostic
+          path: out/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 1
