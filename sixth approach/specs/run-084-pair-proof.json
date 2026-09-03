@@ -1,0 +1,55 @@
+{
+  "case_job_count": 2,
+  "cases": [
+    {
+      "case_id": "case-a",
+      "clause_count": 83698,
+      "dimacs_sha256": "5796296705bb4c756d4a8f28d2aad5323e8273b3d5fc5e431d078f6db891c55f",
+      "manifest_canonical_sha256": "bcd3688763854b0d87321e5f1b9eddfc9705c4fae9fc443000f90cd97b3bdb29",
+      "manifest_file_sha256": "1d1efe5e99c781c72d6abc76be51d9e1409674138d18ced8e4e4538d02168ea0",
+      "pattern": "111",
+      "variable_count": 20745
+    },
+    {
+      "case_id": "case-b",
+      "clause_count": 85355,
+      "dimacs_sha256": "ace1efebcb9cb0aea155a57bf06b5243533f1580e89c113fe7b42ceca8afd81d",
+      "manifest_canonical_sha256": "72a84677df74401684c408d92e5f1e939615aa0bc4dd7edd05e5e26cd19abd00",
+      "manifest_file_sha256": "aef0f59f8c6f594cc27fb81d64b19703548d1410aa6ca4b88bcece1de5f522f2",
+      "pattern": "21",
+      "variable_count": 21297
+    }
+  ],
+  "checker": {
+    "accepted_exit": 0,
+    "accepted_line": "c VERIFIED",
+    "commit": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985",
+    "repository": "marijnheule/drat-trim",
+    "source": "lrat-check.c"
+  },
+  "formula_schema": "run084-pair-formula-v1",
+  "generator_path": "sixth approach/run084_pair_formula.py",
+  "generator_sha256": "28391e54713ccd0ffb3cb9fe6df9c14a5eb18acad0b3b67cba4a238ad84d9488",
+  "max_parallel": 2,
+  "outcome_table": {
+    "SAT": "preserve and replay one complete exact model",
+    "UNSAT": "preserve LRAT accepted by the pinned independent checker",
+    "other": "technical incompleteness; no finite conclusion"
+  },
+  "preflight_then_automatic_case_jobs": true,
+  "proof_script_path": "sixth approach/run084_pair_proof.py",
+  "proof_script_sha256": "b7bfe1d8c9d434a19ae7cdaea4d373be49632f8a7927a1b3a24b6d844c8359ef",
+  "public_scope": "two finite neutral formulas; no broader claim",
+  "run_id": "run-084",
+  "schema": "run084-pair-proof-spec-v1",
+  "solver": {
+    "arguments": [
+      "--lrat",
+      "--no-binary"
+    ],
+    "package": "cadical=1.7.4-1",
+    "sat_exit": 10,
+    "seconds": 10800,
+    "unsat_exit": 20
+  }
+}
