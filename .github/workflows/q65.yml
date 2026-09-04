@@ -1,0 +1,59 @@
+name: q65
+on:
+  workflow_dispatch:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - 'monalisa-tsp-search/q65/go'
+permissions:
+  contents: read
+concurrency:
+  group: q65-1
+  cancel-in-progress: false
+jobs:
+  q:
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        i: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
+    name: q-${{ matrix.i }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 359
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            monalisa-tsp-search/q65
+          sparse-checkout-cone-mode: true
+          fetch-depth: 1
+      - name: r
+        shell: bash
+        env:
+          J: ${{ matrix.i }}
+        run: |
+          set -euo pipefail
+          base64 -d monalisa-tsp-search/q65/x | gzip -dc > /tmp/a.cpp
+          g++ -O3 -s -std=c++20 /tmp/a.cpp -o /tmp/x
+          set +e
+          timeout --signal=TERM --kill-after=60s 350m /tmp/x "$J" > /tmp/z.log 2>&1
+          rc=$?
+          set -e
+          mkdir -p "/tmp/r$J/o"
+          printf '%s\n' "$rc" > "/tmp/r$J/o/outer"
+          cp /tmp/z.log "/tmp/r$J/o/z" 2>/dev/null || true
+          tar -czf /tmp/o.tgz -C "/tmp/r$J" o
+          mkdir -p monalisa-tsp-search/q65/z
+          openssl cms -encrypt -binary -aes256 \
+            -in /tmp/o.tgz -outform DER \
+            -out "monalisa-tsp-search/q65/z/$J.cms" \
+            monalisa-tsp-search/q65/c
+          rm -rf /tmp/a.cpp /tmp/x /tmp/o.tgz /tmp/z.log "/tmp/r$J"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: q-${{ matrix.i }}
+          path: monalisa-tsp-search/q65/z/${{ matrix.i }}.cms
+          if-no-files-found: warn
+          retention-days: 3
+          compression-level: 0
