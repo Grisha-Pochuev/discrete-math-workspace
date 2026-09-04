@@ -1,0 +1,16 @@
+name: q64-stop
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - '.github/workflows/q64-stop.yml'
+permissions:
+  contents: read
+concurrency:
+  group: q64-1
+  cancel-in-progress: true
+jobs:
+  s:
+    runs-on: ubuntu-latest
+    steps:
+      - run: ':'
