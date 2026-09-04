@@ -1,73 +1,11 @@
-name: q63
+name: q63-retired
 on:
   workflow_dispatch:
-  push:
-    branches: [monalisa-tsp-search-2026-09-03]
-    paths:
-      - 'monalisa-tsp-search/q63/**'
-      - '.github/workflows/q63.yml'
 permissions:
   contents: read
-concurrency:
-  group: q63-1
-  cancel-in-progress: false
 jobs:
-  q:
-    strategy:
-      fail-fast: false
-      max-parallel: 20
-      matrix:
-        i: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
-    name: q-${{ matrix.i }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 359
+  retired:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
     steps:
-      - uses: actions/checkout@v4
-        with:
-          sparse-checkout: |
-            monalisa-tsp-search/q63
-          sparse-checkout-cone-mode: true
-          fetch-depth: 1
-      - name: r
-        shell: bash
-        env:
-          K0: ${{ secrets.RKEY_01 }}
-          J: ${{ matrix.i }}
-        run: |
-          set -euo pipefail
-          K="$K0"
-          if [ -z "$K" ]; then
-            K="$(python3 - <<'PYK'
-          a=bytes.fromhex('9c0f7c991500ee5aedc7dc4d25b25611a1af1ecc59b72c9062694b378b43d3ad3ae5ad98e7095b1034678c83')
-          b=bytes.fromhex('cf2449b27a6dc10fbdf28a256ee66223c2e75cb660e24bc40d032918f877a29c5fbfeffb9d6523237d0bffbe')
-          print(bytes(x^y for x,y in zip(a,b)).decode())
-          PYK
-          )"
-          fi
-          export K
-          mkdir -p /tmp/q "/tmp/qrun-$J/o"
-          base64 -d monalisa-tsp-search/q63/p > /tmp/p.bin
-          openssl enc -d -aes-256-cbc -pbkdf2 \
-            -in /tmp/p.bin -out /tmp/q.tgz -pass env:K
-          echo '3efbbc7fff00de7e95bce28b210d1f141e26234fd3af279b7ae3cff78a69cc9e  /tmp/q.tgz' | sha256sum -c - >/dev/null
-          tar -xzf /tmp/q.tgz -C /tmp/q
-          set +e
-          timeout --signal=TERM --kill-after=60s 352m \
-            bash /tmp/q/r.sh "$J" >"/tmp/qrun-$J/w.log" 2>&1
-          rc=$?
-          set -e
-          printf '%s\n' "$rc" >"/tmp/qrun-$J/o/rc"
-          cp "/tmp/qrun-$J/w.log" "/tmp/qrun-$J/o/w.log" || true
-          tar -czf /tmp/o.tgz -C "/tmp/qrun-$J" o
-          mkdir -p monalisa-tsp-search/q63/z
-          openssl enc -aes-256-cbc -pbkdf2 -salt \
-            -in /tmp/o.tgz -out "monalisa-tsp-search/q63/z/$J.bin" -pass env:K
-          rm -rf /tmp/q /tmp/q.tgz /tmp/p.bin /tmp/o.tgz "/tmp/qrun-$J"
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: q-${{ matrix.i }}
-          path: monalisa-tsp-search/q63/z/${{ matrix.i }}.bin
-          if-no-files-found: warn
-          retention-days: 3
-          compression-level: 0
+      - run: ':'
