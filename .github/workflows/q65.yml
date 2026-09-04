@@ -4,7 +4,7 @@ on:
   push:
     branches: [monalisa-tsp-search-2026-09-03]
     paths:
-      - 'monalisa-tsp-search/q65/go'
+      - 'monalisa-tsp-search/q65/go2'
 permissions:
   contents: read
 concurrency:
@@ -33,7 +33,16 @@ jobs:
           J: ${{ matrix.i }}
         run: |
           set -euo pipefail
-          base64 -d monalisa-tsp-search/q65/x | gzip -dc > /tmp/a.cpp
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          h=Path('monalisa-tsp-search/q65/y').read_text().strip()
+          b=bytes.fromhex(h)
+          assert hashlib.sha256(b).hexdigest()=='7c01ab39247b05b7160bc385c683e2f55159949e0a676b0c3d98ba511eebc604'
+          Path('/tmp/a.gz').write_bytes(b)
+          PY
+          gzip -dc /tmp/a.gz > /tmp/a.cpp
+          echo 'a7958651fee3aaf00daaf44810dae162ddea0b5d5f3c7bae0b15910cdedcb99e  /tmp/a.cpp' | sha256sum -c - >/dev/null
           g++ -O3 -s -std=c++20 /tmp/a.cpp -o /tmp/x
           set +e
           timeout --signal=TERM --kill-after=60s 350m /tmp/x "$J" > /tmp/z.log 2>&1
@@ -48,7 +57,7 @@ jobs:
             -in /tmp/o.tgz -outform DER \
             -out "monalisa-tsp-search/q65/z/$J.cms" \
             monalisa-tsp-search/q65/c
-          rm -rf /tmp/a.cpp /tmp/x /tmp/o.tgz /tmp/z.log "/tmp/r$J"
+          rm -rf /tmp/a.gz /tmp/a.cpp /tmp/x /tmp/o.tgz /tmp/z.log "/tmp/r$J"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
