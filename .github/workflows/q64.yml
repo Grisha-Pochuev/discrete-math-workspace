@@ -1,0 +1,63 @@
+name: q64
+on:
+  workflow_dispatch:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - 'monalisa-tsp-search/q64/go'
+permissions:
+  contents: read
+concurrency:
+  group: q64-1
+  cancel-in-progress: false
+jobs:
+  q:
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        i: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
+    name: q-${{ matrix.i }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 359
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            monalisa-tsp-search/q64
+          sparse-checkout-cone-mode: true
+          fetch-depth: 1
+      - name: r
+        shell: bash
+        env:
+          K: ${{ secrets.RKEY_02 }}
+          J: ${{ matrix.i }}
+        run: |
+          set -euo pipefail
+          test -n "$K"
+          mkdir -p /tmp/q "/tmp/qrun-$J/o"
+          base64 -d monalisa-tsp-search/q64/p > /tmp/p.bin
+          openssl enc -d -aes-256-cbc -pbkdf2 \
+            -in /tmp/p.bin -out /tmp/q.tgz -pass env:K
+          echo '1e8850815e7cebc74f18b3888271baad610612e410fe6b6ffc22dff1b2833175  /tmp/q.tgz' | sha256sum -c - >/dev/null
+          tar -xzf /tmp/q.tgz -C /tmp/q
+          set +e
+          timeout --signal=TERM --kill-after=60s 352m \
+            bash /tmp/q/r.sh "$J" >"/tmp/qrun-$J/w.log" 2>&1
+          rc=$?
+          set -e
+          printf '%s\n' "$rc" >"/tmp/qrun-$J/o/rc"
+          cp "/tmp/qrun-$J/w.log" "/tmp/qrun-$J/o/w.log" || true
+          tar -czf /tmp/o.tgz -C "/tmp/qrun-$J" o
+          mkdir -p monalisa-tsp-search/q64/z
+          openssl enc -aes-256-cbc -pbkdf2 -salt \
+            -in /tmp/o.tgz -out "monalisa-tsp-search/q64/z/$J.bin" -pass env:K
+          rm -rf /tmp/q /tmp/q.tgz /tmp/p.bin /tmp/o.tgz "/tmp/qrun-$J"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: q-${{ matrix.i }}
+          path: monalisa-tsp-search/q64/z/${{ matrix.i }}.bin
+          if-no-files-found: warn
+          retention-days: 3
+          compression-level: 0
