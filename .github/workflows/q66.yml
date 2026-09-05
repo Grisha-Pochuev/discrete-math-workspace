@@ -1,0 +1,54 @@
+name: q66
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - 'monalisa-tsp-search/q66/go'
+permissions:
+  contents: read
+jobs:
+  q:
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        i: [0,1,2,3]
+    name: q-${{ matrix.i }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            monalisa-tsp-search/q66
+            monalisa-tsp-search/q65
+          sparse-checkout-cone-mode: true
+          fetch-depth: 1
+      - name: r
+        shell: bash
+        env:
+          J: ${{ matrix.i }}
+        run: |
+          set -euo pipefail
+          xxd -r -p monalisa-tsp-search/q66/x > /tmp/x.gz
+          echo 'f9709dbb3040ba085b79ff8a0c3085b4a7f024d342ad4e8cdae9ac9f07f33715  /tmp/x.gz' | sha256sum -c -
+          gzip -dc /tmp/x.gz > /tmp/x.sh
+          chmod +x /tmp/x.sh
+          set +e
+          timeout --signal=TERM --kill-after=20s 440s /tmp/x.sh "$J"
+          rc=$?
+          set -e
+          W="/tmp/q66-$J"
+          mkdir -p "$W/o"
+          printf '%s\n' "$rc" > "$W/o/outer"
+          tar -czf /tmp/o.tgz -C "$W/o" .
+          mkdir -p monalisa-tsp-search/q66/z
+          openssl cms -encrypt -binary -aes256 -in /tmp/o.tgz -outform DER -out "monalisa-tsp-search/q66/z/$J.cms" monalisa-tsp-search/q65/c
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: q-${{ matrix.i }}
+          path: monalisa-tsp-search/q66/z/${{ matrix.i }}.cms
+          if-no-files-found: warn
+          retention-days: 1
+          compression-level: 0
