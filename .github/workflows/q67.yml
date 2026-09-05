@@ -1,0 +1,63 @@
+name: q67
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths:
+      - 'monalisa-tsp-search/q67/go'
+permissions:
+  contents: read
+concurrency:
+  group: q67-1
+  cancel-in-progress: false
+jobs:
+  q:
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        i: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
+    name: q-${{ matrix.i }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 359
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            monalisa-tsp-search/q67
+            monalisa-tsp-search/q65
+          sparse-checkout-cone-mode: true
+          fetch-depth: 1
+      - name: r
+        shell: bash
+        env:
+          J: ${{ matrix.i }}
+        run: |
+          set -euo pipefail
+          xxd -r -p monalisa-tsp-search/q67/x > /tmp/w.gz
+          echo 'd0972a406757ae438084ca33a10f0d54901de72995796af210982735fbfe5222  /tmp/w.gz' | sha256sum -c - >/dev/null
+          gzip -dc /tmp/w.gz > /tmp/w.c
+          gcc -O2 -s /tmp/w.c -o /tmp/w
+          set +e
+          timeout --signal=TERM --kill-after=60s 20900s /tmp/w "$J" > /tmp/outer.log 2>&1
+          rc=$?
+          set -e
+          if [ ! -s "/tmp/q67-out-$J.tgz" ]; then
+            mkdir -p /tmp/f
+            printf '%s\n' "$rc" > /tmp/f/rc
+            cp /tmp/outer.log /tmp/f/z 2>/dev/null || true
+            tar -czf "/tmp/q67-out-$J.tgz" -C /tmp/f .
+          fi
+          mkdir -p monalisa-tsp-search/q67/z
+          openssl cms -encrypt -binary -aes256 \
+            -in "/tmp/q67-out-$J.tgz" -outform DER \
+            -out "monalisa-tsp-search/q67/z/$J.cms" \
+            monalisa-tsp-search/q65/c
+          rm -rf /tmp/w /tmp/w.c /tmp/w.gz /tmp/outer.log /tmp/f "/tmp/q67-out-$J.tgz"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: q-${{ matrix.i }}
+          path: monalisa-tsp-search/q67/z/${{ matrix.i }}.cms
+          if-no-files-found: warn
+          retention-days: 3
+          compression-level: 0
