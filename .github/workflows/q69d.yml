@@ -1,0 +1,36 @@
+name: q69d
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths: ['.github/workflows/q69d.yml']
+permissions:
+  contents: read
+jobs:
+  d:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: monalisa-tsp-search/q65
+          fetch-depth: 1
+      - name: d
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/dependencies out
+          # Download public open-source dependencies only; no credentials are read.
+          {
+            curl -fL --retry 2 --connect-timeout 20 https://api.github.com/repositories/442796236/zipball/015dfbe9f267230f78787bd244af393ffc018900 -o /tmp/dependencies/a.zip
+            curl -fL --retry 2 --connect-timeout 20 https://www.math.uwaterloo.ca/~bico/qsopt/downloads/linux64/qsopt.a -o /tmp/dependencies/qsopt.a
+            curl -fL --retry 2 --connect-timeout 20 https://www.math.uwaterloo.ca/~bico/qsopt/downloads/linux64/qsopt.h -o /tmp/dependencies/qsopt.h
+          } > /tmp/dependencies/log 2>&1 || true
+          tar -czf /tmp/dependencies.tgz -C /tmp/dependencies .
+          openssl cms -encrypt -binary -aes256 -in /tmp/dependencies.tgz -outform DER -out out/d.cms monalisa-tsp-search/q65/c
+          rm -rf /tmp/dependencies /tmp/dependencies.tgz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: d69
+          path: out/d.cms
+          retention-days: 14
+          compression-level: 0
