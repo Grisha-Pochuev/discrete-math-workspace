@@ -1,0 +1,76 @@
+name: q69
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths: ['monalisa-tsp-search/q69/go']
+permissions:
+  contents: read
+concurrency:
+  group: q69-1
+  cancel-in-progress: false
+jobs:
+  q:
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        i: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79]
+    name: q-${{ matrix.i }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 345
+    env:
+      J: ${{ matrix.i }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            monalisa-tsp-search/q69
+            monalisa-tsp-search/q65
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: r
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/q69-code /tmp/q69-work/out out
+          cat > /tmp/q69-entry.sh <<'SH'
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check numpy==1.26.4 scipy==1.13.1
+          base64 -d monalisa-tsp-search/q69/x > /tmp/q69.tgz
+          echo '1d8c56eb2ff24ad618af56b71ea585336cb7c060986ed8e7ed7061599d695b03  /tmp/q69.tgz' | sha256sum -c -
+          echo '7180e475f7dfad3f16342f9da2582b1c19a162dfb880d6aec0094551e6d34ca2  monalisa-tsp-search/q69/y' | sha256sum -c -
+          tar -xzf /tmp/q69.tgz -C /tmp/q69-code
+          base64 -d monalisa-tsp-search/q69/y > /tmp/q69-code/revision.py
+          python /tmp/q69-code/revision.py
+          python /tmp/q69-code/bootstrap.py /tmp/q69-work "$J" 19200
+          SH
+          set +e
+          timeout --signal=TERM --kill-after=45s 20100s bash -euo pipefail /tmp/q69-entry.sh > /tmp/q69-work/out/bootstrap.log 2>&1
+          rc=$?
+          set -e
+          printf '{"launcher_code":%s}\n' "$rc" > /tmp/q69-work/out/launcher.json
+          exit "$rc"
+      - name: s
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/q69-work/out out
+          tar -czf /tmp/q69-result.tgz -C /tmp/q69-work/out .
+          openssl cms -encrypt -binary -aes256 -in /tmp/q69-result.tgz -outform DER -out "out/$J.cms" monalisa-tsp-search/q65/c
+          rm -f /tmp/q69-result.tgz /tmp/q69-entry.sh /tmp/q69.tgz
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: q69-${{ matrix.i }}
+          path: out/${{ matrix.i }}.cms
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
