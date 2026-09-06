@@ -59,5 +59,5 @@ jobs:
           name: q-${{ matrix.i }}
           path: monalisa-tsp-search/q67/z/${{ matrix.i }}.cms
           if-no-files-found: warn
-          retention-days: 3
+          retention-days: 90
           compression-level: 0
