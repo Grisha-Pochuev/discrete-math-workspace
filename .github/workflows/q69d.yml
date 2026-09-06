@@ -19,11 +19,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/dependencies out
-          # Download public open-source dependencies only; no credentials are read.
           {
-            curl -fL --retry 2 --connect-timeout 20 https://api.github.com/repositories/442796236/zipball/015dfbe9f267230f78787bd244af393ffc018900 -o /tmp/dependencies/a.zip
-            curl -fL --retry 2 --connect-timeout 20 https://www.math.uwaterloo.ca/~bico/qsopt/downloads/linux64/qsopt.a -o /tmp/dependencies/qsopt.a
-            curl -fL --retry 2 --connect-timeout 20 https://www.math.uwaterloo.ca/~bico/qsopt/downloads/linux64/qsopt.h -o /tmp/dependencies/qsopt.h
+            curl -fL --retry 2 --connect-timeout 20 https://www.math.uwaterloo.ca/~bico/qsopt/downloads/codes/ubuntu/qsopt.a -o /tmp/dependencies/qsopt.a
+            curl -fL --retry 2 --connect-timeout 20 https://www.math.uwaterloo.ca/~bico/qsopt/downloads/codes/ubuntu/qsopt.h -o /tmp/dependencies/qsopt.h
           } > /tmp/dependencies/log 2>&1 || true
           tar -czf /tmp/dependencies.tgz -C /tmp/dependencies .
           openssl cms -encrypt -binary -aes256 -in /tmp/dependencies.tgz -outform DER -out out/d.cms monalisa-tsp-search/q65/c
