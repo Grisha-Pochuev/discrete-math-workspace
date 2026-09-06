@@ -1,0 +1,77 @@
+name: q73
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths: ['.github/workflows/q73.yml']
+permissions:
+  contents: read
+concurrency:
+  group: q73-1
+  cancel-in-progress: false
+jobs:
+  q:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      NUMBA_NUM_THREADS: '4'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            monalisa-tsp-search/q65
+            monalisa-tsp-search/q73
+          fetch-depth: 1
+      - name: r
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p /tmp/a71 /tmp/z73
+          python3 - <<'PY' > /tmp/q73.log 2>&1
+          import base64,gzip,hashlib,json,subprocess,sys
+          from pathlib import Path
+          p=Path('/tmp/a71')
+          s=Path('monalisa-tsp-search/q73/p').read_text().strip().replace('Whi5lRM','Whw5lRM')
+          b=gzip.decompress(base64.b64decode(s))
+          assert hashlib.sha256(b).hexdigest()=='9654a81eb290891992361735dcab3cbc19f711e20fc043dfb5ba98b9c21bd720'
+          for k,v in json.loads(b).items():
+              assert '/' not in k and '..' not in k
+              (p/k).write_text(v)
+          subprocess.run([sys.executable,'-m','pip','install','--quiet','numpy','scipy','numba'],check=True,timeout=180)
+          subprocess.run([sys.executable,str(p/'a.py')],check=True,timeout=600)
+          subprocess.run([sys.executable,str(p/'run_search.py'),'--patch-seconds','300','--workers','4','--k','48','--reloc-max','4'],check=True,timeout=1200,cwd=p)
+          PY
+          rc=$?
+          export RC="$rc"
+          python3 - <<'PY'
+          import json,os,tarfile
+          from pathlib import Path
+          p=Path('/tmp/a71');s={'rc':int(os.environ['RC'])}
+          for n in ['s.json','report.json']:
+              if (p/n).exists():s[n]=json.loads((p/n).read_text())
+          s['log_tail']=Path('/tmp/q73.log').read_text(errors='replace')[-12000:]
+          Path('/tmp/s73.json').write_text(json.dumps(s,indent=2))
+          with tarfile.open('/tmp/q73.tgz','w:gz') as tar:
+              for q in p.iterdir():
+                  if q.is_file() and (q.suffix in ['.gz','.json','.py','.cpp'] or q.name in ['best.npy','pilot_base.npy']):tar.add(q,arcname=q.name)
+              tar.add('/tmp/q73.log',arcname='execution.log')
+              tar.add('/tmp/s73.json',arcname='summary.json')
+          PY
+          set -e
+          openssl cms -encrypt -binary -aes256 -in /tmp/q73.tgz -outform DER -out /tmp/z73/0.cms monalisa-tsp-search/q65/c
+          openssl cms -encrypt -binary -aes256 -in /tmp/s73.json -outform DER -out /tmp/z73/1.cms monalisa-tsp-search/q65/c
+          echo BEGIN_Q73
+          base64 -w 0 /tmp/z73/1.cms
+          echo
+          echo END_Q73
+          echo q73-rc-$rc
+          exit "$rc"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: q73
+          path: /tmp/z73/*.cms
+          retention-days: 90
+          compression-level: 0
