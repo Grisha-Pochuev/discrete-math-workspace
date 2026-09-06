@@ -1,0 +1,54 @@
+name: q72
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths: ['.github/workflows/q72.yml']
+permissions:
+  contents: read
+jobs:
+  q:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            monalisa-tsp-search/q65
+            .github/workflows
+          fetch-depth: 1
+      - name: r
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/z71
+          python3 - <<'PY'
+          import re,gzip,base64
+          from pathlib import Path
+          t=Path('.github/workflows/q71.yml').read_text()
+          b=re.search(r"echo '([A-Za-z0-9+/=]+)'",t).group(1)
+          Path('/tmp/a71.py').write_bytes(gzip.decompress(base64.b64decode(b)))
+          PY
+          set +e
+          timeout 600s python3 /tmp/a71.py > /tmp/o71.log 2>&1
+          rc=$?
+          set -e
+          if [ ! -s /tmp/a71.tgz ]; then
+            printf '%s\n' "$rc" > /tmp/rc71
+            tar -czf /tmp/a71.tgz -C /tmp o71.log rc71
+          fi
+          openssl cms -encrypt -binary -aes256 -in /tmp/a71.tgz -outform DER -out /tmp/z71/0.cms monalisa-tsp-search/q65/c
+          if [ -s /tmp/a71/s.json ]; then
+            openssl cms -encrypt -binary -aes256 -in /tmp/a71/s.json -outform DER -out /tmp/z71/1.cms monalisa-tsp-search/q65/c
+            echo BEGIN_Q72
+            base64 -w 0 /tmp/z71/1.cms
+            echo
+            echo END_Q72
+          fi
+          echo q72-rc-$rc
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: q72
+          path: /tmp/z71/*.cms
+          retention-days: 90
+          compression-level: 0
