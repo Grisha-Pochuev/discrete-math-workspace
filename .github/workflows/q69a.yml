@@ -1,0 +1,52 @@
+name: q69a
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths: ['.github/workflows/q69a.yml']
+permissions:
+  contents: read
+jobs:
+  a:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            monalisa-tsp-search/q69
+            monalisa-tsp-search/q65
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: a
+        env:
+          OPENBLAS_NUM_THREADS: '1'
+          OMP_NUM_THREADS: '1'
+          MKL_NUM_THREADS: '1'
+          PYTHONUNBUFFERED: '1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/q69-code /tmp/q69-work/out out
+          rc=0
+          {
+            python -m pip install --disable-pip-version-check numpy==1.26.4 scipy==1.13.1
+            base64 -d monalisa-tsp-search/q69/x > /tmp/q69.tgz
+            echo '1d8c56eb2ff24ad618af56b71ea585336cb7c060986ed8e7ed7061599d695b03  /tmp/q69.tgz' | sha256sum -c -
+            tar -xzf /tmp/q69.tgz -C /tmp/q69-code
+            timeout --signal=TERM --kill-after=40s 720s python /tmp/q69-code/bootstrap.py /tmp/q69-work 999 300
+          } > /tmp/q69-work/out/bootstrap.log 2>&1 || rc=$?
+          printf '{"launcher_code":%s}\n' "$rc" > /tmp/q69-work/out/launcher.json
+          tar -czf /tmp/q69-result.tgz -C /tmp/q69-work/out .
+          openssl cms -encrypt -binary -aes256 -in /tmp/q69-result.tgz -outform DER -out out/a.cms monalisa-tsp-search/q65/c
+          exit "$rc"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a69
+          path: out/a.cms
+          retention-days: 14
+          compression-level: 0
+          if-no-files-found: error
