@@ -1,0 +1,46 @@
+name: q71
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths: ['.github/workflows/q71.yml']
+permissions:
+  contents: read
+jobs:
+  q:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: monalisa-tsp-search/q65
+          fetch-depth: 1
+      - name: r
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/z71
+          echo 'H4sIAAAAAAAC/3VW33PjJhB+11+hS+dGYGH8K3e5yqe8XWc600n70DdX40ESsklk4ADFspP8712wnNrX9sEIvl32212WxWKnlXGxssQe4NeV2qiKW0serZKkM20rSmr4945bRzZHocmW2S2AxIkdjxqjdrFmziOxONn6A5aRzv0HJRO30xN2N0vwUtPdUy0M4r2wbq2e8j9Nx/FSWVptPa5x9A8/NZ1EK/CJ8p5XnWNly0ky3iUk0ULDKKR1rG1hNh5/7wR3MJPdTh+SglRbXg3mo8GpIIqZjaWOSmZ5nmyd0zabTPb7Pd2Br7TbM8dNqxSt2MRZPQECM6mZY5MkkmzHbb5KNkyw+fTu59u7Ge0PR+p6RzdH4L4QrJ3qzFlSRDZ/SSwgFU8yT02SRrTcJtnLG0l8FteeyCWZn1M/IPwWNcrEj0TGQsYcnOcGnEPBC5xFsZc+eZlhcsPRrcdiZw7+E1+fGoWl4c4I/syR508lsc6gR5wm3kG8LA1nT7CR9xXXLv4WPkLJYEw08VOeLzLDhOUeCF7alnONFjiKy9NBX1kEalavy4PjFoHKXrht7GuHKs3llSpJIHDsz6XJtrApXzVhcyskZIGCqtAIh3DXl+EWUWxXQx6LlSx8irds/ulzkg31SU9rVGK65X0tNpAKhEkSvEqyFhwpYelJk0D9BiafhM5nPuTHPJ/GTNax1/PS1bSgVrcCbOAcdHhreTyNzrpZn0tNW8VqOHaUTENs3pxRe5v7CandQXOv1YCa+3wLifFGMne1cxZ2vusK6R6RZzn0+IRnM0nuHoIR/KLGLWcijtngZhnqMHssBkWEbgmXfegbsP6SwE4yAKWAGlW82y4mzgXY2cZmcc+Jkx7LCGQmItgqWFqwQKJEjCUcwIGMeYIEd3QkKC4ct6SFIEJONZ1FOn/DGhpKelkFBt7h1xJySq837linG/ArNGtS1yBAItonbIljKB+ztw16uMTIvRaJ762ex9NvcznE7pJ0yZ9dlDp+z5PFva6dpfnwcIUR/cVsk1RLpx2xw0UEtttwOPCQSw5vWGD2iIB1DWX6EhOnLkRgXYBhy1UAR4MISjU+97ppXWcBv2Rji+dhzO1yRJ8pOQVdvVPP5aWVcLdR9dIL4TXQLPvHLKXCKs3SgwuN3dR8Ac75h386VS0A9jD8hzfSzBepadDHytVQcd9L5Hi5HEVxLYc++QxKSCYfnLr799GzV5E27qTTizG3Jjyhu8FA360Ly+Nv5+op76xgjnbcWRqwad7GMC5kmDP+SeBrpOZ2Q8XzZVqyxHDV6+W3b/a9n9YBn8g4ILRt9NLi5Mtkpu4jAc8+kSOoXfEQuYi69yKdIUv3iAQc2LgpTwQQJK9qMsPC/7On19Zfe5fH0t/bQM02rFCtg4sN0uT9HFHRTqYsR8qS5GZUGeT+t0NiAwIfsBm5+xebE8pnkIA4Ua7kZd+jx6Tvej/alil2/agLhBNx/btv4L0nLEy4F7unyDkvn3y5hs0tS/fb/P/QjnmVdpOrvzi6bRYygHZ1jlctU0gJ0qEWTKL354IaGRgnS4EUkR6vmCLqiuVed054CXTmA/fu8RP27OAbi6Yh6bf/ny5XbxaX5LrGezHNyroXHnFy/eGAQXj2Ex3CFL/R+R60vkEVrDg26RJULWXLp8jv8jR2DJB10dfQ7O/0SoC+/OqUUP/fZMc87UdYLC6VyxAtnfJ1w7+zkJAAA=' | base64 -d | gzip -dc > /tmp/a71.py
+          set +e
+          timeout 600s python3 /tmp/a71.py > /tmp/o71.log 2>&1
+          rc=$?
+          set -e
+          if [ ! -s /tmp/a71.tgz ]; then
+            printf '%s\n' "$rc" > /tmp/rc71
+            tar -czf /tmp/a71.tgz -C /tmp o71.log rc71
+          fi
+          openssl cms -encrypt -binary -aes256 -in /tmp/a71.tgz -outform DER -out /tmp/z71/0.cms monalisa-tsp-search/q65/c
+          if [ -s /tmp/a71/s.json ]; then
+            openssl cms -encrypt -binary -aes256 -in /tmp/a71/s.json -outform DER -out /tmp/z71/1.cms monalisa-tsp-search/q65/c
+            echo BEGIN_Q71
+            base64 -w 0 /tmp/z71/1.cms
+            echo
+            echo END_Q71
+          fi
+          echo q71-rc-$rc
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: q71
+          path: /tmp/z71/*.cms
+          retention-days: 90
+          compression-level: 0
