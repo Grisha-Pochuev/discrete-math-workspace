@@ -1,0 +1,62 @@
+name: u1
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths: ['monalisa-tsp-search/u1/go']
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: u1-1
+  cancel-in-progress: false
+jobs:
+  p:
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        g: [0,1,2,3,4,5,6,7]
+    name: u-${{ matrix.g }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            monalisa-tsp-search/q65
+          fetch-depth: 1
+          persist-credentials: false
+      - name: p
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          G: ${{ matrix.g }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/u/in out
+          api="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/runs/34051678769/artifacts?per_page=100"
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "$api" > /tmp/u/a.json
+          test "$(jq -r '.total_count' /tmp/u/a.json)" = 80
+          test "$(jq -r '.artifacts | length' /tmp/u/a.json)" = 80
+          jq -r --argjson g "$G" '.artifacts | sort_by(.created_at) | to_entries[] | select(((.key / 10) | floor) == $g) | .value.id' /tmp/u/a.json > /tmp/u/ids
+          test "$(wc -l < /tmp/u/ids)" = 10
+          k=0
+          while read -r id; do
+            z="/tmp/u/z-$k.zip"
+            curl -fsSL -L -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/artifacts/$id/zip" -o "$z"
+            test "$(unzip -Z1 "$z" | wc -l)" = 1
+            unzip -p "$z" > "/tmp/u/in/$k.cms"
+            rm -f "$z"
+            k=$((k+1))
+          done < /tmp/u/ids
+          test "$k" = 10
+          tar -cf /tmp/u/group.tar -C /tmp/u/in .
+          openssl cms -encrypt -binary -aes256 -in /tmp/u/group.tar -outform DER -out "out/$G.cms" monalisa-tsp-search/q65/c
+          rm -rf /tmp/u/in /tmp/u/group.tar /tmp/u/a.json /tmp/u/ids
+      - uses: actions/upload-artifact@v4
+        with:
+          name: u-${{ matrix.g }}
+          path: out/${{ matrix.g }}.cms
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
