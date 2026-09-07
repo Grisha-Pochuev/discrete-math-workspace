@@ -1,0 +1,69 @@
+name: v
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths: ['monalisa-tsp-search/v/go']
+permissions:
+  actions: read
+  contents: write
+concurrency:
+  group: v-1
+  cancel-in-progress: false
+jobs:
+  p:
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        g: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+    name: p-${{ matrix.g }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: monalisa-tsp-search-2026-09-03
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            .github/workflows
+          persist-credentials: true
+      - name: p
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          G: ${{ matrix.g }}
+        run: |
+          set -euo pipefail
+          br='monalisa-tsp-search-2026-09-03'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch --depth=1 --filter=blob:none origin "$br"
+          git checkout -B "$br" FETCH_HEAD
+          d="monalisa-tsp-search/blobstore/$(printf '%02d' "$G")"
+          git sparse-checkout set .github/workflows "$d"
+          mkdir -p "$d" /tmp/v
+          api="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/runs/34051678769/artifacts?per_page=100"
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "$api" > /tmp/v/a.json
+          test "$(jq -r '.total_count' /tmp/v/a.json)" = 80
+          start=$((G*5))
+          end=$((start+4))
+          for j in $(seq "$start" "$end"); do
+            n="q69-$j"
+            id="$(jq -r --arg n "$n" '.artifacts[] | select(.name==$n) | .id' /tmp/v/a.json)"
+            test -n "$id" && test "$id" != null
+            z="/tmp/v/$j.zip"
+            f="$d/$(printf '%03d' "$j").cms"
+            curl -fsSL -L -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/artifacts/$id/zip" -o "$z"
+            test "$(unzip -Z1 "$z" | wc -l)" = 1
+            unzip -p "$z" > "$f"
+            rm -f "$z"
+            sz="$(stat -c%s "$f")"
+            test "$sz" -gt 1000000
+            test "$sz" -lt 100000000
+          done
+          (cd "$d" && sha256sum *.cms > SHA256SUMS)
+          git add "$d"
+          git commit -m "data $(printf '%02d' "$G")"
+          git push origin "HEAD:$br"
+          rm -rf /tmp/v
