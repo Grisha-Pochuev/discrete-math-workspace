@@ -1,0 +1,53 @@
+name: z9
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths: ['monalisa-tsp-search/q69/z9']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: z9-1
+  cancel-in-progress: false
+jobs:
+  init:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: init
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag='cache-9f4e0c'
+          if ! gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release create "$tag" --repo "$GITHUB_REPOSITORY" --draft --title 'cache' --notes 'encrypted archive'
+          fi
+  put:
+    needs: init
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix:
+        g: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: put
+        env:
+          GH_TOKEN: ${{ github.token }}
+          G: ${{ matrix.g }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag='cache-9f4e0c'
+          src=34142915378
+          api="$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/runs/$src/artifacts?per_page=100"
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "$api" > /tmp/a.json
+          id=$(jq -r --arg n "u-$G" '.artifacts[] | select(.name==$n) | .id' /tmp/a.json)
+          test -n "$id" && test "$id" != null
+          curl -fsSL -L -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/artifacts/$id/zip" -o /tmp/a.zip
+          test "$(unzip -Z1 /tmp/a.zip | wc -l)" = 1
+          printf -v nn '%02d' "$G"
+          unzip -p /tmp/a.zip > "/tmp/a${nn}.cms"
+          sha256sum "/tmp/a${nn}.cms" > "/tmp/a${nn}.sha256"
+          gh release upload "$tag" "/tmp/a${nn}.cms" "/tmp/a${nn}.sha256" --repo "$GITHUB_REPOSITORY" --clobber
