@@ -1,0 +1,75 @@
+name: k1
+on:
+  push:
+    branches: [monalisa-tsp-search-2026-09-03]
+    paths: ['monalisa-tsp-search/q69/k']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: k1-1
+  cancel-in-progress: false
+jobs:
+  k:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 345
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: p
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          mkdir -p monalisa-tsp-search/q69/z
+          : > monalisa-tsp-search/q69/z/M.tmp
+          gh api "/repos/$GITHUB_REPOSITORY/actions/runs/34051678769/artifacts?per_page=100" > /tmp/a.json
+          python - <<'PY'
+          import json,re
+          d=json.load(open('/tmp/a.json'))
+          q=[]
+          for a in d.get('artifacts',[]):
+              m=re.fullmatch(r'q69-(\d+)',a.get('name',''))
+              if m:
+                  q.append((int(m.group(1)),int(a['id'])))
+          q.sort()
+          if [x for x,_ in q] != list(range(80)):
+              raise SystemExit(f'unexpected set: {[x for x,_ in q]}')
+          with open('/tmp/list','w') as f:
+              for x,i in q:
+                  f.write(f'{x} {i}\n')
+          PY
+          while read -r n aid; do
+            dest=$(printf 'monalisa-tsp-search/q69/z/%02d.cms' "$n")
+            if git cat-file -e "HEAD:$dest" 2>/dev/null; then
+              continue
+            fi
+            rm -f /tmp/a.zip /tmp/a.cms
+            gh api "/repos/$GITHUB_REPOSITORY/actions/artifacts/$aid/zip" > /tmp/a.zip
+            unzip -p /tmp/a.zip '*.cms' > /tmp/a.cms
+            sz=$(stat -c%s /tmp/a.cms)
+            if [ "$sz" -le 0 ] || [ "$sz" -ge 99000000 ]; then
+              echo "bad size $n $sz" >&2
+              exit 1
+            fi
+            h=$(sha256sum /tmp/a.cms | awk '{print $1}')
+            b=$(git hash-object -w /tmp/a.cms)
+            git update-index --add --cacheinfo "100644,$b,$dest"
+            printf '%02d %s %s\n' "$n" "$h" "$sz" >> monalisa-tsp-search/q69/z/M.tmp
+            if git cat-file -e HEAD:monalisa-tsp-search/q69/z/M 2>/dev/null; then
+              git show HEAD:monalisa-tsp-search/q69/z/M > monalisa-tsp-search/q69/z/M
+            else
+              : > monalisa-tsp-search/q69/z/M
+            fi
+            cat monalisa-tsp-search/q69/z/M.tmp >> monalisa-tsp-search/q69/z/M
+            : > monalisa-tsp-search/q69/z/M.tmp
+            git add monalisa-tsp-search/q69/z/M
+            git commit -m "z$(printf '%02d' "$n")"
+            git push origin "HEAD:$GITHUB_REF_NAME"
+            rm -f /tmp/a.zip /tmp/a.cms
+          done < /tmp/list
+          rm -f monalisa-tsp-search/q69/z/M.tmp
