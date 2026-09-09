@@ -1,0 +1,231 @@
+{
+  "baseline": 288843524,
+  "best": 288843524,
+  "gain": 0,
+  "jobs": [
+    {
+      "id": 0,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 328,
+      "seconds": 19560.267425155,
+      "verified": 288843524
+    },
+    {
+      "id": 1,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19598.025124385,
+      "verified": 288843524
+    },
+    {
+      "id": 10,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 328,
+      "seconds": 19559.972591506,
+      "verified": 288843524
+    },
+    {
+      "id": 11,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19597.233267793,
+      "verified": 288843524
+    },
+    {
+      "id": 12,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19597.793534636,
+      "verified": 288843524
+    },
+    {
+      "id": 13,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19595.786838582,
+      "verified": 288843524
+    },
+    {
+      "id": 14,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 328,
+      "seconds": 19562.483108868,
+      "verified": 288843524
+    },
+    {
+      "id": 15,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19597.720152089,
+      "verified": 288843524
+    },
+    {
+      "id": 16,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 328,
+      "seconds": 19567.681741428,
+      "verified": 288843524
+    },
+    {
+      "id": 17,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19598.091544418003,
+      "verified": 288843524
+    },
+    {
+      "id": 18,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 328,
+      "seconds": 19556.003473374,
+      "verified": 288843524
+    },
+    {
+      "id": 19,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19595.729344407,
+      "verified": 288843524
+    },
+    {
+      "id": 2,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19597.018224091,
+      "verified": 288843524
+    },
+    {
+      "id": 3,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19596.889565093003,
+      "verified": 288843524
+    },
+    {
+      "id": 4,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 328,
+      "seconds": 19561.647288675,
+      "verified": 288843524
+    },
+    {
+      "id": 5,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19597.432378146998,
+      "verified": 288843524
+    },
+    {
+      "id": 6,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 328,
+      "seconds": 19558.186878658,
+      "verified": 288843524
+    },
+    {
+      "id": 7,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19595.602658713,
+      "verified": 288843524
+    },
+    {
+      "id": 8,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 328,
+      "seconds": 19566.753411082,
+      "verified": 288843524
+    },
+    {
+      "id": 9,
+      "wave": 2,
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "pairs": 329,
+      "seconds": 19596.310969887,
+      "verified": 288843524
+    }
+  ],
+  "comparisons": {
+    "a": {
+      "pairs": 3282,
+      "valid_pairs": 3282,
+      "n_wins": 0,
+      "c_wins": 0,
+      "ties": 3282,
+      "n_gain": 0,
+      "c_gain": 0,
+      "n_without_output": 0,
+      "c_without_output": 411
+    },
+    "d": {
+      "pairs": 3290,
+      "valid_pairs": 3290,
+      "n_wins": 0,
+      "c_wins": 0,
+      "ties": 3290,
+      "n_gain": 0,
+      "c_gain": 0,
+      "n_without_output": 0,
+      "c_without_output": 0
+    }
+  }
+}
