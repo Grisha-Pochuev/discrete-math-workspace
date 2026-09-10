@@ -1,0 +1,215 @@
+name: r84j
+run-name: r84j
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - r84/q3/go
+  workflow_dispatch: {}
+permissions:
+  contents: read
+concurrency:
+  group: r84j
+  cancel-in-progress: false
+env:
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  PYTHONUNBUFFERED: '1'
+  MALLOC_ARENA_MAX: '2'
+jobs:
+  p:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: r84/q3
+        fetch-depth: 1
+        persist-credentials: false
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: u
+      run: 'set -euo pipefail
+
+        mkdir -p r84/q3/z
+
+        cat r84/q3/d[0-9][0-9] > r84/q3/p.tgz
+
+        sha256sum -c r84/q3/s
+
+        tar -xzf r84/q3/p.tgz -C r84/q3/z
+
+        python -m pip install --disable-pip-version-check numpy==2.3.5 scipy==1.17.0
+        highspy==1.15.1 > r84/q3/i.log 2>&1'
+    - name: g
+      run: python r84/q3/z/manage.py guard
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: v
+      run: 'set -euo pipefail
+
+        python r84/q3/z/manage.py setup r84/q3/w > r84/q3/p.log 2>&1
+
+        python r84/q3/z/qa.py --data r84/q3/w --out r84/q3/w/qa.json > r84/q3/q.log
+        2>&1
+
+        g++ -O2 r84/q3/z/verify.cpp -lz -o r84/q3/w/verify
+
+        r84/q3/w/verify r84/q3/w/x.gz r84/q3/w/b.gz 2079471 288843524 > r84/q3/w/raw.json'
+    - uses: actions/cache/save@v4
+      with:
+        path: r84/q3/w
+        key: r84j-${{ github.sha }}
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: r84j-${{ github.run_id }}-p
+        path: 'r84/q3/*.log
+
+          r84/q3/w/qa.json
+
+          r84/q3/w/raw.json'
+        retention-days: 21
+        compression-level: 0
+        if-no-files-found: error
+  a:
+    needs: p
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        i:
+        - 0
+        - 1
+        - 2
+        - 3
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: r84/q3
+        fetch-depth: 1
+        persist-credentials: false
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: u
+      run: 'set -euo pipefail
+
+        mkdir -p r84/q3/z
+
+        cat r84/q3/d[0-9][0-9] > r84/q3/p.tgz
+
+        sha256sum -c r84/q3/s
+
+        tar -xzf r84/q3/p.tgz -C r84/q3/z
+
+        python -m pip install --disable-pip-version-check numpy==2.3.5 scipy==1.17.0
+        highspy==1.15.1 > r84/q3/i.log 2>&1'
+    - uses: actions/cache/restore@v4
+      with:
+        path: r84/q3/w
+        key: r84j-${{ github.sha }}
+        fail-on-cache-miss: true
+    - name: g
+      run: python r84/q3/z/manage.py guard
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: r
+      run: 'set -euo pipefail
+
+        python r84/q3/z/worker.py --data r84/q3/w --seeds r84/q3/z/seeds --out r84/q3/o
+        --id ${{ matrix.i }} --budget 5400 --probe 300 --cap 8000 --levels 9 > r84/q3/r.log
+        2>&1'
+      id: r
+    - name: s
+      run: 'set -euo pipefail
+
+        mkdir -p r84/q3/o r84/q3/out
+
+        cp r84/q3/r.log r84/q3/o/r.log 2>/dev/null || true
+
+        printf ''%s\n'' ''${{ steps.r.outcome }}'' > r84/q3/o/outcome
+
+        python r84/q3/z/manage.py pack r84/q3/o r84/q3/out/a-${{ matrix.i }}.tgz'
+      if: always()
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: r84j-${{ github.run_id }}-a-${{ matrix.i }}
+        path: r84/q3/out/*
+        retention-days: 21
+        compression-level: 0
+        if-no-files-found: error
+  c:
+    needs:
+    - p
+    - a
+    if: ${{ !cancelled() && needs.p.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        sparse-checkout: r84/q3
+        fetch-depth: 1
+        persist-credentials: true
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: u
+      run: 'set -euo pipefail
+
+        mkdir -p r84/q3/z
+
+        cat r84/q3/d[0-9][0-9] > r84/q3/p.tgz
+
+        sha256sum -c r84/q3/s
+
+        tar -xzf r84/q3/p.tgz -C r84/q3/z
+
+        python -m pip install --disable-pip-version-check numpy==2.3.5 scipy==1.17.0
+        highspy==1.15.1 > r84/q3/i.log 2>&1'
+    - uses: actions/cache/restore@v4
+      with:
+        path: r84/q3/w
+        key: r84j-${{ github.sha }}
+        fail-on-cache-miss: true
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: r84j-${{ github.run_id }}-a-*
+        path: r84/q3/in
+    - name: c
+      run: python r84/q3/z/manage.py collect --data r84/q3/w --source r84/q3/in --dest
+        r84/q3/r/${{ github.run_id }}/1 --expected 4 > r84/q3/c.log 2>&1
+    - name: s
+      run: 'set -euo pipefail
+
+        mkdir -p r84/q3/r/${{ github.run_id }}/1
+
+        cp r84/q3/c.log r84/q3/r/${{ github.run_id }}/1/c.log 2>/dev/null || true
+
+        cp r84/q3/w/qa.json r84/q3/w/raw.json r84/q3/r/${{ github.run_id }}/1/
+
+        python r84/q3/z/manage.py commit r84/q3/r/${{ github.run_id }}/1'
+      if: always()
+      env:
+        WAVE: '1'
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: r84j-${{ github.run_id }}-end
+        path: 'r84/q3/r/${{ github.run_id }}/1/best.npz
+
+          r84/q3/r/${{ github.run_id }}/1/s.json
+
+          r84/q3/r/${{ github.run_id }}/1/c.log'
+        retention-days: 21
+        compression-level: 0
+        if-no-files-found: error
