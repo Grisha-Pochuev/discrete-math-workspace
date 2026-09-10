@@ -1,0 +1,140 @@
+{
+  "passed": true,
+  "exhaustive_cases": 16,
+  "full_expansions": 25884,
+  "closed_cases": 4,
+  "saved_covers": 5,
+  "screening_preserves_all_improving_tours": true,
+  "source_cases": [
+    {
+      "file": "0-00.npz",
+      "components": 9,
+      "gain": 30
+    },
+    {
+      "file": "0-01.npz",
+      "components": 6,
+      "gain": 6
+    },
+    {
+      "file": "0-02.npz",
+      "components": 11,
+      "gain": 58
+    },
+    {
+      "file": "0-03.npz",
+      "components": 5,
+      "gain": 11
+    },
+    {
+      "file": "1-00.npz",
+      "components": 16,
+      "gain": 46
+    },
+    {
+      "file": "1-01.npz",
+      "components": 8,
+      "gain": 8
+    },
+    {
+      "file": "1-02.npz",
+      "components": 2,
+      "gain": 6
+    },
+    {
+      "file": "1-03.npz",
+      "components": 15,
+      "gain": 60
+    },
+    {
+      "file": "1-04.npz",
+      "components": 21,
+      "gain": 11
+    },
+    {
+      "file": "1-05.npz",
+      "components": 3,
+      "gain": 7
+    },
+    {
+      "file": "2-00.npz",
+      "components": 22,
+      "gain": 56
+    },
+    {
+      "file": "2-01.npz",
+      "components": 12,
+      "gain": 34
+    },
+    {
+      "file": "2-02.npz",
+      "components": 6,
+      "gain": 6
+    },
+    {
+      "file": "2-03.npz",
+      "components": 5,
+      "gain": 3
+    },
+    {
+      "file": "2-04.npz",
+      "components": 25,
+      "gain": 83
+    },
+    {
+      "file": "2-05.npz",
+      "components": 14,
+      "gain": 50
+    },
+    {
+      "file": "2-06.npz",
+      "components": 7,
+      "gain": 20
+    },
+    {
+      "file": "2-07.npz",
+      "components": 8,
+      "gain": 2
+    },
+    {
+      "file": "3-00.npz",
+      "components": 13,
+      "gain": 54
+    },
+    {
+      "file": "3-01.npz",
+      "components": 5,
+      "gain": 18
+    },
+    {
+      "file": "3-02.npz",
+      "components": 2,
+      "gain": 12
+    },
+    {
+      "file": "3-03.npz",
+      "components": 3,
+      "gain": 11
+    },
+    {
+      "file": "3-04.npz",
+      "components": 13,
+      "gain": 54
+    },
+    {
+      "file": "3-05.npz",
+      "components": 5,
+      "gain": 18
+    },
+    {
+      "file": "3-06.npz",
+      "components": 2,
+      "gain": 12
+    },
+    {
+      "file": "3-07.npz",
+      "components": 3,
+      "gain": 11
+    }
+  ]
+}
