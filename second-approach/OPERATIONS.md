@@ -6,7 +6,7 @@ This research track is designed to run as an automatic chain of approximately si
 
 - `Second approach compute` runs 20 GitHub-hosted machines with four independent numerical workers per machine.
 - `Second approach collect` runs after every compute workflow, downloads every available artifact, preserves partial checkpoints, verifies the archive, commits it under `second-approach/runs/`, updates the evolutionary seed bank, and dispatches the next compute run.
-- `Second approach watchdog` runs hourly. It leaves an active chain alone, recovers a completed run whose collector did not archive it, or dispatches the next compute run if the chain stopped after a verified commit.
+- `Second approach watchdog` is currently manual-only while `control.json` has `enabled: false`; its scheduled trigger was removed to avoid empty recurring runs. When explicitly reactivating this track, review whether to restore the hourly schedule. It leaves an active chain alone, recovers a completed run whose collector did not archive it, or dispatches the next compute run if the chain stopped after a verified commit.
 
 ## Runtime policy
 
