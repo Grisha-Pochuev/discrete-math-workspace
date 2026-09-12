@@ -1,0 +1,49 @@
+{
+  "ok": true,
+  "lifting_and_solver_cases": 6,
+  "exhaustive_tours": 20160,
+  "rows": [
+    {
+      "case": 0,
+      "nodes": 80,
+      "parsed": true,
+      "gain": 7273,
+      "union": 7273
+    },
+    {
+      "case": 1,
+      "nodes": 80,
+      "parsed": true,
+      "gain": 7588,
+      "union": 7588
+    },
+    {
+      "case": 2,
+      "nodes": 80,
+      "parsed": true,
+      "gain": 7400,
+      "union": 7400
+    },
+    {
+      "case": 3,
+      "nodes": 80,
+      "parsed": true,
+      "gain": 7775,
+      "union": 7775
+    },
+    {
+      "case": 4,
+      "nodes": 80,
+      "parsed": true,
+      "gain": 7314,
+      "union": 7314
+    },
+    {
+      "case": 5,
+      "nodes": 80,
+      "parsed": true,
+      "gain": 8252,
+      "union": 8252
+    }
+  ]
+}
