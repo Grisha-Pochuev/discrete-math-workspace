@@ -1,0 +1,30 @@
+{
+  "source_run": 34551936117,
+  "source_gain": 0,
+  "workers": 20,
+  "transferred": 247,
+  "previously_checked": 724,
+  "remaining_new": 5420,
+  "assigned": [
+    11,
+    12,
+    13,
+    11,
+    12,
+    13,
+    12,
+    13,
+    13,
+    13,
+    12,
+    14,
+    13,
+    13,
+    12,
+    11,
+    12,
+    12,
+    13,
+    12
+  ]
+}
