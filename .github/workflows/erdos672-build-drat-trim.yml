@@ -1,0 +1,30 @@
+name: erdos672-build-drat-trim
+
+on:
+  push:
+    branches:
+      - erdos672-drat-tools-20260919
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch drat-trim
+        run: |
+          git clone --depth 1 https://github.com/marijnheule/drat-trim.git
+      - name: Build
+        run: |
+          cd drat-trim
+          gcc -O3 -DNDEBUG -o drat-trim drat-trim.c
+          ./drat-trim 2>&1 | head -20 || true
+      - name: Package source and binary
+        run: |
+          tar -czf drat-trim-linux-x86_64.tar.gz -C drat-trim drat-trim drat-trim.c README.md
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: drat-trim-linux-x86_64
+          path: drat-trim-linux-x86_64.tar.gz
+          if-no-files-found: error
+          retention-days: 1
