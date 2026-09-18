@@ -1,0 +1,31 @@
+name: erdos672-build-cadical
+
+on:
+  push:
+    branches:
+      - erdos672-drat-tools-20260919
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch CaDiCaL
+        run: git clone --depth 1 https://github.com/arminbiere/cadical.git
+      - name: Build
+        run: |
+          cd cadical
+          ./configure
+          make -j2
+          ./build/cadical --version
+          ./build/cadical --help > cadical-help.txt
+      - name: Package source metadata and binary
+        run: |
+          tar -czf cadical-linux-x86_64.tar.gz -C cadical build/cadical cadical-help.txt VERSION LICENSE
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: cadical-linux-x86_64
+          path: cadical-linux-x86_64.tar.gz
+          if-no-files-found: error
+          retention-days: 1
