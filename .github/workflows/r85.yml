@@ -1,0 +1,44 @@
+name: r85
+on:
+  workflow_dispatch:
+    inputs:
+      n:
+        default: "20"
+      t:
+        default: "19800"
+      o:
+        default: "0"
+      mt:
+        default: "3000"
+permissions:
+  contents: read
+jobs:
+  m:
+    runs-on: ubuntu-latest
+    outputs:
+      x: ${{ steps.s.outputs.x }}
+    steps:
+      - id: s
+        run: python3 -c "import json;n=int('${{ inputs.n }}');o=int('${{ inputs.o }}');print('x='+json.dumps(list(range(o,o+n))))" >> "$GITHUB_OUTPUT"
+  r:
+    needs: m
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      matrix:
+        i: ${{ fromJSON(needs.m.outputs.x) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: r85
+      - run: pip install -q numpy
+      - run: MT=${{ inputs.mt }} W=4 python3 r85/w.py ${{ matrix.i }} ${{ inputs.t }} 2>&1 | tee o.log
+      - if: always()
+        run: mkdir -p o && cp o.log o/ || true
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: o${{ matrix.i }}
+          path: o
+          retention-days: 30
