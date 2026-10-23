@@ -50,4 +50,4 @@ jobs:
         with:
           name: o${{ matrix.i }}
           path: o
-          retention-days: 30
+          retention-days: 3
