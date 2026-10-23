@@ -43,11 +43,11 @@ jobs:
           if ls o/t*.txt.gz >/dev/null 2>&1; then
             git config user.name r85; git config user.email r85@users.noreply.github.com
             git checkout --orphan o${{ matrix.i }}-${{ github.run_id }}; git rm -rq --cached . || true
-            git add -f o/t*.txt.gz o/s.json; git commit -qm o; git push -q origin HEAD
+            git add -f --sparse o/t*.txt.gz o/s.json; git commit -qm o; git push -q origin HEAD
           fi
       - if: always()
         uses: actions/upload-artifact@v4
         with:
           name: o${{ matrix.i }}
           path: o
-          retention-days: 3
+          retention-days: 90
