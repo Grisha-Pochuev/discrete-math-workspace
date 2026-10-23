@@ -5,11 +5,13 @@ on:
       n:
         default: "20"
       t:
-        default: "19800"
+        default: "20400"
       o:
-        default: "0"
+        default: "20"
       mt:
         default: "3000"
+      pert:
+        default: "0"
 permissions:
   contents: write
 jobs:
@@ -23,7 +25,7 @@ jobs:
   r:
     needs: m
     runs-on: ubuntu-latest
-    timeout-minutes: 355
+    timeout-minutes: 358
     strategy:
       fail-fast: false
       matrix:
@@ -33,7 +35,7 @@ jobs:
         with:
           sparse-checkout: r85
       - run: pip install -q numpy
-      - run: MT=${{ inputs.mt }} W=4 python3 r85/w.py ${{ matrix.i }} ${{ inputs.t }} 2>&1 | tee o.log
+      - run: PERT=${{ inputs.pert }} MT=${{ inputs.mt }} W=4 python3 r85/w.py ${{ matrix.i }} ${{ inputs.t }} 2>&1 | tee o.log
       - if: always()
         run: mkdir -p o && cp o.log o/ || true
       - if: always()
@@ -41,7 +43,7 @@ jobs:
           if ls o/t*.txt.gz >/dev/null 2>&1; then
             git config user.name r85; git config user.email r85@users.noreply.github.com
             git checkout --orphan o${{ matrix.i }}-${{ github.run_id }}; git rm -rq --cached . || true
-            git add -f o/*.txt.gz o/s.json; git commit -qm o; git push -q origin HEAD
+            git add -f o/t*.txt.gz o/s.json; git commit -qm o; git push -q origin HEAD
           fi
       - if: always()
         uses: actions/upload-artifact@v4
