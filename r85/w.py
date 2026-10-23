@@ -116,10 +116,10 @@ def harvest(q, d):
         pv[q] = v
         log(f"j{q} d={v - R0}")
         if v < R0:
-            with gzip.open(O / f"t{v}_j{q}.txt.gz", "wt") as f:
+            with gzip.open(O / f"t{R0 - v}_j{q}.txt.gz", "wt") as f:
                 f.write("\n".join(map(str, t)) + "\n")
             for o_ in O.glob(f"t*_j{q}.txt.gz"):
-                if o_.name != f"t{v}_j{q}.txt.gz":
+                if o_.name != f"t{R0 - v}_j{q}.txt.gz":
                     o_.unlink()
     if v < bl:
         best, bl = t, v; wt(best, D / "best.tour")
