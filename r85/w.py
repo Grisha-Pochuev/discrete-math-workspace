@@ -84,14 +84,14 @@ if not x.exists():
         src = D / "kg" / "SRC"
     subprocess.run(["gcc", "-O3", "-march=native", "-fcommon", "-w", "-I", str(src / "INCLUDE"), "-o", str(x),
                     *map(str, src.glob("*.c")), "-lm"], check=True)
-log(f"ok N={N}")
+log("ok")
 
 best, bl = R.copy(), R0
 if int(os.environ.get("PERT", "0")):  # fire test: start from a deliberately worsened tour
     rng = np.random.default_rng(S)
     for _ in range(int(os.environ["PERT"])):
         a = int(rng.integers(0, 300000)); k = int(rng.integers(5, 40)); best[a:a + k] = best[a:a + k][::-1].copy()
-    bl = L(best); R0 = bl; log(f"PERT start {bl}")
+    bl = L(best); R0 = bl; log("pert")
 wt(best, D / "best.tour")
 st = {"s": S, "jobs": []}
 run, j = {}, 0
@@ -114,7 +114,7 @@ def harvest(q, d):
     mt[q] = m
     if pv.get(q) is None or v < pv[q]:
         pv[q] = v
-        log(f"j{q} verified {v} (gain {R0 - v})")
+        log(f"j{q} d={v - R0}")
         if v < R0:
             with gzip.open(O / f"t{v}_j{q}.txt.gz", "wt") as f:
                 f.write("\n".join(map(str, t)) + "\n")
@@ -123,9 +123,9 @@ def harvest(q, d):
                     o_.unlink()
     if v < bl:
         best, bl = t, v; wt(best, D / "best.tour")
-        st["best"] = bl; st["gain"] = R0 - bl
+        st["gain"] = R0 - bl
         (O / "s.json").write_text(json.dumps(st, indent=1))
-        log(f"+++ j{q} {v} ({R0 - v})")
+        log(f"+++ j{q} {R0 - v}")
 
 while time.time() < t_end or run:
     while len(run) < W and time.time() < t_end - 900:
@@ -141,7 +141,7 @@ while time.time() < t_end or run:
             f"SEED = {1 + g}", f"TIME_LIMIT = {max(600, int(t_end - time.time()))}",
             f"TOUR_FILE = {d / 'o.tour'}", "TRACE_LEVEL = 1", ""]))
         pr = subprocess.Popen([str(x), str(d / "p")], stdout=open(d / "l", "w"), stderr=subprocess.STDOUT)
-        run[j] = (pr, d, r, time.time()); log(f"start j{j} [{r}] seed {1 + g}"); j += 1
+        run[j] = (pr, d, r, time.time()); log(f"start j{j} {r.split()[0]}"); j += 1
     for q in list(run):
         pr, d, r, t0 = run[q]
         if time.time() > t_end and pr.poll() is None:
@@ -156,25 +156,14 @@ while time.time() < t_end or run:
         if not done:
             continue
         del run[q]
-        try:
-            cl = [l.rstrip() for l in open(d / "l") if l.startswith("*** ") or "Cost" in l[:12] and "=" in l]
-        except Exception:
-            cl = []
-        for l in cl[-30:]:
-            log(f"j{q} | {l}")
-        try:
-            with open(d / "l", "rb") as fi, gzip.open(O / f"l{q}.gz", "wb") as fo:
-                fo.write(fi.read())
-        except Exception as e:
-            log(f"j{q} log: {e}")
         nsub = sum(1 for l in open(d / "l") if l.startswith("Subproblem "))
         nimp = sum(1 for l in open(d / "l") if l.startswith("*** "))
-        st["jobs"].append({"j": q, "r": r, "v": pv.get(q), "sec": round(time.time() - t0), "sub": nsub,
+        st["jobs"].append({"j": q, "r": r, "d": None if pv.get(q) is None else pv[q] - R0, "sec": round(time.time() - t0), "sub": nsub,
                            "imp_lines": nimp, "rc": pr.returncode})
-        st["best"] = bl; st["gain"] = R0 - bl
+        st["gain"] = R0 - bl
         (O / "s.json").write_text(json.dumps(st, indent=1))
-        log(f"done j{q} v={pv.get(q)} best={bl} sub={nsub} imp={nimp} rc={pr.returncode}")
+        log(f"done j{q} d={None if pv.get(q) is None else pv[q] - R0} g={R0 - bl} sub={nsub} imp={nimp} rc={pr.returncode}")
     time.sleep(20)
-st["best"] = bl; st["gain"] = R0 - bl
+st["gain"] = R0 - bl
 (O / "s.json").write_text(json.dumps(st, indent=1))
-log(f"end {bl} {R0 - bl}")
+log(f"end {R0 - bl}")
