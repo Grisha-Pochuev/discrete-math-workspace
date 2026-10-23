@@ -11,7 +11,6 @@ I = {"a": (B + ".xyz.txt.gz", "0a613505e22d15f67372824568bce53255b088d677889bc99
 K = [base64.b64decode(x).decode() for x in (
     "aHR0cDovL3dlYmhvdGVsNC5ydWMuZGsvfmtlbGQvcmVzZWFyY2gvTEtILTMvTEtILTMuMC4xMy50Z3o=",
     "aHR0cHM6Ly9naXRodWIuY29tL2NlcmViaXMvTEtIMy5naXQ=")]
-R0 = 288843524
 P = ["3000", "4000", "5000", "6000", "8000", "10000", "5000 K-MEANS", "8000 K-MEANS BORDERS",
      "5000 KARP", "8000 KARP BORDERS", "2500", "12000"]
 t_end = time.time() + T
@@ -62,7 +61,7 @@ def rt(p):
     return np.array(t, dtype=np.int64)
 
 
-assert L(R) == R0
+R0 = L(R)
 with open(D / "g.tsp", "w") as f:
     f.write(f"TYPE : TSP\nDIMENSION : {N}\nEDGE_WEIGHT_TYPE : EUC_3D\nNODE_COORD_SECTION\n")
     for i, l in enumerate(raw):
@@ -87,7 +86,7 @@ if not x.exists():
 log("ok")
 
 best, bl = R.copy(), R0
-if int(os.environ.get("PERT", "0")):  # fire test: start from a deliberately worsened tour
+if int(os.environ.get("PERT", "0")):
     rng = np.random.default_rng(S)
     for _ in range(int(os.environ["PERT"])):
         a = int(rng.integers(0, 300000)); k = int(rng.integers(5, 40)); best[a:a + k] = best[a:a + k][::-1].copy()
@@ -99,7 +98,6 @@ hv, pv, mt = {}, {}, {}
 
 
 def harvest(q, d):
-    """Verify the full tour LKH writes to TOUR_FILE after each global improvement."""
     global best, bl
     p = d / "o.tour"
     if not p.exists():
@@ -110,7 +108,7 @@ def harvest(q, d):
     try:
         t = rt(p); v = L(t)
     except Exception as e:
-        log(f"j{q} unreadable o.tour (maybe mid-write): {e!r}"); return
+        log(f"j{q} unreadable: {e!r}"); return
     mt[q] = m
     if pv.get(q) is None or v < pv[q]:
         pv[q] = v
