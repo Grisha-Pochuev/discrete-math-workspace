@@ -161,7 +161,8 @@ def mig(src):
 st_p = P / "st.json"
 st = json.loads(st_p.read_text()) if st_p.exists() else {"isl": {}}
 M_in = mig([Q / "m.bin"]) + mig([H])
-log(f"in p={int(st_p.exists())} m={len(M_in)}")
+AP = [t for t in mig([Path(__file__).with_name("a.bin")]) if fl(t) is not None]
+log(f"in p={int(st_p.exists())} m={len(M_in)} a={len(AP)}")
 rep = {"s": S, "cy": CY, "gain": 0, "isl": [], "imp": []}
 best_full = None
 
@@ -171,7 +172,7 @@ def setup(k, fresh):
     e = st["isl"].get(str(k), {"tr": 0})
     if fresh:
         e = {"tr": e.get("tr", -1) + 1}
-    tr = e["tr"]; mode = "a" if (I_ + tr) % 2 == 0 else "b"
+    tr = e["tr"]; mode = "a" if (I_ + tr) % 4 == 0 else "b"
     e["mode"] = mode
     d = D / f"i{k}"; d.mkdir(exist_ok=True)
     for f_ in d.glob("imp*.txt"):
@@ -192,9 +193,16 @@ def setup(k, fresh):
                     ps[o_[j]] = t; have.add(vt); j += 1
             e["mig"] = j
         wr(d / "in.txt", ps, hdr); pf = str(d / "in.txt")
+    elif AP:
+        mode = e["mode"] = "s"
+        rs = np.random.default_rng(1000 * I_ + tr + 100 * CY)
+        pick = rs.choice(len(AP), size=min(NP - 1, len(AP)), replace=False)
+        wr(d / "in.txt", [np.arange(n)] + [AP[j] for j in pick]); pf = str(d / "in.txt")
     elif mode == "a":
         pf = str(D / "r.txt")
     env = dict(os.environ, GA_CKSEC="1200")
+    if mode == "s":
+        env["GA_START2"] = "1"
     if mode == "b":
         env["GA_INJECT"] = str(D / "r.txt")
     seed = 1000 * I_ + 7 * tr + CY
@@ -265,7 +273,7 @@ while True:
                 hdr, ps = rd(D / f"i{k}" / "ck.txt")
                 if hdr and hdr[-1] == "done":
                     lf.close()
-                    v = [fl(t) for t in ps]; o_ = np.argsort(v)[:20]
+                    v = [fl(t) for t in ps]; o_ = np.argsort(v)[:30]
                     (O / f"f{k}_{tg['tr']}.bin").write_bytes(enc([ps[j] for j in o_], hdr))
                     log(f"fin {k} {tg['tr']} b={min(v) - FL0} a={np.mean(v) - FL0:.1f}")
                     (D / f"i{k}" / "ck.txt").unlink()
