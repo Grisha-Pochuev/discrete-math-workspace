@@ -12,6 +12,12 @@ on:
         default: "3000"
       pert:
         default: "0"
+      f:
+        default: "w.py"
+      q:
+        default: "10000,20000,30000,50000"
+      tl:
+        default: "0"
 permissions:
   contents: write
 jobs:
@@ -35,7 +41,7 @@ jobs:
         with:
           sparse-checkout: r85
       - run: pip install -q numpy
-      - run: PERT=${{ inputs.pert }} MT=${{ inputs.mt }} W=4 python3 r85/w.py ${{ matrix.i }} ${{ inputs.t }} 2>&1 | tee o.log
+      - run: PERT=${{ inputs.pert }} MT=${{ inputs.mt }} Q=${{ inputs.q }} TLX=${{ inputs.tl }} W=4 python3 r85/${{ inputs.f }} ${{ matrix.i }} ${{ inputs.t }} 2>&1 | tee o.log
       - if: always()
         run: mkdir -p o && cp o.log o/ || true
       - if: always()
