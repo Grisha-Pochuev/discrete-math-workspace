@@ -18,8 +18,11 @@ on:
         default: "10000,20000,30000,50000"
       tl:
         default: "0"
+      pr:
+        default: "0"
 permissions:
   contents: write
+  actions: read
 jobs:
   m:
     runs-on: ubuntu-latest
@@ -40,7 +43,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           sparse-checkout: r85
-      - run: pip install -q numpy
+      - run: pip install -q numpy scipy
+      - if: inputs.pr != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download ${{ inputs.pr }} -R ${{ github.repository }} -n o${{ matrix.i }} -D p || true
+          j=$(( ( ${{ matrix.i }} - ${{ inputs.o }} + 1 ) % ${{ inputs.n }} + ${{ inputs.o }} ))
+          gh run download ${{ inputs.pr }} -R ${{ github.repository }} -n o$j -D q || true
+          ls -la p q || true
       - run: PERT=${{ inputs.pert }} MT=${{ inputs.mt }} Q=${{ inputs.q }} TLX=${{ inputs.tl }} W=4 python3 r85/${{ inputs.f }} ${{ matrix.i }} ${{ inputs.t }} 2>&1 | tee o.log
       - if: always()
         run: mkdir -p o && cp o.log o/ || true
