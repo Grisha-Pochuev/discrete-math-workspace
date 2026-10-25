@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "run_id": "run-029",
+  "mode": "exact_support_boundary",
+  "engine": "node_plus_compiled_cp_sat_plus_integer_hnf",
+  "order": 8,
+  "representative": "n8-f31-r8-v1",
+  "residual_variables": 72,
+  "support_checks": [
+    "mixed_singleton_exclusion",
+    "two_component_product_cut",
+    "one_and_two_zero_direct_audit",
+    "integer_character_membership",
+    "local_face_factorization"
+  ],
+  "outputs": [
+    "local-runs/run-029-dense-boundary.json",
+    "local-runs/run-029-summary.json"
+  ]
+}
