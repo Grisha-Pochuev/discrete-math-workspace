@@ -1,0 +1,102 @@
+[
+  {
+    "exact_replay": {
+      "accepted": true,
+      "forbidden_histogram": {
+        "multiple": 126,
+        "unique": 0,
+        "zero": 29031
+      },
+      "row_count": 29160,
+      "target_counts": {
+        "0": 1,
+        "1": 2,
+        "2": 2
+      },
+      "threats": [],
+      "threats_truncated": false
+    },
+    "search_ids": [
+      "s024"
+    ],
+    "selected_active": [
+      45,
+      67,
+      71,
+      85,
+      86,
+      88,
+      89,
+      94,
+      95,
+      97,
+      98,
+      117,
+      139,
+      140,
+      142,
+      143,
+      148,
+      149,
+      151,
+      152,
+      180,
+      189,
+      278,
+      283
+    ],
+    "selected_count": 24,
+    "selected_sha256": "f62087500074795fb377d04954a97a10143a539f4337727a7cfb140063c154ff"
+  },
+  {
+    "exact_replay": {
+      "accepted": true,
+      "forbidden_histogram": {
+        "multiple": 74,
+        "unique": 0,
+        "zero": 29083
+      },
+      "row_count": 29160,
+      "target_counts": {
+        "0": 2,
+        "1": 2,
+        "2": 2
+      },
+      "threats": [],
+      "threats_truncated": false
+    },
+    "search_ids": [
+      "s059"
+    ],
+    "selected_active": [
+      40,
+      54,
+      71,
+      72,
+      85,
+      89,
+      90,
+      135,
+      158,
+      161,
+      167,
+      170,
+      175,
+      178,
+      184,
+      187,
+      189,
+      239,
+      242,
+      248,
+      251,
+      256,
+      259,
+      265,
+      268,
+      306
+    ],
+    "selected_count": 26,
+    "selected_sha256": "cd755ed139eb696dd51dc97b2ab9e10eeb563384af4138b220fa411caf27e6ab"
+  }
+]

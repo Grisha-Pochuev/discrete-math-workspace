@@ -1,0 +1,11 @@
+parent_run=30104322098
+archive_commit=44cc21d5972fc5220c012da19fc5f99ad6433948
+fix_commit=398efe9ba9d4482197499ff1fcbf2f110fd25d63
+stage=frontier3
+runtime_seconds=21000
+max_seen=32000000
+jobs=20
+workers_per_job=4
+tasks=2075668
+frontier=refine 1273 bounded incomplete outcomes into 20368 exact children; retry 2032 technical failures unchanged; carry 1004692 exact unstarted tasks; keep 1048576 layer-35 reserve tasks after unresolved work
+source_tasks=runs/2026-07-25-a/next_tasks.json.gz
