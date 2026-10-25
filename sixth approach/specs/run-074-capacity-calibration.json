@@ -1,0 +1,58 @@
+{
+  "canonical_spec_sha256": "5760f52b5d336e000adc04c5f118555735ba6b405ccccf12cb4a3e9e6e4e4528",
+  "files": {
+    "classifier": "sixth approach/run074_classify.py",
+    "contract": "sixth approach/run074_contract.py",
+    "input": "sixth approach/specs/run-073-input.json",
+    "input_acceptance": "sixth approach/specs/run-073-input-acceptance.json",
+    "logic": "sixth approach/run073_logic.py",
+    "support_hint": "sixth approach/specs/run-073-support-hint.json",
+    "types": "sixth approach/specs/run-073-types.json",
+    "verifier": "sixth approach/run073_verify.py",
+    "worker": "sixth approach/run073_worker.py"
+  },
+  "job_timeout_minutes": 90,
+  "max_parallel": 1,
+  "mixed_states": 6558,
+  "objective": "37*pure_extra_count+fourth_entry_count",
+  "objective_upper_bound": 2252,
+  "outcome_rule": {
+    "FEASIBLE_or_OPTIMAL": "independent full replay required",
+    "INFEASIBLE_or_UNKNOWN": "diagnostic only",
+    "outer_timeout_with_telemetry": "accepted duration diagnosis only",
+    "missing_or_malformed_result": "technical incompleteness",
+    "memory_guard_failure_with_telemetry": "accepted capacity diagnosis only",
+    "signal_137_or_143_with_high_memory_telemetry": "accepted capacity diagnosis only"
+  },
+  "physical_jobs": 1,
+  "processes_per_job": 1,
+  "run_id": "run-074",
+  "schema": "run-074-capacity-calibration-v1",
+  "searches": [
+    {
+      "cascade_all_mixed_states": true,
+      "dense_hint": false,
+      "id": "calibration-s0",
+      "memory_limit_mib": 8500,
+      "objective_upper_bound": 2252,
+      "randomize_search": true,
+      "seconds": 3600,
+      "seed": 105738,
+      "support_hint": "sixth approach/specs/run-073-support-hint.json",
+      "workers": 1
+    }
+  ],
+  "sha256": {
+    "classifier": "28c271f753a4707faf3ee3706213d30d755a868a80edc1996dee1bd86dfab88f",
+    "contract": "3c7e24f80ed4cd8dc6c27a98b1260a6338a06fa9cda6bdb494ce05eb5ee56808",
+    "input": "271cfea6d6aa6d64d03ef82802fba15c92947d167b18210c85497c95fe5992cd",
+    "input_acceptance": "f0ae2b6a0318ac37d83575ef15a480661acff2c5febbecf84769a43672245777",
+    "logic": "1c792cf01823f8fa931037494f1c0e201c6d10abc85506b51bdd88b74316c327",
+    "support_hint": "59d9d070ec8aa5d650ec664195213744554b3909eac68ef7d43d68fec27049cc",
+    "types": "a99f3974946f7cbb4ba6f7d59d150ac5efd3c85f7958d87fba5a20696e36c0a6",
+    "verifier": "d68b4093234e6921290f595f496eaa8209d1bfb9fb2a674ccdda731fa751a6ae",
+    "worker": "f8e4520aa028472adc00c22a161833888c0304ff8c59ce75f777a6a118b4614c"
+  },
+  "solver_package": "ortools==9.15.6755",
+  "telemetry_period_seconds": 10
+}
