@@ -1,0 +1,66 @@
+{
+  "parts": [
+    {
+      "name": "p00",
+      "size": 750000,
+      "sha256": "5eaf2c4e2e0923dd25bfbd2bb65a83f0fa8b906c495b64e688000435419adedd"
+    },
+    {
+      "name": "p01",
+      "size": 750000,
+      "sha256": "f361808b1a8f0f6bce51a5b6a7e6ed0dffea6ac6e74aed8a3e7e7e1b81748ff7"
+    },
+    {
+      "name": "p02",
+      "size": 750000,
+      "sha256": "950333fcec31bc6c40bb13accbbc5c9b4031e1181a7011af41c8f0aefeb84d35"
+    },
+    {
+      "name": "p03",
+      "size": 750000,
+      "sha256": "b22b2d3ed70c61daa22dce770a484fb52667e7506eda19d6449ff121a4bce65a"
+    },
+    {
+      "name": "p04",
+      "size": 750000,
+      "sha256": "2c18f6ba7137f079bc88779d29a89e715a69a07bdd842ff96ffb5ea39900a5fe"
+    },
+    {
+      "name": "p05",
+      "size": 750000,
+      "sha256": "6eb0cf3ce356cd5788d0878fd25741a963733f4de8994e87a7c3e23a8c849487"
+    },
+    {
+      "name": "p06",
+      "size": 750000,
+      "sha256": "6c66ce587bcd4902f18200b53a9d06ea5056d61d4f058a7786d815f2182cfa84"
+    },
+    {
+      "name": "p07",
+      "size": 750000,
+      "sha256": "400f1293d8e769a8f3bed3ed2db3afce25cf9c04efb32ade7269ca7e0074de60"
+    },
+    {
+      "name": "p08",
+      "size": 750000,
+      "sha256": "45d610de927aadb21477385993b1d288eaa516dc4ff0b57881af5a5df8a02837"
+    },
+    {
+      "name": "p09",
+      "size": 750000,
+      "sha256": "c1b438caf74aab4c152756017d26a9195f81cb90b1c2711170b47980af63e134"
+    },
+    {
+      "name": "p10",
+      "size": 750000,
+      "sha256": "34e5d9674e961d69f85647534d2eb119298da53d495bbc1f0ba6f3a339ec8364"
+    },
+    {
+      "name": "p11",
+      "size": 439437,
+      "sha256": "ecbe489720f253ae1fa323fbe024ba84d02a26016fbb030931a1bd325da971d7"
+    }
+  ],
+  "sha256": "1eaf4fd06f65f426c766090156f3046e559ad890fc2dd5bdf08af0c480afaf0f",
+  "size": 8689437
+}

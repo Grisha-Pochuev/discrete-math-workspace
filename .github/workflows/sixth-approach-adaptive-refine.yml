@@ -1,0 +1,361 @@
+name: Sixth Approach Adaptive Refine
+run-name: ${{ inputs.run_id }} adaptive refine
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+      spec_path:
+        description: Repository path to the immutable JSON specification
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  prepare:
+    name: prepare-${{ inputs.run_id }}
+    runs-on: ubuntu-24.04
+    outputs:
+      child_shards: ${{ steps.spec.outputs.child_shards }}
+      seconds: ${{ steps.spec.outputs.seconds }}
+      rounds: ${{ steps.spec.outputs.rounds }}
+      worker_seconds: ${{ steps.spec.outputs.worker_seconds }}
+      memory_mib: ${{ steps.spec.outputs.memory_mib }}
+      workers: ${{ steps.spec.outputs.workers }}
+      shards: ${{ steps.spec.outputs.shards }}
+      cut_version: ${{ steps.spec.outputs.cut_version }}
+      base_spec: ${{ steps.spec.outputs.base_spec }}
+      parent_workflow_run: ${{ steps.spec.outputs.parent_workflow_run }}
+      parent_logical_run: ${{ steps.spec.outputs.parent_logical_run }}
+      graph_id: ${{ steps.spec.outputs.graph_id }}
+      graph_type: ${{ steps.spec.outputs.graph_type }}
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python verifier
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Verify immutable refinement specification
+        id: spec
+        shell: bash
+        env:
+          CALC_RUN_ID: ${{ inputs.run_id }}
+          CALC_SPEC_PATH: ${{ inputs.spec_path }}
+        run: |
+          set -euo pipefail
+          python 'sixth approach/run061_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-061-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts.h'
+          python 'sixth approach/run062_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-062-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v2.h'
+          python 'sixth approach/run064_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-064-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v3.h'
+          python 'sixth approach/run065_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-065-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
+          python 'sixth approach/run066_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-row-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v5.h'
+          python 'sixth approach/run066_exact_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v6.h'
+          python 'sixth approach/run065_refine_contract.py' \
+            --spec "$CALC_SPEC_PATH" \
+            --run-id "$CALC_RUN_ID" \
+            --github-output "$GITHUB_OUTPUT"
+
+  refine:
+    name: refined-group
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    env:
+      CALC_RUN_ID: ${{ inputs.run_id }}
+      CALC_SPEC_PATH: ${{ inputs.spec_path }}
+      CALC_BASE_SPEC: ${{ needs.prepare.outputs.base_spec }}
+      CALC_GRAPH_ID: ${{ needs.prepare.outputs.graph_id }}
+      CALC_GRAPH_TYPE: ${{ needs.prepare.outputs.graph_type }}
+      CALC_CHILD_SHARDS: ${{ needs.prepare.outputs.child_shards }}
+      CALC_SECONDS: ${{ needs.prepare.outputs.seconds }}
+      CALC_ROUNDS: ${{ needs.prepare.outputs.rounds }}
+      CALC_WORKER_SECONDS: ${{ needs.prepare.outputs.worker_seconds }}
+      CALC_MEMORY_MIB: ${{ needs.prepare.outputs.memory_mib }}
+      CALC_WORKERS: ${{ needs.prepare.outputs.workers }}
+      CALC_SHARDS: ${{ needs.prepare.outputs.shards }}
+      CALC_CUT_VERSION: ${{ needs.prepare.outputs.cut_version }}
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python validator
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Initialize diagnostics
+        shell: bash
+        run: mkdir -p "out/$CALC_GRAPH_ID"
+
+      - name: Verify compiled cut contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 'sixth approach/run061_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-061-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts.h'
+          python 'sixth approach/run062_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-062-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v2.h'
+          python 'sixth approach/run064_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-064-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v3.h'
+          python 'sixth approach/run065_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-065-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
+          python 'sixth approach/run066_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-row-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v5.h'
+          python 'sixth approach/run066_exact_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-066-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts_v6.h'
+
+      - name: Fetch verified native toolkit
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/or-tools.tar.gz"
+          root="$RUNNER_TEMP/or-tools"
+          curl --fail --location --retry 3 \
+            'https://github.com/google/or-tools/releases/download/v9.15/or-tools_amd64_ubuntu-24.04_cpp_v9.15.6755.tar.gz' \
+            --output "$archive"
+          echo '6f389320672cee00b78aacefb2bde33fef0bb988c3b2735573b9fffd1047fbda  '"$archive" | sha256sum --check
+          mkdir -p "$root"
+          tar -xzf "$archive" -C "$root" --strip-components=1
+
+      - name: Compile the native worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake \
+            -S "$GITHUB_WORKSPACE/sixth approach/run052_adaptive" \
+            -B "$RUNNER_TEMP/adaptive-build" \
+            -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/or-tools" \
+            -Dortools_DIR="$RUNNER_TEMP/or-tools/lib/cmake/ortools" \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/adaptive-build" --parallel 4
+          test -x "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker"
+
+      - name: Record machine diagnostics
+        shell: bash
+        run: |
+          {
+            date -u +%FT%TZ
+            uname -a
+            nproc
+            lscpu
+            free -h
+            swapon --show
+            df -h .
+            ulimit -a
+            g++ --version
+            echo "GITHUB_SHA=$GITHUB_SHA"
+            echo "CALC_CHILD_SHARDS=$CALC_CHILD_SHARDS"
+            sha256sum "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker"
+            sha256sum 'sixth approach/run052_adaptive/main.cpp'
+            sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v4.h'
+            sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v5.h'
+            sha256sum 'sixth approach/run052_adaptive/exact_event_cuts_v6.h'
+            sha256sum "$CALC_SPEC_PATH"
+          } > "out/$CALC_GRAPH_ID/refined-group-diagnostics.log"
+
+      - name: Start resource monitor
+        shell: bash
+        run: |
+          (
+            while true; do
+              date -u +%FT%TZ
+              grep -E 'MemTotal|MemAvailable|SwapTotal|SwapFree' /proc/meminfo
+              ps -eo pid,ppid,rss,etime,cmd --sort=-rss | head -25
+              sleep 60
+            done
+          ) > "out/$CALC_GRAPH_ID/refined-group-resources.log" 2>&1 &
+          echo $! > "out/$CALC_GRAPH_ID/refined-group-monitor.pid"
+
+      - name: Run four independent refined shards
+        shell: bash
+        run: |
+          export LD_LIBRARY_PATH="$RUNNER_TEMP/or-tools/lib:${LD_LIBRARY_PATH:-}"
+          pids=()
+          for shard in $CALC_CHILD_SHARDS; do
+            (
+              ulimit -v $((CALC_MEMORY_MIB*1024))
+              set +e
+              timeout --signal=TERM --kill-after=30s "$CALC_WORKER_SECONDS" \
+                "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker" \
+                  --run-id "$CALC_RUN_ID" \
+                  --graph "$CALC_GRAPH_TYPE" \
+                  --seconds "$CALC_SECONDS" \
+                  --rounds "$CALC_ROUNDS" \
+                  --workers "$CALC_WORKERS" \
+                  --memory-mib "$CALC_MEMORY_MIB" \
+                  --shard-id "$shard" \
+                  --shard-count "$CALC_SHARDS" \
+                  --exact-cut-version "$CALC_CUT_VERSION" \
+                  --output "out/$CALC_GRAPH_ID/shard-$shard.json" \
+                > "out/$CALC_GRAPH_ID/shard-$shard.log" 2>&1
+              echo $? > "out/$CALC_GRAPH_ID/shard-$shard.exit"
+            ) &
+            pids+=("$!")
+          done
+          for pid in "${pids[@]}"; do wait "$pid" || true; done
+
+      - name: Stop monitor and validate refined shards
+        if: always()
+        shell: bash
+        run: |
+          monitor="out/$CALC_GRAPH_ID/refined-group-monitor.pid"
+          if [ -f "$monitor" ]; then kill "$(cat "$monitor")" 2>/dev/null || true; fi
+          failed=0
+          for shard in $CALC_CHILD_SHARDS; do
+            python 'sixth approach/run063_validate_refined.py' \
+              --spec "$CALC_SPEC_PATH" \
+              --base-spec "$CALC_BASE_SPEC" \
+              --shard "$shard" \
+              --output "out/$CALC_GRAPH_ID/shard-$shard.json" \
+              --exit "out/$CALC_GRAPH_ID/shard-$shard.exit" \
+              --validation "out/$CALC_GRAPH_ID/shard-$shard-validation.json" \
+              > "out/$CALC_GRAPH_ID/shard-$shard-validation.log" 2>&1 || failed=1
+          done
+          exit "$failed"
+
+      - name: Upload complete refinement diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-refined-group
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
+
+  collect:
+    name: collect-${{ inputs.run_id }}
+    needs: [prepare, refine]
+    if: always()
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python collector
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Prepare collector directories
+        shell: bash
+        run: mkdir -p work/parent work/refinement work/out
+
+      - name: Download parent group bundles
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ needs.prepare.outputs.parent_workflow_run }}
+          pattern: ${{ needs.prepare.outputs.parent_logical_run }}-graph-*-group-*
+          path: work/parent
+          merge-multiple: true
+
+      - name: Download refined group bundle
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.run_id }}
+          name: ${{ inputs.run_id }}-refined-group
+          path: work/refinement
+
+      - name: Validate refined leaf coverage
+        id: collector
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          python 'sixth approach/run063_refine_collect.py' \
+            --spec '${{ inputs.spec_path }}' \
+            --base-spec '${{ needs.prepare.outputs.base_spec }}' \
+            --parent-root work/parent \
+            --refinement-root work/refinement \
+            --output work/out/summary.json \
+            > work/out/collector.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > work/out/collector.exit
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build compact accepted archive
+        if: steps.collector.outputs.code == '0'
+        shell: bash
+        run: |
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          python 'sixth approach/run063_refine_archive.py' \
+            --spec '${{ inputs.spec_path }}' \
+            --base-spec '${{ needs.prepare.outputs.base_spec }}' \
+            --summary work/out/summary.json \
+            --parent-root work/parent \
+            --refinement-root work/refinement \
+            --output-dir "$archive" \
+            --workflow-run "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA"
+
+      - name: Commit compact accepted archive
+        if: steps.collector.outputs.code == '0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$archive"
+          git commit -m "archive ${{ inputs.run_id }} from ${GITHUB_RUN_ID}"
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
+            git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+            git rebase origin/main
+          done
+
+      - name: Upload collector bundle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-refined-collection
+          path: |
+            work/out/
+            sixth approach/runs/${{ inputs.run_id }}-${{ github.run_id }}/
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Require complete accepted refinement
+        if: always()
+        shell: bash
+        run: exit "$(cat work/out/collector.exit 2>/dev/null || echo 2)"

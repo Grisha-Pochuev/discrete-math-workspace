@@ -1,0 +1,7 @@
+{
+  "enabled": false,
+  "source_run_id": 30859608967,
+  "source_run_index": 2,
+  "reason": "closed after accepted rescue archive commit 93b19a0fb53163f111ea1ffdeddfbddc002fec43; run 2 is preserved, accepted, and control advanced exactly once",
+  "nonce": "ta20-rescue-run-002-closed-2026-08-04T06-50-00Z"
+}
