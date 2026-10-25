@@ -1,0 +1,149 @@
+name: Sixth Approach Proof Calibration
+run-name: ${{ inputs.run_id }} proof calibration
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  calibrate:
+    name: calibrate-${{ inputs.run_id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 210
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify contract and install pinned tools
+        shell: bash
+        env:
+          CALC_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          test "$CALC_RUN_ID" = 'run-076'
+          python 'sixth approach/run076_contract.py' \
+            --spec 'sixth approach/specs/run-076-calibration.json' \
+            --input 'sixth approach/specs/run-076-input.json'
+          PYTHONPATH='sixth approach' python 'sixth approach/tests/test_run076_contract.py'
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends cadical=1.7.4-1 build-essential ca-certificates
+          git clone --filter=blob:none --no-checkout \
+            https://github.com/marijnheule/drat-trim.git checker-source
+          git -C checker-source checkout --detach 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          git -C checker-source rev-parse HEAD | grep -Fx \
+            '2e3b2dc0ecf938addbd779d42877b6ed69d9a985'
+          cc -O2 -DLONGTYPE checker-source/lrat-check.c -o lrat-check
+      - name: Emit immutable formula
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p result
+          python 'sixth approach/run076_formula.py' emit \
+            --input 'sixth approach/specs/run-076-input.json' \
+            --class-id 1 --cnf result/input.cnf --metadata result/metadata.json
+          test "$(sha256sum result/input.cnf | cut -d' ' -f1)" = \
+            '9c9af19de20cc648b4beaa9bdb15b6f23ee7259bef694bcbcb8708d4b2a3ccc8'
+          python - <<'PY'
+          import json
+          meta=json.load(open('result/metadata.json'))
+          assert meta['variable_count']==216720
+          assert meta['clause_count']==1253860
+          PY
+          rm -rf reference
+          mkdir reference
+          cp result/input.cnf reference/input.cnf
+          cp result/metadata.json reference/metadata.json
+          rm -f result/input.cnf
+          python 'sixth approach/run076_formula.py' emit \
+            --input 'sixth approach/specs/run-076-input.json' \
+            --class-id 1 --cnf result/input.cnf --metadata result/metadata.json
+          cmp reference/input.cnf result/input.cnf
+          cmp reference/metadata.json result/metadata.json
+          rm -rf reference
+      - name: Solve with exact certificate
+        id: solve
+        shell: bash
+        run: |
+          set +e
+          timeout --signal=TERM --kill-after=30s 10800s \
+            cadical --check --checkproof --checkprooflrat --lrat --no-binary \
+              result/input.cnf result/proof.lrat > result/solver.log 2>&1
+          code=$?
+          set -e
+          echo "$code" > result/solver.exit
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          if test "$code" = 10; then
+            python 'sixth approach/run076_formula.py' replay \
+              --input 'sixth approach/specs/run-076-input.json' \
+              --class-id 1 --model result/solver.log --output result/positive.json
+          elif test "$code" = 20; then
+            test -s result/proof.lrat
+            ./lrat-check result/input.cnf result/proof.lrat > result/checker.log 2>&1
+            grep -Fx 'c VERIFIED' result/checker.log
+            gzip -9 result/proof.lrat
+          fi
+          rm -f result/input.cnf
+      - name: Record compact provenance
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,os
+          root=pathlib.Path('result')
+          def sha(p):
+              h=hashlib.sha256()
+              with p.open('rb') as f:
+                  while chunk:=f.read(1<<20): h.update(chunk)
+              return h.hexdigest()
+          meta=json.load(open(root/'metadata.json')) if (root/'metadata.json').is_file() else {}
+          record={
+            'schema':'neutral-proof-calibration-result-v1',
+            'source_sha':os.environ['GITHUB_SHA'],
+            'github_run_id':os.environ['GITHUB_RUN_ID'],
+            'github_run_attempt':int(os.environ['GITHUB_RUN_ATTEMPT']),
+            'class_id':1,
+            'metadata':meta,
+            'solver_exit':int((root/'solver.exit').read_text()) if (root/'solver.exit').is_file() else None,
+            'files':{},
+          }
+          for p in sorted(root.iterdir()):
+              if p.is_file() and p.name!='result.json':
+                  record['files'][p.name]={'bytes':p.stat().st_size,'sha256':sha(p)}
+          (root/'result.json').write_text(json.dumps(record,indent=2,sort_keys=True)+'\n',newline='\n')
+          PY
+      - name: Upload bounded calibration package
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-proof-calibration
+          path: result/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Require a classified exact outcome
+        if: always()
+        shell: bash
+        run: |
+          code="$(cat result/solver.exit 2>/dev/null || echo 2)"
+          if test "$code" = 20; then
+            test -s result/proof.lrat.gz
+            grep -Fx 'c VERIFIED' result/checker.log
+          elif test "$code" = 10; then
+            test -s result/positive.json
+          else
+            echo "unclassified or incomplete solver exit: $code" >&2
+            exit 2
+          fi

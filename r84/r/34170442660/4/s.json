@@ -1,0 +1,90 @@
+{
+  "parent": "r84/r/34170442660/3",
+  "baseline": 288843524,
+  "best": 288843524,
+  "gain": 0,
+  "runs": {
+    "strict_expanded": {
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "status": "Time limit reached",
+      "strict": true,
+      "seconds": 240.9643729920008,
+      "rounds": 0,
+      "last": null
+    },
+    "strict_00": {
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "status": "Time limit reached",
+      "strict": true,
+      "seconds": 91.8753185179994,
+      "rounds": 0,
+      "last": null
+    },
+    "strict_w02": {
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "status": "Time limit reached",
+      "strict": true,
+      "seconds": 91.36763178100045,
+      "rounds": 0,
+      "last": null
+    },
+    "strict_w06": {
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "status": "Time limit reached",
+      "strict": true,
+      "seconds": 95.52367057599986,
+      "rounds": 0,
+      "last": null
+    },
+    "strict_w07": {
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "status": "Time limit reached",
+      "strict": true,
+      "seconds": 124.51919527499922,
+      "rounds": 0,
+      "last": null
+    },
+    "strict_w08": {
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "status": "Time limit reached",
+      "strict": true,
+      "seconds": 90.13772937999966,
+      "rounds": 0,
+      "last": null
+    }
+  },
+  "archive": {
+    "file": "p00",
+    "format": "tar.xz",
+    "size": 2696,
+    "sha256": "24a57b10dba42328b2e429771c112776f5dfeca019a40029bc1dcf752f0baf7e"
+  },
+  "files": {
+    "strict.py": "3c7945541c8fe776e30a5470837f0eff122cd3b2acab7540b18ee53f0c75e477",
+    "strict_expanded/result.json": "a6c4a755d6689b43735bf6e9bb8d28d37aadb62e23ebbce20d14a8db2ab82970",
+    "strict_expanded.log": "e36962c7d9b7493ab4322519ceee534b7985fe0652aad1e932776de6f439ee94",
+    "strict_00/result.json": "30860c3abaaca2a423a9e3fa3ee2ec57a44e5a2a757c313a8c15d77447a7e9a0",
+    "strict_00.log": "1704def6913267f29ff4a5f2a5151401e70e2e3f905333f9894e2349c8c20607",
+    "strict_w02/result.json": "ea568dc930d129c9c58286b830494d567c13c806ea6e385e94611148fcbcda95",
+    "strict_w02.log": "ed5a25a0252ce68ed9b0e767b79bf1d1ff6e4dfbe1a5bae1a6ea9ca67162ff0c",
+    "strict_w06/result.json": "73dd227f6796e76dd390cf2ce69a262e28c7fc525f3d673d1e9a10a6a77d3aa0",
+    "strict_w06.log": "946d7da97f25f48577cedcf058b9051fc19f3376cb23364cb01ffb1902a50bbd",
+    "strict_w07/result.json": "247615f78a9a06876993a5d65701a063009a5b33617bea25631a32b7948cbb48",
+    "strict_w07.log": "86a343c55451b89d5eeee1c1d0bb3dbcbe949bc18f2ec80dc48500fff3184d9c",
+    "strict_w08/result.json": "b285ac6869a951d872f8d4aa5078b635434c5a6cdf24cb48bac9c2f2839b81bd",
+    "strict_w08.log": "463e868f94c19ad5c9c96c50019d265103659c5d0cbf4f7d10683eb888f39d0a",
+    "strict_test/result.json": "8d7db90f98e968f3ed4ca32a6bd2606d239c4aa07138afbe665b676ab5b2634c"
+  }
+}

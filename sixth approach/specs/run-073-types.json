@@ -1,0 +1,530 @@
+{
+  "canonical_outcome_sha256": "213f591b67c7758ab23440ab009f310af7e13cc3613c342eed9c6e007c4c1778",
+  "evidence_level": "complete enumeration modulo vertex and owner permutations",
+  "fixed_anchor_candidate_pairs": 5356,
+  "fixed_anchor_simple_triples": 942,
+  "graph_type_histogram": {
+    "cube-Q3": 2,
+    "mobius-ladder-M8": 2,
+    "unidentified-4f0e7f47bf51": 1,
+    "unidentified-5824408a75e0": 1,
+    "unidentified-e12063913aba": 1,
+    "unidentified-e7a3ace7a869": 1
+  },
+  "isomorphism_types": 8,
+  "schema": "run-073-type-catalogue-v1",
+  "types": [
+    {
+      "bipartite": false,
+      "canonical_graph_sha256": "e12063913aba2d039bc9c436b34106bad7adde5a2e438499c358dcfd3f661b05",
+      "canonical_triple": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            4,
+            7
+          ],
+          [
+            5,
+            6
+          ]
+        ]
+      ],
+      "connected": false,
+      "girth": 3,
+      "graph_type": "unidentified-e12063913aba",
+      "type_index": 0
+    },
+    {
+      "bipartite": false,
+      "canonical_graph_sha256": "5824408a75e0496b6a5956719f5b7ae49a8f21c6914d222ef52f76a545da7ba5",
+      "canonical_triple": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            5,
+            6
+          ]
+        ]
+      ],
+      "connected": true,
+      "girth": 3,
+      "graph_type": "unidentified-5824408a75e0",
+      "type_index": 1
+    },
+    {
+      "bipartite": true,
+      "canonical_graph_sha256": "22487e9bc83f1d7a32f03e42bdd8e167a64a0372c82e9f31a5490e27ba8cf125",
+      "canonical_triple": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            2,
+            6
+          ],
+          [
+            3,
+            7
+          ]
+        ]
+      ],
+      "connected": true,
+      "girth": 4,
+      "graph_type": "cube-Q3",
+      "type_index": 2
+    },
+    {
+      "bipartite": false,
+      "canonical_graph_sha256": "d9de5b7f9c12175312264025127d11bd39e2ede1a1a5ef027b1c5e1599cca259",
+      "canonical_triple": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            3,
+            6
+          ]
+        ]
+      ],
+      "connected": true,
+      "girth": 4,
+      "graph_type": "mobius-ladder-M8",
+      "type_index": 3
+    },
+    {
+      "bipartite": true,
+      "canonical_graph_sha256": "22487e9bc83f1d7a32f03e42bdd8e167a64a0372c82e9f31a5490e27ba8cf125",
+      "canonical_triple": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            3,
+            7
+          ]
+        ]
+      ],
+      "connected": true,
+      "girth": 4,
+      "graph_type": "cube-Q3",
+      "type_index": 4
+    },
+    {
+      "bipartite": false,
+      "canonical_graph_sha256": "d9de5b7f9c12175312264025127d11bd39e2ede1a1a5ef027b1c5e1599cca259",
+      "canonical_triple": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            4,
+            6
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            4
+          ],
+          [
+            1,
+            6
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            3,
+            5
+          ]
+        ]
+      ],
+      "connected": true,
+      "girth": 4,
+      "graph_type": "mobius-ladder-M8",
+      "type_index": 5
+    },
+    {
+      "bipartite": false,
+      "canonical_graph_sha256": "4f0e7f47bf51a824ac8fff93f47aecf830127708cdc9f37a3fa073457ce291a2",
+      "canonical_triple": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            5
+          ],
+          [
+            2,
+            7
+          ],
+          [
+            4,
+            6
+          ]
+        ]
+      ],
+      "connected": true,
+      "girth": 3,
+      "graph_type": "unidentified-4f0e7f47bf51",
+      "type_index": 6
+    },
+    {
+      "bipartite": false,
+      "canonical_graph_sha256": "e7a3ace7a869b18cd910b9861841c62e2e084b4768babefce4bccea701804bbb",
+      "canonical_triple": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            4,
+            5
+          ],
+          [
+            6,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            3,
+            6
+          ],
+          [
+            5,
+            7
+          ]
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          [
+            1,
+            7
+          ],
+          [
+            2,
+            5
+          ],
+          [
+            4,
+            6
+          ]
+        ]
+      ],
+      "connected": true,
+      "girth": 3,
+      "graph_type": "unidentified-e7a3ace7a869",
+      "type_index": 7
+    }
+  ]
+}

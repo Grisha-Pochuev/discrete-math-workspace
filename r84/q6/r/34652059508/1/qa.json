@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "cut_rows": 53,
+  "additional_rows": 51,
+  "cut_tour_checks": 102000,
+  "exhaustive_cases": 12,
+  "full_expansions": 20592,
+  "closed_cases": 4
+}
