@@ -1,0 +1,356 @@
+name: Sixth Approach Adaptive Shards
+run-name: ${{ inputs.run_id }} adaptive shards
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+      spec_path:
+        description: Repository path to the immutable JSON specification
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    name: prepare-${{ inputs.run_id }}
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.spec.outputs.matrix }}
+      seconds: ${{ steps.spec.outputs.seconds }}
+      rounds: ${{ steps.spec.outputs.rounds }}
+      worker_seconds: ${{ steps.spec.outputs.worker_seconds }}
+      memory_mib: ${{ steps.spec.outputs.memory_mib }}
+      workers: ${{ steps.spec.outputs.workers }}
+      shards: ${{ steps.spec.outputs.shards }}
+      cut_version: ${{ steps.spec.outputs.cut_version }}
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python verifier
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Verify immutable specification and build matrix
+        id: spec
+        shell: bash
+        env:
+          CALC_RUN_ID: ${{ inputs.run_id }}
+          CALC_SPEC_PATH: ${{ inputs.spec_path }}
+        run: |
+          set -euo pipefail
+          python 'sixth approach/run061_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-061-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts.h'
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path.cwd().resolve()
+          spec_path = (root / os.environ['CALC_SPEC_PATH']).resolve()
+          assert spec_path.is_relative_to(root / 'sixth approach' / 'specs')
+          spec = json.loads(spec_path.read_text(encoding='utf-8'))
+          assert spec['schema_version'] == 1
+          assert spec['run_id'] == os.environ['CALC_RUN_ID']
+          assert spec['mode'] == 'adaptive_support_screen_exact_cuts'
+          assert spec['workflow'] == 'sixth-approach-adaptive-shards.yml'
+          assert spec['runner'] == 'ubuntu-24.04'
+          assert spec['jobs'] == len(spec['graphs']) * spec['shards_per_graph']
+          assert spec['jobs'] == 48
+          assert spec['max_parallel'] == 20
+          assert spec['shards_per_graph'] == 16
+          assert spec['partition'] == 'first-edge-prefix-bits-v1'
+          assert spec['partition_bits'] == 4
+          assert spec['workers_per_shard'] == 4
+          assert spec['worker_language'] == 'C++20'
+          assert spec['solver'] == 'OR-Tools CP-SAT v9.15.6755'
+          assert spec['exact_cut_version'] == 1
+          assert spec['job_timeout_minutes'] == 150
+          files = {
+              spec['cut_bundle_path']: spec['cut_bundle_sha256'],
+              'sixth approach/run052_adaptive/exact_event_cuts.h': spec['cut_header_sha256'],
+              'sixth approach/run052_adaptive/main.cpp': spec['worker_source_sha256'],
+          }
+          for relative, expected in files.items():
+              actual = hashlib.sha256((root / relative).read_bytes()).hexdigest()
+              assert actual == expected, (relative, actual, expected)
+          matrix = {'include': [
+              {
+                  'graph_id': graph['id'],
+                  'graph_type': graph['type'],
+                  'expected_matchings': graph['expected_matchings'],
+                  'shard': shard,
+              }
+              for graph in spec['graphs']
+              for shard in range(spec['shards_per_graph'])
+          ]}
+          outputs = {
+              'matrix': json.dumps(matrix, separators=(',', ':')),
+              'seconds': spec['seconds_per_round'],
+              'rounds': spec['exchange_rounds'],
+              'worker_seconds': spec['worker_seconds'],
+              'memory_mib': spec['worker_memory_mib'],
+              'workers': spec['workers_per_shard'],
+              'shards': spec['shards_per_graph'],
+              'cut_version': spec['exact_cut_version'],
+          }
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as stream:
+              for key, value in outputs.items():
+                  stream.write(f'{key}={value}\n')
+          PY
+
+  adaptive-shard:
+    name: ${{ matrix.graph_id }}-${{ matrix.shard }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    env:
+      CALC_RUN_ID: ${{ inputs.run_id }}
+      CALC_SPEC_PATH: ${{ inputs.spec_path }}
+      CALC_SECONDS: ${{ needs.prepare.outputs.seconds }}
+      CALC_ROUNDS: ${{ needs.prepare.outputs.rounds }}
+      CALC_WORKER_SECONDS: ${{ needs.prepare.outputs.worker_seconds }}
+      CALC_MEMORY_MIB: ${{ needs.prepare.outputs.memory_mib }}
+      CALC_WORKERS: ${{ needs.prepare.outputs.workers }}
+      CALC_SHARDS: ${{ needs.prepare.outputs.shards }}
+      CALC_CUT_VERSION: ${{ needs.prepare.outputs.cut_version }}
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python validator
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Initialize diagnostics
+        shell: bash
+        run: mkdir -p 'out/${{ matrix.graph_id }}'
+
+      - name: Verify compiled cut contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 'sixth approach/run061_cut_contract.py' \
+            --bundle 'sixth approach/specs/run-061-exact-event-cuts.json' \
+            --header 'sixth approach/run052_adaptive/exact_event_cuts.h'
+
+      - name: Fetch verified native toolkit
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/or-tools.tar.gz"
+          root="$RUNNER_TEMP/or-tools"
+          curl --fail --location --retry 3 \
+            'https://github.com/google/or-tools/releases/download/v9.15/or-tools_amd64_ubuntu-24.04_cpp_v9.15.6755.tar.gz' \
+            --output "$archive"
+          echo '6f389320672cee00b78aacefb2bde33fef0bb988c3b2735573b9fffd1047fbda  '"$archive" | sha256sum --check
+          mkdir -p "$root"
+          tar -xzf "$archive" -C "$root" --strip-components=1
+
+      - name: Compile the native worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake \
+            -S "$GITHUB_WORKSPACE/sixth approach/run052_adaptive" \
+            -B "$RUNNER_TEMP/adaptive-build" \
+            -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/or-tools" \
+            -Dortools_DIR="$RUNNER_TEMP/or-tools/lib/cmake/ortools" \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/adaptive-build" --parallel 4
+          test -x "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker"
+
+      - name: Record machine diagnostics
+        shell: bash
+        run: |
+          target='out/${{ matrix.graph_id }}'
+          {
+            date -u +%FT%TZ
+            uname -a
+            nproc
+            lscpu
+            free -h
+            swapon --show
+            df -h .
+            ulimit -a
+            g++ --version
+            echo "GITHUB_SHA=$GITHUB_SHA"
+            sha256sum "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker"
+            sha256sum 'sixth approach/run052_adaptive/main.cpp'
+            sha256sum 'sixth approach/run052_adaptive/exact_event_cuts.h'
+            sha256sum "$CALC_SPEC_PATH"
+          } > "$target/shard-${{ matrix.shard }}-diagnostics.log"
+
+      - name: Start resource monitor
+        shell: bash
+        run: |
+          target='out/${{ matrix.graph_id }}'
+          (
+            while true; do
+              date -u +%FT%TZ
+              grep -E 'MemTotal|MemAvailable|SwapTotal|SwapFree' /proc/meminfo
+              ps -eo pid,ppid,rss,etime,cmd --sort=-rss | head -25
+              sleep 60
+            done
+          ) > "$target/shard-${{ matrix.shard }}-resources.log" 2>&1 &
+          echo $! > "$target/shard-${{ matrix.shard }}-monitor.pid"
+
+      - name: Run exact adaptive shard
+        id: compute
+        shell: bash
+        run: |
+          export LD_LIBRARY_PATH="$RUNNER_TEMP/or-tools/lib:${LD_LIBRARY_PATH:-}"
+          target='out/${{ matrix.graph_id }}'
+          set +e
+          (
+            ulimit -v $((CALC_MEMORY_MIB*1024))
+            timeout --signal=TERM --kill-after=30s "$CALC_WORKER_SECONDS" \
+              "$RUNNER_TEMP/adaptive-build/run052_adaptive_worker" \
+                --run-id "$CALC_RUN_ID" \
+                --graph '${{ matrix.graph_type }}' \
+                --seconds "$CALC_SECONDS" \
+                --rounds "$CALC_ROUNDS" \
+                --workers "$CALC_WORKERS" \
+                --memory-mib "$CALC_MEMORY_MIB" \
+                --shard-id '${{ matrix.shard }}' \
+                --shard-count "$CALC_SHARDS" \
+                --exact-cut-version "$CALC_CUT_VERSION" \
+                --output "$target/shard-${{ matrix.shard }}.json" \
+              > "$target/shard-${{ matrix.shard }}.log" 2>&1
+            echo $? > "$target/shard-${{ matrix.shard }}.exit"
+          )
+          exit 0
+
+      - name: Stop monitor and validate shard
+        if: always()
+        shell: bash
+        run: |
+          target='out/${{ matrix.graph_id }}'
+          monitor="$target/shard-${{ matrix.shard }}-monitor.pid"
+          if [ -f "$monitor" ]; then kill "$(cat "$monitor")" 2>/dev/null || true; fi
+          python 'sixth approach/run061_validate_shard.py' \
+            --spec "$CALC_SPEC_PATH" \
+            --graph '${{ matrix.graph_type }}' \
+            --shard '${{ matrix.shard }}' \
+            --output "$target/shard-${{ matrix.shard }}.json" \
+            --exit "$target/shard-${{ matrix.shard }}.exit" \
+            --validation "$target/shard-${{ matrix.shard }}-validation.json" \
+            > "$target/shard-${{ matrix.shard }}-validation.log" 2>&1
+
+      - name: Upload complete shard diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-graph-${{ matrix.graph_id }}-shard-${{ matrix.shard }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
+
+  collect:
+    name: collect-${{ inputs.run_id }}
+    needs: [prepare, adaptive-shard]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python collector
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Prepare collector directories
+        shell: bash
+        run: mkdir -p work/shards work/out
+
+      - name: Download all shard bundles
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.run_id }}
+          pattern: ${{ inputs.run_id }}-graph-*-shard-*
+          path: work/shards
+          merge-multiple: true
+
+      - name: Validate full matrix and preserve summary
+        id: collector
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          python 'sixth approach/run061_collect.py' \
+            --spec '${{ inputs.spec_path }}' \
+            --input-root work/shards \
+            --output work/out/summary.json \
+            > work/out/collector.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > work/out/collector.exit
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Build compact accepted archive
+        if: steps.collector.outputs.code == '0'
+        shell: bash
+        run: |
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          python 'sixth approach/run061_archive.py' \
+            --spec '${{ inputs.spec_path }}' \
+            --summary work/out/summary.json \
+            --input-root work/shards \
+            --output-dir "$archive" \
+            --workflow-run "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA"
+
+      - name: Commit compact accepted archive
+        if: steps.collector.outputs.code == '0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$archive"
+          git commit -m "archive ${{ inputs.run_id }} from ${GITHUB_RUN_ID}"
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
+            git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+            git rebase origin/main
+          done
+
+      - name: Upload collector bundle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-adaptive-collection
+          path: |
+            work/out/
+            sixth approach/runs/${{ inputs.run_id }}-${{ github.run_id }}/
+          if-no-files-found: error
+          retention-days: 3
+
+      - name: Require complete accepted matrix
+        if: always()
+        shell: bash
+        run: exit "$(cat work/out/collector.exit 2>/dev/null || echo 2)"
