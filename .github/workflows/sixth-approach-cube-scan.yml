@@ -1,0 +1,143 @@
+name: Sixth Approach Cube Scan
+run-name: ${{ inputs.run_id }} cube scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    name: prepare-${{ inputs.run_id }}
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.contract.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify immutable exhaustive partition
+        id: contract
+        shell: bash
+        env:
+          CALC_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          test "$CALC_RUN_ID" = 'run-079'
+          python -m py_compile 'sixth approach/run079_cube_scan.py'
+          python 'sixth approach/run079_cube_scan.py' contract \
+            --spec 'sixth approach/specs/run-079-cube-scan.json'
+          python 'sixth approach/run079_cube_scan.py' self-test \
+            --spec 'sixth approach/specs/run-079-cube-scan.json'
+          python 'sixth approach/run079_cube_scan_test.py' \
+            --script 'sixth approach/run079_cube_scan.py' \
+            --spec 'sixth approach/specs/run-079-cube-scan.json' \
+            --temporary-root smoke/synthetic
+          python - <<'PY'
+          import json, os
+          matrix={'include':[{'group': group} for group in range(19)]}
+          with open(os.environ['GITHUB_OUTPUT'],'a') as stream:
+              stream.write('matrix='+json.dumps(matrix,separators=(',',':'))+'\n')
+          PY
+
+  compute:
+    name: group-${{ matrix.group }}-${{ inputs.run_id }}
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 70
+    strategy:
+      fail-fast: false
+      max-parallel: 19
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install pinned single-threaded solver
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends cadical=1.7.4-1
+      - name: Run four disjoint lanes
+        shell: bash
+        env:
+          GROUP_ID: ${{ matrix.group }}
+        run: |
+          set +e
+          mkdir -p out
+          pids=()
+          for slot in 0 1 2 3; do
+            lane=$((GROUP_ID * 4 + slot))
+            lane_dir="$(printf 'out/lane-%03d' "$lane")"
+            mkdir -p "$lane_dir"
+            (
+              python 'sixth approach/run079_cube_scan.py' worker \
+                --spec 'sixth approach/specs/run-079-cube-scan.json' \
+                --lane "$lane" --output "$lane_dir/result.json" \
+                > "$lane_dir/worker.log" 2>&1
+              printf '%s\n' "$?" > "$lane_dir/worker.exit"
+            ) &
+            pids+=("$!")
+          done
+          for pid in "${pids[@]}"; do wait "$pid"; done
+          python 'sixth approach/run079_cube_scan.py' validate-group \
+            --spec 'sixth approach/specs/run-079-cube-scan.json' \
+            --group "$GROUP_ID" --input-root out
+      - name: Upload compact lane records
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-group-${{ matrix.group }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
+
+  collect:
+    name: collect-${{ inputs.run_id }}
+    needs: [prepare, compute]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          pattern: ${{ inputs.run_id }}-group-*
+          path: work/results
+      - name: Strictly collect coverage and replay SAT witnesses
+        id: collect
+        shell: bash
+        run: |
+          set +e
+          python 'sixth approach/run079_cube_scan.py' collect \
+            --spec 'sixth approach/specs/run-079-cube-scan.json' \
+            --input-root work/results --output-dir compact \
+            --workflow-run "$GITHUB_RUN_ID" --source-sha "$GITHUB_SHA" \
+            > collector.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > collector.exit
+          exit 0
+      - name: Upload compact collection
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-compact-collection
+          path: |
+            compact/
+            collector.log
+            collector.exit
+          if-no-files-found: error
+          retention-days: 30
+      - name: Require technically complete coverage
+        if: always()
+        run: exit "$(cat collector.exit 2>/dev/null || echo 2)"

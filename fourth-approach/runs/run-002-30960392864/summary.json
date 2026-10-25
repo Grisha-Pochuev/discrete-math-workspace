@@ -1,0 +1,31 @@
+{
+  "accepted": true,
+  "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+  "artifact_directories_found": 20,
+  "completed_jobs": 20,
+  "expected_jobs": 20,
+  "metrics": {
+    "certificate_terms_removed": 15377,
+    "classes_minimized": 2594,
+    "classes_with_fewer_terms": 2594,
+    "classes_with_smaller_support": 2594,
+    "completed_jobs": 20,
+    "coverage_ok": true,
+    "independently_reverified": 2594,
+    "optimization_attempts": 42719580,
+    "rejected_certificates": 0,
+    "support_variables_removed": 66893,
+    "total_canonical_classes": 2594
+  },
+  "minimum_jobs": 18,
+  "next_decision": "Manually inspect the minimized library before any deletion-contrast run.",
+  "rescue": false,
+  "run_id": 30960392864,
+  "run_index": 2,
+  "schema_version": 1,
+  "scientific_interpretation": "The minimized exact certificates apply only to recorded support-restricted n=6,d=3 systems; they do not prove the full conjecture.",
+  "smoke": false,
+  "source_sha": "38dea15e03f1591a610a84073c31862f20853d26",
+  "task": "stage2_minimize_certificates",
+  "worker_error_count": 0
+}
