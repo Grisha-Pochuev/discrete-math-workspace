@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "run_id": "run-054",
+  "mode": "adaptive_support_screen_smoke",
+  "supersedes": "run-052",
+  "trigger": "workflow_dispatch",
+  "workflow": "sixth-approach-adaptive-screen.yml",
+  "runner": "ubuntu-24.04",
+  "graphs": [
+    {"id": "c8", "type": "C8", "expected_matchings": 31}
+  ],
+  "jobs": 1,
+  "max_parallel": 1,
+  "shards_per_job": 4,
+  "partition": "first-edge-bits-v1",
+  "single_threaded_workers": true,
+  "worker_language": "C++20",
+  "solver": "OR-Tools CP-SAT v9.15.6755",
+  "seconds_per_round": 120,
+  "exchange_rounds": 1,
+  "worker_seconds": 600,
+  "worker_memory_mib": 2500,
+  "job_timeout_minutes": 75,
+  "acceptance": {
+    "all_shards_emit_json": true,
+    "strict_partition_replay": true,
+    "strict_model_identity": true,
+    "scientific_survivors_are_data": true
+  }
+}

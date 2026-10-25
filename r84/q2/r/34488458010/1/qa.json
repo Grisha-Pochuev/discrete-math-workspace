@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "exhaustive_cases": 20,
+  "routes_checked": 29652,
+  "saved_covers_checked": 11,
+  "joint_moves_checked": 320,
+  "boundary_extension": true,
+  "budget_expiry": true
+}

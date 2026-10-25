@@ -1,0 +1,13 @@
+{
+  "purpose": "Refine every capacity-limited shard from run 29943797510, then advance to limits 28 and 29.",
+  "stage": "frontier2",
+  "runtime_seconds": 21000,
+  "task_seconds": 3600,
+  "max_seen_new_layers": 32000000,
+  "max_seen_refined_parents": 8000000,
+  "jobs": 20,
+  "workers_per_job": 4,
+  "source_run_id": 29943797510,
+  "source_results_commit": "54ce151fabf5f9a8daf8022d9e69eb2445d8b1f2",
+  "prepared_code_commit": "a87dd377c30b80546633c13ae9f61dd94779e071"
+}

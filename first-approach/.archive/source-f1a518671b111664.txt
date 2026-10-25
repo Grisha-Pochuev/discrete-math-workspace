@@ -1,0 +1,9 @@
+source_sha=f1a518671b1116647c8be9b04f38148dd8b593fc
+source_tasks=runs/2026-07-24-a/next_tasks.json
+source_lane=frontier3
+manifest_stage=frontier2
+output_dir=runs/2026-07-24-b
+reserve_limit=34
+reserve_shards=65536
+reserve_split=20
+reason=prepare verified archive for the unique completed frontier3 run associated with the launch commit
