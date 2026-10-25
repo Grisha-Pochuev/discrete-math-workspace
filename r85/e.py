@@ -57,7 +57,11 @@ def L(t):
 R0 = L(R)
 pos = np.empty(N, np.int64); pos[R] = np.arange(N)
 g = np.load(io.BytesIO(G.read_bytes()))
-ids = g["i"].astype(np.int64)
+if "o" in g.files:
+    _o = g["o"].astype(np.int64); RI = S % (len(_o) - 1)
+    ids = g["i"][_o[RI]:_o[RI + 1]].astype(np.int64)
+else:
+    RI = -1; ids = g["i"].astype(np.int64)
 Lc = ids[np.argsort(pos[ids])]; n = len(Lc); pc = pos[Lc]
 fx = ((np.roll(pc, -1) - pc) % N) != 1
 Xr = X[Lc]
@@ -160,10 +164,10 @@ def mig(src):
 
 st_p = P / "st.json"
 st = json.loads(st_p.read_text()) if st_p.exists() else {"isl": {}}
-M_in = mig([Q / "m.bin"]) + mig([H])
+M_in = (mig([Q / "m.bin"]) + mig([H])) if RI < 0 else mig([P / "m.bin"])
 AP = [t for t in mig([Path(__file__).with_name("a.bin")]) if fl(t) is not None]
 log(f"in p={int(st_p.exists())} m={len(M_in)} a={len(AP)}")
-rep = {"s": S, "cy": CY, "gain": 0, "isl": [], "imp": []}
+rep = {"s": S, "ri": RI, "cy": CY, "gain": 0, "isl": [], "imp": []}
 best_full = None
 
 
