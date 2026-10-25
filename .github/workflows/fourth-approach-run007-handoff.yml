@@ -1,0 +1,70 @@
+name: Fourth approach Run 007 GPT Sol handoff
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-run007-handoff.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fourth-approach-run-007-handoff
+  cancel-in-progress: false
+
+jobs:
+  handoff:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Sparse checkout exact commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+
+      - name: Build and verify compact Sol handoff
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile fourth-approach/run007_handoff.py
+          PYTHONDONTWRITEBYTECODE=1 python fourth-approach/run007_handoff.py \
+            --repo . \
+            --source-run fourth-approach/runs/run-006-31130093117 \
+            --run-id "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA"
+          python - <<PY
+          import json
+          summary=json.load(open('fourth-approach/runs/run-007-${GITHUB_RUN_ID}/summary.json'))
+          control=json.load(open('fourth-approach/control.json'))
+          assert summary['accepted'] is True, summary
+          assert summary['source_run_006']==31130093117, summary
+          assert control['next_run_index']==8, control
+          assert control['next_task']=='stage8_adaptive_exact_lemma_cycle', control
+          PY
+
+      - name: Commit accepted Run 007
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach/runs fourth-approach/control.json fourth-approach/launch.json
+          git commit -m "save Fourth approach run 007 from ${GITHUB_RUN_ID}"
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
+            git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+            git rebase origin/main
+          done
