@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "series": "run-012",
+  "mode": "local_diagnostic",
+  "size": 8,
+  "seed": 2026080901,
+  "graph_trials": 2000,
+  "colourings_per_graph": 64,
+  "component": "two_leaf_common_column",
+  "acceptance": {
+    "wall_seconds_max": 840,
+    "preserve_first_zero_record": true
+  }
+}

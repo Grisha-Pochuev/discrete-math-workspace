@@ -1,0 +1,333 @@
+{
+  "format": "tar.xz",
+  "parts": [
+    {
+      "gitsha": "f0c7a128810ebe486097138d1d7ab4b8aea56926",
+      "path": "p00",
+      "sha256": "7f8a4f872b0f2a3029ec64e2ee7767b7a1b341d61632bb8d2d48009c9b067c36",
+      "size": 750000
+    },
+    {
+      "gitsha": "c973bf710b7ffc0e8e95771ebdd3eda3f71b6084",
+      "path": "p01",
+      "sha256": "dcca16dffc93c9d2fbfa0cb6240805801c060c153f793b1d11e00224bad1ea89",
+      "size": 750000
+    },
+    {
+      "gitsha": "2e3bd54acaf166d00744f3e3d18a01b14ed8c4ba",
+      "path": "p02",
+      "sha256": "047715a6c56a4634e204ed8bb0939d0550b15cf1ee153450dd25ac3442e08552",
+      "size": 750000
+    },
+    {
+      "gitsha": "57577fc2563f4a090a3e86f22db9f291d978fd70",
+      "path": "p03",
+      "sha256": "a7fd97d0065c005b0dd48ab32dcdd2df98a3934b84f64c59b9d733a43c716859",
+      "size": 750000
+    },
+    {
+      "gitsha": "7eda12a3879e25630f14a91d31658a3bd2aa1883",
+      "path": "p04",
+      "sha256": "77e773b50c0ef5b13432ffcff733640e0b55c9f6978f9730aa5d9f7e974acdb1",
+      "size": 750000
+    },
+    {
+      "gitsha": "82d7fc76bad49d53c27b24fd380eac29213c43d6",
+      "path": "p05",
+      "sha256": "bf5b25885d94291cb1068543c5fb01a9a94c8f452c1a02d1cb5059b7ed332f60",
+      "size": 750000
+    },
+    {
+      "gitsha": "3376266ad90bf484960da35c9375611d4feb29d6",
+      "path": "p06",
+      "sha256": "285d2b3c4592ca860a537e04fa931e9d05248f2c057eb772116ae7b3dab79f82",
+      "size": 750000
+    },
+    {
+      "gitsha": "724f2f982babb3be986d530cf2f85f0dcadb220f",
+      "path": "p07",
+      "sha256": "bc3fac4905b9cb833c2ffc35ebe560951f7ed592ba3931cfdd61f93974748c86",
+      "size": 750000
+    },
+    {
+      "gitsha": "6d90dfe2bac53eb3e63aea3f9b17b8aa4059a74a",
+      "path": "p08",
+      "sha256": "7ee753f9552d90405aab236a4b13b403b6ef49a4d0c5facedd1f5085c8dea7a3",
+      "size": 750000
+    },
+    {
+      "gitsha": "56685467ca9ad75dec66b47b25edba634bb70fd5",
+      "path": "p09",
+      "sha256": "6f0b87a48c5841db8231cf389eb544f616f991fb0952034c37ef50f51de097c2",
+      "size": 750000
+    },
+    {
+      "gitsha": "45546542012ea06d31352236ad2ccda8ab705bd5",
+      "path": "p10",
+      "sha256": "6445f663d1761fa83b97ea986b661bba6de96754ce265a0ab575c292b5aa0c3c",
+      "size": 750000
+    },
+    {
+      "gitsha": "cd466555291d4c3dd86c9201a1b3df03767d01d5",
+      "path": "p11",
+      "sha256": "82085767a6bd0960be6cd6c07ba5db0ceb534f15483ff5e457691b2d8bd35687",
+      "size": 750000
+    },
+    {
+      "gitsha": "016a53b5ee9a6a8edd2353c5099c77ed201b1d48",
+      "path": "p12",
+      "sha256": "b7ec72b85392e575a55da3c8ce8a7d35812454a7fe513c43b2e09c2ad76d7852",
+      "size": 750000
+    },
+    {
+      "gitsha": "08fe3dada409bd4011041049f239e513e4326280",
+      "path": "p13",
+      "sha256": "04cb2698ea6bd79152741ab2341cb650289a7cb0061c2c9b5508175b6ad47a36",
+      "size": 750000
+    },
+    {
+      "gitsha": "475517da3387a18400cec3dc09a1e4e8afa42b41",
+      "path": "p14",
+      "sha256": "2916b10120048b4da52edaa439c544824d58c5f97bbdcc01afbdb13dce1c2d64",
+      "size": 750000
+    },
+    {
+      "gitsha": "8499e002e412ad9e7ad8b5a61118df63d8820d3e",
+      "path": "p15",
+      "sha256": "2b8cea59dba0a012503bb64e75225bd9857a3295de51e84fdfacb137fe31b004",
+      "size": 750000
+    },
+    {
+      "gitsha": "3c8aec992328087a99db70743c017a3f7380c0e4",
+      "path": "p16",
+      "sha256": "823eedb9140ca82922d4333939b4f91efc0ca5bdc03cdddf0f472051fb10d440",
+      "size": 750000
+    },
+    {
+      "gitsha": "48a49232b9140b99cd26a7e5ef75ad7cdbcf2045",
+      "path": "p17",
+      "sha256": "0608a92a6d109787aba747e08ebaacecbd1f79f54f7bbb2b832c893d938b0bf7",
+      "size": 750000
+    },
+    {
+      "gitsha": "fa8b0c5635602142b5676e0f2492c37d240d109b",
+      "path": "p18",
+      "sha256": "db5f00d2451dc5edf45c1d89932ebf312d924a878f1519fe54445af302e9eec7",
+      "size": 750000
+    },
+    {
+      "gitsha": "73f83d64eb547faf9d9adbccbed7fc00528f9365",
+      "path": "p19",
+      "sha256": "23c407d31932da8926e721afe34044760f060417f10040f9ef53944eb87b3d20",
+      "size": 750000
+    },
+    {
+      "gitsha": "14a46b45e1afb5aeb195a36dff41112a1cc29ee2",
+      "path": "p20",
+      "sha256": "b4fa6585eb9aeaf40f1859a1e08bc3764b11547f68e14998e615b8502cc37e57",
+      "size": 750000
+    },
+    {
+      "gitsha": "0fecd22fe91426e303b6bfe14e22e709f21f0b19",
+      "path": "p21",
+      "sha256": "611d94f6030f32d40206f47d71fba073660adccf6ac20097b22449d4192e82b3",
+      "size": 750000
+    },
+    {
+      "gitsha": "a872647e5c079940851156f84e4badf95b68ca61",
+      "path": "p22",
+      "sha256": "9cbc83d880bf1eea50e8ac82c5e80db10b451032658c529e5f70b930a44d0bde",
+      "size": 750000
+    },
+    {
+      "gitsha": "2015de8f44eb23f9a14440890941bd6e8c16dc45",
+      "path": "p23",
+      "sha256": "6584028ab64bb36f5d9e2a5d7705584967afbcf3ad956decbb66f886deb9e766",
+      "size": 750000
+    },
+    {
+      "gitsha": "5b95101e47c7c69f7c54ba66f4e255fe1711b628",
+      "path": "p24",
+      "sha256": "1e9ea488eb0c754bdeaa89818c82e695a6a344a5a113250f31d1cb16ef995ae3",
+      "size": 750000
+    },
+    {
+      "gitsha": "1605d840383bef096c9df7140b7247cc9d7bc084",
+      "path": "p25",
+      "sha256": "0ca3c11f14aa9bde9062354bc14b3625d0690789ffa6ac341f9d46659812daee",
+      "size": 750000
+    },
+    {
+      "gitsha": "b4cb6500bc597828110906fc52f62a45b8877d54",
+      "path": "p26",
+      "sha256": "03d9bff5abbff1def92875ff9668abb090609c83b15de1dec15e16a9a3d0fe6b",
+      "size": 750000
+    },
+    {
+      "gitsha": "bf6c16ce9bacf1bb358796cb93abd6fe94055bd0",
+      "path": "p27",
+      "sha256": "5868232c23c203d8565dc8b98589d9cd1c5ef45ba277c4e01b28bb5c29d9cd00",
+      "size": 750000
+    },
+    {
+      "gitsha": "b6aa5fe5542656c27dec633de19d5632a77d5e26",
+      "path": "p28",
+      "sha256": "6c08ac0f897ac2a4e068d86e4e37275c3b3dd0ab988f1c49b19bb4a07e56817f",
+      "size": 42968
+    }
+  ],
+  "sha256": "99af39c88ac914c8094466c6305312783ba8ae13472724601fc5de42038bbf21",
+  "size": 21042968,
+  "state": {
+    "baseline": 288843524,
+    "best": 288843524,
+    "commands": [
+      "python -m pip install -r requirements.txt",
+      "python recover.py",
+      "python integer.py data/expanded.npz data/expanded_cuts.npz next --seconds 19800"
+    ],
+    "expanded": {
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "last": {
+        "components": 1,
+        "cuts": 0,
+        "dual": 288840462,
+        "integer_value": 288843524,
+        "iteration": 0,
+        "possible_gain_upper": 3062,
+        "seconds": 301.91820061399994,
+        "status": "Time limit reached"
+      },
+      "rounds": 1,
+      "seconds": 301.9588961950003
+    },
+    "gain": 0,
+    "history_distinct": 1832,
+    "history_equal": 22,
+    "joint": {
+      "baseline": 288843524,
+      "best": 288843524,
+      "gain": 0,
+      "last": {
+        "components": 1,
+        "cuts": 222,
+        "dual": 288843524,
+        "integer_value": 288843524,
+        "iteration": 5,
+        "possible_gain_upper": 0,
+        "seconds": 282.1585359790006,
+        "status": "Optimal"
+      },
+      "rounds": 6,
+      "seconds": 282.16035415700026
+    },
+    "raw_check": {
+      "closed": true,
+      "length": 288843524,
+      "unique": true,
+      "vertices": 2079471
+    },
+    "regions": {
+      "closed": 59,
+      "open": [
+        {
+          "closed": false,
+          "edges": 245875,
+          "gain": 0,
+          "name": "patches_00",
+          "nodes": 6585,
+          "upper": 18.274412869213847
+        },
+        {
+          "closed": false,
+          "edges": 191755,
+          "gain": 0,
+          "name": "wide_patches_02",
+          "nodes": 5133,
+          "upper": 53
+        },
+        {
+          "closed": false,
+          "edges": 155471,
+          "gain": 0,
+          "name": "wide_patches_06",
+          "nodes": 4166,
+          "upper": 35
+        },
+        {
+          "closed": false,
+          "edges": 112859,
+          "gain": 0,
+          "name": "wide_patches_08",
+          "nodes": 2974,
+          "upper": 8.818315092794364
+        },
+        {
+          "closed": false,
+          "edges": 220681,
+          "gain": 0,
+          "name": "wide_patches_07",
+          "nodes": 5891,
+          "upper": 47
+        }
+      ],
+      "total": 64
+    },
+    "run": 34170442660,
+    "run_summary": [
+      {
+        "best": {
+          "c": 288843524,
+          "n": 2079471
+        },
+        "completed": 40,
+        "cycles": 463,
+        "errors": [],
+        "expected": 40,
+        "failures": 4,
+        "gain": 0,
+        "missing": [],
+        "wave": 1
+      },
+      {
+        "best": {
+          "c": 288843524,
+          "n": 2079471
+        },
+        "completed": 40,
+        "cycles": 462,
+        "errors": [],
+        "expected": 40,
+        "failures": 11,
+        "gain": 0,
+        "missing": [],
+        "wave": 2
+      }
+    ],
+    "stopped": [
+      "joint",
+      "joint_warm"
+    ],
+    "timeouts": [
+      "hard/wide_patches_02",
+      "hard/wide_patches_06"
+    ],
+    "unit_parsec": 0.1,
+    "verified_saved": {
+      "baseline": 288843524,
+      "edges": 240717,
+      "equal_routes": 19,
+      "fixed_paths": 48781,
+      "localbase": 8370987,
+      "n": 2079471,
+      "new_edges": 85738,
+      "nodes": 154979,
+      "offset": 280472537,
+      "removed_edges": 82156,
+      "seconds": 503.7172945729999,
+      "unique_routes": 168
+    }
+  }
+}
