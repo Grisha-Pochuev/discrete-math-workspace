@@ -1,0 +1,137 @@
+{
+  "exact_candidate_closures": [],
+  "interpretation": "A robust survivor has one or two completed adaptive tasks but remains only a bounded negative result, never a counterexample.",
+  "next_question": "Which support-local invariant explains exact Run-004 obstruction classes while surviving the Run-005/006/008 falsification data?",
+  "purpose": "post-Run-008 evidence for GPT-5.6 Sol",
+  "robust_survivors": [
+    {
+      "best_coefficient_max": 0.5999999999999999,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r011-j19-w3-a036048",
+      "candidate_key": "second_approach_2_0::sa20-r011-j19-w3-a036048",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_precision",
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 8.528761437887434e-07,
+      "support_size": 97,
+      "task_ids": [
+        10
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6730769230769229,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r011-j16-w1-a000892",
+      "candidate_key": "second_approach_2_0::sa20-r011-j16-w1-a000892",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_adaptive",
+      "lineage_root": "r010-j09-w1-a003685",
+      "max_error": 1.2886339790403551e-06,
+      "support_size": 105,
+      "task_ids": [
+        11
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6086956521739131,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r006-j17-w2-a008886",
+      "candidate_key": "second_approach_2_0::sa20-r006-j17-w2-a008886",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r010-j05-w0-a004177",
+      "max_error": 7.04476426321392e-06,
+      "support_size": 102,
+      "task_ids": [
+        20
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5999999999999999,
+      "best_profile": "degree6_sparse",
+      "candidate_id": "sa20-r002-j16-w2-a005498",
+      "candidate_key": "second_approach_2_0::sa20-r002-j16-w2-a005498",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r012-j08-w0-a003449",
+      "max_error": 7.345584968579234e-06,
+      "support_size": 101,
+      "task_ids": [
+        21
+      ]
+    },
+    {
+      "best_coefficient_max": 0.606060606060606,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r000-j19-w3-a004212",
+      "candidate_key": "second_approach_2_0::sa20-r000-j19-w3-a004212",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "precision_audit",
+      "lineage_root": "r011-j10-w0-a000588",
+      "max_error": 7.3685793788178616e-06,
+      "support_size": 90,
+      "task_ids": [
+        22
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6412213740458016,
+      "best_profile": "degree7_sparse",
+      "candidate_id": "sa20-r005-j16-w3-a014543",
+      "candidate_key": "second_approach_2_0::sa20-r005-j16-w3-a014543",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r012-j00-w0-a002237",
+      "max_error": 7.370519323342464e-06,
+      "support_size": 105,
+      "task_ids": [
+        23
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6502119751437365,
+      "best_profile": "degree7_sparse",
+      "candidate_id": "r011-j00-w1-a001074",
+      "candidate_key": "old_seed_bank::r011-j00-w1-a001074",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 1.0810214319412947e-05,
+      "support_size": 92,
+      "task_ids": [
+        8
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6481481481481481,
+      "best_profile": "degree6_wide",
+      "candidate_id": "r011-j09-w0-a004104",
+      "candidate_key": "old_seed_bank::r011-j09-w0-a004104",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 1.0815265238587564e-05,
+      "support_size": 93,
+      "task_ids": [
+        9
+      ]
+    }
+  ],
+  "schema_version": 1
+}

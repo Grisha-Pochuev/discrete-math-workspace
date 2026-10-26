@@ -1,0 +1,2461 @@
+{
+  "schema_version": 1,
+  "series": "run-019",
+  "mode": "exact_paired_boundary",
+  "external_vertices": 6,
+  "support_profiles": 16,
+  "anchor_assignments_per_profile": 120,
+  "incidence_cases": 1920,
+  "degree_graphs": 53088,
+  "four_connected_graphs": 43872,
+  "survivors": 15270,
+  "rejection_reasons": {
+    "active_anchor_collision": 24948,
+    "nonzero_minor_has_no_matching": 3654
+  },
+  "elapsed_seconds": 3.44,
+  "profiles": [
+    {
+      "left_support": [
+        0,
+        1
+      ],
+      "right_support": [
+        0,
+        1
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 1260,
+      "rejections": {
+        "active_anchor_collision": 1302,
+        "nonzero_minor_has_no_matching": 180
+      },
+      "signature_counts": {
+        "triangles=2;unique=0;multiple=0": 660,
+        "triangles=3;unique=0;multiple=0": 504,
+        "triangles=4;unique=0;multiple=0": 72,
+        "triangles=0;unique=0;multiple=0": 24
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            2,
+            3,
+            0
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 2,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        },
+        {
+          "right_anchors": [
+            2,
+            3,
+            0
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              4,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 2,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        0,
+        1
+      ],
+      "right_support": [
+        0,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 1176,
+      "rejections": {
+        "active_anchor_collision": 1302,
+        "nonzero_minor_has_no_matching": 264
+      },
+      "signature_counts": {
+        "triangles=2;unique=0;multiple=0": 624,
+        "triangles=3;unique=0;multiple=0": 468,
+        "triangles=4;unique=0;multiple=0": 72,
+        "triangles=0;unique=0;multiple=0": 12
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            2,
+            0,
+            3
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        },
+        {
+          "right_anchors": [
+            2,
+            0,
+            3
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              4,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        0,
+        1
+      ],
+      "right_support": [
+        1,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 1176,
+      "rejections": {
+        "active_anchor_collision": 1302,
+        "nonzero_minor_has_no_matching": 264
+      },
+      "signature_counts": {
+        "triangles=2;unique=0;multiple=0": 624,
+        "triangles=3;unique=0;multiple=0": 468,
+        "triangles=4;unique=0;multiple=0": 72,
+        "triangles=0;unique=0;multiple=0": 12
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            0,
+            2,
+            3
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        },
+        {
+          "right_anchors": [
+            0,
+            2,
+            3
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              4,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        0,
+        1
+      ],
+      "right_support": [
+        0,
+        1,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 678,
+      "rejections": {
+        "active_anchor_collision": 1818,
+        "nonzero_minor_has_no_matching": 246
+      },
+      "signature_counts": {
+        "triangles=2;unique=3;multiple=1": 168,
+        "triangles=3;unique=3;multiple=1": 120,
+        "triangles=2;unique=2;multiple=2": 144,
+        "triangles=3;unique=2;multiple=2": 48,
+        "triangles=2;unique=1;multiple=3": 24,
+        "triangles=3;unique=4;multiple=0": 24,
+        "triangles=0;unique=0;multiple=4": 6,
+        "triangles=2;unique=4;multiple=0": 144
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            2,
+            3,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              3
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 3,
+            "multipleSimple": 1,
+            "forcedHalfLines": [
+              {
+                "key": "1,3:1",
+                "colour": 1
+              },
+              {
+                "key": "1,3:3",
+                "colour": 1
+              },
+              {
+                "key": "2,5:2",
+                "colour": 0
+              },
+              {
+                "key": "0,4:0",
+                "colour": 0
+              },
+              {
+                "key": "0,4:4",
+                "colour": 2
+              },
+              {
+                "key": "3,5:3",
+                "colour": 1
+              },
+              {
+                "key": "0,3:0",
+                "colour": 0
+              },
+              {
+                "key": "0,3:3",
+                "colour": 1
+              }
+            ]
+          }
+        },
+        {
+          "right_anchors": [
+            2,
+            3,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              3
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 3,
+            "multipleSimple": 1,
+            "forcedHalfLines": [
+              {
+                "key": "1,4:1",
+                "colour": 1
+              },
+              {
+                "key": "1,4:4",
+                "colour": 2
+              },
+              {
+                "key": "2,5:2",
+                "colour": 0
+              },
+              {
+                "key": "1,2:1",
+                "colour": 1
+              },
+              {
+                "key": "1,2:2",
+                "colour": 0
+              },
+              {
+                "key": "3,5:3",
+                "colour": 1
+              },
+              {
+                "key": "0,3:0",
+                "colour": 0
+              },
+              {
+                "key": "0,3:3",
+                "colour": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        0,
+        2
+      ],
+      "right_support": [
+        0,
+        1
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 1176,
+      "rejections": {
+        "active_anchor_collision": 1302,
+        "nonzero_minor_has_no_matching": 264
+      },
+      "signature_counts": {
+        "triangles=2;unique=0;multiple=0": 624,
+        "triangles=3;unique=0;multiple=0": 468,
+        "triangles=4;unique=0;multiple=0": 72,
+        "triangles=0;unique=0;multiple=0": 12
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            1,
+            3,
+            0
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        },
+        {
+          "right_anchors": [
+            1,
+            3,
+            0
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              4,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        0,
+        2
+      ],
+      "right_support": [
+        0,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 1260,
+      "rejections": {
+        "active_anchor_collision": 1302,
+        "nonzero_minor_has_no_matching": 180
+      },
+      "signature_counts": {
+        "triangles=2;unique=0;multiple=0": 660,
+        "triangles=3;unique=0;multiple=0": 504,
+        "triangles=4;unique=0;multiple=0": 72,
+        "triangles=0;unique=0;multiple=0": 24
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            1,
+            0,
+            3
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 2,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        },
+        {
+          "right_anchors": [
+            1,
+            0,
+            3
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              4,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 2,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        0,
+        2
+      ],
+      "right_support": [
+        1,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 1176,
+      "rejections": {
+        "active_anchor_collision": 1302,
+        "nonzero_minor_has_no_matching": 264
+      },
+      "signature_counts": {
+        "triangles=2;unique=0;multiple=0": 624,
+        "triangles=3;unique=0;multiple=0": 468,
+        "triangles=4;unique=0;multiple=0": 72,
+        "triangles=0;unique=0;multiple=0": 12
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            0,
+            1,
+            3
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        },
+        {
+          "right_anchors": [
+            0,
+            1,
+            3
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              4,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        0,
+        2
+      ],
+      "right_support": [
+        0,
+        1,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 678,
+      "rejections": {
+        "active_anchor_collision": 1818,
+        "nonzero_minor_has_no_matching": 246
+      },
+      "signature_counts": {
+        "triangles=2;unique=2;multiple=2": 144,
+        "triangles=3;unique=3;multiple=1": 120,
+        "triangles=2;unique=3;multiple=1": 168,
+        "triangles=2;unique=1;multiple=3": 24,
+        "triangles=3;unique=4;multiple=0": 24,
+        "triangles=3;unique=2;multiple=2": 48,
+        "triangles=0;unique=0;multiple=4": 6,
+        "triangles=2;unique=4;multiple=0": 144
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            1,
+            3,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              3
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 2,
+            "multipleSimple": 2,
+            "forcedHalfLines": [
+              {
+                "key": "1,5:1",
+                "colour": 0
+              },
+              {
+                "key": "2,3:2",
+                "colour": 2
+              },
+              {
+                "key": "2,3:3",
+                "colour": 1
+              },
+              {
+                "key": "0,4:0",
+                "colour": 0
+              },
+              {
+                "key": "0,4:4",
+                "colour": 2
+              },
+              {
+                "key": "3,5:3",
+                "colour": 1
+              }
+            ]
+          }
+        },
+        {
+          "right_anchors": [
+            1,
+            3,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 2,
+            "multipleSimple": 2,
+            "forcedHalfLines": [
+              {
+                "key": "1,4:1",
+                "colour": 0
+              },
+              {
+                "key": "1,4:4",
+                "colour": 2
+              },
+              {
+                "key": "2,5:2",
+                "colour": 2
+              },
+              {
+                "key": "1,5:1",
+                "colour": 0
+              },
+              {
+                "key": "2,3:2",
+                "colour": 2
+              },
+              {
+                "key": "2,3:3",
+                "colour": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        1,
+        2
+      ],
+      "right_support": [
+        0,
+        1
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 1176,
+      "rejections": {
+        "active_anchor_collision": 1302,
+        "nonzero_minor_has_no_matching": 264
+      },
+      "signature_counts": {
+        "triangles=2;unique=0;multiple=0": 624,
+        "triangles=3;unique=0;multiple=0": 468,
+        "triangles=4;unique=0;multiple=0": 72,
+        "triangles=0;unique=0;multiple=0": 12
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            0,
+            3,
+            1
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        },
+        {
+          "right_anchors": [
+            0,
+            3,
+            1
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              4,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        1,
+        2
+      ],
+      "right_support": [
+        0,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 1176,
+      "rejections": {
+        "active_anchor_collision": 1302,
+        "nonzero_minor_has_no_matching": 264
+      },
+      "signature_counts": {
+        "triangles=2;unique=0;multiple=0": 624,
+        "triangles=3;unique=0;multiple=0": 468,
+        "triangles=4;unique=0;multiple=0": 72,
+        "triangles=0;unique=0;multiple=0": 12
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            0,
+            1,
+            3
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        },
+        {
+          "right_anchors": [
+            0,
+            1,
+            3
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              4,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 3,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        1,
+        2
+      ],
+      "right_support": [
+        1,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 1260,
+      "rejections": {
+        "active_anchor_collision": 1302,
+        "nonzero_minor_has_no_matching": 180
+      },
+      "signature_counts": {
+        "triangles=2;unique=0;multiple=0": 660,
+        "triangles=3;unique=0;multiple=0": 504,
+        "triangles=4;unique=0;multiple=0": 72,
+        "triangles=0;unique=0;multiple=0": 24
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            0,
+            3,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 2,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        },
+        {
+          "right_anchors": [
+            0,
+            3,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 2,
+            "uniqueSimple": 0,
+            "multipleSimple": 0,
+            "forcedHalfLines": []
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        1,
+        2
+      ],
+      "right_support": [
+        0,
+        1,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 678,
+      "rejections": {
+        "active_anchor_collision": 1818,
+        "nonzero_minor_has_no_matching": 246
+      },
+      "signature_counts": {
+        "triangles=2;unique=3;multiple=1": 168,
+        "triangles=2;unique=2;multiple=2": 144,
+        "triangles=3;unique=2;multiple=2": 48,
+        "triangles=3;unique=3;multiple=1": 120,
+        "triangles=2;unique=1;multiple=3": 24,
+        "triangles=3;unique=4;multiple=0": 24,
+        "triangles=0;unique=0;multiple=4": 6,
+        "triangles=2;unique=4;multiple=0": 144
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            0,
+            3,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 3,
+            "multipleSimple": 1,
+            "forcedHalfLines": [
+              {
+                "key": "2,4:2",
+                "colour": 2
+              },
+              {
+                "key": "2,4:4",
+                "colour": 2
+              },
+              {
+                "key": "3,5:3",
+                "colour": 1
+              },
+              {
+                "key": "0,5:0",
+                "colour": 0
+              },
+              {
+                "key": "2,3:2",
+                "colour": 2
+              },
+              {
+                "key": "2,3:3",
+                "colour": 1
+              },
+              {
+                "key": "1,4:1",
+                "colour": 1
+              },
+              {
+                "key": "1,4:4",
+                "colour": 2
+              }
+            ]
+          }
+        },
+        {
+          "right_anchors": [
+            0,
+            3,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 2,
+            "multipleSimple": 2,
+            "forcedHalfLines": [
+              {
+                "key": "2,5:2",
+                "colour": 2
+              },
+              {
+                "key": "3,4:3",
+                "colour": 1
+              },
+              {
+                "key": "3,4:4",
+                "colour": 2
+              },
+              {
+                "key": "0,5:0",
+                "colour": 0
+              },
+              {
+                "key": "2,3:2",
+                "colour": 2
+              },
+              {
+                "key": "2,3:3",
+                "colour": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        0,
+        1,
+        2
+      ],
+      "right_support": [
+        0,
+        1
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 678,
+      "rejections": {
+        "active_anchor_collision": 1818,
+        "nonzero_minor_has_no_matching": 246
+      },
+      "signature_counts": {
+        "triangles=2;unique=1;multiple=3": 24,
+        "triangles=2;unique=2;multiple=2": 144,
+        "triangles=3;unique=4;multiple=0": 24,
+        "triangles=3;unique=3;multiple=1": 120,
+        "triangles=2;unique=3;multiple=1": 168,
+        "triangles=3;unique=2;multiple=2": 48,
+        "triangles=0;unique=0;multiple=4": 6,
+        "triangles=2;unique=4;multiple=0": 144
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            3,
+            4,
+            0
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 1,
+            "multipleSimple": 3,
+            "forcedHalfLines": [
+              {
+                "key": "0,5:0",
+                "colour": 0
+              },
+              {
+                "key": "1,3:1",
+                "colour": 1
+              },
+              {
+                "key": "1,3:3",
+                "colour": 0
+              }
+            ]
+          }
+        },
+        {
+          "right_anchors": [
+            3,
+            4,
+            0
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 2,
+            "multipleSimple": 2,
+            "forcedHalfLines": [
+              {
+                "key": "0,4:0",
+                "colour": 0
+              },
+              {
+                "key": "0,4:4",
+                "colour": 1
+              },
+              {
+                "key": "1,5:1",
+                "colour": 1
+              },
+              {
+                "key": "0,5:0",
+                "colour": 0
+              },
+              {
+                "key": "1,3:1",
+                "colour": 1
+              },
+              {
+                "key": "1,3:3",
+                "colour": 0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        0,
+        1,
+        2
+      ],
+      "right_support": [
+        0,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 678,
+      "rejections": {
+        "active_anchor_collision": 1818,
+        "nonzero_minor_has_no_matching": 246
+      },
+      "signature_counts": {
+        "triangles=2;unique=1;multiple=3": 24,
+        "triangles=2;unique=2;multiple=2": 144,
+        "triangles=3;unique=4;multiple=0": 24,
+        "triangles=3;unique=3;multiple=1": 120,
+        "triangles=3;unique=2;multiple=2": 48,
+        "triangles=2;unique=3;multiple=1": 168,
+        "triangles=0;unique=0;multiple=4": 6,
+        "triangles=2;unique=4;multiple=0": 144
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            3,
+            0,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 1,
+            "multipleSimple": 3,
+            "forcedHalfLines": [
+              {
+                "key": "0,5:0",
+                "colour": 0
+              },
+              {
+                "key": "2,3:2",
+                "colour": 2
+              },
+              {
+                "key": "2,3:3",
+                "colour": 0
+              }
+            ]
+          }
+        },
+        {
+          "right_anchors": [
+            3,
+            0,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 2,
+            "multipleSimple": 2,
+            "forcedHalfLines": [
+              {
+                "key": "0,4:0",
+                "colour": 0
+              },
+              {
+                "key": "0,4:4",
+                "colour": 2
+              },
+              {
+                "key": "2,5:2",
+                "colour": 2
+              },
+              {
+                "key": "0,5:0",
+                "colour": 0
+              },
+              {
+                "key": "2,3:2",
+                "colour": 2
+              },
+              {
+                "key": "2,3:3",
+                "colour": 0
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        0,
+        1,
+        2
+      ],
+      "right_support": [
+        1,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 678,
+      "rejections": {
+        "active_anchor_collision": 1818,
+        "nonzero_minor_has_no_matching": 246
+      },
+      "signature_counts": {
+        "triangles=2;unique=1;multiple=3": 24,
+        "triangles=2;unique=2;multiple=2": 144,
+        "triangles=3;unique=3;multiple=1": 120,
+        "triangles=3;unique=2;multiple=2": 48,
+        "triangles=2;unique=3;multiple=1": 168,
+        "triangles=3;unique=4;multiple=0": 24,
+        "triangles=0;unique=0;multiple=4": 6,
+        "triangles=2;unique=4;multiple=0": 144
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            0,
+            3,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 1,
+            "multipleSimple": 3,
+            "forcedHalfLines": [
+              {
+                "key": "0,5:0",
+                "colour": 0
+              },
+              {
+                "key": "2,3:2",
+                "colour": 2
+              },
+              {
+                "key": "2,3:3",
+                "colour": 1
+              }
+            ]
+          }
+        },
+        {
+          "right_anchors": [
+            0,
+            3,
+            4
+          ],
+          "internal_edges": [
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ],
+            [
+              3,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 4,
+            "uniqueSimple": 2,
+            "multipleSimple": 2,
+            "forcedHalfLines": [
+              {
+                "key": "1,4:1",
+                "colour": 1
+              },
+              {
+                "key": "1,4:4",
+                "colour": 2
+              },
+              {
+                "key": "2,5:2",
+                "colour": 2
+              },
+              {
+                "key": "0,5:0",
+                "colour": 0
+              },
+              {
+                "key": "2,3:2",
+                "colour": 2
+              },
+              {
+                "key": "2,3:3",
+                "colour": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "left_support": [
+        0,
+        1,
+        2
+      ],
+      "right_support": [
+        0,
+        1,
+        2
+      ],
+      "cases": 120,
+      "degree_graphs": 3318,
+      "four_connected": 2742,
+      "survivors": 366,
+      "rejections": {
+        "active_anchor_collision": 2322,
+        "nonzero_minor_has_no_matching": 54
+      },
+      "signature_counts": {
+        "triangles=0;unique=0;multiple=6": 6,
+        "triangles=2;unique=4;multiple=2": 72,
+        "triangles=2;unique=3;multiple=3": 48,
+        "triangles=2;unique=6;multiple=0": 96,
+        "triangles=2;unique=5;multiple=1": 144
+      },
+      "examples": [
+        {
+          "right_anchors": [
+            3,
+            4,
+            5
+          ],
+          "internal_edges": [
+            [
+              0,
+              3
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              3
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 6,
+            "uniqueSimple": 0,
+            "multipleSimple": 6,
+            "forcedHalfLines": []
+          }
+        },
+        {
+          "right_anchors": [
+            3,
+            4,
+            5
+          ],
+          "internal_edges": [
+            [
+              0,
+              3
+            ],
+            [
+              0,
+              4
+            ],
+            [
+              0,
+              5
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              4
+            ],
+            [
+              1,
+              5
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              2,
+              5
+            ],
+            [
+              3,
+              4
+            ]
+          ],
+          "result": {
+            "ok": true,
+            "activeOffDiagonal": 6,
+            "uniqueSimple": 4,
+            "multipleSimple": 2,
+            "forcedHalfLines": [
+              {
+                "key": "1,5:1",
+                "colour": 1
+              },
+              {
+                "key": "1,5:5",
+                "colour": 2
+              },
+              {
+                "key": "2,3:2",
+                "colour": 2
+              },
+              {
+                "key": "2,3:3",
+                "colour": 0
+              },
+              {
+                "key": "0,4:0",
+                "colour": 0
+              },
+              {
+                "key": "0,4:4",
+                "colour": 1
+              },
+              {
+                "key": "2,5:2",
+                "colour": 2
+              },
+              {
+                "key": "2,5:5",
+                "colour": 2
+              },
+              {
+                "key": "0,3:0",
+                "colour": 0
+              },
+              {
+                "key": "0,3:3",
+                "colour": 0
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "run_id": "run-043",
+  "mode": "exact_integer_lattice_audit",
+  "trigger": "workflow_dispatch",
+  "workflow": "sixth-approach-exact-lattice-batch.yml",
+  "runner": "ubuntu-24.04",
+  "engine": "python_sympy_exact_hnf",
+  "jobs": 8,
+  "max_parallel": 3,
+  "layers": [
+    {"index": 14, "orbit": 3, "missing_type": "C4+C4", "support": 59, "source_run": 31313587622, "source_logical_run": "run-034", "artifact": "run-034-layer-59"},
+    {"index": 14, "orbit": 3, "missing_type": "C4+C4", "support": 60, "source_run": 31313587622, "source_logical_run": "run-034", "artifact": "run-034-layer-60"},
+    {"index": 14, "orbit": 3, "missing_type": "C4+C4", "support": 61, "source_run": 31318572196, "source_logical_run": "run-041", "artifact": "run-041-case-14-layer-61"},
+    {"index": 14, "orbit": 3, "missing_type": "C4+C4", "support": 62, "source_run": 31318572196, "source_logical_run": "run-041", "artifact": "run-041-case-14-layer-62"},
+    {"index": 14, "orbit": 3, "missing_type": "C4+C4", "support": 63, "source_run": 31318572196, "source_logical_run": "run-041", "artifact": "run-041-case-14-layer-63"},
+    {"index": 14, "orbit": 3, "missing_type": "C4+C4", "support": 64, "source_run": 31318572196, "source_logical_run": "run-041", "artifact": "run-041-case-14-layer-64"},
+    {"index": 14, "orbit": 3, "missing_type": "C4+C4", "support": 65, "source_run": 31318572196, "source_logical_run": "run-041", "artifact": "run-041-case-14-layer-65"},
+    {"index": 14, "orbit": 3, "missing_type": "C4+C4", "support": 66, "source_run": 31313587622, "source_logical_run": "run-034", "artifact": "run-034-layer-66"}
+  ],
+  "acceptance": {
+    "all_layers_present": true,
+    "all_inputs_complete": true,
+    "all_support_orbits_audited": true,
+    "scientific_survivors_preserved": true,
+    "mathematical_closure_requires_zero_two_sided": true,
+    "artifacts_always_uploaded": true
+  }
+}
