@@ -1,0 +1,9 @@
+parent_run=30041615382
+stage=frontier3
+runtime_seconds=21000
+max_seen=32000000
+jobs=20
+workers_per_job=4
+tasks=509964
+frontier=refine 1497 incomplete tasks into 23952 exact children; carry 223868 unstarted tasks; keep 262144 layer-33 reserve tasks after the unresolved queue
+source_tasks=runs/2026-07-24-a/next_tasks.json

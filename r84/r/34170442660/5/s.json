@@ -1,0 +1,45 @@
+{
+  "parent": "r84/r/34170442660/3",
+  "baseline": 288843524,
+  "best": 288843524,
+  "gain": 0,
+  "test": {
+    "instances": 10,
+    "tours_checked": 2400,
+    "passed": true
+  },
+  "runs": {
+    "p00": "solver_time_limit",
+    "w02": "external_time_limit_240s",
+    "w06": "external_time_limit_240s",
+    "w07": "solver_time_limit",
+    "w08": "external_time_limit_240s"
+  },
+  "archive": {
+    "size": 29904,
+    "sha256": "20e921c9fff3f009a6dd07e7f965a7da177a6fbbcd9a59379a450c5c47023460",
+    "format": "tar.xz"
+  },
+  "files": {
+    "reduce_exact.py": "2f15877a1a613a67ed2518d6dae16d53dba9282d550f30c43d35e9a47fea9df7",
+    "test_reduce_exact.py": "47527ee972d48e2739568fc6c4cfe44a92316a65ed87cbd3b826916dcc0f4cf5",
+    "reduced/w08/result.json": "17e00769ab2c84ecbcc9c1e4ba583ebd548655a867d8a1a2773cf413f23adee8",
+    "reduced/w08/console.log": "c2d8643ba118d48e0e7d5181fbecda4fd746701e8959aa08eeda7d0f314ecacd",
+    "reduced/p00/result.json": "c19875497004a2e6718f4105af90023954be9c3752123fdb1f4f0cacbd0aaa0d",
+    "reduced/p00/console.log": "a61f2467c818f7f2dc693218ebf0b7ed014d4257b2484e6a5798f6477be86007",
+    "reduced/w06/result.json": "f9b5e962228219963a5db58450d49ed8bbc920cd469591b6c840815d78f2f731",
+    "reduced/w06/console.log": "926b59f686e84f1e7e3c318fc507cfa3ee8f81f163fb5bfe0032f88496b7e2e8",
+    "reduced/w02/result.json": "00bf0dc0888a4eb230664e2a7af0726287465f358b5bff341ed03460c64cb056",
+    "reduced/w02/console.log": "7a7b1c194afcfa71f7a7aacad9e978fdd325d3006a205cf91978418855bbaf85",
+    "reduced/w07/result.json": "e41d8bd29854321f4874216502a8025d57ca9b43b3911f8c671dd764ba710568",
+    "reduced/w07/console.log": "4384babb7c2c01c14dc141e30566178fc6b987046690fd939d0892ff1c4d609f",
+    "reduced/w08/ip/history.json": "ea1cf9eb6ece83ed6e279d21b33a33a63e66b1a66a6af8f64f0e744a47ba18d1",
+    "reduced/w08/ip/cuts.npz": "d2b17855c59891919a745a96f6ee55f1440457da9f6732ed5ba7f98c26d171e8",
+    "reduced/p00/ip/result.json": "cca201f10727068303b5e68d69938d2b323d7971f16220ff5c0925de2645cb61",
+    "reduced/w06/ip/history.json": "bd71a15075ea4f26e91b09cd1614ddcb945f3633648ee108ac2d83cac27e47de",
+    "reduced/w06/ip/cuts.npz": "4d2fdf44b547b94c3591ebd880e2583e096a44830c452d5510bb84f78d29c731",
+    "reduced/w02/ip/history.json": "5a33db5670ec540b0a131916c092dec8ff49a6e91f2749b99ed106f91674ea4b",
+    "reduced/w02/ip/cuts.npz": "c4abc6c0fc223297b01417267c1ad63c344234efe1514b57909be27b42dc28e0",
+    "reduced/w07/ip/result.json": "e40c85992872a50586af9e4506ac2827f601e5e3c53662412f9c373b4d9d2f49"
+  }
+}
