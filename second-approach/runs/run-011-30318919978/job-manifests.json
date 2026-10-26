@@ -1,0 +1,1024 @@
+{
+  "manifests": [
+    {
+      "_source": "second-approach-data-0/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220800.2042437,
+      "hostname": "runnervmvrwv9",
+      "job_id": 0,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200399.3064506,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 4746,
+          "deadline": 1785220799.3064506,
+          "exitcode": 0,
+          "started_at": 1785200399.385725,
+          "updated_at": 1785220799.3884537,
+          "worker_id": 0
+        },
+        {
+          "attempts": 4704,
+          "deadline": 1785220799.3064506,
+          "exitcode": 0,
+          "started_at": 1785200399.3851187,
+          "updated_at": 1785220799.7785661,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4732,
+          "deadline": 1785220799.3064506,
+          "exitcode": 0,
+          "started_at": 1785200399.3925135,
+          "updated_at": 1785220799.5320473,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4693,
+          "deadline": 1785220799.3064506,
+          "exitcode": -15,
+          "started_at": 1785200399.3988237,
+          "updated_at": 1785220796.522761,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-1/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220807.0417032,
+      "hostname": "runnervmvrwv9",
+      "job_id": 1,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200406.1331525,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 7055,
+          "deadline": 1785220806.1331525,
+          "exitcode": -15,
+          "started_at": 1785200406.2308,
+          "updated_at": 1785220800.2489605,
+          "worker_id": 0
+        },
+        {
+          "attempts": 6919,
+          "deadline": 1785220806.1331525,
+          "exitcode": -15,
+          "started_at": 1785200406.231904,
+          "updated_at": 1785220800.9839292,
+          "worker_id": 1
+        },
+        {
+          "attempts": 6827,
+          "deadline": 1785220806.1331525,
+          "exitcode": -15,
+          "started_at": 1785200406.240041,
+          "updated_at": 1785220806.118909,
+          "worker_id": 2
+        },
+        {
+          "attempts": 7003,
+          "deadline": 1785220806.1331525,
+          "exitcode": -15,
+          "started_at": 1785200406.235628,
+          "updated_at": 1785220805.1004682,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-10/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220806.2746787,
+      "hostname": "runnervmvrwv9",
+      "job_id": 10,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200405.4414275,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 5420,
+          "deadline": 1785220805.4414275,
+          "exitcode": -15,
+          "started_at": 1785200405.5088077,
+          "updated_at": 1785220805.3486383,
+          "worker_id": 0
+        },
+        {
+          "attempts": 5406,
+          "deadline": 1785220805.4414275,
+          "exitcode": 0,
+          "started_at": 1785200405.5104365,
+          "updated_at": 1785220805.9426477,
+          "worker_id": 1
+        },
+        {
+          "attempts": 5494,
+          "deadline": 1785220805.4414275,
+          "exitcode": -15,
+          "started_at": 1785200405.5116792,
+          "updated_at": 1785220802.418257,
+          "worker_id": 2
+        },
+        {
+          "attempts": 5287,
+          "deadline": 1785220805.4414275,
+          "exitcode": -15,
+          "started_at": 1785200405.514261,
+          "updated_at": 1785220803.1266448,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-11/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220793.1004972,
+      "hostname": "runnervmvrwv9",
+      "job_id": 11,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200392.2023194,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 4818,
+          "deadline": 1785220792.2023194,
+          "exitcode": 0,
+          "started_at": 1785200392.281499,
+          "updated_at": 1785220792.2292142,
+          "worker_id": 0
+        },
+        {
+          "attempts": 4857,
+          "deadline": 1785220792.2023194,
+          "exitcode": -15,
+          "started_at": 1785200392.2848046,
+          "updated_at": 1785220789.43909,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4850,
+          "deadline": 1785220792.2023194,
+          "exitcode": -15,
+          "started_at": 1785200392.2887208,
+          "updated_at": 1785220791.4932077,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4846,
+          "deadline": 1785220792.2023194,
+          "exitcode": -15,
+          "started_at": 1785200392.289849,
+          "updated_at": 1785220788.3080223,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-12/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220793.1827655,
+      "hostname": "runnervmvrwv9",
+      "job_id": 12,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200392.375831,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 5750,
+          "deadline": 1785220792.375831,
+          "exitcode": 0,
+          "started_at": 1785200392.4439526,
+          "updated_at": 1785220792.5833266,
+          "worker_id": 0
+        },
+        {
+          "attempts": 5509,
+          "deadline": 1785220792.375831,
+          "exitcode": 0,
+          "started_at": 1785200392.4509394,
+          "updated_at": 1785220792.843201,
+          "worker_id": 1
+        },
+        {
+          "attempts": 5473,
+          "deadline": 1785220792.375831,
+          "exitcode": -15,
+          "started_at": 1785200392.4527657,
+          "updated_at": 1785220792.2457235,
+          "worker_id": 2
+        },
+        {
+          "attempts": 5415,
+          "deadline": 1785220792.375831,
+          "exitcode": -15,
+          "started_at": 1785200392.4535723,
+          "updated_at": 1785220788.8590136,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-13/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220795.5477417,
+      "hostname": "runnervmvrwv9",
+      "job_id": 13,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200394.6667502,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 5133,
+          "deadline": 1785220794.6667502,
+          "exitcode": -15,
+          "started_at": 1785200394.759583,
+          "updated_at": 1785220787.664191,
+          "worker_id": 0
+        },
+        {
+          "attempts": 5027,
+          "deadline": 1785220794.6667502,
+          "exitcode": -15,
+          "started_at": 1785200394.761624,
+          "updated_at": 1785220793.2470162,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4913,
+          "deadline": 1785220794.6667502,
+          "exitcode": -15,
+          "started_at": 1785200394.7649121,
+          "updated_at": 1785220791.207122,
+          "worker_id": 2
+        },
+        {
+          "attempts": 5115,
+          "deadline": 1785220794.6667502,
+          "exitcode": -15,
+          "started_at": 1785200394.7663517,
+          "updated_at": 1785220793.334448,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-14/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220794.4155629,
+      "hostname": "runnervmvrwv9",
+      "job_id": 14,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200393.5734675,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 5416,
+          "deadline": 1785220793.5734675,
+          "exitcode": -15,
+          "started_at": 1785200393.6523232,
+          "updated_at": 1785220792.4186738,
+          "worker_id": 0
+        },
+        {
+          "attempts": 5737,
+          "deadline": 1785220793.5734675,
+          "exitcode": -15,
+          "started_at": 1785200393.6566098,
+          "updated_at": 1785220793.3388412,
+          "worker_id": 1
+        },
+        {
+          "attempts": 5463,
+          "deadline": 1785220793.5734675,
+          "exitcode": -15,
+          "started_at": 1785200393.6561124,
+          "updated_at": 1785220791.3852365,
+          "worker_id": 2
+        },
+        {
+          "attempts": 5410,
+          "deadline": 1785220793.5734675,
+          "exitcode": 0,
+          "started_at": 1785200393.6591938,
+          "updated_at": 1785220793.8280277,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-15/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220811.201783,
+      "hostname": "runnervmvrwv9",
+      "job_id": 15,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200410.2965174,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 4940,
+          "deadline": 1785220810.2965174,
+          "exitcode": -15,
+          "started_at": 1785200410.390794,
+          "updated_at": 1785220801.1989295,
+          "worker_id": 0
+        },
+        {
+          "attempts": 4866,
+          "deadline": 1785220810.2965174,
+          "exitcode": -15,
+          "started_at": 1785200410.3941805,
+          "updated_at": 1785220808.729556,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4973,
+          "deadline": 1785220810.2965174,
+          "exitcode": -15,
+          "started_at": 1785200410.3957374,
+          "updated_at": 1785220809.4088936,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4823,
+          "deadline": 1785220810.2965174,
+          "exitcode": -15,
+          "started_at": 1785200410.3980079,
+          "updated_at": 1785220807.4090989,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-16/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220794.4040632,
+      "hostname": "runnervmvrwv9",
+      "job_id": 16,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200393.5167072,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 5039,
+          "deadline": 1785220793.5167072,
+          "exitcode": -15,
+          "started_at": 1785200393.596408,
+          "updated_at": 1785220793.0416238,
+          "worker_id": 0
+        },
+        {
+          "attempts": 5106,
+          "deadline": 1785220793.5167072,
+          "exitcode": -15,
+          "started_at": 1785200393.6004317,
+          "updated_at": 1785220793.2385752,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4893,
+          "deadline": 1785220793.5167072,
+          "exitcode": -15,
+          "started_at": 1785200393.600225,
+          "updated_at": 1785220793.260113,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4873,
+          "deadline": 1785220793.5167072,
+          "exitcode": -15,
+          "started_at": 1785200393.6051126,
+          "updated_at": 1785220790.2611244,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-17/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220794.6196024,
+      "hostname": "runnervmvrwv9",
+      "job_id": 17,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200393.7462823,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 5313,
+          "deadline": 1785220793.7462823,
+          "exitcode": -15,
+          "started_at": 1785200393.82397,
+          "updated_at": 1785220791.5033753,
+          "worker_id": 0
+        },
+        {
+          "attempts": 5540,
+          "deadline": 1785220793.7462823,
+          "exitcode": 0,
+          "started_at": 1785200393.8320544,
+          "updated_at": 1785220794.1500401,
+          "worker_id": 1
+        },
+        {
+          "attempts": 5362,
+          "deadline": 1785220793.7462823,
+          "exitcode": -15,
+          "started_at": 1785200393.8299875,
+          "updated_at": 1785220792.4100766,
+          "worker_id": 2
+        },
+        {
+          "attempts": 5352,
+          "deadline": 1785220793.7462823,
+          "exitcode": -15,
+          "started_at": 1785200393.828188,
+          "updated_at": 1785220792.8958793,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-18/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220810.051617,
+      "hostname": "runnervmvrwv9",
+      "job_id": 18,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200409.2005374,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 4785,
+          "deadline": 1785220809.2005374,
+          "exitcode": -15,
+          "started_at": 1785200409.276066,
+          "updated_at": 1785220806.6819773,
+          "worker_id": 0
+        },
+        {
+          "attempts": 4847,
+          "deadline": 1785220809.2005374,
+          "exitcode": -15,
+          "started_at": 1785200409.2734132,
+          "updated_at": 1785220806.7216656,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4870,
+          "deadline": 1785220809.2005374,
+          "exitcode": -15,
+          "started_at": 1785200409.2741694,
+          "updated_at": 1785220807.8805335,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4979,
+          "deadline": 1785220809.2005374,
+          "exitcode": -15,
+          "started_at": 1785200409.278987,
+          "updated_at": 1785220808.6666064,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-19/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220794.5270953,
+      "hostname": "runnervmvrwv9",
+      "job_id": 19,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200393.2268283,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 4873,
+          "deadline": 1785220793.2268283,
+          "exitcode": -15,
+          "started_at": 1785200393.750219,
+          "updated_at": 1785220791.1937263,
+          "worker_id": 0
+        },
+        {
+          "attempts": 4956,
+          "deadline": 1785220793.2268283,
+          "exitcode": 0,
+          "started_at": 1785200393.7536113,
+          "updated_at": 1785220794.0408473,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4868,
+          "deadline": 1785220793.2268283,
+          "exitcode": -15,
+          "started_at": 1785200393.7552311,
+          "updated_at": 1785220792.1757698,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4898,
+          "deadline": 1785220793.2268283,
+          "exitcode": -15,
+          "started_at": 1785200393.7575078,
+          "updated_at": 1785220791.5383716,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-2/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220793.7565708,
+      "hostname": "runnervmvrwv9",
+      "job_id": 2,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200392.986944,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 4975,
+          "deadline": 1785220792.986944,
+          "exitcode": -15,
+          "started_at": 1785200393.0814805,
+          "updated_at": 1785220788.089015,
+          "worker_id": 0
+        },
+        {
+          "attempts": 4784,
+          "deadline": 1785220792.986944,
+          "exitcode": -15,
+          "started_at": 1785200393.0823207,
+          "updated_at": 1785220790.366394,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4835,
+          "deadline": 1785220792.986944,
+          "exitcode": -15,
+          "started_at": 1785200393.0836384,
+          "updated_at": 1785220792.8372304,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4717,
+          "deadline": 1785220792.986944,
+          "exitcode": -15,
+          "started_at": 1785200393.0850508,
+          "updated_at": 1785220789.9510107,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-3/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220796.1920028,
+      "hostname": "runnervmvrwv9",
+      "job_id": 3,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200395.299571,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 4889,
+          "deadline": 1785220795.299571,
+          "exitcode": -15,
+          "started_at": 1785200395.3774495,
+          "updated_at": 1785220793.8614585,
+          "worker_id": 0
+        },
+        {
+          "attempts": 4819,
+          "deadline": 1785220795.299571,
+          "exitcode": -15,
+          "started_at": 1785200395.3827517,
+          "updated_at": 1785220794.1222656,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4831,
+          "deadline": 1785220795.299571,
+          "exitcode": -15,
+          "started_at": 1785200395.3822863,
+          "updated_at": 1785220791.986188,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4905,
+          "deadline": 1785220795.299571,
+          "exitcode": -15,
+          "started_at": 1785200395.3855393,
+          "updated_at": 1785220793.740255,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-4/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220811.280837,
+      "hostname": "runnervmvrwv9",
+      "job_id": 4,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200410.3413517,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 5701,
+          "deadline": 1785220810.3413517,
+          "exitcode": 0,
+          "started_at": 1785200410.417072,
+          "updated_at": 1785220811.236783,
+          "worker_id": 0
+        },
+        {
+          "attempts": 5783,
+          "deadline": 1785220810.3413517,
+          "exitcode": -15,
+          "started_at": 1785200410.4228153,
+          "updated_at": 1785220808.7723043,
+          "worker_id": 1
+        },
+        {
+          "attempts": 5776,
+          "deadline": 1785220810.3413517,
+          "exitcode": -15,
+          "started_at": 1785200410.42065,
+          "updated_at": 1785220810.1518562,
+          "worker_id": 2
+        },
+        {
+          "attempts": 5797,
+          "deadline": 1785220810.3413517,
+          "exitcode": -15,
+          "started_at": 1785200410.423936,
+          "updated_at": 1785220805.011185,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-5/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220798.776706,
+      "hostname": "runnervmvrwv9",
+      "job_id": 5,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200397.920526,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 4942,
+          "deadline": 1785220797.920526,
+          "exitcode": -15,
+          "started_at": 1785200397.992872,
+          "updated_at": 1785220796.4900358,
+          "worker_id": 0
+        },
+        {
+          "attempts": 5097,
+          "deadline": 1785220797.920526,
+          "exitcode": -15,
+          "started_at": 1785200397.9977965,
+          "updated_at": 1785220796.7748299,
+          "worker_id": 1
+        },
+        {
+          "attempts": 5164,
+          "deadline": 1785220797.920526,
+          "exitcode": -15,
+          "started_at": 1785200397.9973967,
+          "updated_at": 1785220795.9922144,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4869,
+          "deadline": 1785220797.920526,
+          "exitcode": -15,
+          "started_at": 1785200398.0016463,
+          "updated_at": 1785220795.8078792,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-6/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220796.9976,
+      "hostname": "runnervmvrwv9",
+      "job_id": 6,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200396.1049275,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 5171,
+          "deadline": 1785220796.1049275,
+          "exitcode": -15,
+          "started_at": 1785200396.1947546,
+          "updated_at": 1785220794.9301188,
+          "worker_id": 0
+        },
+        {
+          "attempts": 4841,
+          "deadline": 1785220796.1049275,
+          "exitcode": 0,
+          "started_at": 1785200396.1961722,
+          "updated_at": 1785220796.405979,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4892,
+          "deadline": 1785220796.1049275,
+          "exitcode": -15,
+          "started_at": 1785200396.2189639,
+          "updated_at": 1785220795.6127043,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4838,
+          "deadline": 1785220796.1049275,
+          "exitcode": -15,
+          "started_at": 1785200396.198609,
+          "updated_at": 1785220789.0898,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-7/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220808.6028118,
+      "hostname": "runnervmvrwv9",
+      "job_id": 7,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200407.6638064,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 4851,
+          "deadline": 1785220807.6638064,
+          "exitcode": -15,
+          "started_at": 1785200407.7553916,
+          "updated_at": 1785220800.6341822,
+          "worker_id": 0
+        },
+        {
+          "attempts": 4853,
+          "deadline": 1785220807.6638064,
+          "exitcode": 0,
+          "started_at": 1785200407.7553916,
+          "updated_at": 1785220807.886715,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4747,
+          "deadline": 1785220807.6638064,
+          "exitcode": -15,
+          "started_at": 1785200407.7585826,
+          "updated_at": 1785220802.9259763,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4837,
+          "deadline": 1785220807.6638064,
+          "exitcode": -15,
+          "started_at": 1785200407.7614095,
+          "updated_at": 1785220800.164734,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-8/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220808.486639,
+      "hostname": "runnervmvrwv9",
+      "job_id": 8,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200407.6320002,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 4963,
+          "deadline": 1785220807.6320002,
+          "exitcode": -15,
+          "started_at": 1785200407.7051833,
+          "updated_at": 1785220804.818856,
+          "worker_id": 0
+        },
+        {
+          "attempts": 4896,
+          "deadline": 1785220807.6320002,
+          "exitcode": -15,
+          "started_at": 1785200407.7097192,
+          "updated_at": 1785220806.8371356,
+          "worker_id": 1
+        },
+        {
+          "attempts": 4836,
+          "deadline": 1785220807.6320002,
+          "exitcode": -15,
+          "started_at": 1785200407.7103336,
+          "updated_at": 1785220806.5037742,
+          "worker_id": 2
+        },
+        {
+          "attempts": 4987,
+          "deadline": 1785220807.6320002,
+          "exitcode": -15,
+          "started_at": 1785200407.7132533,
+          "updated_at": 1785220804.9570076,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    },
+    {
+      "_source": "second-approach-data-9/manifest.json",
+      "base_seed": 31260759,
+      "finished_at": 1785220793.480278,
+      "hostname": "runnervmvrwv9",
+      "job_id": 9,
+      "max_attempts_per_worker": 0,
+      "max_nfev": 350,
+      "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+      "python": "3.12.13",
+      "requested_seconds": 21000,
+      "run_index": 11,
+      "schema_version": 1,
+      "started_at": 1785200392.627763,
+      "stopping_policy": "time_only",
+      "worker_manifests": [
+        {
+          "attempts": 5543,
+          "deadline": 1785220792.627763,
+          "exitcode": -15,
+          "started_at": 1785200392.6951008,
+          "updated_at": 1785220788.274088,
+          "worker_id": 0
+        },
+        {
+          "attempts": 5263,
+          "deadline": 1785220792.627763,
+          "exitcode": -15,
+          "started_at": 1785200392.7007413,
+          "updated_at": 1785220792.441645,
+          "worker_id": 1
+        },
+        {
+          "attempts": 5529,
+          "deadline": 1785220792.627763,
+          "exitcode": -15,
+          "started_at": 1785200392.6984255,
+          "updated_at": 1785220788.6779373,
+          "worker_id": 2
+        },
+        {
+          "attempts": 5362,
+          "deadline": 1785220792.627763,
+          "exitcode": 0,
+          "started_at": 1785200392.70065,
+          "updated_at": 1785220793.1639175,
+          "worker_id": 3
+        }
+      ],
+      "workers": 4
+    }
+  ]
+}

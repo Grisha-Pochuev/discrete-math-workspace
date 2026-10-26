@@ -1,0 +1,6192 @@
+{
+  "accepted": true,
+  "approach": "second-approach-2.0-independent-basin-counterexample-search",
+  "attempt_parts": [
+    {
+      "file": "attempts/part-0000.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0001.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0002.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0003.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0004.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0005.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0006.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0007.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0008.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0009.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0010.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0011.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0012.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0013.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0014.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0015.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0016.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0017.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0018.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0019.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0020.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0021.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0022.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0023.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0024.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0025.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0026.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0027.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0028.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0029.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0030.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0031.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0032.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0033.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0034.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0035.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0036.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0037.jsonl.gz",
+      "records": 16782
+    }
+  ],
+  "attempts_total": 941782,
+  "base_seed": 22260736,
+  "best": [
+    {
+      "_source": "second-approach-2-data-19/worker-1/attempts.jsonl",
+      "attempt": 4769,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w1-a004769",
+      "cost": 4.454649229229287e-12,
+      "elapsed_seconds": 0.14700841903686523,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 2.984844795105317e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 2.9848447963459224e-06,
+      "mixed_max": 2.984844795105317e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999911264,
+          9.958700541476198e-14
+        ],
+        [
+          0.9999999999945601,
+          -2.9452551508767145e-12
+        ],
+        [
+          0.9999999999917561,
+          -5.173084183244511e-13
+        ]
+      ],
+      "mono_max_error": 8.874127355587927e-12,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 2.136183360813472e-08,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "c8c1f931703604a8385c",
+      "seed": 8205461763745951314,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 2.984844795105317e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 4.243669507200672e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2
+          ],
+          "row": 719
+        },
+        {
+          "abs_error": 4.0811894806324747e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            0,
+            2
+          ],
+          "row": 713
+        },
+        {
+          "abs_error": 2.7671181414057253e-11,
+          "colouring": [
+            1,
+            2,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 445
+        },
+        {
+          "abs_error": 2.7096550247409884e-11,
+          "colouring": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 283
+        },
+        {
+          "abs_error": 2.4319042869148515e-11,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        },
+        {
+          "abs_error": 2.2120281744861667e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 1.6894652219531472e-11,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 27
+        },
+        {
+          "abs_error": 1.5098772960178612e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 1.1904435898832464e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 1.1603990246061406e-11,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 403
+        },
+        {
+          "abs_error": 1.1172321740635622e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        }
+      ],
+      "total_l2": 2.9848447963769534e-06,
+      "weight_max_abs": 11.75394253102439,
+      "weight_min_abs": 2.499746156481522e-21
+    },
+    {
+      "_source": "second-approach-2-data-18/worker-2/attempts.jsonl",
+      "attempt": 1802,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j18-w2-a001802",
+      "cost": 4.97441500046549e-12,
+      "elapsed_seconds": 0.17534732818603516,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 3.154176193665185e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 3.154176596296752e-06,
+      "mixed_max": 3.154176193665185e-06,
+      "mono_amplitudes": [
+        [
+          0.999999999991707,
+          2.842892589422176e-12
+        ],
+        [
+          0.999999999988735,
+          1.3744561044751608e-12
+        ],
+        [
+          0.9999999999900416,
+          9.381387627107775e-15
+        ]
+      ],
+      "mono_max_error": 1.1348528778607712e-11,
+      "nfev": 13,
+      "numerical_success": false,
+      "optimality": 1.2724386091959168e-08,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "b9365878237437134ea4",
+      "seed": 8990049132237928326,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 3.154176193665185e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 1.1312082000738678e-09,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        },
+        {
+          "abs_error": 1.1201160791609894e-09,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 6.081985286786083e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 2.9699960267467476e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            0,
+            2
+          ],
+          "row": 713
+        },
+        {
+          "abs_error": 2.470719348319078e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2
+          ],
+          "row": 719
+        },
+        {
+          "abs_error": 1.003811318085039e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            0,
+            1,
+            2
+          ],
+          "row": 707
+        },
+        {
+          "abs_error": 9.450182671678023e-12,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 403
+        },
+        {
+          "abs_error": 6.702933309079295e-12,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 6.266055788222315e-12,
+          "colouring": [
+            2,
+            0,
+            1,
+            1,
+            0,
+            2
+          ],
+          "row": 524
+        },
+        {
+          "abs_error": 4.8109192824738966e-12,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 1
+        },
+        {
+          "abs_error": 4.687646001384238e-12,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        }
+      ],
+      "total_l2": 3.154176596345072e-06,
+      "weight_max_abs": 12.704952224161001,
+      "weight_min_abs": 7.442255903314313e-20
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-0/attempts.jsonl",
+      "attempt": 4649,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w0-a004649",
+      "cost": 5.1666321620356e-12,
+      "elapsed_seconds": 0.14160919189453125,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 3.2145390056509806e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 3.214539519708279e-06,
+      "mixed_max": 3.2145390056509806e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999898956,
+          1.194599968394052e-13
+        ],
+        [
+          0.9999999999895394,
+          -2.1593837845685844e-14
+        ],
+        [
+          0.999999999990363,
+          -6.743494651674795e-13
+        ]
+      ],
+      "mono_max_error": 1.0460654648329677e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 2.1518430935197455e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "c3cd6b7f29108a42556f",
+      "seed": 1923298179246670210,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 3.2145390056509806e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 1.133951511861906e-09,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 1.0923954054823195e-09,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 6.900061177068021e-10,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        },
+        {
+          "abs_error": 5.534605470178344e-10,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 1.397471776365803e-10,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 1
+        },
+        {
+          "abs_error": 1.2252990751821216e-10,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 2
+        },
+        {
+          "abs_error": 5.5842857156483107e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 82
+        },
+        {
+          "abs_error": 5.460638864815501e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 163
+        },
+        {
+          "abs_error": 4.3333153121556826e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 2.6553899168624203e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 83
+        },
+        {
+          "abs_error": 6.31192719602133e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        }
+      ],
+      "total_l2": 3.214539519755699e-06,
+      "weight_max_abs": 11.526844319065594,
+      "weight_min_abs": 1.0989250232896393e-20
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-0/attempts.jsonl",
+      "attempt": 3030,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w0-a003030",
+      "cost": 5.469185496572261e-12,
+      "elapsed_seconds": 0.1386096477508545,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 3.3073208147065305e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 3.3073208179393897e-06,
+      "mixed_max": 3.3073208147065305e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999890903,
+          2.7865154164267056e-26
+        ],
+        [
+          0.9999999999885592,
+          4.1566750041900823e-13
+        ],
+        [
+          0.9999999999890841,
+          -2.2204460492461893e-15
+        ]
+      ],
+      "mono_max_error": 1.1448396768969205e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 9.2799419502648e-10,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "676ffabb5857155014f8",
+      "seed": 2475652196278316804,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 3.3073208147065305e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 1.1162802731313012e-10,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 9.439474631450328e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 2.110856721577429e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 727
+        },
+        {
+          "abs_error": 1.4431642751156039e-12,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 242
+        },
+        {
+          "abs_error": 1.435585105892378e-12,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 241
+        },
+        {
+          "abs_error": 1.244663662134965e-12,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 483
+        },
+        {
+          "abs_error": 1.038111979037824e-12,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 9.659381770156636e-13,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 485
+        },
+        {
+          "abs_error": 5.341290384046247e-13,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 163
+        },
+        {
+          "abs_error": 4.707106833946068e-13,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 1
+        },
+        {
+          "abs_error": 3.6482105426594854e-13,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        }
+      ],
+      "total_l2": 3.3073208179952126e-06,
+      "weight_max_abs": 11.225120761956273,
+      "weight_min_abs": 3.8790927974905728e-25
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-3/attempts.jsonl",
+      "attempt": 5491,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w3-a005491",
+      "cost": 5.7554971342894675e-12,
+      "elapsed_seconds": 0.1260385513305664,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 3.3927856198154958e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 3.3927856207221298e-06,
+      "mixed_max": 3.3927856198154958e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999885473,
+          1.2267964422098993e-14
+        ],
+        [
+          0.9999999999883334,
+          2.470801341303902e-13
+        ],
+        [
+          0.9999999999884825,
+          3.1941116418451547e-13
+        ]
+      ],
+      "mono_max_error": 1.1669172709291882e-11,
+      "nfev": 9,
+      "numerical_success": false,
+      "optimality": 7.735074519109286e-10,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "19231059d7eb831c5fac",
+      "seed": 9198678871936543355,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 3.3927856198154958e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 7.620290584126647e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 1.7365059294046156e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 2.773837002255705e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 2.3839512904495295e-12,
+          "colouring": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 283
+        },
+        {
+          "abs_error": 2.3678853084701276e-12,
+          "colouring": [
+            1,
+            2,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 445
+        },
+        {
+          "abs_error": 2.0151943425797437e-12,
+          "colouring": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 607
+        },
+        {
+          "abs_error": 1.979055758677774e-12,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 2
+        },
+        {
+          "abs_error": 1.948706112305431e-12,
+          "colouring": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 121
+        },
+        {
+          "abs_error": 1.758507290162758e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2
+          ],
+          "row": 719
+        },
+        {
+          "abs_error": 1.6483446447618823e-12,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 27
+        },
+        {
+          "abs_error": 1.154034514487398e-12,
+          "colouring": [
+            0,
+            0,
+            2,
+            0,
+            1,
+            0
+          ],
+          "row": 57
+        }
+      ],
+      "total_l2": 3.3927856207810917e-06,
+      "weight_max_abs": 11.041006886908557,
+      "weight_min_abs": 7.848753165843282e-24
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-0/attempts.jsonl",
+      "attempt": 5714,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w0-a005714",
+      "cost": 6.087431944713953e-12,
+      "elapsed_seconds": 0.14507293701171875,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 3.4892497285893003e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 3.4892497601897405e-06,
+      "mixed_max": 3.4892497285893003e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999878291,
+          8.243405957884806e-14
+        ],
+        [
+          0.9999999999879052,
+          -1.842970220520744e-14
+        ],
+        [
+          0.9999999999877807,
+          1.090239010183002e-13
+        ]
+      ],
+      "mono_max_error": 1.2219823012864145e-11,
+      "nfev": 9,
+      "numerical_success": false,
+      "optimality": 1.8688130147490576e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "d1fbc6c6064e95174b19",
+      "seed": 1388986772387982622,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 3.4892497285893003e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 3.6753748358386857e-10,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 2.906046512154507e-10,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 1.6892664220843755e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 83
+        },
+        {
+          "abs_error": 1.3988374654948885e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 1.3444528610615604e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 163
+        },
+        {
+          "abs_error": 1.122598649712464e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 82
+        },
+        {
+          "abs_error": 1.0657600543653637e-11,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 2
+        },
+        {
+          "abs_error": 8.715274403480518e-12,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 1
+        },
+        {
+          "abs_error": 1.5733892828992303e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2
+          ],
+          "row": 719
+        },
+        {
+          "abs_error": 1.0166853168916104e-12,
+          "colouring": [
+            2,
+            1,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 647
+        },
+        {
+          "abs_error": 9.71661909728471e-13,
+          "colouring": [
+            2,
+            0,
+            1,
+            1,
+            2,
+            0
+          ],
+          "row": 528
+        }
+      ],
+      "total_l2": 3.489249760253328e-06,
+      "weight_max_abs": 11.589274294471688,
+      "weight_min_abs": 1.6266566028431954e-23
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-3/attempts.jsonl",
+      "attempt": 3804,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w3-a003804",
+      "cost": 7.243474486060095e-12,
+      "elapsed_seconds": 0.13467860221862793,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 3.8061724830276263e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 3.806172483151385e-06,
+      "mixed_max": 3.8061724830276263e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999858894,
+          2.2676305279604675e-13
+        ],
+        [
+          0.9999999999854221,
+          8.132383655379092e-14
+        ],
+        [
+          0.9999999999855179,
+          1.8651746813693646e-14
+        ]
+      ],
+      "mono_max_error": 1.45781212808248e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 1.9549280841411008e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "8059afebded2e6290b27",
+      "seed": 5975993718488160867,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 3.8061724830276263e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 1.718663472115064e-11,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 27
+        },
+        {
+          "abs_error": 1.539817107174672e-11,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        },
+        {
+          "abs_error": 1.5374971731808945e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 8.68820713084305e-12,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "row": 30
+        },
+        {
+          "abs_error": 8.014446681808413e-12,
+          "colouring": [
+            0,
+            0,
+            2,
+            0,
+            1,
+            0
+          ],
+          "row": 57
+        },
+        {
+          "abs_error": 3.648365314806499e-12,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 2.7211105740880813e-12,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 1.6911957768089482e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            0,
+            2
+          ],
+          "row": 713
+        },
+        {
+          "abs_error": 1.5606455369611307e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2
+          ],
+          "row": 719
+        },
+        {
+          "abs_error": 1.4817888340234417e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 1.1416465663682517e-12,
+          "colouring": [
+            0,
+            0,
+            1,
+            1,
+            0,
+            0
+          ],
+          "row": 36
+        }
+      ],
+      "total_l2": 3.8061724832330174e-06,
+      "weight_max_abs": 10.433141060744285,
+      "weight_min_abs": 2.255079007519074e-21
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-1/attempts.jsonl",
+      "attempt": 2692,
+      "binary_relation_rows": 90,
+      "candidate_id": "sa20-r002-j19-w1-a002692",
+      "cost": 7.404557833645395e-12,
+      "elapsed_seconds": 0.14771366119384766,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r010-j15-w0-a001627",
+      "max_error": 3.848261382304838e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 3.848261382316705e-06,
+      "mixed_max": 3.848261382304838e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999872005,
+          1.7830736886991997e-12
+        ],
+        [
+          0.9999999999834527,
+          9.174327964020229e-13
+        ],
+        [
+          0.9999999999851996,
+          -1.3743816259287617e-30
+        ]
+      ],
+      "mono_max_error": 1.657273216333673e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 3.795408551319225e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002578",
+      "parent_max_error": 4.745247967408311e-06,
+      "residual_basin_fingerprint": "a3a20d2dd6eb8009ac0c",
+      "seed": 6059549481140369973,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "eb2cacf290c216505d55",
+      "support_mask_hex": "35fee3ffe87241668c7ffdfddfded94f3a",
+      "support_size": 89,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 3.848261382304838e-06,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            0,
+            0
+          ],
+          "row": 396
+        },
+        {
+          "abs_error": 6.651555306352627e-12,
+          "colouring": [
+            2,
+            1,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 647
+        },
+        {
+          "abs_error": 4.88808922056582e-12,
+          "colouring": [
+            2,
+            0,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 565
+        },
+        {
+          "abs_error": 3.1017329479959276e-12,
+          "colouring": [
+            1,
+            0,
+            1,
+            0,
+            1,
+            1
+          ],
+          "row": 274
+        },
+        {
+          "abs_error": 2.568826731595377e-12,
+          "colouring": [
+            1,
+            2,
+            1,
+            2,
+            1,
+            2
+          ],
+          "row": 455
+        },
+        {
+          "abs_error": 1.843188251436391e-12,
+          "colouring": [
+            2,
+            0,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 566
+        },
+        {
+          "abs_error": 1.1010142620923333e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 726
+        },
+        {
+          "abs_error": 9.972743927606096e-13,
+          "colouring": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "row": 90
+        },
+        {
+          "abs_error": 6.433437054314534e-13,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            0,
+            2
+          ],
+          "row": 236
+        },
+        {
+          "abs_error": 6.185074631019013e-13,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            1,
+            2
+          ],
+          "row": 482
+        },
+        {
+          "abs_error": 4.594047210618475e-13,
+          "colouring": [
+            2,
+            2,
+            1,
+            2,
+            1,
+            2
+          ],
+          "row": 698
+        },
+        {
+          "abs_error": 2.703462250059848e-13,
+          "colouring": [
+            1,
+            2,
+            1,
+            1,
+            1,
+            2
+          ],
+          "row": 446
+        }
+      ],
+      "total_l2": 3.84826138240255e-06,
+      "weight_max_abs": 14.374961633799467,
+      "weight_min_abs": 1.573664291867768e-20
+    },
+    {
+      "_source": "second-approach-2-data-18/worker-2/attempts.jsonl",
+      "attempt": 2737,
+      "binary_relation_rows": 90,
+      "candidate_id": "sa20-r002-j18-w2-a002737",
+      "cost": 7.417392792620485e-12,
+      "elapsed_seconds": 0.15668487548828125,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r010-j15-w0-a001627",
+      "max_error": 3.8515939955843714e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 3.851595199990528e-06,
+      "mixed_max": 3.8515939955843714e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999852187,
+          -1.3888890041477163e-13
+        ],
+        [
+          0.9999999999854472,
+          -1.9390045289406388e-13
+        ],
+        [
+          0.9999999999851485,
+          -8.687495170350927e-14
+        ]
+      ],
+      "mono_max_error": 1.4851707489773846e-11,
+      "nfev": 12,
+      "numerical_success": false,
+      "optimality": 2.8122745801306424e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002578",
+      "parent_max_error": 4.745247967408311e-06,
+      "residual_basin_fingerprint": "e0976574818c51ac3656",
+      "seed": 9149464286896870893,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "eb2cacf290c216505d55",
+      "support_mask_hex": "35fee3ffe87241668c7ffdfddfded94f3a",
+      "support_size": 89,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 3.8515939955843714e-06,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            0,
+            0
+          ],
+          "row": 396
+        },
+        {
+          "abs_error": 2.160358924844816e-09,
+          "colouring": [
+            0,
+            2,
+            0,
+            2,
+            0,
+            0
+          ],
+          "row": 180
+        },
+        {
+          "abs_error": 2.1116168230022335e-09,
+          "colouring": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "row": 90
+        },
+        {
+          "abs_error": 2.7536713493633026e-10,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            0,
+            2
+          ],
+          "row": 236
+        },
+        {
+          "abs_error": 2.718745530405182e-10,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            1,
+            2
+          ],
+          "row": 482
+        },
+        {
+          "abs_error": 3.0693001855103335e-11,
+          "colouring": [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          "row": 54
+        },
+        {
+          "abs_error": 2.3730062870484285e-11,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 27
+        },
+        {
+          "abs_error": 1.574459532807969e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 726
+        },
+        {
+          "abs_error": 8.667535140216909e-12,
+          "colouring": [
+            2,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 513
+        },
+        {
+          "abs_error": 6.055708509904415e-12,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            0
+          ],
+          "row": 162
+        },
+        {
+          "abs_error": 4.736812199379169e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "row": 361
+        },
+        {
+          "abs_error": 4.13494835563674e-12,
+          "colouring": [
+            0,
+            2,
+            0,
+            1,
+            0,
+            0
+          ],
+          "row": 171
+        }
+      ],
+      "total_l2": 3.851595200075024e-06,
+      "weight_max_abs": 13.996044033813943,
+      "weight_min_abs": 9.168764496259002e-20
+    },
+    {
+      "_source": "second-approach-2-data-18/worker-3/attempts.jsonl",
+      "attempt": 2875,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j18-w3-a002875",
+      "cost": 7.51534188087239e-12,
+      "elapsed_seconds": 0.12441229820251465,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 3.8769425603664005e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 3.8769425790257715e-06,
+      "mixed_max": 3.8769425603664005e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999849973,
+          -6.256106735078726e-14
+        ],
+        [
+          0.9999999999846569,
+          -1.6686652060699792e-13
+        ],
+        [
+          0.9999999999851257,
+          1.1857181900628885e-13
+        ]
+      ],
+      "mono_max_error": 1.5343967524000453e-11,
+      "nfev": 8,
+      "numerical_success": false,
+      "optimality": 1.2781407648214685e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "424016873e25905c1797",
+      "seed": 9017587620128263874,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 3.8769425603664005e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 2.851851689478163e-10,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 2.4694374775103714e-10,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        },
+        {
+          "abs_error": 3.375720958907973e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 3.303743905413497e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 8.709377010513366e-12,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 27
+        },
+        {
+          "abs_error": 3.23672302454639e-12,
+          "colouring": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 607
+        },
+        {
+          "abs_error": 3.1899612865048123e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2
+          ],
+          "row": 719
+        },
+        {
+          "abs_error": 3.1321623731930074e-12,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "row": 30
+        },
+        {
+          "abs_error": 2.8726724402815086e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 2.5647231048050253e-12,
+          "colouring": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 283
+        },
+        {
+          "abs_error": 2.485128022724772e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            0,
+            2
+          ],
+          "row": 713
+        }
+      ],
+      "total_l2": 3.8769425791136994e-06,
+      "weight_max_abs": 10.575763896209022,
+      "weight_min_abs": 2.5280090042160334e-21
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-3/attempts.jsonl",
+      "attempt": 5170,
+      "binary_relation_rows": 90,
+      "candidate_id": "sa20-r002-j19-w3-a005170",
+      "cost": 8.285566093204919e-12,
+      "elapsed_seconds": 0.1305525302886963,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r010-j15-w0-a001627",
+      "max_error": 4.070765552641782e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 4.070765552766358e-06,
+      "mixed_max": 4.070765552641782e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999831666,
+          -6.680767050685551e-13
+        ],
+        [
+          0.999999999983894,
+          -1.265654248059823e-13
+        ],
+        [
+          0.99999999998335,
+          4.4408920985038003e-13
+        ]
+      ],
+      "mono_max_error": 1.684667547899558e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 2.310047554878198e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002578",
+      "parent_max_error": 4.745247967408311e-06,
+      "residual_basin_fingerprint": "35a9e62a7b1478b739f9",
+      "seed": 599529917015512508,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "eb2cacf290c216505d55",
+      "support_mask_hex": "35fee3ffe87241668c7ffdfddfded94f3a",
+      "support_size": 89,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.070765552641782e-06,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            0,
+            0
+          ],
+          "row": 396
+        },
+        {
+          "abs_error": 2.5754427781080236e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            1,
+            2
+          ],
+          "row": 482
+        },
+        {
+          "abs_error": 1.7773519603723062e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            0,
+            2
+          ],
+          "row": 236
+        },
+        {
+          "abs_error": 3.788066118723857e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "row": 361
+        },
+        {
+          "abs_error": 2.4766405673032623e-12,
+          "colouring": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "row": 90
+        },
+        {
+          "abs_error": 2.3514020168689376e-12,
+          "colouring": [
+            0,
+            2,
+            0,
+            2,
+            0,
+            0
+          ],
+          "row": 180
+        },
+        {
+          "abs_error": 1.7455782902663936e-12,
+          "colouring": [
+            1,
+            1,
+            0,
+            1,
+            2,
+            1
+          ],
+          "row": 340
+        },
+        {
+          "abs_error": 1.203173615959516e-12,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 2
+        },
+        {
+          "abs_error": 1.0587431564699464e-12,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 27
+        },
+        {
+          "abs_error": 9.299997449369805e-13,
+          "colouring": [
+            2,
+            0,
+            2,
+            0,
+            2,
+            2
+          ],
+          "row": 548
+        },
+        {
+          "abs_error": 8.405071796277579e-13,
+          "colouring": [
+            1,
+            0,
+            1,
+            0,
+            1,
+            1
+          ],
+          "row": 274
+        },
+        {
+          "abs_error": 7.287773019469036e-13,
+          "colouring": [
+            2,
+            2,
+            1,
+            2,
+            2,
+            2
+          ],
+          "row": 701
+        }
+      ],
+      "total_l2": 4.0707655528671555e-06,
+      "weight_max_abs": 12.707777892500285,
+      "weight_min_abs": 1.2493641052079909e-21
+    },
+    {
+      "_source": "second-approach-2-data-18/worker-3/attempts.jsonl",
+      "attempt": 2378,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j18-w3-a002378",
+      "cost": 8.432365723201312e-12,
+      "elapsed_seconds": 0.10855722427368164,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.106669141841753e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 4.106669142449704e-06,
+      "mixed_max": 4.106669141841753e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999830479,
+          -1.9595436383370785e-14
+        ],
+        [
+          0.9999999999831648,
+          1.2545520166578664e-14
+        ],
+        [
+          0.9999999999831704,
+          4.2188474952096784e-15
+        ]
+      ],
+      "mono_max_error": 1.6952117710769673e-11,
+      "nfev": 8,
+      "numerical_success": false,
+      "optimality": 3.987199970418794e-10,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "1417b9241110b0ae5ec0",
+      "seed": 1189874198614329021,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.106669141841753e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 4.924559354070368e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 4.3111838190961e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 1.635811306411385e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 1.2066719196929095e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2
+          ],
+          "row": 719
+        },
+        {
+          "abs_error": 1.1652712761179873e-11,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        },
+        {
+          "abs_error": 9.215147553538934e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 8.669767698714292e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            0,
+            2
+          ],
+          "row": 713
+        },
+        {
+          "abs_error": 3.634740369155831e-13,
+          "colouring": [
+            2,
+            2,
+            2,
+            0,
+            1,
+            2
+          ],
+          "row": 707
+        },
+        {
+          "abs_error": 2.5525998988273673e-13,
+          "colouring": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "row": 608
+        },
+        {
+          "abs_error": 2.45756784902355e-13,
+          "colouring": [
+            2,
+            2,
+            2,
+            0,
+            2,
+            2
+          ],
+          "row": 710
+        },
+        {
+          "abs_error": 2.1050896900205243e-13,
+          "colouring": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "row": 365
+        }
+      ],
+      "total_l2": 4.106669142553686e-06,
+      "weight_max_abs": 10.603122037904464,
+      "weight_min_abs": 6.772237021864229e-23
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-0/attempts.jsonl",
+      "attempt": 5733,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w0-a005733",
+      "cost": 8.453527648311076e-12,
+      "elapsed_seconds": 0.1547684669494629,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.111818975769363e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 4.11181897653219e-06,
+      "mixed_max": 4.111818975769363e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999826283,
+          2.1149748618913014e-14
+        ],
+        [
+          0.9999999999836671,
+          2.3053781106169553e-13
+        ],
+        [
+          0.9999999999831677,
+          5.251354906476991e-14
+        ]
+      ],
+      "mono_max_error": 1.737167254106415e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 6.54432681739636e-10,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "ddd25c43d0c7a9e51ab6",
+      "seed": 5497605925076610532,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.111818975769363e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 5.7892953135021685e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 4.787374130977981e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 1.9496588092973284e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 1.0266644773347522e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 6.005414506606513e-12,
+          "colouring": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 607
+        },
+        {
+          "abs_error": 5.371681479255081e-12,
+          "colouring": [
+            1,
+            2,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 445
+        },
+        {
+          "abs_error": 4.195530445312039e-12,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 1
+        },
+        {
+          "abs_error": 3.6221783463707423e-12,
+          "colouring": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 283
+        },
+        {
+          "abs_error": 3.5532482283698783e-12,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 2
+        },
+        {
+          "abs_error": 3.354859239526198e-12,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 3.341230752592696e-12,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 82
+        }
+      ],
+      "total_l2": 4.111818976635785e-06,
+      "weight_max_abs": 11.132086547450188,
+      "weight_min_abs": 5.76737279116622e-22
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-2/attempts.jsonl",
+      "attempt": 5625,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w2-a005625",
+      "cost": 8.547957429292775e-12,
+      "elapsed_seconds": 0.1405026912689209,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.134720640935266e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 4.134720650504375e-06,
+      "mixed_max": 4.134720640935266e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999828789,
+          6.661338145262009e-16
+        ],
+        [
+          0.9999999999829251,
+          1.515454428814525e-14
+        ],
+        [
+          0.9999999999828668,
+          -3.3861802252570963e-14
+        ]
+      ],
+      "mono_max_error": 1.713321722260114e-11,
+      "nfev": 9,
+      "numerical_success": false,
+      "optimality": 3.7985966705180737e-10,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "f266e81dbd91115833e5",
+      "seed": 6497119076725345882,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.134720640935266e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 2.7455502581574556e-10,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 5.625566250658084e-11,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "row": 30
+        },
+        {
+          "abs_error": 1.6172751874111854e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 485
+        },
+        {
+          "abs_error": 1.551367522166064e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 6.271482103732887e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 727
+        },
+        {
+          "abs_error": 4.2259954630987424e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            0,
+            0,
+            2
+          ],
+          "row": 704
+        },
+        {
+          "abs_error": 3.453479642878398e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            0,
+            2
+          ],
+          "row": 713
+        },
+        {
+          "abs_error": 2.16949004128106e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            0,
+            1,
+            2
+          ],
+          "row": 707
+        },
+        {
+          "abs_error": 1.8669136835307075e-12,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 242
+        },
+        {
+          "abs_error": 1.6006891319999622e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 1.4679902354974067e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2
+          ],
+          "row": 719
+        }
+      ],
+      "total_l2": 4.134720650610577e-06,
+      "weight_max_abs": 9.947349375840513,
+      "weight_min_abs": 3.735781803255002e-23
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-2/attempts.jsonl",
+      "attempt": 5361,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w2-a005361",
+      "cost": 8.946585910402529e-12,
+      "elapsed_seconds": 0.1586141586303711,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.230032128294247e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 4.230032129881287e-06,
+      "mixed_max": 4.230032128294247e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999815,
+          6.730171975275334e-13
+        ],
+        [
+          0.9999999999818997,
+          4.668487818548782e-13
+        ],
+        [
+          0.9999999999824933,
+          -1.0896838986766246e-13
+        ]
+      ],
+      "mono_max_error": 1.851221724211719e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 1.3153457229818066e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "ccbac881821cf2c33d5d",
+      "seed": 206188817856010956,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.230032128294247e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 1.0474417196624166e-10,
+          "colouring": [
+            2,
+            2,
+            2,
+            0,
+            0,
+            2
+          ],
+          "row": 704
+        },
+        {
+          "abs_error": 4.649450125434276e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 1.1854337060740174e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 1.0080821307768229e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 82
+        },
+        {
+          "abs_error": 5.931726501768548e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "row": 355
+        },
+        {
+          "abs_error": 2.9921084770783876e-12,
+          "colouring": [
+            1,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "row": 337
+        },
+        {
+          "abs_error": 1.2654462766728216e-12,
+          "colouring": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 283
+        },
+        {
+          "abs_error": 9.297469474440862e-13,
+          "colouring": [
+            2,
+            2,
+            1,
+            1,
+            2,
+            2
+          ],
+          "row": 692
+        },
+        {
+          "abs_error": 9.158360852435143e-13,
+          "colouring": [
+            2,
+            2,
+            1,
+            1,
+            1,
+            2
+          ],
+          "row": 689
+        },
+        {
+          "abs_error": 9.012305490107814e-13,
+          "colouring": [
+            1,
+            1,
+            0,
+            2,
+            1,
+            1
+          ],
+          "row": 346
+        },
+        {
+          "abs_error": 8.393492977930743e-13,
+          "colouring": [
+            1,
+            1,
+            1,
+            2,
+            1,
+            1
+          ],
+          "row": 373
+        }
+      ],
+      "total_l2": 4.230032129996776e-06,
+      "weight_max_abs": 10.318695504795885,
+      "weight_min_abs": 5.443305991494515e-21
+    },
+    {
+      "_source": "second-approach-2-data-18/worker-2/attempts.jsonl",
+      "attempt": 4373,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j18-w2-a004373",
+      "cost": 9.078156875106528e-12,
+      "elapsed_seconds": 0.12383580207824707,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.261022617174516e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 4.2610226177769144e-06,
+      "mixed_max": 4.261022617174516e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999813836,
+          -4.841127498870129e-13
+        ],
+        [
+          0.9999999999817856,
+          7.416289804496649e-14
+        ],
+        [
+          0.9999999999818877,
+          3.3473224192451606e-14
+        ]
+      ],
+      "mono_max_error": 1.862273523211177e-11,
+      "nfev": 8,
+      "numerical_success": false,
+      "optimality": 5.847710460824994e-10,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "1dbaacd038a01ee2332f",
+      "seed": 8224087489927814107,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.261022617174516e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 5.6493429322521933e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 3.1543477605895135e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 2.569028664626426e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 1.6936577716079768e-11,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        },
+        {
+          "abs_error": 2.825606389622914e-13,
+          "colouring": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 607
+        },
+        {
+          "abs_error": 2.817018217163858e-13,
+          "colouring": [
+            2,
+            0,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 564
+        },
+        {
+          "abs_error": 2.1116660650401178e-13,
+          "colouring": [
+            1,
+            2,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 445
+        },
+        {
+          "abs_error": 1.8963862882675847e-13,
+          "colouring": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 283
+        },
+        {
+          "abs_error": 1.7819011611259875e-13,
+          "colouring": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 121
+        },
+        {
+          "abs_error": 1.1883594318559833e-13,
+          "colouring": [
+            1,
+            1,
+            1,
+            2,
+            1,
+            1
+          ],
+          "row": 373
+        },
+        {
+          "abs_error": 8.212624498694021e-14,
+          "colouring": [
+            0,
+            0,
+            1,
+            2,
+            2,
+            0
+          ],
+          "row": 51
+        }
+      ],
+      "total_l2": 4.261022617895035e-06,
+      "weight_max_abs": 10.394166771382858,
+      "weight_min_abs": 4.548662641493711e-21
+    },
+    {
+      "_source": "second-approach-2-data-18/worker-3/attempts.jsonl",
+      "attempt": 1748,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j18-w3-a001748",
+      "cost": 9.115845071653881e-12,
+      "elapsed_seconds": 0.11409711837768555,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.269858325928657e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 4.269858328129117e-06,
+      "mixed_max": 4.269858325928657e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999812033,
+          -8.869571743658135e-13
+        ],
+        [
+          0.9999999999819151,
+          4.357625371654221e-14
+        ],
+        [
+          0.9999999999817513,
+          -1.5543122344771493e-14
+        ]
+      ],
+      "mono_max_error": 1.8817656618589137e-11,
+      "nfev": 8,
+      "numerical_success": false,
+      "optimality": 2.497028956737634e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "b5b5f48937ea0dc6249d",
+      "seed": 6664424262119569022,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.269858325928657e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 1.0480913716218322e-10,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 7.141561071295724e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 3.6771215798187334e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 3.6276028641672446e-11,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        },
+        {
+          "abs_error": 3.4223747237726825e-12,
+          "colouring": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 283
+        },
+        {
+          "abs_error": 2.323490056923244e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2
+          ],
+          "row": 719
+        },
+        {
+          "abs_error": 2.035558826853068e-12,
+          "colouring": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 607
+        },
+        {
+          "abs_error": 1.9623028426029982e-12,
+          "colouring": [
+            1,
+            2,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 445
+        },
+        {
+          "abs_error": 1.88147723241794e-12,
+          "colouring": [
+            1,
+            0,
+            1,
+            1,
+            0,
+            0
+          ],
+          "row": 279
+        },
+        {
+          "abs_error": 1.7093036701013575e-12,
+          "colouring": [
+            0,
+            0,
+            1,
+            1,
+            2,
+            0
+          ],
+          "row": 42
+        },
+        {
+          "abs_error": 1.454596146110222e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            0,
+            2
+          ],
+          "row": 713
+        }
+      ],
+      "total_l2": 4.269858328247879e-06,
+      "weight_max_abs": 10.64316455084218,
+      "weight_min_abs": 4.602088787607714e-22
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-3/attempts.jsonl",
+      "attempt": 5723,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w3-a005723",
+      "cost": 9.157710196218714e-12,
+      "elapsed_seconds": 0.11812186241149902,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.27965190021167e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 4.279651900730258e-06,
+      "mixed_max": 4.27965190021167e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999816992,
+          -8.371081605672219e-13
+        ],
+        [
+          0.999999999981452,
+          -1.0963452367402507e-13
+        ],
+        [
+          0.9999999999817337,
+          -6.505906924402578e-14
+        ]
+      ],
+      "mono_max_error": 1.8548375996306758e-11,
+      "nfev": 9,
+      "numerical_success": false,
+      "optimality": 6.437214471169733e-10,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "c153dbc4faa55a09dcf4",
+      "seed": 709855360684168421,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.27965190021167e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 3.790377275615117e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 3.535996584410111e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 3.399164906105776e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 1.6941642683159226e-11,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        },
+        {
+          "abs_error": 1.1363370882655088e-11,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 27
+        },
+        {
+          "abs_error": 5.173015445242274e-12,
+          "colouring": [
+            0,
+            0,
+            2,
+            0,
+            1,
+            0
+          ],
+          "row": 57
+        },
+        {
+          "abs_error": 5.071633476401544e-12,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 4.4346790332507285e-12,
+          "colouring": [
+            0,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          "row": 54
+        },
+        {
+          "abs_error": 4.41859771657964e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2
+          ],
+          "row": 719
+        },
+        {
+          "abs_error": 4.35101298037836e-12,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 163
+        },
+        {
+          "abs_error": 3.972515171122394e-12,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 2
+        }
+      ],
+      "total_l2": 4.279651900848647e-06,
+      "weight_max_abs": 10.404282166630638,
+      "weight_min_abs": 1.1966773583217725e-21
+    },
+    {
+      "_source": "second-approach-2-data-18/worker-2/attempts.jsonl",
+      "attempt": 5087,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j18-w2-a005087",
+      "cost": 9.187069453512415e-12,
+      "elapsed_seconds": 0.1278092861175537,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.28650660131453e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 4.286506608650497e-06,
+      "mixed_max": 4.28650660131453e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999817192,
+          1.2762013668066212e-13
+        ],
+        [
+          0.9999999999813746,
+          1.8982593275040858e-12
+        ],
+        [
+          0.9999999999816773,
+          5.828670879243301e-15
+        ]
+      ],
+      "mono_max_error": 1.8721917632336147e-11,
+      "nfev": 9,
+      "numerical_success": false,
+      "optimality": 2.171406674174467e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "c9884c514af0d4806dd0",
+      "seed": 4683236336589423780,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.28650660131453e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 1.351742325539197e-10,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 1.3258182879340336e-10,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 82
+        },
+        {
+          "abs_error": 9.508020688638632e-11,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 1
+        },
+        {
+          "abs_error": 9.352833499405114e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 83
+        },
+        {
+          "abs_error": 5.982632658702948e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 5.1168796699072074e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 163
+        },
+        {
+          "abs_error": 2.9251798282367744e-11,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 2
+        },
+        {
+          "abs_error": 2.7037308832567796e-11,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 27
+        },
+        {
+          "abs_error": 2.3009975504655533e-11,
+          "colouring": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 607
+        },
+        {
+          "abs_error": 2.161427608985032e-11,
+          "colouring": [
+            1,
+            2,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 445
+        },
+        {
+          "abs_error": 1.6748092188143533e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            0,
+            2
+          ],
+          "row": 713
+        }
+      ],
+      "total_l2": 4.286506608769526e-06,
+      "weight_max_abs": 10.662960878122071,
+      "weight_min_abs": 5.921101914743682e-23
+    },
+    {
+      "_source": "second-approach-2-data-18/worker-2/attempts.jsonl",
+      "attempt": 3251,
+      "binary_relation_rows": 90,
+      "candidate_id": "sa20-r002-j18-w2-a003251",
+      "cost": 9.26900103373262e-12,
+      "elapsed_seconds": 0.15691232681274414,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r010-j15-w0-a001627",
+      "max_error": 4.305578017184681e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 4.305578017692073e-06,
+      "mixed_max": 4.305578017184681e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999806267,
+          -3.9163117193653715e-13
+        ],
+        [
+          0.999999999982413,
+          -6.118994200120938e-13
+        ],
+        [
+          0.9999999999815318,
+          2.4119595209965212e-12
+        ]
+      ],
+      "mono_max_error": 1.9377238768207666e-11,
+      "nfev": 11,
+      "numerical_success": false,
+      "optimality": 2.298860364900544e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002578",
+      "parent_max_error": 4.745247967408311e-06,
+      "residual_basin_fingerprint": "071dd0cfe624e9016795",
+      "seed": 308480798814414614,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "eb2cacf290c216505d55",
+      "support_mask_hex": "35fee3ffe87241668c7ffdfddfded94f3a",
+      "support_size": 89,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.305578017184681e-06,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            0,
+            0
+          ],
+          "row": 396
+        },
+        {
+          "abs_error": 4.342150329252366e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "row": 90
+        },
+        {
+          "abs_error": 2.483578964753908e-11,
+          "colouring": [
+            1,
+            1,
+            1,
+            2,
+            1,
+            1
+          ],
+          "row": 373
+        },
+        {
+          "abs_error": 2.3620825402806333e-11,
+          "colouring": [
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "row": 361
+        },
+        {
+          "abs_error": 2.0816839062148047e-11,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 27
+        },
+        {
+          "abs_error": 1.9149900573692597e-11,
+          "colouring": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "row": 355
+        },
+        {
+          "abs_error": 1.5305635308719276e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            1,
+            2,
+            1
+          ],
+          "row": 340
+        },
+        {
+          "abs_error": 1.191238778548211e-11,
+          "colouring": [
+            1,
+            1,
+            1,
+            2,
+            1,
+            2
+          ],
+          "row": 374
+        },
+        {
+          "abs_error": 6.8412479247121005e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "row": 365
+        },
+        {
+          "abs_error": 5.7311633090041714e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0
+          ],
+          "row": 354
+        },
+        {
+          "abs_error": 4.2019791663936665e-12,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            0,
+            2
+          ],
+          "row": 236
+        },
+        {
+          "abs_error": 3.609891450822406e-12,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            1,
+            2
+          ],
+          "row": 482
+        }
+      ],
+      "total_l2": 4.305578017811923e-06,
+      "weight_max_abs": 14.610209636813503,
+      "weight_min_abs": 3.622680190669073e-21
+    },
+    {
+      "_source": "second-approach-2-data-18/worker-2/attempts.jsonl",
+      "attempt": 6225,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j18-w2-a006225",
+      "cost": 9.283071877415814e-12,
+      "elapsed_seconds": 0.13997721672058105,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.308844807623252e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 4.30884482823261e-06,
+      "mixed_max": 4.308844807623252e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999810332,
+          -7.604472607215287e-13
+        ],
+        [
+          0.9999999999812762,
+          2.8810287850416565e-14
+        ],
+        [
+          0.9999999999817327,
+          -3.4966474160569255e-13
+        ]
+      ],
+      "mono_max_error": 1.898206649757131e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 2.1691193669653646e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "37b84b20ed1406ae5ebf",
+      "seed": 7015079239959030719,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.308844807623252e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 2.7084755684867403e-10,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 2.6318206477195237e-10,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 1.5205810336712717e-10,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 1.0419564445348641e-10,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 1.6544851594803526e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 82
+        },
+        {
+          "abs_error": 1.5012115047467932e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 83
+        },
+        {
+          "abs_error": 1.1453967446708509e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 163
+        },
+        {
+          "abs_error": 1.1377686079838687e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 8.26206811987453e-12,
+          "colouring": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 121
+        },
+        {
+          "abs_error": 7.544645004463984e-12,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 2
+        },
+        {
+          "abs_error": 6.51211571171519e-12,
+          "colouring": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 607
+        }
+      ],
+      "total_l2": 4.308844828353839e-06,
+      "weight_max_abs": 10.43731226314679,
+      "weight_min_abs": 1.144321909691806e-21
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-2/attempts.jsonl",
+      "attempt": 4291,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w2-a004291",
+      "cost": 9.361397826644616e-12,
+      "elapsed_seconds": 0.14725065231323242,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.3269845902984e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 4.32698459117117e-06,
+      "mixed_max": 4.3269845902984e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999812647,
+          -3.8358205500799543e-14
+        ],
+        [
+          0.9999999999812206,
+          -1.454392162265956e-14
+        ],
+        [
+          0.9999999999812166,
+          -3.358424649610012e-14
+        ]
+      ],
+      "mono_max_error": 1.878344928826216e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 2.5023491067479366e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "60bca40740c60710f985",
+      "seed": 1998995008374855717,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.3269845902984e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 5.1852236519276994e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 3.79607211285573e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 727
+        },
+        {
+          "abs_error": 3.3627624737812836e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 485
+        },
+        {
+          "abs_error": 2.6457384954675893e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 483
+        },
+        {
+          "abs_error": 1.7840306635416574e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 241
+        },
+        {
+          "abs_error": 1.7805876963925535e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 1.6691857194850224e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 242
+        },
+        {
+          "abs_error": 1.456141815563665e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 1.2903530739870465e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 7.007841155224427e-12,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "row": 30
+        },
+        {
+          "abs_error": 6.395314081454185e-12,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 82
+        }
+      ],
+      "total_l2": 4.326984591293252e-06,
+      "weight_max_abs": 10.35490222196269,
+      "weight_min_abs": 3.5544923882580005e-21
+    },
+    {
+      "_source": "second-approach-2-data-18/worker-3/attempts.jsonl",
+      "attempt": 1398,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j18-w3-a001398",
+      "cost": 9.564023523625978e-12,
+      "elapsed_seconds": 0.13533401489257812,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.373562275314814e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 4.373562283328839e-06,
+      "mixed_max": 4.373562275314814e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999809323,
+          -7.488454301130623e-14
+        ],
+        [
+          0.9999999999807825,
+          -5.721534357405744e-13
+        ],
+        [
+          0.9999999999809697,
+          1.0352829704629577e-13
+        ]
+      ],
+      "mono_max_error": 1.9226031798460896e-11,
+      "nfev": 9,
+      "numerical_success": false,
+      "optimality": 1.182804934876598e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "14897073b8402ead75cc",
+      "seed": 1975150184526487680,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.373562275314814e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 2.1904461191336917e-10,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 1.2058083937064385e-10,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 6.09388415370442e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 164
+        },
+        {
+          "abs_error": 6.009226897834302e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 82
+        },
+        {
+          "abs_error": 1.514724476531691e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 2.9567314952432697e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "row": 355
+        },
+        {
+          "abs_error": 2.9430811550385925e-12,
+          "colouring": [
+            1,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "row": 337
+        },
+        {
+          "abs_error": 1.7002251857408724e-12,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        },
+        {
+          "abs_error": 1.3851255185174538e-12,
+          "colouring": [
+            2,
+            2,
+            1,
+            2,
+            2,
+            2
+          ],
+          "row": 701
+        },
+        {
+          "abs_error": 1.105376839901923e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            2,
+            1,
+            1
+          ],
+          "row": 373
+        },
+        {
+          "abs_error": 9.342256909685512e-13,
+          "colouring": [
+            1,
+            1,
+            0,
+            2,
+            1,
+            1
+          ],
+          "row": 346
+        }
+      ],
+      "total_l2": 4.373562283454067e-06,
+      "weight_max_abs": 9.452024289696391,
+      "weight_min_abs": 9.456293435950229e-23
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-0/attempts.jsonl",
+      "attempt": 221,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w0-a000221",
+      "cost": 9.591223898068527e-12,
+      "elapsed_seconds": 0.1452498435974121,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.379777136194585e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 4.379777139882555e-06,
+      "mixed_max": 4.379777136194585e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999808806,
+          1.3045120611805557e-14
+        ],
+        [
+          0.9999999999808571,
+          1.881828026739639e-14
+        ],
+        [
+          0.9999999999808367,
+          4.773959005888166e-15
+        ]
+      ],
+      "mono_max_error": 1.9163338178092777e-11,
+      "nfev": 9,
+      "numerical_success": false,
+      "optimality": 9.45984134157987e-10,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "7cfddb101ca1320ad934",
+      "seed": 7534504307834706099,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.379777136194585e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 1.5527070317444176e-10,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 8.627026529885742e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            0,
+            0,
+            2
+          ],
+          "row": 704
+        },
+        {
+          "abs_error": 1.7483176430092946e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 82
+        },
+        {
+          "abs_error": 1.0775256602370612e-11,
+          "colouring": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 727
+        },
+        {
+          "abs_error": 1.0457447100369398e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 7.884017186218048e-12,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 483
+        },
+        {
+          "abs_error": 7.856050070634891e-12,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 7.272972349836928e-12,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 241
+        },
+        {
+          "abs_error": 5.489179140782002e-12,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 485
+        },
+        {
+          "abs_error": 3.54288512604531e-12,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 242
+        },
+        {
+          "abs_error": 1.3844056226911816e-12,
+          "colouring": [
+            1,
+            0,
+            1,
+            2,
+            2,
+            0
+          ],
+          "row": 294
+        }
+      ],
+      "total_l2": 4.379777140008045e-06,
+      "weight_max_abs": 9.939028313278929,
+      "weight_min_abs": 3.823630410550601e-23
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-0/attempts.jsonl",
+      "attempt": 1262,
+      "binary_relation_rows": 90,
+      "candidate_id": "sa20-r002-j19-w0-a001262",
+      "cost": 9.703221476087972e-12,
+      "elapsed_seconds": 0.13242292404174805,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r010-j15-w0-a001627",
+      "max_error": 4.405274444174105e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 4.405274446716812e-06,
+      "mixed_max": 4.405274444174105e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999806242,
+          2.253752739770447e-14
+        ],
+        [
+          0.9999999999771672,
+          -2.2681856392993955e-13
+        ],
+        [
+          0.9999999999804298,
+          -1.5110135365821987e-13
+        ]
+      ],
+      "mono_max_error": 2.2833973289875723e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 3.0668468018230666e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002578",
+      "parent_max_error": 4.745247967408311e-06,
+      "residual_basin_fingerprint": "334f8b2043853b285512",
+      "seed": 3315099580428356676,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "eb2cacf290c216505d55",
+      "support_mask_hex": "35fee3ffe87241668c7ffdfddfded94f3a",
+      "support_size": 89,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.405274444174105e-06,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            0,
+            0
+          ],
+          "row": 396
+        },
+        {
+          "abs_error": 7.725765778777895e-11,
+          "colouring": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "row": 90
+        },
+        {
+          "abs_error": 6.316766445896103e-11,
+          "colouring": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            0
+          ],
+          "row": 354
+        },
+        {
+          "abs_error": 5.700542420173029e-11,
+          "colouring": [
+            1,
+            1,
+            1,
+            2,
+            1,
+            1
+          ],
+          "row": 373
+        },
+        {
+          "abs_error": 5.102968003115233e-11,
+          "colouring": [
+            0,
+            2,
+            0,
+            2,
+            0,
+            0
+          ],
+          "row": 180
+        },
+        {
+          "abs_error": 5.075284200540962e-11,
+          "colouring": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            2
+          ],
+          "row": 356
+        },
+        {
+          "abs_error": 5.071635592711374e-11,
+          "colouring": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "row": 355
+        },
+        {
+          "abs_error": 3.3781597481878877e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            1,
+            2,
+            1
+          ],
+          "row": 340
+        },
+        {
+          "abs_error": 1.0721085818619331e-11,
+          "colouring": [
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "row": 361
+        },
+        {
+          "abs_error": 9.039084585751043e-12,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            0,
+            2
+          ],
+          "row": 236
+        },
+        {
+          "abs_error": 8.698825591031267e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "row": 365
+        },
+        {
+          "abs_error": 3.8748948044416976e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            2,
+            1,
+            0
+          ],
+          "row": 372
+        }
+      ],
+      "total_l2": 4.405274446862073e-06,
+      "weight_max_abs": 13.492845076824095,
+      "weight_min_abs": 2.2842638376836292e-20
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-2/attempts.jsonl",
+      "attempt": 2279,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w2-a002279",
+      "cost": 9.761887290260991e-12,
+      "elapsed_seconds": 0.14226770401000977,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.418571549295534e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 4.418571554180765e-06,
+      "mixed_max": 4.418571549295534e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999806173,
+          -2.0405899193014928e-13
+        ],
+        [
+          0.9999999999811653,
+          -1.0221268276214745e-12
+        ],
+        [
+          0.9999999999806517,
+          8.332778911324124e-13
+        ]
+      ],
+      "mono_max_error": 1.938379177799317e-11,
+      "nfev": 11,
+      "numerical_success": false,
+      "optimality": 1.3726197255455015e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "70552909339b1e25878e",
+      "seed": 1294840304609121621,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.418571549295534e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 1.8069266159357124e-10,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 82
+        },
+        {
+          "abs_error": 1.0223406358396314e-10,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 5.895683282879322e-12,
+          "colouring": [
+            1,
+            1,
+            0,
+            1,
+            1,
+            1
+          ],
+          "row": 337
+        },
+        {
+          "abs_error": 3.729475813372841e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "row": 355
+        },
+        {
+          "abs_error": 3.248476641111297e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 1.364801578849374e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            2,
+            1,
+            1
+          ],
+          "row": 373
+        },
+        {
+          "abs_error": 1.2763931660483199e-12,
+          "colouring": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 121
+        },
+        {
+          "abs_error": 1.0369182865984212e-12,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 9.5454045594327e-13,
+          "colouring": [
+            1,
+            2,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 445
+        },
+        {
+          "abs_error": 8.70597921568217e-13,
+          "colouring": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            2
+          ],
+          "row": 608
+        },
+        {
+          "abs_error": 7.832759467207618e-13,
+          "colouring": [
+            2,
+            0,
+            1,
+            1,
+            1,
+            2
+          ],
+          "row": 527
+        }
+      ],
+      "total_l2": 4.4185715543059825e-06,
+      "weight_max_abs": 9.91730979731843,
+      "weight_min_abs": 2.760974977161332e-22
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-2/attempts.jsonl",
+      "attempt": 3903,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w2-a003903",
+      "cost": 9.790103714613412e-12,
+      "elapsed_seconds": 0.11489295959472656,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.424952815900381e-06,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 4.42495281648459e-06,
+      "mixed_max": 4.424952815900381e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999812608,
+          4.1511238890713545e-13
+        ],
+        [
+          0.9999999999805219,
+          -1.4155343563971195e-13
+        ],
+        [
+          0.9999999999804765,
+          -9.270362255629366e-15
+        ]
+      ],
+      "mono_max_error": 1.952349613356637e-11,
+      "nfev": 8,
+      "numerical_success": false,
+      "optimality": 7.065701302584124e-10,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "24e1e88c776885ad207b",
+      "seed": 1051760918749875228,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.424952815900381e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 7.066906771362778e-11,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 1.1974522679790063e-11,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 4.4245875103393986e-12,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 3.4737049357089444e-12,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        },
+        {
+          "abs_error": 5.084223153204604e-13,
+          "colouring": [
+            2,
+            0,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 564
+        },
+        {
+          "abs_error": 4.5431133415444345e-13,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 403
+        },
+        {
+          "abs_error": 4.4735447920218254e-13,
+          "colouring": [
+            0,
+            0,
+            1,
+            2,
+            2,
+            0
+          ],
+          "row": 51
+        },
+        {
+          "abs_error": 2.929352407125157e-13,
+          "colouring": [
+            1,
+            1,
+            0,
+            2,
+            0,
+            1
+          ],
+          "row": 343
+        },
+        {
+          "abs_error": 2.831340013351967e-13,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            2,
+            2
+          ],
+          "row": 719
+        },
+        {
+          "abs_error": 2.0392349815304007e-13,
+          "colouring": [
+            0,
+            0,
+            2,
+            0,
+            1,
+            0
+          ],
+          "row": 57
+        },
+        {
+          "abs_error": 1.7093599774327786e-13,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 325
+        }
+      ],
+      "total_l2": 4.424952816610231e-06,
+      "weight_max_abs": 10.415491667261652,
+      "weight_min_abs": 1.659928024814826e-21
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-0/attempts.jsonl",
+      "attempt": 3586,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j19-w0-a003586",
+      "cost": 9.864482046702934e-12,
+      "elapsed_seconds": 0.14396905899047852,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.441729843130393e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 4.441729853592206e-06,
+      "mixed_max": 4.441729843130393e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999816774,
+          -6.311062783511276e-13
+        ],
+        [
+          0.9999999999802922,
+          -9.436895709237356e-16
+        ],
+        [
+          0.999999999980274,
+          -4.424238753131238e-14
+        ]
+      ],
+      "mono_max_error": 1.9726048226710204e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 1.346647488203495e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "30f33fd72266cae8b946",
+      "seed": 69229597740572303,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.441729843130393e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 3.037229582074203e-10,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 2.5829725052249257e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 3.087284131427646e-12,
+          "colouring": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "row": 82
+        },
+        {
+          "abs_error": 1.90031494779568e-12,
+          "colouring": [
+            2,
+            2,
+            2,
+            1,
+            1,
+            2
+          ],
+          "row": 716
+        },
+        {
+          "abs_error": 1.6972621266110263e-12,
+          "colouring": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 607
+        },
+        {
+          "abs_error": 1.3120981059844584e-12,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 27
+        },
+        {
+          "abs_error": 1.27377975249202e-12,
+          "colouring": [
+            0,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 121
+        },
+        {
+          "abs_error": 9.076621253337674e-13,
+          "colouring": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 283
+        },
+        {
+          "abs_error": 8.715934406153393e-13,
+          "colouring": [
+            1,
+            2,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 445
+        },
+        {
+          "abs_error": 6.574661366663022e-13,
+          "colouring": [
+            2,
+            0,
+            1,
+            1,
+            0,
+            2
+          ],
+          "row": 524
+        },
+        {
+          "abs_error": 4.2583441430050556e-13,
+          "colouring": [
+            2,
+            0,
+            1,
+            1,
+            1,
+            2
+          ],
+          "row": 527
+        }
+      ],
+      "total_l2": 4.441729853717566e-06,
+      "weight_max_abs": 10.162929182181948,
+      "weight_min_abs": 9.149178448724943e-23
+    },
+    {
+      "_source": "second-approach-2-data-19/worker-2/attempts.jsonl",
+      "attempt": 1419,
+      "binary_relation_rows": 90,
+      "candidate_id": "sa20-r002-j19-w2-a001419",
+      "cost": 9.949926198435129e-12,
+      "elapsed_seconds": 0.15093111991882324,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": true,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r010-j15-w0-a001627",
+      "max_error": 4.460925003081184e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 4.4609250605326785e-06,
+      "mixed_max": 4.460925003081184e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999801537,
+          -4.501954364875367e-14
+        ],
+        [
+          0.9999999999802136,
+          -4.514166816583116e-13
+        ],
+        [
+          0.9999999999800956,
+          -5.262457136724278e-14
+        ]
+      ],
+      "mono_max_error": 1.9904481018389655e-11,
+      "nfev": 10,
+      "numerical_success": false,
+      "optimality": 2.1027310384163506e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002578",
+      "parent_max_error": 4.745247967408311e-06,
+      "residual_basin_fingerprint": "1549b79495b1b6073ff2",
+      "seed": 6960676805619491833,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "eb2cacf290c216505d55",
+      "support_mask_hex": "35fee3ffe87241668c7ffdfddfded94f3a",
+      "support_size": 89,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.460925003081184e-06,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            0,
+            0
+          ],
+          "row": 396
+        },
+        {
+          "abs_error": 4.727026258103787e-10,
+          "colouring": [
+            2,
+            0,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 566
+        },
+        {
+          "abs_error": 4.013708317337301e-10,
+          "colouring": [
+            0,
+            1,
+            0,
+            1,
+            0,
+            0
+          ],
+          "row": 90
+        },
+        {
+          "abs_error": 2.692952167526036e-10,
+          "colouring": [
+            2,
+            0,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 565
+        },
+        {
+          "abs_error": 1.7394184617992589e-10,
+          "colouring": [
+            2,
+            1,
+            2,
+            2,
+            2,
+            2
+          ],
+          "row": 647
+        },
+        {
+          "abs_error": 1.3019969175717297e-10,
+          "colouring": [
+            2,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 726
+        },
+        {
+          "abs_error": 7.052396876820789e-11,
+          "colouring": [
+            1,
+            1,
+            1,
+            1,
+            0,
+            1
+          ],
+          "row": 361
+        },
+        {
+          "abs_error": 5.756038844748668e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            1,
+            2,
+            1
+          ],
+          "row": 340
+        },
+        {
+          "abs_error": 2.043356334177165e-12,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            1,
+            2
+          ],
+          "row": 482
+        },
+        {
+          "abs_error": 1.6167150424051507e-12,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            0,
+            2
+          ],
+          "row": 236
+        },
+        {
+          "abs_error": 1.465490408673227e-12,
+          "colouring": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            2
+          ],
+          "row": 2
+        },
+        {
+          "abs_error": 8.690739363332602e-13,
+          "colouring": [
+            2,
+            0,
+            1,
+            0,
+            2,
+            1
+          ],
+          "row": 520
+        }
+      ],
+      "total_l2": 4.460925060665137e-06,
+      "weight_max_abs": 15.030822875230616,
+      "weight_min_abs": 1.517083613082858e-21
+    },
+    {
+      "_source": "second-approach-2-data-18/worker-2/attempts.jsonl",
+      "attempt": 2899,
+      "binary_relation_rows": 38,
+      "candidate_id": "sa20-r002-j18-w2-a002899",
+      "cost": 9.955143021538552e-12,
+      "elapsed_seconds": 0.13355207443237305,
+      "exact_obstruction": "not_checked_dense",
+      "family": "precision_audit",
+      "improved_parent": false,
+      "initial_point_clipped_coordinates": 0,
+      "lane": "precision_audit",
+      "legacy_rooted": true,
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 4.462094169296075e-06,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 4.4620943560051765e-06,
+      "mixed_max": 4.462094169296075e-06,
+      "mono_amplitudes": [
+        [
+          0.9999999999801088,
+          -1.659783419820811e-14
+        ],
+        [
+          0.9999999999802169,
+          -5.978550987605774e-14
+        ],
+        [
+          0.9999999999800796,
+          7.771561172375836e-16
+        ]
+      ],
+      "mono_max_error": 1.9920398679101422e-11,
+      "nfev": 8,
+      "numerical_success": false,
+      "optimality": 2.5350178347542543e-09,
+      "parent_candidate_id": "sa20-r001-j19-w2-a002215",
+      "parent_max_error": 4.076750575714696e-06,
+      "residual_basin_fingerprint": "7dc79b1b9da0884f2524",
+      "seed": 6702472647890759517,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "support_fingerprint": "b7e58a9d29d377f856a4",
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "top_mixed_residuals": [
+        {
+          "abs_error": 4.462094169296075e-06,
+          "colouring": [
+            0,
+            2,
+            2,
+            0,
+            1,
+            1
+          ],
+          "row": 220
+        },
+        {
+          "abs_error": 1.120683551745009e-09,
+          "colouring": [
+            0,
+            2,
+            2,
+            2,
+            2,
+            0
+          ],
+          "row": 240
+        },
+        {
+          "abs_error": 6.383559713816808e-10,
+          "colouring": [
+            1,
+            2,
+            2,
+            2,
+            2,
+            1
+          ],
+          "row": 484
+        },
+        {
+          "abs_error": 3.950059270135821e-11,
+          "colouring": [
+            1,
+            1,
+            0,
+            0,
+            1,
+            1
+          ],
+          "row": 328
+        },
+        {
+          "abs_error": 3.1549541874235225e-11,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "row": 27
+        },
+        {
+          "abs_error": 1.4582529742735782e-11,
+          "colouring": [
+            0,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "row": 30
+        },
+        {
+          "abs_error": 2.931145837217477e-12,
+          "colouring": [
+            1,
+            2,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 445
+        },
+        {
+          "abs_error": 2.1926253001925172e-12,
+          "colouring": [
+            1,
+            0,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 283
+        },
+        {
+          "abs_error": 2.1776838692219797e-12,
+          "colouring": [
+            0,
+            0,
+            1,
+            1,
+            0,
+            0
+          ],
+          "row": 36
+        },
+        {
+          "abs_error": 1.6706579641613453e-12,
+          "colouring": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "row": 607
+        },
+        {
+          "abs_error": 1.3488954371389282e-12,
+          "colouring": [
+            1,
+            1,
+            1,
+            0,
+            1,
+            1
+          ],
+          "row": 355
+        },
+        {
+          "abs_error": 1.2954036267984498e-12,
+          "colouring": [
+            1,
+            1,
+            2,
+            2,
+            1,
+            1
+          ],
+          "row": 400
+        }
+      ],
+      "total_l2": 4.462094356137833e-06,
+      "weight_max_abs": 10.581333745434016,
+      "weight_min_abs": 3.4611897926284813e-23
+    }
+  ],
+  "best_candidate_id": "sa20-r002-j19-w1-a004769",
+  "best_independent_candidate_id": "sa20-r002-j06-w3-a001785",
+  "best_independent_max_error": 6.696939577156636e-05,
+  "best_max_error": 2.984844795105317e-06,
+  "created_at_unix": 1785503908.0554125,
+  "distinct_lineage_roots": 538,
+  "distinct_residual_basin_fingerprints": 640,
+  "distinct_support_fingerprints": 507,
+  "exact_obstruction_statuses": {
+    "not_checked_dense": 582011,
+    "unknown": 292785,
+    "unresolved_no_binary_relations": 66986
+  },
+  "families": {
+    "boundary_fallback": 78987,
+    "fresh_closed_31_55": 32893,
+    "fresh_closed_56_90": 32635,
+    "fresh_closed_91_125": 31521,
+    "fresh_full": 32595,
+    "fresh_near_full": 32701,
+    "legacy_control_mutation": 565067,
+    "novelty_far_fresh_closed_31_55": 50427,
+    "novelty_far_fresh_closed_56_90": 41122,
+    "novelty_far_fresh_closed_91_125": 431,
+    "novelty_far_fresh_near_full": 114,
+    "precision_audit": 36396,
+    "unknown": 6893
+  },
+  "independent_promoted": 528,
+  "interpretation": "Floating-point counterexample candidates only; exact verification is required.",
+  "jobs_expected": 20,
+  "jobs_missing": [],
+  "jobs_present": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "lane_attempt_counts": {
+    "fresh_independent": 163353,
+    "legacy_control": 565067,
+    "novelty_far": 97979,
+    "obstruction_boundary": 78987,
+    "precision_audit": 36396
+  },
+  "lane_best_max_error": {
+    "fresh_independent": 6.696939577156636e-05,
+    "legacy_control": 6.562805127528293e-06,
+    "novelty_far": 6.980917820365586e-05,
+    "obstruction_boundary": 7.225132424010059e-05,
+    "precision_audit": 2.984844795105317e-06
+  },
+  "lane_optimized_counts": {
+    "fresh_independent": 162345,
+    "legacy_control": 279175,
+    "novelty_far": 92094,
+    "obstruction_boundary": 78987,
+    "precision_audit": 36396
+  },
+  "lane_promoted_counts": {
+    "fresh_independent": 240,
+    "legacy_control": 64,
+    "novelty_far": 128,
+    "obstruction_boundary": 160,
+    "precision_audit": 48
+  },
+  "legacy_rooted_promoted": 112,
+  "legacy_rooted_promoted_fraction": 0.175,
+  "manifests": 20,
+  "median_promoted_max_error": 8.606317205564964e-05,
+  "minimum_jobs_for_acceptance": 16,
+  "numerical_successes_below_1e-8": 0,
+  "optimized_attempts": 648997,
+  "parent_based_improvements_promoted": 79,
+  "parent_based_promoted": 112,
+  "promoted_candidates": 640,
+  "repeated_independent_top_residual_signatures": [
+    {
+      "count": 1,
+      "rows": "600,645,405,567,162,81"
+    },
+    {
+      "count": 1,
+      "rows": "142,548,629,382,124,162"
+    },
+    {
+      "count": 1,
+      "rows": "416,674,244,390,2,458"
+    },
+    {
+      "count": 1,
+      "rows": "140,716,725,719,713,704"
+    },
+    {
+      "count": 1,
+      "rows": "178,334,445,607,526,688"
+    },
+    {
+      "count": 1,
+      "rows": "508,40,722,346,391,337"
+    },
+    {
+      "count": 1,
+      "rows": "586,487,391,18,90,9"
+    },
+    {
+      "count": 1,
+      "rows": "528,606,363,607,122,365"
+    },
+    {
+      "count": 1,
+      "rows": "228,36,165,3,723,81"
+    },
+    {
+      "count": 1,
+      "rows": "290,274,355,292,445,56"
+    },
+    {
+      "count": 1,
+      "rows": "50,6,3,27,355,21"
+    },
+    {
+      "count": 1,
+      "rows": "660,722,725,674,165,84"
+    },
+    {
+      "count": 1,
+      "rows": "622,244,373,130,719,717"
+    },
+    {
+      "count": 1,
+      "rows": "176,202,337,336,363,390"
+    },
+    {
+      "count": 1,
+      "rows": "412,340,367,492,701,486"
+    },
+    {
+      "count": 1,
+      "rows": "462,476,723,445,721,724"
+    },
+    {
+      "count": 1,
+      "rows": "268,485,323,80,161,7"
+    },
+    {
+      "count": 1,
+      "rows": "524,486,365,18,118,29"
+    },
+    {
+      "count": 1,
+      "rows": "574,245,334,2,340,244"
+    },
+    {
+      "count": 1,
+      "rows": "228,725,444,445,365,180"
+    }
+  ],
+  "run_id": 30613224955,
+  "run_index": 2,
+  "schema_version": 1,
+  "skipped_known_obstruction": 0,
+  "worker_errors": 292785,
+  "workflow_conclusion": "success"
+}
