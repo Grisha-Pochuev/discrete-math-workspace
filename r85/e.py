@@ -54,9 +54,19 @@ def L(t):
     return int(ln(t, np.roll(t, -1)).sum())
 
 
+g = np.load(io.BytesIO(G.read_bytes()))
+if "dr" in g.files:
+    _A = np.empty((N, 2), np.int64); _A[R, 0] = np.roll(R, 1); _A[R, 1] = np.roll(R, -1)
+    for u, v in g["dr"].astype(np.int64):
+        _A[u][_A[u] == v] = -1; _A[v][_A[v] == u] = -1
+    for u, v in g["da"].astype(np.int64):
+        _A[u, np.where(_A[u] < 0)[0][0]] = v; _A[v, np.where(_A[v] < 0)[0][0]] = u
+    _Al = _A.tolist(); _t = [0] * N; _p = _Al[int(R[0])][0]; _c = int(R[0])
+    for _k in range(N):
+        _t[_k] = _c; _a = _Al[_c]; _n = _a[0] if _a[0] != _p else _a[1]; _p, _c = _c, _n
+    _b0 = L(R); R = np.array(_t, np.int64); log(f"base {L(R) - _b0}")
 R0 = L(R)
 pos = np.empty(N, np.int64); pos[R] = np.arange(N)
-g = np.load(io.BytesIO(G.read_bytes()))
 if "o" in g.files:
     _o = g["o"].astype(np.int64); RI = S % (len(_o) - 1)
     ids = g["i"][_o[RI]:_o[RI + 1]].astype(np.int64)
