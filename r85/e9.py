@@ -371,7 +371,7 @@ for k in range(W):
     e = st["isl"][str(k)]
     ck = D / f"i{k}" / "ck.txt"
     r_ = {"k": k, "mode": e["mode"], "tr": e["tr"], "mig": e.get("mig", 0)}
-    if ck.exists():
+    if ck.exists() and len(rd(ck)[1]) > 0:
         hdr, ps = rd(ck)
         (O / f"c{k}.bin").write_bytes(enc(ps, hdr))
         v = np.array([fl(t) for t in ps], dtype=float)
