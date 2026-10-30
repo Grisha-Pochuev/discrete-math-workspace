@@ -1,0 +1,152 @@
+name: Sixth Approach Capacity Calibration
+run-name: ${{ inputs.run_id }} capacity calibration
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    name: prepare-${{ inputs.run_id }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install immutable solver package
+        run: python -m pip install --disable-pip-version-check --no-cache-dir 'ortools==9.15.6755'
+      - name: Verify immutable contract
+        shell: bash
+        env:
+          CALC_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          test "$CALC_RUN_ID" = 'run-074'
+          python -m py_compile \
+            'sixth approach/run074_classify.py' \
+            'sixth approach/run074_contract.py' \
+            'sixth approach/run073_worker.py' \
+            'sixth approach/run073_verify.py'
+          python 'sixth approach/run074_contract.py' \
+            --spec 'sixth approach/specs/run-074-capacity-calibration.json'
+          python 'sixth approach/tests/test_run074_contract.py'
+          python 'sixth approach/tests/test_run074_classify.py'
+          python 'sixth approach/tests/test_run073_worker.py'
+
+  calibrate:
+    name: single-process-${{ inputs.run_id }}
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install immutable solver package
+        run: python -m pip install --disable-pip-version-check --no-cache-dir 'ortools==9.15.6755'
+      - name: Run one instrumented single-thread search
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p out
+          {
+            date -u +%FT%TZ
+            uname -a
+            nproc
+            free -h
+            df -h .
+            python --version
+            python -c "import ortools; print(ortools.__version__)"
+            echo "GITHUB_SHA=$GITHUB_SHA"
+            sha256sum \
+              'sixth approach/specs/run-074-capacity-calibration.json' \
+              'sixth approach/specs/run-073-types.json' \
+              'sixth approach/specs/run-073-input.json' \
+              'sixth approach/specs/run-073-input-acceptance.json' \
+              'sixth approach/specs/run-073-support-hint.json' \
+              'sixth approach/run074_classify.py' \
+              'sixth approach/run074_contract.py' \
+              'sixth approach/run073_logic.py' \
+              'sixth approach/run073_worker.py' \
+              'sixth approach/run073_verify.py'
+          } > out/diagnostics.log
+
+          timeout --signal=TERM --kill-after=60s 4500s \
+            python 'sixth approach/run073_worker.py' \
+              --spec 'sixth approach/specs/run-074-capacity-calibration.json' \
+              --search-id 'calibration-s0' \
+              --output 'out/result.json' \
+            > out/worker.log 2>&1 &
+          worker_pid=$!
+          printf 'utc\tpython_rss_kib\tcgroup_current_bytes\tmem_available_kib\n' > out/telemetry.tsv
+          while kill -0 "$worker_pid" 2>/dev/null; do
+            python_rss="$(ps -eo rss=,comm= | awk '$2 ~ /^python/ {sum += $1} END {print sum + 0}')"
+            if test -r /sys/fs/cgroup/memory.current; then
+              cgroup_current="$(cat /sys/fs/cgroup/memory.current)"
+            else
+              cgroup_current=0
+            fi
+            mem_available="$(awk '/^MemAvailable:/ {print $2}' /proc/meminfo)"
+            line="$(date -u +%FT%TZ)\t${python_rss}\t${cgroup_current}\t${mem_available}"
+            printf '%b\n' "$line" | tee -a out/telemetry.tsv
+            if test "$python_rss" -gt 8388608 || test "$cgroup_current" -gt 12884901888; then
+              printf 'proactive memory guard: python_rss_kib=%s cgroup_current_bytes=%s\n' \
+                "$python_rss" "$cgroup_current" | tee out/monitor-guard.log
+              kill -TERM "$worker_pid" 2>/dev/null || true
+            fi
+            sleep 10
+          done
+          set +e
+          wait "$worker_pid"
+          worker_code=$?
+          echo "$worker_code" > out/worker.exit
+          tail -n 80 out/worker.log || true
+          exit 0
+
+      - name: Classify and independently replay outcome
+        id: classify
+        shell: bash
+        run: |
+          set +e
+          python 'sixth approach/run074_classify.py' --input out
+          classify_code=$?
+          if test "$classify_code" = 0 && python -c "import json; raise SystemExit(0 if json.load(open('out/summary.json'))['scientific_result'] else 1)"; then
+            python 'sixth approach/run073_verify.py' \
+              --types 'sixth approach/specs/run-073-types.json' \
+              --manifest 'sixth approach/specs/run-073-input.json' \
+              --manifest-acceptance 'sixth approach/specs/run-073-input-acceptance.json' \
+              --probe out/result.json \
+              --output out/result-acceptance.json
+            classify_code=$?
+          fi
+          echo "$classify_code" > out/classification.exit
+          exit 0
+
+      - name: Upload compact calibration evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-capacity-evidence
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Require classified outcome
+        if: always()
+        shell: bash
+        run: exit "$(cat out/classification.exit 2>/dev/null || echo 2)"

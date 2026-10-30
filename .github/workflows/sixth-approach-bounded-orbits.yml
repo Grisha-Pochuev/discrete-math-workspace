@@ -1,0 +1,190 @@
+name: Sixth Approach Bounded Orbit Scan
+run-name: ${{ inputs.run_id }} bounded orbit scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    name: prepare-${{ inputs.run_id }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install pinned solver
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends cadical=1.7.4-1
+      - name: Verify immutable contract and worker
+        shell: bash
+        env:
+          CALC_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          test "$CALC_RUN_ID" = 'run-075'
+          python 'sixth approach/run075_contract.py' \
+            --spec 'sixth approach/specs/run-075-bounded-orbits.json' \
+            --input 'sixth approach/specs/run-075-input.json' \
+            --header 'sixth approach/run075_input.hpp'
+          python 'sixth approach/tests/test_run075_contract.py'
+          python 'sixth approach/tests/test_run075_collect.py'
+          g++ -std=c++20 -O2 -Wall -Wextra -pedantic \
+            'sixth approach/run075_worker.cpp' -o run075_worker
+          mkdir -p smoke
+          ./run075_worker emit --orbit 1 smoke/reference.cnf smoke/metadata.json
+          test "$(sha256sum smoke/reference.cnf | cut -d' ' -f1)" = \
+            'fb7eb15f7c1669e8695cf355263c64387a3effcf58d0e37da8050c1a9220a686'
+          timeout --signal=TERM --kill-after=15s 90s \
+            cadical smoke/reference.cnf > smoke/solver.log 2>&1 || code=$?
+          test "${code:-0}" = 20
+
+  compute:
+    name: group-${{ matrix.group }}-${{ inputs.run_id }}
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 19
+      matrix:
+        group: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install pinned solver and compile worker
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends cadical=1.7.4-1
+          g++ -std=c++20 -O2 -Wall -Wextra -pedantic \
+            'sixth approach/run075_worker.cpp' -o run075_worker
+      - name: Run four independent single-threaded lanes
+        shell: bash
+        env:
+          GROUP_ID: ${{ matrix.group }}
+        run: |
+          set -euo pipefail
+          mkdir -p raw
+          run_lane() {
+            lane="$1"
+            ids="$(python - "$GROUP_ID" "$lane" <<'PY'
+          import json, sys
+          spec=json.load(open('sixth approach/specs/run-075-bounded-orbits.json'))
+          group,lane=map(int,sys.argv[1:])
+          record=next(x for x in spec['assignments'] if x['group']==group and x['lane']==lane)
+          print(' '.join(map(str,record['orbit_ids'])))
+          PY
+            )"
+            for orbit in $ids; do
+              directory="raw/orbit-$orbit"
+              mkdir -p "$directory"
+              if ! ./run075_worker emit --orbit "$orbit" \
+                  "$directory/input.cnf" "$directory/metadata.json"; then
+                echo 2 > "$directory/solver.exit"
+                : > "$directory/solver.log"
+                continue
+              fi
+              cnf_sha="$(sha256sum "$directory/input.cnf" | cut -d' ' -f1)"
+              python - "$directory/metadata.json" "$cnf_sha" <<'PY'
+          import json,sys
+          path,sha=sys.argv[1:]
+          data=json.load(open(path)); data['cnf_sha256']=sha
+          open(path,'w',newline='\n').write(json.dumps(data,indent=2,sort_keys=True)+'\n')
+          PY
+              set +e
+              timeout --signal=TERM --kill-after=15s 180s \
+                cadical "$directory/input.cnf" > "$directory/solver.log" 2>&1
+              code=$?
+              set -e
+              echo "$code" > "$directory/solver.exit"
+              if test "$code" = 10; then
+                ./run075_worker replay --orbit "$orbit" \
+                  "$directory/solver.log" "$directory/positive.json" || \
+                  echo 2 > "$directory/solver.exit"
+              fi
+              rm -f "$directory/input.cnf"
+            done
+          }
+          pids=()
+          for lane in 0 1 2 3; do
+            run_lane "$lane" &
+            pids+=("$!")
+          done
+          lane_failure=0
+          for pid in "${pids[@]}"; do
+            wait "$pid" || lane_failure=1
+          done
+          python 'sixth approach/run075_group.py' \
+            --spec 'sixth approach/specs/run-075-bounded-orbits.json' \
+            --input 'sixth approach/specs/run-075-input.json' \
+            --group "$GROUP_ID" --source-sha "$GITHUB_SHA" \
+            --raw raw --output "group-$GROUP_ID.json"
+          exit "$lane_failure"
+      - name: Upload compact group record
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-group-${{ matrix.group }}
+          path: group-${{ matrix.group }}.json
+          if-no-files-found: error
+          retention-days: 14
+
+  collect:
+    name: collect-${{ inputs.run_id }}
+    needs: compute
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: ${{ inputs.run_id }}-group-*
+          path: groups
+          merge-multiple: true
+      - name: Strictly collect complete diagnostic coverage
+        id: collect
+        shell: bash
+        run: |
+          python 'sixth approach/run075_contract.py' \
+            --spec 'sixth approach/specs/run-075-bounded-orbits.json' \
+            --input 'sixth approach/specs/run-075-input.json' \
+            --header 'sixth approach/run075_input.hpp'
+          set +e
+          python 'sixth approach/run075_collect.py' \
+            --spec 'sixth approach/specs/run-075-bounded-orbits.json' \
+            --input 'sixth approach/specs/run-075-input.json' \
+            --groups groups --output summary.json
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Upload compact accepted catalogue
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-compact-summary
+          path: summary.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Require complete classified coverage
+        if: always()
+        shell: bash
+        run: exit "${{ steps.collect.outputs.code || 2 }}"
