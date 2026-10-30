@@ -1,0 +1,284 @@
+name: prepare verified batch archive
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".archive/**"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: prepare-batch-archive
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Read explicit archive request from triggering diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p work
+          cp "$GITHUB_EVENT_PATH" work/push-event.json
+          python - work/push-event.json <<'PY' > work/push-range.env
+          import json
+          import sys
+
+          with open(sys.argv[1], encoding='utf-8') as source:
+              event = json.load(source)
+          before = str(event.get('before', '')).strip()
+          after = str(event.get('after', '')).strip()
+          if len(before) != 40 or len(after) != 40:
+              raise SystemExit(f'invalid push range: before={before!r} after={after!r}')
+          if set(before) == {'0'}:
+              raise SystemExit('branch-creation push is not a valid archive request')
+          print(f'before_sha={before}')
+          print(f'after_sha={after}')
+          PY
+          cat work/push-range.env
+          cat work/push-range.env >> "$GITHUB_ENV"
+          source work/push-range.env
+          git diff --name-status "$before_sha" "$after_sha" -- .archive/ > work/marker-diff.tsv
+          cat work/marker-diff.tsv
+          marker="$(python - work/marker-diff.tsv <<'PY'
+          import pathlib
+          import sys
+
+          markers = []
+          for line in pathlib.Path(sys.argv[1]).read_text(encoding='utf-8').splitlines():
+              if not line.strip():
+                  continue
+              fields = line.split('\t')
+              status = fields[0]
+              if status not in {'A', 'M'} or len(fields) != 2:
+                  continue
+              path = pathlib.PurePosixPath(fields[1])
+              if len(path.parts) == 2 and path.parts[0] == '.archive' and path.suffix == '.txt':
+                  markers.append(path.as_posix())
+          markers = sorted(set(markers))
+          if len(markers) != 1:
+              raise SystemExit(
+                  f'expected exactly one added/modified archive marker in triggering diff, found {markers}'
+              )
+          print(markers[0])
+          PY
+          )"
+          test -f "$marker"
+          python - "$marker" <<'PY' > request.env
+          import pathlib
+          import sys
+
+          marker = pathlib.Path(sys.argv[1])
+          values = {}
+          for line in marker.read_text(encoding='utf-8').splitlines():
+              if not line.strip() or line.lstrip().startswith('#'):
+                  continue
+              key, value = line.split('=', 1)
+              values[key.strip()] = value.strip()
+          required = {
+              'source_sha', 'source_tasks', 'source_lane',
+              'manifest_stage', 'output_dir', 'reserve_limit',
+              'reserve_shards', 'reserve_split'
+          }
+          assert required <= values.keys(), required - values.keys()
+          print(f'request_marker={marker.as_posix()}')
+          for key in sorted(values):
+              print(f'{key}={values[key]}')
+          PY
+          cat request.env
+          cat request.env >> "$GITHUB_ENV"
+
+      - name: Resolve completed source workflow run
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs?head_sha=${source_sha}&event=push&per_page=100" > work/source-runs.json
+          python - <<'PY' > work/run.env
+          import json
+          import os
+
+          data = json.load(open('work/source-runs.json', encoding='utf-8'))
+          source_sha = os.environ['source_sha']
+          explicit = os.environ.get('run_id', '').strip()
+          runs = [
+              run for run in data.get('workflow_runs', [])
+              if run.get('head_sha') == source_sha
+              and run.get('name') == 'batch'
+              and run.get('path') == '.github/workflows/run-frontier3.yml'
+              and run.get('event') == 'push'
+          ]
+          assert len(runs) == 1, [
+              (run.get('id'), run.get('name'), run.get('path'), run.get('status'), run.get('conclusion'))
+              for run in runs
+          ]
+          run = runs[0]
+          assert run.get('status') == 'completed', (run.get('id'), run.get('status'))
+          conclusion = str(run.get('conclusion') or '')
+          assert conclusion in {'success', 'failure', 'cancelled'}, (
+              run.get('id'), conclusion
+          )
+          resolved = str(run['id'])
+          if explicit:
+              assert explicit == resolved, (explicit, resolved)
+          print(f'run_id={resolved}')
+          print(f'run_url={run["html_url"]}')
+          print(f'run_status={run["status"]}')
+          print(f'run_conclusion={conclusion}')
+          print('artifact_validation_is_authoritative=true')
+          PY
+          cat work/run.env
+          cat work/run.env >> "$GITHUB_ENV"
+
+      - name: Install exact verification dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Download all original artifact ZIP files
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf work/raw
+          mkdir -p work/raw
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${run_id}/artifacts?per_page=100" > work/artifacts-pages.json
+          python - <<'PY' > work/artifacts.tsv
+          import json
+          data = json.load(open('work/artifacts-pages.json', encoding='utf-8'))
+          artifacts = [
+              artifact for artifact in data.get('artifacts', [])
+              if artifact['name'].startswith('data-') and not artifact['expired']
+          ]
+          artifacts.sort(key=lambda artifact: int(artifact['name'].split('-')[1]))
+          expected = [f'data-{index}' for index in range(20)]
+          assert [artifact['name'] for artifact in artifacts] == expected
+          for artifact in artifacts:
+              print(f"{artifact['id']}\t{artifact['name']}\t{artifact.get('digest', '')}")
+          PY
+          while IFS=$'\t' read -r artifact_id artifact_name artifact_digest; do
+            curl --fail --location --retry 4 --retry-all-errors \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${artifact_id}/zip" \
+              -o "work/raw/${artifact_name}.zip"
+            unzip -t "work/raw/${artifact_name}.zip" >/dev/null
+          done < work/artifacts.tsv
+          test "$(find work/raw -maxdepth 1 -name 'data-*.zip' | wc -l)" -eq 20
+
+      - name: Aggregate, compact, and verify final archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -e "$output_dir"
+          test -f "$source_tasks"
+          materialized_source="$source_tasks"
+          if [[ "$source_tasks" == *.gz ]]; then
+            materialized_source="work/source_tasks.json"
+            gzip -cd -- "$source_tasks" > "$materialized_source"
+          fi
+          python collect_run.py \
+            --run-id "$run_id" \
+            --source-sha "$source_sha" \
+            --source-tasks "$materialized_source" \
+            --source-lane "$source_lane" \
+            --manifest-stage "$manifest_stage" \
+            --raw-dir work/raw \
+            --output "$output_dir" \
+            --reserve-limit "$reserve_limit" \
+            --reserve-shards "$reserve_shards" \
+            --reserve-split "$reserve_split" \
+            | tee work/collection-summary.log
+          python compact_archive.py "$output_dir" | tee work/compaction.log
+          python "$output_dir/verify.py" | tee work/verifier.log
+
+      - name: Preserve complete verified candidate archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-batch-archive-${{ env.run_id }}
+          path: ${{ env.output_dir }}/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
+
+      - name: Commit or validate candidate archive on isolated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="agent/archive-${run_id}"
+          {
+            echo "branch=$branch"
+            du -sh "$output_dir"
+            find "$output_dir" -type f -printf '%s %p\n' | sort -nr > work/largest-files.txt
+            sed -n '1,20p' work/largest-files.txt
+            python - "$output_dir" <<'PY'
+          from pathlib import Path
+          import sys
+          root = Path(sys.argv[1])
+          unsafe = [
+              (path.stat().st_size, path.as_posix())
+              for path in root.rglob('*')
+              if path.is_file() and path.stat().st_size >= 95 * 1024 * 1024
+          ]
+          assert not unsafe, f'GitHub-unsafe archive blobs: {unsafe}'
+          PY
+            if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+              echo "archive branch already exists; validating exact reuse: $branch"
+              git fetch --no-tags origin \
+                "refs/heads/${branch}:refs/remotes/origin/${branch}"
+              existing_commit="$(git rev-parse "refs/remotes/origin/${branch}")"
+              rm -rf work/existing-archive
+              git worktree add --detach work/existing-archive "$existing_commit"
+              test -d "work/existing-archive/$output_dir"
+              diff --recursive --brief --no-dereference \
+                "$output_dir" "work/existing-archive/$output_dir"
+              (
+                cd work/existing-archive
+                python "$output_dir/verify.py"
+              ) | tee work/existing-verifier.log
+              printf 'branch=%s\ncommit=%s\nreused_existing=true\n' \
+                "$branch" "$existing_commit" | tee work/archive-branch.env
+              exit 0
+            fi
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git checkout -b "$branch"
+            git add -f -- "$output_dir"
+            git diff --cached --stat
+            git diff --cached --quiet && { echo 'no archive files staged' >&2; exit 1; }
+            git commit -m "prepare batch run ${run_id} archive"
+            git push --verbose origin "HEAD:${branch}"
+            printf 'branch=%s\ncommit=%s\nreused_existing=false\n' \
+              "$branch" "$(git rev-parse HEAD)" | tee work/archive-branch.env
+          } 2>&1 | tee work/publication.log
+
+      - name: Upload preparation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: archive-preparation-${{ github.run_id }}
+          path: |
+            request.env
+            work/push-event.json
+            work/push-range.env
+            work/marker-diff.tsv
+            work/run.env
+            work/artifacts.tsv
+            work/collection-summary.log
+            work/compaction.log
+            work/verifier.log
+            work/existing-verifier.log
+            work/largest-files.txt
+            work/publication.log
+            work/archive-branch.env
+          if-no-files-found: warn
+          retention-days: 7
