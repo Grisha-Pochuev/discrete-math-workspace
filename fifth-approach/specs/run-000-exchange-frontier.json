@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "approach": "fifth-approach",
+  "run_index": 0,
+  "task": "stage0_exchange_frontier",
+  "purpose": "exact finite n=10 audit plus higher-order adversarial/exhaustive frontier search",
+  "source_basis": {
+    "n6_corrected_full_graph_failures": 0,
+    "n8_factor_orbits": 39,
+    "n8_corrected_full_graph_failures": 0,
+    "n10_expected_factor_orbits": 1108
+  },
+  "execution": {
+    "jobs": 20,
+    "workers_per_job": 4,
+    "workers": 80,
+    "runtime_seconds_per_worker": 21000,
+    "job_timeout_minutes": 360,
+    "max_parallel_jobs": 20,
+    "github_concurrency_slots_reserved_for_other_work": 0,
+    "runner": "ubuntu-24.04"
+  },
+  "memory": {
+    "runner_ram_gib_assumption": 16,
+    "per_worker_virtual_memory_limit_mib": 2500,
+    "four_worker_theoretical_limit_mib": 10000,
+    "target_process_tree_rss_mib_or_lower": 11000,
+    "system_reserve_mib": 3000
+  },
+  "worker_plan": {
+    "all_workers_first": "recompute the full n=10 orbit decomposition independently and exhaust the assigned orbit shard over all 3^10 duplicated-colour assignments",
+    "workers_0_39": "n=12 connected factor systems, exhaustive all 3^12 assignments per sampled system",
+    "workers_40_59": "n=14 connected factor systems, exhaustive all 3^14 assignments per sampled system",
+    "workers_60_71": "n=16 connected factor systems, adversarial local search for minimal corrected-safe count",
+    "workers_72_79": "n=18 connected factor systems, adversarial local search for minimal corrected-safe count"
+  },
+  "acceptance": {
+    "require_workers": 80,
+    "require_n10_orbit_coverage": 1108,
+    "require_common_n10_orbit_digest": true,
+    "technical_worker_status": "SUCCESS",
+    "preserve_corrected_counterexample_if_found": true
+  },
+  "artifact_policy": {
+    "shards": "temporary Actions artifacts",
+    "collector": "consolidate worker results, hard cases, checksums and summary under fifth-approach/runs/",
+    "retention_days": 14
+  },
+  "seed": 2026080800
+}

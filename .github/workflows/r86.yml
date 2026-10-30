@@ -1,0 +1,70 @@
+name: r86
+on:
+  workflow_dispatch:
+    inputs:
+      n:
+        default: "20"
+      t:
+        default: "20400"
+      o:
+        default: "20"
+      mt:
+        default: "3000"
+      pert:
+        default: "0"
+      f:
+        default: "w.py"
+      q:
+        default: "10000,20000,30000,50000"
+      tl:
+        default: "0"
+      pr:
+        default: "0"
+permissions:
+  contents: write
+  actions: read
+jobs:
+  m:
+    runs-on: ubuntu-latest
+    outputs:
+      x: ${{ steps.s.outputs.x }}
+    steps:
+      - id: s
+        run: python3 -c "import json;n=int('${{ inputs.n }}');o=int('${{ inputs.o }}');print('x='+json.dumps(list(range(o,o+n))))" >> "$GITHUB_OUTPUT"
+  r:
+    needs: m
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        i: ${{ fromJSON(needs.m.outputs.x) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: r85
+      - run: pip install -q numpy scipy
+      - if: inputs.pr != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download ${{ inputs.pr }} -R ${{ github.repository }} -n o${{ matrix.i }} -D p || true
+          j=$(( ( ${{ matrix.i }} - ${{ inputs.o }} + 1 ) % ${{ inputs.n }} + ${{ inputs.o }} ))
+          gh run download ${{ inputs.pr }} -R ${{ github.repository }} -n o$j -D q || true
+          ls -la p q || true
+      - run: PERT=${{ inputs.pert }} MT=${{ inputs.mt }} Q=${{ inputs.q }} TLX=${{ inputs.tl }} W=4 python3 r85/${{ inputs.f }} ${{ matrix.i }} ${{ inputs.t }} 2>&1 | tee o.log
+      - if: always()
+        run: mkdir -p o && cp o.log o/ || true
+      - if: always()
+        run: |
+          if ls o/t*.bin >/dev/null 2>&1; then
+            git config user.name r85; git config user.email r85@users.noreply.github.com
+            git checkout --orphan o${{ matrix.i }}-${{ github.run_id }}; git rm -rq --cached . || true
+            mkdir -p z; ls o/t*.bin | sed 's#.*/##' > z/k; git add -f --sparse z/k; git commit -qm o; git push -q origin HEAD
+          fi
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: o${{ matrix.i }}
+          path: o
+          retention-days: 14
