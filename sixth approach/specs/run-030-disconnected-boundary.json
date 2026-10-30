@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "run_id": "run-030",
+  "mode": "exact_disconnected_boundary",
+  "engine": "node_plus_compiled_cp_sat_plus_integer_hnf",
+  "order": 8,
+  "catalogue_orbits": 23,
+  "residual_component_type": "4+4",
+  "outputs": [
+    "local-runs/run-030-summary.json"
+  ]
+}

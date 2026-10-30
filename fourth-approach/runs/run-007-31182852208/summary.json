@@ -1,0 +1,18 @@
+{
+  "accepted": true,
+  "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+  "metrics": {
+    "lemma_falsification_prompts": 4,
+    "source_exact_closures": 0,
+    "source_survivors": 60,
+    "source_workers": 60
+  },
+  "next_run_index": 8,
+  "next_task": "stage8_adaptive_exact_lemma_cycle",
+  "run_id": 31182852208,
+  "run_index": 7,
+  "schema_version": 1,
+  "source_run_006": 31130093117,
+  "source_sha": "2af20c8df5fef788b7c9137a98c7f9b08312942f",
+  "task": "stage7_gpt_sol_handoff"
+}
