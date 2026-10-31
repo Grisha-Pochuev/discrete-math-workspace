@@ -1,0 +1,22 @@
+{
+  "accepted": true,
+  "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+  "completed_jobs": 4,
+  "expected_jobs": 4,
+  "metrics": {
+    "canonical_deletion_child_classes": 1,
+    "canonical_minimized_parent_classes": 1,
+    "independently_reverified_children": 7782,
+    "raw_deletion_children": 7782,
+    "source_minimized_records": 2594,
+    "target_zero_children": 7782
+  },
+  "next_decision": "Do not spend a long run on more deletions of this family. Pivot to supports that contain a monochromatic perfect matching in every color, so target_zero is excluded by construction.",
+  "run_id": 31001850059,
+  "run_index": 3,
+  "schema_version": 1,
+  "scientific_interpretation": "All 2594 Run-002 minima collapse under S6 x S3 to one monochromatic perfect-matching support. All 7782 one-variable deletions collapse to one two-edge support and are exactly closed by a one-term target_zero certificate.",
+  "source_sha": "ee0d11b5cf5a78e84cfcc975edf06056384f5a8b",
+  "task": "stage3_deletion_contrasts",
+  "worker_error_count": 0
+}

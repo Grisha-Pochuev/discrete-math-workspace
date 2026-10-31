@@ -1,0 +1,33 @@
+{
+  "accepted": true,
+  "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+  "artifact_directories_found": 20,
+  "completed_jobs": 20,
+  "expected_jobs": 20,
+  "metrics": {
+    "all_full_shards_complete": true,
+    "canonical_certificate_signatures": 2594,
+    "canonical_support_classes": 2594,
+    "complete_shards": 20,
+    "coverage_ok": true,
+    "duplicate_exact_certificates_removed": 0,
+    "independently_verified_certificates": 2594,
+    "non_exact_candidates_encountered": 0,
+    "processed_candidate_records": 2594,
+    "production_exact_claims": 2594,
+    "raw_candidates_in_source_archives": 3200,
+    "raw_exact_certificates": 2594,
+    "rejected_certificates": 0
+  },
+  "minimum_jobs": 20,
+  "next_decision": "Select the simplest diverse verified representative of each canonical class and implement exact certificate minimization.",
+  "rescue": false,
+  "run_id": 30957731562,
+  "run_index": 1,
+  "schema_version": 1,
+  "scientific_interpretation": "Exact verification and canonical counts apply only to the recorded support-restricted n=6,d=3 certificate systems. They do not prove the full Krenn--Gu conjecture.",
+  "smoke": false,
+  "source_sha": "facfbcd54918841042d3549d07104d3cf2e0c7b1",
+  "task": "stage1_canonicalize_verify",
+  "worker_error_count": 0
+}
