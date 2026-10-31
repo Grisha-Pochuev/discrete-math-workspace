@@ -48,9 +48,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh run download ${{ inputs.pr }} -R ${{ github.repository }} -n o${{ matrix.i }} -D p || true
+          sleep $(( ( ${{ matrix.i }} % 20 ) * 4 ))
+          for a in 1 2 3 4 5 6; do
+            rm -rf p; gh run download ${{ inputs.pr }} -R ${{ github.repository }} -n o${{ matrix.i }} -D p && ls p/c0.bin && break
+            sleep $(( 20 + RANDOM % 40 ))
+          done
           j=$(( ( ${{ matrix.i }} - ${{ inputs.o }} + 1 ) % ${{ inputs.n }} + ${{ inputs.o }} ))
-          gh run download ${{ inputs.pr }} -R ${{ github.repository }} -n o$j -D q || true
+          for a in 1 2; do
+            rm -rf q; gh run download ${{ inputs.pr }} -R ${{ github.repository }} -n o$j -D q && break
+            sleep $(( 20 + RANDOM % 40 ))
+          done
           ls -la p q || true
       - run: PERT=${{ inputs.pert }} MT=${{ inputs.mt }} Q=${{ inputs.q }} TLX=${{ inputs.tl }} W=4 python3 r85/${{ inputs.f }} ${{ matrix.i }} ${{ inputs.t }} 2>&1 | tee o.log
       - if: always()
