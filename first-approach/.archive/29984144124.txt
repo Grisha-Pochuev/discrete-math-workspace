@@ -1,0 +1,9 @@
+run_id=29984144124
+source_sha=56e1b3471cee782ac8ec08721f5fa90b1ffc5d84
+source_tasks=runs/2026-07-23-b/next_tasks.json
+source_lane=frontier3
+manifest_stage=frontier2
+output_dir=runs/2026-07-23-c
+reserve_limit=31
+reserve_shards=8192
+reserve_split=19

@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "run_id": "run-061",
+  "mode": "adaptive_support_screen_exact_cuts",
+  "supersedes": "run-055",
+  "trigger": "workflow_dispatch",
+  "workflow": "sixth-approach-adaptive-shards.yml",
+  "runner": "ubuntu-24.04",
+  "graphs": [
+    {"id": "c8", "type": "C8", "expected_matchings": 31, "exact_event_cuts": 0, "exact_event_cut_literals": 0},
+    {"id": "c5c3", "type": "C5+C3", "expected_matchings": 30, "exact_event_cuts": 2, "exact_event_cut_literals": 22},
+    {"id": "c4c4", "type": "C4+C4", "expected_matchings": 33, "exact_event_cuts": 2, "exact_event_cut_literals": 22}
+  ],
+  "jobs": 48,
+  "max_parallel": 20,
+  "shards_per_graph": 16,
+  "partition": "first-edge-prefix-bits-v1",
+  "partition_bits": 4,
+  "worker_language": "C++20",
+  "solver": "OR-Tools CP-SAT v9.15.6755",
+  "workers_per_shard": 4,
+  "seconds_per_round": 180,
+  "exchange_rounds": 40,
+  "worker_seconds": 7800,
+  "worker_memory_mib": 9000,
+  "job_timeout_minutes": 150,
+  "exact_cut_version": 1,
+  "cut_bundle_path": "sixth approach/specs/run-061-exact-event-cuts.json",
+  "cut_bundle_sha256": "b37d4e04d449a4f03ea9150a36a7d2f3d41183aa9545b39086bd0f2dc450a9fc",
+  "cut_header_sha256": "7ba01f2ef81044d56b0cc693becb6357e261a74138be0545484d40140107044b",
+  "worker_source_sha256": "d4cf0091cd7cd16b67ab87119ca1b5a6b0354e9a56b03a12bc86852f2238e480",
+  "acceptance": {
+    "all_shards_emit_json": true,
+    "strict_partition_replay": true,
+    "strict_model_identity": true,
+    "strict_cut_identity": true,
+    "scientific_survivors_are_data": true,
+    "artifacts_always_uploaded": true,
+    "compact_archive_on_acceptance": true
+  }
+}

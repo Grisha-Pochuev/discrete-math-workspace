@@ -1,0 +1,101 @@
+name: r84v8
+run-name: r84v8
+on:
+  push:
+    branches: [main]
+    paths: [r84/q8/go]
+  workflow_dispatch: {}
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: r84v8
+  cancel-in-progress: false
+jobs:
+  p:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: g
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python - <<'PY'
+          import os,json,urllib.request
+          root='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']
+          def get(path):
+              req=urllib.request.Request(root+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(req,timeout=60) as r:return json.load(r)
+          found=[]
+          for st in ['queued','pending','waiting','requested','in_progress']:
+              page=1
+              while True:
+                  rows=get('/actions/runs?status='+st+'&per_page=100&page='+str(page))['workflow_runs']
+                  found.extend((r['id'],r['name'],r['status']) for r in rows if str(r['id'])!=os.environ['GITHUB_RUN_ID'])
+                  if len(rows)<100:break
+                  page+=1
+          print(json.dumps({'active':found}))
+          if found:raise SystemExit('Occupied')
+          PY
+  a:
+    needs: p
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        i: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: r84/q7
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: 34695148615
+          name: r84p-34695148615-a1-${{ matrix.i }}
+          path: r84/q8/in
+      - name: a
+        env:
+          IDX: ${{ matrix.i }}
+        run: |
+          python - <<'PY'
+          import os,json,tarfile,pathlib,collections,re
+          root=pathlib.Path('r84/q8');out=root/'out';out.mkdir(parents=True,exist_ok=True)
+          src=root/'o';src.mkdir()
+          with tarfile.open(root/'in'/('a-'+os.environ['IDX']+'.tgz')) as t:t.extractall(src,filter='data')
+          s=json.load(open(src/'state.json'));attempts=[a for m in s.get('models',[]) for a in m.get('attempts',[])];arms=[a for t in attempts for a in t.get('arms',[])]
+          phases=collections.Counter();first=[]
+          for f in src.glob('m*/w*/[abcd]/l'):
+              text=f.read_text(errors='replace');phase='tour' if 'Writing OUTPUT_TOUR_FILE' in text else ('search' if 'Preprocessing time' in text else 'setup');phases[phase]+=1
+              first.extend(float(v) for v in re.findall(r'\* 1: Cost = .*?Time = ([\d.]+) sec',text))
+          report={k:v for k,v in s.items() if k!='models'}
+          report.update(models=len(s.get('models',[])),attempts=len(attempts),arms=len(arms),statuses=dict(collections.Counter(a.get('status') for a in arms)),phases=dict(phases),first_times=first,new_pool=sum(a.get('new_pool',0) for a in attempts))
+          (out/'s.json').write_text(json.dumps(report,indent=2));(out/'l').write_text((src/'r.log').read_text(errors='replace')[-8000:])
+          print(json.dumps({k:v for k,v in report.items() if k!='first_times'}))
+          PY
+      - uses: actions/cache/restore@v4
+        if: matrix.i == 0
+        with:
+          path: r84/q7/w
+          key: r84p-3a58b0ac00865b53fb4fd8eea6eda3fa870ba2f7
+          fail-on-cache-miss: true
+      - name: b
+        if: matrix.i == 0
+        run: |
+          set -euo pipefail
+          mkdir -p r84/q8/z
+          cat r84/q7/d[0-9][0-9] > r84/q7/p.tgz
+          sha256sum -c r84/q7/s
+          tar -xzf r84/q7/p.tgz -C r84/q8/z
+          tar -czf r84/q8/out/b.tgz -C r84/q8 z -C "$GITHUB_WORKSPACE/r84/q7" w
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: r84v8-${{ github.run_id }}-${{ matrix.i }}
+          path: r84/q8/out
+          retention-days: 21
+          compression-level: 0
+          if-no-files-found: error

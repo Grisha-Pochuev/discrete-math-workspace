@@ -1,0 +1,16 @@
+{
+  "schema": "neutral-proof-calibration-v1",
+  "run_id": "run-076",
+  "class_id": 1,
+  "input_sha256": "9cfa92c557b95cd0b6c3310642858837af66f464c4885ae30a31435f59a7b334",
+  "expected_variable_count": 216720,
+  "expected_clause_count": 1253860,
+  "expected_cnf_sha256": "9c9af19de20cc648b4beaa9bdb15b6f23ee7259bef694bcbcb8708d4b2a3ccc8",
+  "solver_package": "cadical=1.7.4-1",
+  "solver_seconds": 10800,
+  "job_timeout_minutes": 210,
+  "certificate": "text LRAT, internally checked by the solver and separately checked by pinned lrat-check",
+  "checker_repository": "marijnheule/drat-trim",
+  "checker_commit": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985",
+  "artifact_policy": "retain compressed LRAT, metadata, solver log, checker log, and positive support if any; never promote timeout or solver status without a certificate"
+}

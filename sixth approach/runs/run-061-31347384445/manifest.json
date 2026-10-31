@@ -1,0 +1,11 @@
+{
+  "archive_format": "adaptive_exact_cut_v1",
+  "cut_bundle_sha256": "b37d4e04d449a4f03ea9150a36a7d2f3d41183aa9545b39086bd0f2dc450a9fc",
+  "mathematical_closure": false,
+  "run_id": "run-061",
+  "schema_version": 1,
+  "scientific_survivors": 48,
+  "source_sha": "26db6501e2b28a45c06af578687032d50ae7b420",
+  "validated_shards": 48,
+  "workflow_run": "31347384445"
+}

@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "run_id": "run-034",
+  "mode": "native_exact_support_layers",
+  "trigger": "workflow_dispatch",
+  "runner": "ubuntu-24.04",
+  "case": 14,
+  "orbit": 3,
+  "supports": [59, 60, 61, 62, 63, 64, 65, 66],
+  "jobs": 8,
+  "shards_per_job": 4,
+  "partition": "parity2-v1",
+  "single_threaded_workers": true,
+  "worker_language": "C++20",
+  "worker_seconds": 6600,
+  "worker_cap": 2000000,
+  "worker_memory_mib": 2500,
+  "checkpoint_every": 100000,
+  "checkpoint_seconds": 300,
+  "expected_model": {
+    "stabilizer_size": 32,
+    "term_variables": 27840,
+    "escape_variables": 162
+  },
+  "toolkit": {
+    "version": "9.15.6755",
+    "archive": "or-tools_amd64_ubuntu-24.04_cpp_v9.15.6755.tar.gz",
+    "sha256": "6f389320672cee00b78aacefb2bde33fef0bb988c3b2735573b9fffd1047fbda"
+  },
+  "acceptance": {
+    "all_shards_complete": true,
+    "all_layers_complete": true,
+    "reject_caps_deadlines_signals": true,
+    "replay_support_sizes": true,
+    "verify_multiplicities": true
+  }
+}

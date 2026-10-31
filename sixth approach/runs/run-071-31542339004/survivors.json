@@ -1,0 +1,200 @@
+[
+  {
+    "exact_replay": {
+      "accepted": true,
+      "forbidden_histogram": {
+        "multiple": 82,
+        "unique": 0,
+        "zero": 29075
+      },
+      "row_count": 29160,
+      "target_counts": {
+        "0": 1,
+        "1": 2,
+        "2": 2
+      },
+      "threats": [],
+      "threats_truncated": false
+    },
+    "search_ids": [
+      "s102"
+    ],
+    "selected_active": [
+      22,
+      23,
+      31,
+      32,
+      45,
+      71,
+      85,
+      86,
+      88,
+      89,
+      94,
+      95,
+      97,
+      98,
+      117,
+      142,
+      143,
+      151,
+      152,
+      175,
+      180,
+      189,
+      278,
+      292
+    ],
+    "selected_count": 24,
+    "selected_sha256": "c1a4a18f8e6a56a0e3b730e42d28e395d4ea7e0fc01e08b554671fc415ba5628"
+  },
+  {
+    "exact_replay": {
+      "accepted": true,
+      "forbidden_histogram": {
+        "multiple": 126,
+        "unique": 0,
+        "zero": 29031
+      },
+      "row_count": 29160,
+      "target_counts": {
+        "0": 1,
+        "1": 2,
+        "2": 2
+      },
+      "threats": [],
+      "threats_truncated": false
+    },
+    "search_ids": [
+      "s150"
+    ],
+    "selected_active": [
+      22,
+      23,
+      25,
+      26,
+      31,
+      32,
+      34,
+      35,
+      45,
+      117,
+      130,
+      134,
+      139,
+      140,
+      142,
+      143,
+      148,
+      149,
+      151,
+      152,
+      180,
+      189,
+      278,
+      283
+    ],
+    "selected_count": 24,
+    "selected_sha256": "cacca0ce7fbcc9b2e1db2c0176ed6fefa5dab2816efa36469e13e8c946d5b340"
+  },
+  {
+    "exact_replay": {
+      "accepted": true,
+      "forbidden_histogram": {
+        "multiple": 82,
+        "unique": 0,
+        "zero": 29075
+      },
+      "row_count": 29160,
+      "target_counts": {
+        "0": 1,
+        "1": 2,
+        "2": 2
+      },
+      "threats": [],
+      "threats_truncated": false
+    },
+    "search_ids": [
+      "s096"
+    ],
+    "selected_active": [
+      45,
+      67,
+      71,
+      85,
+      86,
+      88,
+      89,
+      94,
+      95,
+      97,
+      98,
+      117,
+      142,
+      143,
+      151,
+      152,
+      175,
+      180,
+      189,
+      202,
+      205,
+      238,
+      241,
+      278
+    ],
+    "selected_count": 24,
+    "selected_sha256": "f615bcf6737fa3a6fc6b6b3b4e849c87018312eea263d021ad3e1d80974f116b"
+  },
+  {
+    "exact_replay": {
+      "accepted": true,
+      "forbidden_histogram": {
+        "multiple": 123,
+        "unique": 0,
+        "zero": 29034
+      },
+      "row_count": 29160,
+      "target_counts": {
+        "0": 1,
+        "1": 2,
+        "2": 2
+      },
+      "threats": [],
+      "threats_truncated": false
+    },
+    "search_ids": [
+      "s132"
+    ],
+    "selected_active": [
+      22,
+      23,
+      25,
+      26,
+      31,
+      32,
+      34,
+      35,
+      45,
+      88,
+      89,
+      97,
+      98,
+      117,
+      121,
+      129,
+      139,
+      140,
+      148,
+      149,
+      170,
+      172,
+      180,
+      189,
+      292,
+      296
+    ],
+    "selected_count": 26,
+    "selected_sha256": "cceb74e9722d2ce8a7b24ee80b14a02c48a5bb9ec9dc3af59e467f18cdd93734"
+  }
+]

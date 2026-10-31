@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "series": "run-030",
+  "mode": "exact_disconnected_boundary",
+  "catalogue": {
+    "all_hard_orbits": 77,
+    "component_4_plus_4": 23,
+    "component_8": 54
+  },
+  "full_support_character_audit": {
+    "audited_orbits": 23,
+    "formal_concepts": 11362,
+    "zero_or_one_sided_concepts": 11064,
+    "two_sided_coordinate_edge_faces": 298,
+    "two_sided_non_edge_faces": 0,
+    "unresolved_full_support_orbits": 0
+  },
+  "reduced_support_frontier": {
+    "all_status_optimal": true,
+    "all_objectives_equal_lower_bounds": true,
+    "objective_histogram": {
+      "50": 6,
+      "52": 4,
+      "54": 1,
+      "56": 3,
+      "68": 6,
+      "70": 3
+    }
+  },
+  "dense_boundary_group": {
+    "catalogue_indices": [0, 2, 8],
+    "source_orbits": 3,
+    "support_70_orbits_per_source": 19,
+    "support_71_orbits_per_source": 8,
+    "audited_boundary_support_orbits": 81,
+    "non_edge_survivors": 0,
+    "unresolved_support_orbits_in_group": 0
+  },
+  "arbitrary_support_closed_orbits": 3,
+  "remaining_arbitrary_support_orbits": 20
+}

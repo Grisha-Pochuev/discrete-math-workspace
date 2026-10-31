@@ -1,0 +1,177 @@
+name: Fourth approach Run 004 fixed-support minimization
+
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/workflows/fourth-approach-run004-manual.yml']
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: fourth-approach-run-004-manual-only
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            fourth-approach
+            third-approach-2.0/runs
+      - name: Real-path validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile fourth-approach/fixed_support_minimize.py fourth-approach/run004_collect.py
+          python - <<'PY'
+          import gzip,json
+          p='third-approach-2.0/runs/run-004-30911346279/top-candidates.json.gz'
+          with gzip.open(p,'rt') as f: d=json.load(f)
+          x=next(v for v in d['candidates'] if v.get('candidate_id')=='ta20-r004-j00-w2-a0165261')
+          with gzip.open('/tmp/candidate.json.gz','wt') as f: json.dump(x,f)
+          PY
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python fourth-approach/fixed_support_minimize.py --self-test-candidate /tmp/candidate.json.gz
+          set +e
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python fourth-approach/fixed_support_minimize.py \
+            --repo . --source-index fourth-approach/runs/run-002-30960392864/minimized-certificates.json.gz \
+            --shard-id 0 --shard-count 20 --seconds 900 --max-attempts 1 --output /tmp/smoke.json.gz
+          code=$?
+          set -e
+          test "$code" = 0 -o "$code" = 3
+          python - <<'PY'
+          import gzip,json
+          with gzip.open('/tmp/smoke.json.gz','rt') as f: p=json.load(f)
+          r=p['records'][0]
+          assert len(p['records'])==1 and r['support_unchanged'] and r['verified_exact']
+          assert all(v>0 for v in r['mono_matching_counts'])
+          PY
+
+  compute:
+    needs: validate
+    name: fourth-4-${{ matrix.id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUNBUFFERED: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            fourth-approach
+            third-approach-2.0/runs
+      - name: Compute and preserve checkpoint
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p out
+          date -u +%FT%TZ > out/started-at.txt
+          printf '%s\n' "$GITHUB_SHA" > out/source-sha.txt
+          printf 'Run 004 shard %s/20 for 20700 seconds\n' '${{ matrix.id }}' > out/command.txt
+          { uname -a; nproc; lscpu; free -h; cat /proc/meminfo; swapon --show || true; df -h .; ulimit -a; python --version; } > out/machine.txt
+          bash fourth-approach/tools/monitor_resources.sh out/resource-monitor.log 30 & monitor=$!
+          set +e
+          timeout --signal=TERM --kill-after=30s 20790s env PYTHONPATH=fourth-approach python fourth-approach/fixed_support_minimize.py \
+            --repo . --source-index fourth-approach/runs/run-002-30960392864/minimized-certificates.json.gz \
+            --shard-id '${{ matrix.id }}' --shard-count 20 --seconds 20700 --max-attempts 0 --output out/records.json.gz \
+            > out/driver.log 2>&1
+          code=$?
+          set -e
+          kill "$monitor" 2>/dev/null || true; wait "$monitor" 2>/dev/null || true
+          printf '%s\n' "$code" > out/runner-exit-code.txt
+          date -u +%FT%TZ > out/finished-at.txt
+          status=TECHNICAL_FAILURE
+          if [ -f out/records.json.gz ]; then
+            complete=$(python -c "import gzip,json; print(json.load(gzip.open('out/records.json.gz','rt')).get('complete') is True)")
+            if [ "$complete" = True ] && [ "$code" = 0 ]; then status=SUCCESS; else status=BOUNDED_INCOMPLETE; fi
+          fi
+          printf '{"schema_version":1,"approach":"fourth-approach-obstruction-guided-exact-synthesis","task":"stage4_fixed_support_certificate_minimization","run_index":4,"shard_id":%s,"shard_count":20,"status":"%s","result_file":"records.json.gz"}\n' '${{ matrix.id }}' "$status" > out/manifest.json
+          test "$status" = SUCCESS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-run004-data-${{ matrix.id }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 21
+          compression-level: 6
+
+  collect:
+    needs: [validate, compute]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          filter: blob:none
+          sparse-checkout: fourth-approach
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: fourth-approach-run004-data-*
+          path: work/artifacts
+          merge-multiple: false
+      - id: aggregate
+        shell: bash
+        run: |
+          set +e
+          mkdir -p work
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python fourth-approach/run004_collect.py \
+            --artifacts work/artifacts --repo . --run-id "$GITHUB_RUN_ID" --source-sha "$GITHUB_SHA" \
+            --expected-jobs 20 --minimum-jobs 18 > work/collector.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > work/collector-exit-code.txt
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Commit immutable result
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach/runs fourth-approach/control.json fourth-approach/launch.json
+          if ! git diff --cached --quiet; then
+            git commit -m "save Fourth approach run 004 from ${GITHUB_RUN_ID}"
+            for n in 1 2 3 4; do
+              if git push origin HEAD:main; then break; fi
+              test "$n" != 4
+              git fetch --depth=50 --filter=blob:none origin main
+              git rebase origin/main
+            done
+          fi
+      - name: Verify accepted result
+        shell: bash
+        run: |
+          set -euo pipefail
+          test '${{ steps.aggregate.outputs.code }}' = 0
+          python - <<PY
+          import json
+          s=json.load(open('fourth-approach/runs/run-004-${GITHUB_RUN_ID}/summary.json'))
+          assert s['accepted'] and s['metrics']['source_support_classes']==2594
+          assert s['metrics']['supports_changed']==0
+          assert s['metrics']['supports_missing_monochromatic_target']==0
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-run004-collection-${{ github.run_id }}
+          path: work/
+          if-no-files-found: warn
+          retention-days: 21

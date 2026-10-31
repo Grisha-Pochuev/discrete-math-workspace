@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "run_id": "run-048",
+  "mode": "exact_integer_lattice_audit",
+  "trigger": "workflow_dispatch",
+  "workflow": "sixth-approach-exact-lattice-batch.yml",
+  "runner": "ubuntu-24.04",
+  "engine": "python_sympy_exact_hnf",
+  "jobs": 14,
+  "max_parallel": 3,
+  "layers": [
+    {"index": 3, "orbit": 8, "missing_type": "C8", "support": 59, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-3-layer-59"},
+    {"index": 3, "orbit": 8, "missing_type": "C8", "support": 60, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-3-layer-60"},
+    {"index": 3, "orbit": 8, "missing_type": "C8", "support": 61, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-3-layer-61"},
+    {"index": 9, "orbit": 51, "missing_type": "C8", "support": 59, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-9-layer-59"},
+    {"index": 9, "orbit": 51, "missing_type": "C8", "support": 60, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-9-layer-60"},
+    {"index": 9, "orbit": 51, "missing_type": "C8", "support": 61, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-9-layer-61"},
+    {"index": 10, "orbit": 52, "missing_type": "C8", "support": 59, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-10-layer-59"},
+    {"index": 10, "orbit": 52, "missing_type": "C8", "support": 60, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-10-layer-60"},
+    {"index": 10, "orbit": 52, "missing_type": "C8", "support": 61, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-10-layer-61"},
+    {"index": 10, "orbit": 52, "missing_type": "C8", "support": 62, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-10-layer-62"},
+    {"index": 11, "orbit": 53, "missing_type": "C8", "support": 59, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-11-layer-59"},
+    {"index": 11, "orbit": 53, "missing_type": "C8", "support": 60, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-11-layer-60"},
+    {"index": 11, "orbit": 53, "missing_type": "C8", "support": 61, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-11-layer-61"},
+    {"index": 11, "orbit": 53, "missing_type": "C8", "support": 62, "source_run": 31320817024, "source_logical_run": "run-037", "artifact": "run-037-case-11-layer-62"}
+  ],
+  "acceptance": {
+    "all_layers_present": true,
+    "all_inputs_complete": true,
+    "all_support_orbits_audited": true,
+    "scientific_survivors_preserved": true,
+    "mathematical_closure_requires_zero_two_sided": true,
+    "artifacts_always_uploaded": true
+  }
+}

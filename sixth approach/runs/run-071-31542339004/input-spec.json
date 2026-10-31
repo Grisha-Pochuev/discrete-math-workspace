@@ -1,0 +1,530 @@
+{
+  "active_variables": 324,
+  "boundary_rows": 29160,
+  "cuts_per_round": 512,
+  "engine": "ortools-cp-sat-9.15.6755-lazy-support",
+  "event_cut_outcome_sha256": "4e037887da1e1f40ce21947c6ad2606757458d24be40aefb0db44d2435ad32fa",
+  "event_cut_path": "sixth approach/specs/run-071-exact-event-cuts.json",
+  "event_cut_sha256": "27ac519bd4f378c002ffc9145b1a05e8b16f5dfe1877662db8824524a1d5540b",
+  "logical_workers_per_job": 4,
+  "max_rounds": 500,
+  "memory_mib_per_search": 3000,
+  "physical_jobs": 18,
+  "reserved_runner_slots": 2,
+  "run_id": "run-071",
+  "schema": "run-071-boundary-event-v1",
+  "scope": "bounded constructive support search with two independently accepted exact-event clauses",
+  "searches": [
+    {
+      "group": 0,
+      "id": "s080",
+      "seed": 20894331,
+      "slot": 0,
+      "target_orbit": 2
+    },
+    {
+      "group": 0,
+      "id": "s081",
+      "seed": 20902250,
+      "slot": 1,
+      "target_orbit": 0
+    },
+    {
+      "group": 0,
+      "id": "s082",
+      "seed": 20910169,
+      "slot": 2,
+      "target_orbit": 1
+    },
+    {
+      "group": 0,
+      "id": "s083",
+      "seed": 20918088,
+      "slot": 3,
+      "target_orbit": 2
+    },
+    {
+      "group": 1,
+      "id": "s084",
+      "seed": 20926007,
+      "slot": 0,
+      "target_orbit": 0
+    },
+    {
+      "group": 1,
+      "id": "s085",
+      "seed": 20933926,
+      "slot": 1,
+      "target_orbit": 1
+    },
+    {
+      "group": 1,
+      "id": "s086",
+      "seed": 20941845,
+      "slot": 2,
+      "target_orbit": 2
+    },
+    {
+      "group": 1,
+      "id": "s087",
+      "seed": 20949764,
+      "slot": 3,
+      "target_orbit": 0
+    },
+    {
+      "group": 2,
+      "id": "s088",
+      "seed": 20957683,
+      "slot": 0,
+      "target_orbit": 1
+    },
+    {
+      "group": 2,
+      "id": "s089",
+      "seed": 20965602,
+      "slot": 1,
+      "target_orbit": 2
+    },
+    {
+      "group": 2,
+      "id": "s090",
+      "seed": 20973521,
+      "slot": 2,
+      "target_orbit": 0
+    },
+    {
+      "group": 2,
+      "id": "s091",
+      "seed": 20981440,
+      "slot": 3,
+      "target_orbit": 1
+    },
+    {
+      "group": 3,
+      "id": "s092",
+      "seed": 20989359,
+      "slot": 0,
+      "target_orbit": 2
+    },
+    {
+      "group": 3,
+      "id": "s093",
+      "seed": 20997278,
+      "slot": 1,
+      "target_orbit": 0
+    },
+    {
+      "group": 3,
+      "id": "s094",
+      "seed": 21005197,
+      "slot": 2,
+      "target_orbit": 1
+    },
+    {
+      "group": 3,
+      "id": "s095",
+      "seed": 21013116,
+      "slot": 3,
+      "target_orbit": 2
+    },
+    {
+      "group": 4,
+      "id": "s096",
+      "seed": 21021035,
+      "slot": 0,
+      "target_orbit": 0
+    },
+    {
+      "group": 4,
+      "id": "s097",
+      "seed": 21028954,
+      "slot": 1,
+      "target_orbit": 1
+    },
+    {
+      "group": 4,
+      "id": "s098",
+      "seed": 21036873,
+      "slot": 2,
+      "target_orbit": 2
+    },
+    {
+      "group": 4,
+      "id": "s099",
+      "seed": 21044792,
+      "slot": 3,
+      "target_orbit": 0
+    },
+    {
+      "group": 5,
+      "id": "s100",
+      "seed": 21052711,
+      "slot": 0,
+      "target_orbit": 1
+    },
+    {
+      "group": 5,
+      "id": "s101",
+      "seed": 21060630,
+      "slot": 1,
+      "target_orbit": 2
+    },
+    {
+      "group": 5,
+      "id": "s102",
+      "seed": 21068549,
+      "slot": 2,
+      "target_orbit": 0
+    },
+    {
+      "group": 5,
+      "id": "s103",
+      "seed": 21076468,
+      "slot": 3,
+      "target_orbit": 1
+    },
+    {
+      "group": 6,
+      "id": "s104",
+      "seed": 21084387,
+      "slot": 0,
+      "target_orbit": 2
+    },
+    {
+      "group": 6,
+      "id": "s105",
+      "seed": 21092306,
+      "slot": 1,
+      "target_orbit": 0
+    },
+    {
+      "group": 6,
+      "id": "s106",
+      "seed": 21100225,
+      "slot": 2,
+      "target_orbit": 1
+    },
+    {
+      "group": 6,
+      "id": "s107",
+      "seed": 21108144,
+      "slot": 3,
+      "target_orbit": 2
+    },
+    {
+      "group": 7,
+      "id": "s108",
+      "seed": 21116063,
+      "slot": 0,
+      "target_orbit": 0
+    },
+    {
+      "group": 7,
+      "id": "s109",
+      "seed": 21123982,
+      "slot": 1,
+      "target_orbit": 1
+    },
+    {
+      "group": 7,
+      "id": "s110",
+      "seed": 21131901,
+      "slot": 2,
+      "target_orbit": 2
+    },
+    {
+      "group": 7,
+      "id": "s111",
+      "seed": 21139820,
+      "slot": 3,
+      "target_orbit": 0
+    },
+    {
+      "group": 8,
+      "id": "s112",
+      "seed": 21147739,
+      "slot": 0,
+      "target_orbit": 1
+    },
+    {
+      "group": 8,
+      "id": "s113",
+      "seed": 21155658,
+      "slot": 1,
+      "target_orbit": 2
+    },
+    {
+      "group": 8,
+      "id": "s114",
+      "seed": 21163577,
+      "slot": 2,
+      "target_orbit": 0
+    },
+    {
+      "group": 8,
+      "id": "s115",
+      "seed": 21171496,
+      "slot": 3,
+      "target_orbit": 1
+    },
+    {
+      "group": 9,
+      "id": "s116",
+      "seed": 21179415,
+      "slot": 0,
+      "target_orbit": 2
+    },
+    {
+      "group": 9,
+      "id": "s117",
+      "seed": 21187334,
+      "slot": 1,
+      "target_orbit": 0
+    },
+    {
+      "group": 9,
+      "id": "s118",
+      "seed": 21195253,
+      "slot": 2,
+      "target_orbit": 1
+    },
+    {
+      "group": 9,
+      "id": "s119",
+      "seed": 21203172,
+      "slot": 3,
+      "target_orbit": 2
+    },
+    {
+      "group": 10,
+      "id": "s120",
+      "seed": 21211091,
+      "slot": 0,
+      "target_orbit": 0
+    },
+    {
+      "group": 10,
+      "id": "s121",
+      "seed": 21219010,
+      "slot": 1,
+      "target_orbit": 1
+    },
+    {
+      "group": 10,
+      "id": "s122",
+      "seed": 21226929,
+      "slot": 2,
+      "target_orbit": 2
+    },
+    {
+      "group": 10,
+      "id": "s123",
+      "seed": 21234848,
+      "slot": 3,
+      "target_orbit": 0
+    },
+    {
+      "group": 11,
+      "id": "s124",
+      "seed": 21242767,
+      "slot": 0,
+      "target_orbit": 1
+    },
+    {
+      "group": 11,
+      "id": "s125",
+      "seed": 21250686,
+      "slot": 1,
+      "target_orbit": 2
+    },
+    {
+      "group": 11,
+      "id": "s126",
+      "seed": 21258605,
+      "slot": 2,
+      "target_orbit": 0
+    },
+    {
+      "group": 11,
+      "id": "s127",
+      "seed": 21266524,
+      "slot": 3,
+      "target_orbit": 1
+    },
+    {
+      "group": 12,
+      "id": "s128",
+      "seed": 21274443,
+      "slot": 0,
+      "target_orbit": 2
+    },
+    {
+      "group": 12,
+      "id": "s129",
+      "seed": 21282362,
+      "slot": 1,
+      "target_orbit": 0
+    },
+    {
+      "group": 12,
+      "id": "s130",
+      "seed": 21290281,
+      "slot": 2,
+      "target_orbit": 1
+    },
+    {
+      "group": 12,
+      "id": "s131",
+      "seed": 21298200,
+      "slot": 3,
+      "target_orbit": 2
+    },
+    {
+      "group": 13,
+      "id": "s132",
+      "seed": 21306119,
+      "slot": 0,
+      "target_orbit": 0
+    },
+    {
+      "group": 13,
+      "id": "s133",
+      "seed": 21314038,
+      "slot": 1,
+      "target_orbit": 1
+    },
+    {
+      "group": 13,
+      "id": "s134",
+      "seed": 21321957,
+      "slot": 2,
+      "target_orbit": 2
+    },
+    {
+      "group": 13,
+      "id": "s135",
+      "seed": 21329876,
+      "slot": 3,
+      "target_orbit": 0
+    },
+    {
+      "group": 14,
+      "id": "s136",
+      "seed": 21337795,
+      "slot": 0,
+      "target_orbit": 1
+    },
+    {
+      "group": 14,
+      "id": "s137",
+      "seed": 21345714,
+      "slot": 1,
+      "target_orbit": 2
+    },
+    {
+      "group": 14,
+      "id": "s138",
+      "seed": 21353633,
+      "slot": 2,
+      "target_orbit": 0
+    },
+    {
+      "group": 14,
+      "id": "s139",
+      "seed": 21361552,
+      "slot": 3,
+      "target_orbit": 1
+    },
+    {
+      "group": 15,
+      "id": "s140",
+      "seed": 21369471,
+      "slot": 0,
+      "target_orbit": 2
+    },
+    {
+      "group": 15,
+      "id": "s141",
+      "seed": 21377390,
+      "slot": 1,
+      "target_orbit": 0
+    },
+    {
+      "group": 15,
+      "id": "s142",
+      "seed": 21385309,
+      "slot": 2,
+      "target_orbit": 1
+    },
+    {
+      "group": 15,
+      "id": "s143",
+      "seed": 21393228,
+      "slot": 3,
+      "target_orbit": 2
+    },
+    {
+      "group": 16,
+      "id": "s144",
+      "seed": 21401147,
+      "slot": 0,
+      "target_orbit": 0
+    },
+    {
+      "group": 16,
+      "id": "s145",
+      "seed": 21409066,
+      "slot": 1,
+      "target_orbit": 1
+    },
+    {
+      "group": 16,
+      "id": "s146",
+      "seed": 21416985,
+      "slot": 2,
+      "target_orbit": 2
+    },
+    {
+      "group": 16,
+      "id": "s147",
+      "seed": 21424904,
+      "slot": 3,
+      "target_orbit": 0
+    },
+    {
+      "group": 17,
+      "id": "s148",
+      "seed": 21432823,
+      "slot": 0,
+      "target_orbit": 1
+    },
+    {
+      "group": 17,
+      "id": "s149",
+      "seed": 21440742,
+      "slot": 1,
+      "target_orbit": 2
+    },
+    {
+      "group": 17,
+      "id": "s150",
+      "seed": 21448661,
+      "slot": 2,
+      "target_orbit": 0
+    },
+    {
+      "group": 17,
+      "id": "s151",
+      "seed": 21456580,
+      "slot": 3,
+      "target_orbit": 1
+    }
+  ],
+  "seconds_per_round": 120,
+  "seconds_per_search": 18000,
+  "source_hashes": {
+    "run070_contract.py": "8000eb9b81ac8b2bc4f7d3367beec11a6fe3bfb91e1b64ac177479f5f8c36a6b",
+    "run071_collect.py": "faa4b18d2369cb6305dac46fe26f04990bfe8a5df9f7ab4fc884107239b127ed",
+    "run071_worker.py": "bc34a9b3ed08b6752a9e24c4d11e8a98d378cd0594ae63b3f3981bc639bb546f"
+  }
+}

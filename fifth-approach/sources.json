@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "upstream": [
+    {"path": "first-approach/runs", "mode": "read_only"},
+    {"path": "second-approach/runs", "mode": "read_only"},
+    {"path": "second-approach/candidates", "mode": "read_only"},
+    {"path": "second-approach-2.0/runs", "mode": "read_only"},
+    {"path": "second-approach-2.0/candidates", "mode": "read_only"},
+    {"path": "third-approach/runs", "mode": "read_only"},
+    {"path": "third-approach-2.0/runs", "mode": "read_only"},
+    {"path": "fourth-approach/runs/run-008-31183347151", "mode": "read_only", "priority": "primary"},
+    {"path": "fourth-approach/control.json", "mode": "read_only"}
+  ],
+  "copy_policy": "reference upstream paths; copy only compact derived inputs required by a fixed run specification"
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "series": "run-027",
+  "mode": "exact_rank_two_boundary_stars",
+  "n": 8,
+  "two_anchor": {
+    "right_assignments": 120,
+    "dense_leaf_distinct": 48,
+    "degree_graphs": 1704,
+    "four_connected_graphs": 1440,
+    "unit_labelings": 170280,
+    "singleton_free": 0,
+    "minimum_singletons": 14
+  },
+  "one_anchor": {
+    "connected_labelled_factor_triples": 27456,
+    "factor_triple_orbits": 39,
+    "symmetric_M0": {
+      "configurations": 113724,
+      "singleton_free": 0,
+      "minimum": 10,
+      "profile_masks": {
+        "01|01": 1,
+        "01|02": 1,
+        "01|012": 1,
+        "02|01": 1,
+        "02|02": 1,
+        "02|012": 1,
+        "012|01": 1,
+        "012|02": 1,
+        "012|012": 1
+      }
+    },
+    "symmetric_R": {
+      "configurations": 1023516,
+      "singleton_free": 0,
+      "minimum": 10,
+      "profile_masks": {
+        "01|01": 1,
+        "01|02": 1,
+        "01|012": 1,
+        "02|01": 1,
+        "02|02": 1,
+        "02|012": 1,
+        "012|01": 1,
+        "012|02": 1,
+        "012|012": 1
+      }
+    },
+    "retraction": {
+      "configurations": 151632,
+      "singleton_free": 0,
+      "minimum": 9
+    }
+  },
+  "elapsed_seconds": 100.942
+}

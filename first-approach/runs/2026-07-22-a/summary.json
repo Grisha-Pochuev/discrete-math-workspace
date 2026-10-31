@@ -1,0 +1,87 @@
+{
+  "run_id": 29943797510,
+  "source_commit": "fe2c7853935c1ba939bdb9c3dd3dafecbca6c9be",
+  "artifacts": 20,
+  "tasks": {
+    "assigned": 3584,
+    "recorded": 3584,
+    "complete": 2799,
+    "capacity": 785,
+    "unstarted": 0
+  },
+  "layers": {
+    "26": {
+      "total": 1536,
+      "complete": 1513,
+      "capacity": 23,
+      "complete_percent": 98.50260416666666
+    },
+    "27": {
+      "total": 2048,
+      "complete": 1286,
+      "capacity": 762,
+      "complete_percent": 62.79296875
+    }
+  },
+  "search": {
+    "nodes": 13803889594,
+    "states": 13267771404,
+    "engine_seconds": 110594.07288474
+  },
+  "resources": {
+    "max_combined_rss_bytes": 1770573824,
+    "max_swap_used_bytes": 0
+  },
+  "supports": {
+    "occurrences": 297,
+    "unique": 46,
+    "unique_by_size": {
+      "21": 4,
+      "23": 3,
+      "25": 13,
+      "26": 12,
+      "27": 14
+    },
+    "exact_obstructions": {
+      "inconsistent_signs": 7,
+      "target_zero": 30,
+      "mixed_monomial": 9,
+      "unresolved": 0
+    },
+    "size_26_exact_obstructions": {
+      "target_zero": 8,
+      "mixed_monomial": 4,
+      "unresolved": 0
+    },
+    "size_27_exact_obstructions": {
+      "target_zero": 9,
+      "mixed_monomial": 5,
+      "unresolved": 0
+    }
+  },
+  "pending_layer_26": [
+    "a-o2-l26-s017-of-256",
+    "a-o2-l26-s040-of-256",
+    "a-o2-l26-s234-of-256",
+    "a-o4-l26-s020-of-256",
+    "a-o4-l26-s044-of-256",
+    "a-o4-l26-s080-of-256",
+    "a-o4-l26-s133-of-256",
+    "a-o4-l26-s137-of-256",
+    "a-o4-l26-s153-of-256",
+    "a-o4-l26-s155-of-256",
+    "a-o4-l26-s161-of-256",
+    "a-o4-l26-s193-of-256",
+    "a-o4-l26-s235-of-256",
+    "a-o4-l26-s254-of-256",
+    "a-o5-l26-s004-of-256",
+    "a-o5-l26-s008-of-256",
+    "a-o5-l26-s039-of-256",
+    "a-o5-l26-s133-of-256",
+    "a-o5-l26-s163-of-256",
+    "a-o5-l26-s180-of-256",
+    "a-o5-l26-s187-of-256",
+    "a-o5-l26-s195-of-256",
+    "a-o5-l26-s233-of-256"
+  ]
+}

@@ -1,0 +1,8 @@
+parent_run=29960969740
+stage=frontier3
+runtime_seconds=21000
+max_seen=32000000
+jobs=20
+workers_per_job=4
+tasks=65795
+frontier=refine 24096 incomplete tasks; carry 8931 unstarted tasks; reserve 32768 layer-30 tasks

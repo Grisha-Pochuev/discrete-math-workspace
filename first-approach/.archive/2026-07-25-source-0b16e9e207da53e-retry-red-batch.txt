@@ -1,0 +1,10 @@
+source_sha=0b16e9e207da53e53ec04430fa13e72420a57cbc
+source_tasks=runs/2026-07-25-b/next_tasks.json.gz
+source_lane=frontier3
+manifest_stage=frontier2
+output_dir=runs/2026-07-25-c
+reserve_limit=37
+reserve_shards=524288
+reserve_split=23
+retry_of_request=d2bf54771b7458bb7e590262855f58a5b64c140c
+reason=retry the same completed source batch after fixing the success-only archive gate; require exactly twenty readable artifacts and exact source coverage, preserve complete results, refine only bounded incomplete work, carry technical failures and unstarted tasks unchanged, and add the explicit layer-37 reserve
