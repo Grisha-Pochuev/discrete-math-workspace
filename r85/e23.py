@@ -130,6 +130,11 @@ if not x.exists():
         _ec.write_text(_et.replace(_o, 'fFlagC[ 1 ] = getenv( "GA_XT" ) ? atoi( getenv( "GA_XT" ) ) : 1;'))
     else:
         log("xt patch miss")
+    _cc = sd / "cross.cpp"; _ct = _cc.read_text(); _o2 = 'printf( "fMaxNumOfABcycle(%d) must be increased\\n", fMaxNumOfABcycle );\n    exit( 1 );'
+    if _ct.count(_o2) == 1:
+        _cc.write_text(_ct.replace(_o2, 'static int _w = 0; if( !_w ){ _w = 1; printf( "ab cap %d\\n", fMaxNumOfABcycle ); fflush( stdout ); }'))
+    else:
+        log("ab patch miss")
     subprocess.run([*cx, "-w", "-o", str(x), *map(str, sorted(sd.glob("*.cpp"))), "-lm"], check=True)
 log(f"ok f={len(F)} {time.time() - t0:.0f}s")
 
