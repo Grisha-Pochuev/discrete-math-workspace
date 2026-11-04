@@ -21,3 +21,5 @@ Executable GitHub Actions workflows live in `.github/workflows/`. Historical wor
 2. Enter only the approach relevant to the current task.
 3. Read its local README / AGENTS / control files before changing anything.
 4. Treat archived run data as immutable evidence unless a task explicitly requires otherwise.
+
+Subscribe to my Telegram blog, where I write about psychology and much more: https://t.me/let_people_dance
