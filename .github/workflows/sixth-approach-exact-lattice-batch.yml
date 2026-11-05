@@ -1,0 +1,248 @@
+name: Sixth Approach Exact Lattice Batch
+run-name: ${{ inputs.run_id }} exact lattice batch
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+      layers_json:
+        description: JSON array of exact layer metadata
+        required: true
+        type: string
+      spec_path:
+        description: Repository path to the immutable JSON specification
+        required: true
+        type: string
+      max_parallel:
+        description: Maximum simultaneous audit jobs
+        required: false
+        default: '3'
+        type: string
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  audit-layer:
+    name: audit-${{ matrix.layer.index }}-${{ matrix.layer.support }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: ${{ fromJSON(inputs.max_parallel) }}
+      matrix:
+        layer: ${{ fromJSON(inputs.layers_json) }}
+    env:
+      AUDIT_RUN_ID: ${{ inputs.run_id }}
+      AUDIT_SPEC_PATH: ${{ inputs.spec_path }}
+      AUDIT_LAYERS_JSON: ${{ inputs.layers_json }}
+      AUDIT_MAX_PARALLEL: ${{ inputs.max_parallel }}
+      EXPECTED_INDEX: ${{ matrix.layer.index }}
+      EXPECTED_ORBIT: ${{ matrix.layer.orbit }}
+      EXPECTED_MISSING_TYPE: ${{ matrix.layer.missing_type }}
+      EXPECTED_SUPPORT: ${{ matrix.layer.support }}
+      SOURCE_RUN: ${{ matrix.layer.source_run }}
+      SOURCE_LOGICAL_RUN: ${{ matrix.layer.source_logical_run }}
+      OPENBLAS_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Check out exact source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set 'sixth approach'
+          git checkout --detach FETCH_HEAD
+
+      - name: Prepare audit directory
+        shell: bash
+        run: |
+          mkdir -p work/input work/out
+          printf 'prepared\n' > work/out/status.txt
+
+      - name: Set up exact Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Verify immutable specification
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          spec = json.loads(Path(os.environ['AUDIT_SPEC_PATH']).read_text())
+          layers = json.loads(os.environ['AUDIT_LAYERS_JSON'])
+          assert spec['run_id'] == os.environ['AUDIT_RUN_ID']
+          assert spec['layers'] == layers
+          assert spec['jobs'] == len(layers)
+          assert spec['max_parallel'] == int(os.environ['AUDIT_MAX_PARALLEL'])
+          assert len({(item['index'], item['support']) for item in layers}) == len(layers)
+          PY
+
+      - name: Install exact integer dependency
+        shell: bash
+        run: python -m pip install --disable-pip-version-check 'sympy==1.13.3'
+
+      - name: Generate immutable audit context
+        shell: bash
+        run: node 'sixth approach/run035_hnf_context.js' work/context.json
+
+      - name: Download accepted source layer
+        uses: actions/download-artifact@v8
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ matrix.layer.source_run }}
+          name: ${{ matrix.layer.artifact }}
+          path: work/input
+
+      - name: Execute exact audit
+        if: always()
+        shell: bash
+        run: |
+          set +e
+          input="work/input/layer-${EXPECTED_SUPPORT}-merged.json"
+          if [ -f work/context.json ] && [ -f "$input" ]; then
+            python 'sixth approach/run035_hnf_audit.py' \
+              --input "$input" \
+              --context work/context.json \
+              --run-id "$AUDIT_RUN_ID" \
+              --source-run "$SOURCE_RUN" \
+              --source-logical-run "$SOURCE_LOGICAL_RUN" \
+              --expected-index "$EXPECTED_INDEX" \
+              --expected-orbit "$EXPECTED_ORBIT" \
+              --expected-support "$EXPECTED_SUPPORT" \
+              --expected-missing-type "$EXPECTED_MISSING_TYPE" \
+              --output work/out/audit.json > work/out/audit.log 2>&1
+            code=$?
+          else
+            echo 'ERROR: required context or source layer is missing' > work/out/audit.log
+            code=2
+          fi
+          printf '%s\n' "$code" > work/out/audit.exit
+          exit 0
+
+      - name: Gate audit result
+        if: always()
+        shell: bash
+        run: exit "$(cat work/out/audit.exit 2>/dev/null || echo 2)"
+
+      - name: Upload audit bundle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-audit-${{ matrix.layer.index }}-${{ matrix.layer.support }}
+          path: work/out/
+          if-no-files-found: error
+          retention-days: 14
+
+  collect:
+    name: collect-${{ inputs.run_id }}
+    needs: audit-layer
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out exact source
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set 'sixth approach'
+          git checkout -B archive-write FETCH_HEAD
+
+      - name: Prepare collector directory
+        shell: bash
+        run: |
+          mkdir -p work/audits work/out
+          printf 'prepared\n' > work/out/status.txt
+
+      - name: Set up Python collector
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Download all audit bundles
+        uses: actions/download-artifact@v8
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.run_id }}
+          pattern: ${{ inputs.run_id }}-audit-*
+          path: work/audits
+
+      - name: Validate audit coverage and summary
+        if: always()
+        shell: bash
+        env:
+          AUDIT_SPEC_PATH: ${{ inputs.spec_path }}
+        run: |
+          set +e
+          python 'sixth approach/run035_hnf_collect.py' \
+            --spec "$AUDIT_SPEC_PATH" \
+            --input-root work/audits \
+            --output work/out/summary.json > work/out/collector.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > work/out/collector.exit
+          exit 0
+
+      - name: Gate collector result
+        if: always()
+        shell: bash
+        run: exit "$(cat work/out/collector.exit 2>/dev/null || echo 2)"
+
+      - name: Build compact accepted archive
+        shell: bash
+        run: |
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          python 'sixth approach/run035_hnf_archive.py' \
+            --spec '${{ inputs.spec_path }}' \
+            --summary work/out/summary.json \
+            --input-root work/audits \
+            --output-dir "$archive" \
+            --workflow-run "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA"
+
+      - name: Commit compact accepted archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$archive"
+          git commit -m "archive ${{ inputs.run_id }} from ${GITHUB_RUN_ID}"
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
+            git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+            git rebase origin/main
+          done
+
+      - name: Upload collector bundle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-audit-collection
+          path: |
+            work/out/
+            sixth approach/runs/${{ inputs.run_id }}-${{ github.run_id }}/
+          if-no-files-found: error
+          retention-days: 3

@@ -1,0 +1,12 @@
+{"baseline": 288843524, "best": 288843524, "gain": 0, "combined": 0, "expected": 20, "completed": 20}
+Traceback (most recent call last):
+  File "/home/runner/work/discrete-math-workspace/discrete-math-workspace/r84/q7/z/manage.py", line 84, in <module>
+    elif a.cmd=='collect':collect(a.data,a.source,a.dest,a.expected,a.pool)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/discrete-math-workspace/discrete-math-workspace/r84/q7/z/manage.py", line 68, in collect
+    try:return base_collect(data,tmp,dest,expected,pool)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/discrete-math-workspace/discrete-math-workspace/r84/q7/z/manage_base.py", line 75, in collect
+    if any(not r.get('finished') for r in rows) or len(rows)!=expected or {r.get('id') for r in rows}!=set(range(expected)) or any('error' in r for r in rows):raise RuntimeError('Incomplete collection; available output retained')
+                                                                                                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Incomplete collection; available output retained

@@ -1,0 +1,91 @@
+name: Fifth approach Run 000 smoke
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fifth-approach-smoke-run000.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: fifth-approach-run000-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONUNBUFFERED: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONHASHSEED: '0'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+      MALLOC_ARENA_MAX: '2'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout: |
+            fifth-approach
+          sparse-checkout-cone-mode: true
+      - name: Static validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile fifth-approach/run000_core.py fifth-approach/run000_orbits.py fifth-approach/run000_driver.py
+          python fifth-approach/run000_driver.py self-test > smoke-self-test.json
+          python - <<'PY'
+          import json
+          spec=json.load(open('fifth-approach/specs/run-000-exchange-frontier.json'))
+          assert spec['execution']['jobs']==20
+          assert spec['execution']['workers_per_job']==4
+          assert spec['execution']['workers']==80
+          assert spec['execution']['runtime_seconds_per_worker']==21000
+          assert spec['execution']['max_parallel_jobs']==20
+          assert spec['memory']['per_worker_virtual_memory_limit_mib']==2500
+          PY
+      - name: Machine diagnostics
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p smoke
+          { date -u +%FT%TZ; uname -a; nproc; lscpu; free -h; cat /proc/meminfo; swapon --show || true; df -h .; ulimit -a; python --version; } > smoke/machine.txt
+          cp smoke-self-test.json smoke/
+      - name: Real-path worker smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          (
+            ulimit -v $((2500*1024))
+            timeout --signal=TERM --kill-after=30s 300s \
+              python fifth-approach/run000_driver.py worker \
+                --worker-id 0 --worker-count 80 --seconds 180 \
+                --seed 2026080800 --output smoke/worker-0.json.gz \
+                > smoke/worker-0.log 2>&1
+          )
+          python fifth-approach/run000_driver.py verify-worker \
+            --input smoke/worker-0.json.gz --expect-worker 0 \
+            > smoke/worker-verify.json
+      - name: Smoke collector and verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          python fifth-approach/run000_driver.py smoke-collect \
+            --input smoke/worker-0.json.gz --output smoke/smoke-summary.json \
+            > smoke/smoke-collector.log
+          python fifth-approach/run000_driver.py smoke-verify \
+            --input smoke/smoke-summary.json > smoke/smoke-verify.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fifth-approach-run000-smoke-${{ github.run_id }}
+          path: smoke/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 6

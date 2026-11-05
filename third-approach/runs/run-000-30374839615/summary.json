@@ -1,0 +1,28 @@
+{
+  "accepted": true,
+  "approach": "third-proof-oriented-numerical-certificates",
+  "attempts": 135362934,
+  "base_seed": 20260728,
+  "best_certificate_score": 0.2518749790151989,
+  "candidate_count": 400,
+  "completed_jobs": 20,
+  "created_at": 1785274370.53638,
+  "distinct_parent_uses_across_workers": 0,
+  "distinct_structural_buckets": 58,
+  "distinct_support_fingerprints": 400,
+  "expected_jobs": 20,
+  "interpretation": "Numerical candidates only. An exact symbolic identity or rational reconstruction is required before any candidate can count as a proof.",
+  "median_saved_score": 0.3158977903926413,
+  "minimum_jobs": 16,
+  "parent_based_candidates_saved": 0,
+  "parent_based_improvements_saved": 0,
+  "run_id": 30374839615,
+  "run_index": 0,
+  "schema_version": 2,
+  "scope": "n=6,d=3 restricted support families",
+  "search_mode_counts": {},
+  "search_policy": {
+    "fresh_fraction": 1.0
+  },
+  "worker_errors": 0
+}

@@ -1,0 +1,40 @@
+name: diagnose collector
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".diagnose/**"
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Save failed collector log tail
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p diagnostics
+          gh api "repos/${GITHUB_REPOSITORY}/actions/jobs/89115366491/logs" > full.log
+          tail -n 180 full.log > diagnostics/collector-29978540008-tail.log
+      - name: Commit diagnostic
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add diagnostics/collector-29978540008-tail.log
+          git commit -m 'save failed collector diagnostic tail'
+          git pull --rebase origin main
+          git push origin HEAD:main

@@ -1,0 +1,164 @@
+name: Sixth Approach Adaptive Proof
+run-name: ${{ inputs.run_id }} adaptive proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    name: prepare-${{ inputs.run_id }}
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.contract.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify immutable adaptive cover
+        id: contract
+        shell: bash
+        env:
+          CALC_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          test "$CALC_RUN_ID" = 'run-080'
+          python -m py_compile 'sixth approach/run080_adaptive_proof.py'
+          python 'sixth approach/run080_adaptive_proof.py' contract \
+            --spec 'sixth approach/specs/run-080-adaptive-proof.json'
+          python 'sixth approach/run080_adaptive_proof.py' self-test \
+            --spec 'sixth approach/specs/run-080-adaptive-proof.json'
+          python 'sixth approach/run080_adaptive_proof_test.py' \
+            --script 'sixth approach/run080_adaptive_proof.py' \
+            --spec 'sixth approach/specs/run-080-adaptive-proof.json'
+          python - <<'PY'
+          import json, os
+          matrix={'include':[{'group': group} for group in range(19)]}
+          with open(os.environ['GITHUB_OUTPUT'],'a') as stream:
+              stream.write('matrix='+json.dumps(matrix,separators=(',',':'))+'\n')
+          PY
+
+  compute:
+    name: group-${{ matrix.group }}-${{ inputs.run_id }}
+    needs: prepare
+    runs-on: ubuntu-24.04
+    timeout-minutes: 210
+    strategy:
+      fail-fast: false
+      max-parallel: 19
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install pinned solver and independent checker
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            cadical=1.7.4-1 build-essential ca-certificates
+          git clone --filter=blob:none --no-checkout \
+            https://github.com/marijnheule/drat-trim.git checker-source
+          git -C checker-source checkout --detach \
+            2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          git -C checker-source rev-parse HEAD | grep -Fx \
+            '2e3b2dc0ecf938addbd779d42877b6ed69d9a985'
+          cc -O2 -DLONGTYPE checker-source/lrat-check.c -o lrat-check
+      - name: Run four independent proof-cover lanes
+        shell: bash
+        env:
+          GROUP_ID: ${{ matrix.group }}
+        run: |
+          set +e
+          mkdir -p out
+          pids=()
+          for slot in 0 1 2 3; do
+            lane=$((GROUP_ID * 4 + slot))
+            lane_dir="$(printf 'out/lane-%03d' "$lane")"
+            mkdir -p "$lane_dir"
+            (
+              python 'sixth approach/run080_adaptive_proof.py' worker \
+                --spec 'sixth approach/specs/run-080-adaptive-proof.json' \
+                --lane "$lane" --output-dir "$lane_dir" \
+                --cadical cadical --checker "$PWD/lrat-check" \
+                > "$lane_dir/worker.log" 2>&1
+              printf '%s\n' "$?" > "$lane_dir/worker.exit"
+            ) &
+            pids+=("$!")
+          done
+          for pid in "${pids[@]}"; do wait "$pid"; done
+          python 'sixth approach/run080_adaptive_proof.py' validate-group \
+            --spec 'sixth approach/specs/run-080-adaptive-proof.json' \
+            --group "$GROUP_ID" --input-root out
+      - name: Upload compact proof metadata
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-group-meta-${{ matrix.group }}
+          path: |
+            out/group-summary.json
+            out/lane-*/result.json
+            out/lane-*/worker.log
+            out/lane-*/worker.exit
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload bounded proof payloads separately
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-group-proofs-${{ matrix.group }}
+          path: out/lane-*/proofs/*.lrat.gz
+          if-no-files-found: warn
+          retention-days: 30
+
+  collect:
+    name: collect-${{ inputs.run_id }}
+    needs: [prepare, compute]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          pattern: ${{ inputs.run_id }}-group-meta-*
+          path: work/results
+      - name: Strictly collect proof coverage
+        shell: bash
+        run: |
+          set +e
+          python 'sixth approach/run080_adaptive_proof.py' collect \
+            --spec 'sixth approach/specs/run-080-adaptive-proof.json' \
+            --input-root work/results --output-dir compact \
+            --workflow-run "$GITHUB_RUN_ID" --source-sha "$GITHUB_SHA" \
+            > collector.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > collector.exit
+          exit 0
+      - name: Upload compact proof catalogue
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-compact-collection
+          path: |
+            compact/
+            collector.log
+            collector.exit
+          if-no-files-found: error
+          retention-days: 30
+      - name: Require a classified exact outcome
+        if: always()
+        run: exit "$(cat collector.exit 2>/dev/null || echo 2)"

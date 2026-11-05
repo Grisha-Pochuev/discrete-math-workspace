@@ -1,0 +1,546 @@
+{
+  "schema_version": 1,
+  "series": "run-023",
+  "mode": "exact_equal_boundary",
+  "support_shape": [
+    2,
+    2
+  ],
+  "support_intersection": 2,
+  "stages": {
+    "degree_candidates": 1488,
+    "four_connected": 1272,
+    "active_minor_screen": 1140,
+    "zero_minor_screen": 132,
+    "diagonal_minor_screen": 132,
+    "pure_support_screen": 132,
+    "local_screen": 132
+  },
+  "orbit_count": 10,
+  "orbit_sizes": [
+    6,
+    6,
+    6,
+    6,
+    12,
+    12,
+    12,
+    24,
+    24,
+    24
+  ],
+  "families": {
+    "paired_diagonal_collision": {
+      "labelled_count": 42,
+      "orbit_ids": [
+        0,
+        1,
+        2
+      ]
+    },
+    "cross_diagonal_collision": {
+      "labelled_count": 42,
+      "orbit_ids": [
+        3,
+        4,
+        5
+      ]
+    },
+    "single_collision_chain": {
+      "labelled_count": 24,
+      "orbit_ids": [
+        6
+      ]
+    },
+    "mixed_bipartite_rank": {
+      "labelled_count": 6,
+      "orbit_ids": [
+        7
+      ]
+    },
+    "aligned_bipartite": {
+      "labelled_count": 6,
+      "orbit_ids": [
+        8
+      ]
+    },
+    "mixed_bipartite_zero_grid": {
+      "labelled_count": 12,
+      "orbit_ids": [
+        9
+      ]
+    }
+  },
+  "orbits": [
+    {
+      "orbit_id": 0,
+      "multiplicity": 12,
+      "right": [
+        2,
+        3,
+        0
+      ],
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          4,
+          5
+        ]
+      ]
+    },
+    {
+      "orbit_id": 1,
+      "multiplicity": 24,
+      "right": [
+        2,
+        3,
+        0
+      ],
+      "edges": [
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          5
+        ]
+      ]
+    },
+    {
+      "orbit_id": 2,
+      "multiplicity": 6,
+      "right": [
+        2,
+        3,
+        0
+      ],
+      "edges": [
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ]
+      ]
+    },
+    {
+      "orbit_id": 3,
+      "multiplicity": 24,
+      "right": [
+        2,
+        3,
+        1
+      ],
+      "edges": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          5
+        ]
+      ]
+    },
+    {
+      "orbit_id": 4,
+      "multiplicity": 12,
+      "right": [
+        2,
+        3,
+        1
+      ],
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          4,
+          5
+        ]
+      ]
+    },
+    {
+      "orbit_id": 5,
+      "multiplicity": 6,
+      "right": [
+        2,
+        3,
+        1
+      ],
+      "edges": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ]
+      ]
+    },
+    {
+      "orbit_id": 6,
+      "multiplicity": 24,
+      "right": [
+        2,
+        3,
+        4
+      ],
+      "edges": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          4,
+          5
+        ]
+      ]
+    },
+    {
+      "orbit_id": 7,
+      "multiplicity": 6,
+      "right": [
+        3,
+        4,
+        5
+      ],
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          4,
+          5
+        ]
+      ]
+    },
+    {
+      "orbit_id": 8,
+      "multiplicity": 6,
+      "right": [
+        3,
+        4,
+        5
+      ],
+      "edges": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ]
+      ]
+    },
+    {
+      "orbit_id": 9,
+      "multiplicity": 12,
+      "right": [
+        3,
+        4,
+        5
+      ],
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ]
+      ]
+    }
+  ]
+}

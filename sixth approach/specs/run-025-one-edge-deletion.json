@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "run_id": "run-025",
+  "mode": "exact_one_edge_deletion",
+  "engine": "node",
+  "order": 8,
+  "distinguished_factor_types": ["remainder", "colour"],
+  "output": "local-runs/run-025-summary.json"
+}
