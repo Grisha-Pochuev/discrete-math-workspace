@@ -20,6 +20,8 @@ on:
         default: "0"
       pr:
         default: "0"
+      pb:
+        default: "0"
 permissions:
   contents: write
   actions: read
@@ -49,13 +51,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           sleep $(( ( ${{ matrix.i }} % 20 ) * 4 ))
+          PB='${{ inputs.pb }}'; src() { if [ "$PB" != "0" ] && echo ",${PB#*:}," | grep -q ",$1,"; then echo ${PB%%:*}; else echo ${{ inputs.pr }}; fi; }
+          s=$(src ${{ matrix.i }}); echo "src o${{ matrix.i }}=$s"
           for a in 1 2 3 4 5 6; do
-            rm -rf p; gh run download ${{ inputs.pr }} -R ${{ github.repository }} -n o${{ matrix.i }} -D p && ls p/c0.bin && break
+            rm -rf p; gh run download $s -R ${{ github.repository }} -n o${{ matrix.i }} -D p && ls p/c0.bin && break
             sleep $(( 20 + RANDOM % 40 ))
           done
           j=$(( ( ${{ matrix.i }} - ${{ inputs.o }} + 1 ) % ${{ inputs.n }} + ${{ inputs.o }} ))
+          sj=$(src $j); echo "src o$j=$sj"
           for a in 1 2; do
-            rm -rf q; gh run download ${{ inputs.pr }} -R ${{ github.repository }} -n o$j -D q && break
+            rm -rf q; gh run download $sj -R ${{ github.repository }} -n o$j -D q && break
             sleep $(( 20 + RANDOM % 40 ))
           done
           ls -la p q || true
