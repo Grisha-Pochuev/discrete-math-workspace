@@ -1,0 +1,98 @@
+name: Third approach smoke test
+
+on:
+  push:
+    paths:
+      - third-approach/certificate.py
+      - third-approach/runner.py
+      - third-approach/collect.py
+      - third-approach/requirements.txt
+      - .github/workflows/third-approach-compute.yml
+      - .github/workflows/third-approach-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: third-approach-smoke
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+      NUMEXPR_NUM_THREADS: "1"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: third-approach/requirements.txt
+
+      - name: Install dependencies with retries
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            if python -m pip install --disable-pip-version-check \
+              -r third-approach/requirements.txt; then
+              exit 0
+            fi
+            if [ "$attempt" = 3 ]; then
+              exit 1
+            fi
+            sleep $((attempt * 10))
+          done
+
+      - name: Exercise compute and collection paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            third-approach/certificate.py \
+            third-approach/runner.py \
+            third-approach/collect.py
+
+          rm -rf smoke-output smoke-artifacts smoke-repo
+          PYTHONPATH=third-approach python third-approach/runner.py \
+            --job-id 0 \
+            --run-index "$(python -c 'import json; print(json.load(open("third-approach/launch.json"))["run_index"])')" \
+            --base-seed 123456789 \
+            --seconds 75 \
+            --workers 2 \
+            --max-attempts 3 \
+            --output smoke-output
+
+          test -f smoke-output/manifest.json
+          test -n "$(find smoke-output -name 'candidate-*.json.gz' -print -quit)"
+          mkdir -p smoke-artifacts/third-approach-data-0 smoke-repo
+          cp -a smoke-output/. smoke-artifacts/third-approach-data-0/
+          cp -a third-approach smoke-repo/
+
+          PYTHONPATH=third-approach python third-approach/collect.py \
+            --artifacts smoke-artifacts \
+            --repo smoke-repo \
+            --run-id 1 \
+            --expected-jobs 1 \
+            --min-jobs 1
+
+          summary="$(find smoke-repo/third-approach/runs -name summary.json -print -quit)"
+          test -n "$summary"
+          python - "$summary" <<'PY'
+          import json
+          import sys
+
+          summary = json.load(open(sys.argv[1]))
+          assert summary["accepted"]
+          assert summary["candidate_count"] > 0
+          assert summary["distinct_support_fingerprints"] > 0
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY

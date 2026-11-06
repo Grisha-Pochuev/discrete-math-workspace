@@ -1,0 +1,1045 @@
+{
+  "accepted": true,
+  "attempt_parts": [
+    {
+      "file": "attempts/part-0000.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0001.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0002.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0003.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0004.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0005.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0006.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0007.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0008.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0009.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0010.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0011.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0012.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0013.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0014.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0015.jsonl.gz",
+      "records": 25000
+    },
+    {
+      "file": "attempts/part-0016.jsonl.gz",
+      "records": 12023
+    }
+  ],
+  "attempts_total": 412023,
+  "best": [
+    {
+      "_source": "second-approach-data-9/worker-1/attempts.jsonl",
+      "attempt": 3685,
+      "binary_relation_rows": 38,
+      "candidate_id": "r010-j09-w1-a003685",
+      "closed": true,
+      "cost": 5.134941092346707e-11,
+      "elapsed_seconds": 0.3296222686767578,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.0134042702372833e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.0134042718094153e-05,
+      "mixed_max": 1.0134042702372833e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998968796,
+          -2.0611290452161704e-13
+        ],
+        [
+          0.9999999998974674,
+          -6.894484982905713e-14
+        ],
+        [
+          0.9999999998838847,
+          -1.2142120642571471e-11
+        ]
+      ],
+      "mono_max_error": 1.167484611296962e-10,
+      "nfev": 15,
+      "optimality": 9.917258235362858e-09,
+      "parent_candidate_id": "r009-j06-w1-a001460",
+      "seed": 1875755867288813053,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "3e9dd3f623667fb7fffe36dbfb6b8ff7fb",
+      "support_size": 97,
+      "total_l2": 1.0134042719810004e-05,
+      "weight_max_abs": 10.432892245485863,
+      "weight_min_abs": 9.767232228462488e-22
+    },
+    {
+      "_source": "second-approach-data-15/worker-0/attempts.jsonl",
+      "attempt": 1627,
+      "binary_relation_rows": 90,
+      "candidate_id": "r010-j15-w0-a001627",
+      "closed": true,
+      "cost": 5.35855787001581e-11,
+      "elapsed_seconds": 0.15396380424499512,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.0352350329016593e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.0352350330492728e-05,
+      "mixed_max": 1.0352350329016593e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998970831,
+          1.6784906799101203e-12
+        ],
+        [
+          0.9999999998835948,
+          3.757050225429529e-12
+        ],
+        [
+          0.9999999998955791,
+          7.570055692859493e-13
+        ]
+      ],
+      "mono_max_error": 1.1646583357220891e-10,
+      "nfev": 10,
+      "optimality": 9.17365987973223e-09,
+      "parent_candidate_id": "r009-j12-w1-a006668",
+      "seed": 5658373858049345517,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "35fee3ffe87241668c7ffdfddfded94f3a",
+      "support_size": 89,
+      "total_l2": 1.0352350332186223e-05,
+      "weight_max_abs": 8.110914804231847,
+      "weight_min_abs": 4.284249217077413e-22
+    },
+    {
+      "_source": "second-approach-data-7/worker-2/attempts.jsonl",
+      "attempt": 3181,
+      "binary_relation_rows": 32,
+      "candidate_id": "r010-j07-w2-a003181",
+      "closed": true,
+      "cost": 5.7647103132022767e-11,
+      "elapsed_seconds": 0.16397333145141602,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.0737513968510624e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.0737513968521662e-05,
+      "mixed_max": 1.0737513968510624e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998851852,
+          6.028511023713374e-14
+        ],
+        [
+          0.9999999998841853,
+          -4.747313653297192e-13
+        ],
+        [
+          0.9999999998848824,
+          5.74540415243515e-14
+        ]
+      ],
+      "mono_max_error": 1.1581566414269532e-10,
+      "nfev": 10,
+      "optimality": 2.373736858523653e-10,
+      "parent_candidate_id": "r008-j18-w0-a000963",
+      "seed": 5255695115861816552,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "35fee7ffe87273668f7ffdfddfdedb4f3a",
+      "support_size": 96,
+      "total_l2": 1.0737513970377203e-05,
+      "weight_max_abs": 8.093772791655953,
+      "weight_min_abs": 1.0143087082383445e-20
+    },
+    {
+      "_source": "second-approach-data-13/worker-2/attempts.jsonl",
+      "attempt": 2815,
+      "binary_relation_rows": 65,
+      "candidate_id": "r010-j13-w2-a002815",
+      "closed": true,
+      "cost": 6.089122549782985e-11,
+      "elapsed_seconds": 0.15955829620361328,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1035508639690224e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.1035508640189555e-05,
+      "mixed_max": 1.1035508639690224e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998739657,
+          3.423927807943983e-13
+        ],
+        [
+          0.999999999868426,
+          1.6432515070885387e-13
+        ],
+        [
+          0.9999999998784892,
+          -1.998401444484688e-14
+        ]
+      ],
+      "mono_max_error": 1.315740765525675e-10,
+      "nfev": 10,
+      "optimality": 4.908210647162409e-09,
+      "parent_candidate_id": "r009-j06-w1-a001460",
+      "seed": 3122055813620082394,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "3a9df3f623667fb7fffe36dbfbeb83f7f9",
+      "support_size": 95,
+      "total_l2": 1.1035508642362602e-05,
+      "weight_max_abs": 7.991797532368907,
+      "weight_min_abs": 1.2407418949315431e-21
+    },
+    {
+      "_source": "second-approach-data-12/worker-1/attempts.jsonl",
+      "attempt": 2209,
+      "binary_relation_rows": 90,
+      "candidate_id": "r010-j12-w1-a002209",
+      "closed": true,
+      "cost": 6.118055302820794e-11,
+      "elapsed_seconds": 0.15227603912353516,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1061695440015723e-05,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 1.1061695440188944e-05,
+      "mixed_max": 1.1061695440015723e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998773523,
+          -4.9682480367906965e-14
+        ],
+        [
+          0.9999999998776627,
+          1.3011813848608892e-13
+        ],
+        [
+          0.9999999998778928,
+          -1.3877787816064396e-14
+        ]
+      ],
+      "mono_max_error": 1.2264767986073312e-10,
+      "nfev": 9,
+      "optimality": 2.1310734113100327e-09,
+      "parent_candidate_id": "r008-j01-w0-a000477",
+      "seed": 85081073985452617,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "success": false,
+      "support_mask_hex": "35fee3ffe87241668c7ffdfddfded94f3a",
+      "support_size": 89,
+      "total_l2": 1.106169544221933e-05,
+      "weight_max_abs": 8.108198380791041,
+      "weight_min_abs": 5.857965128189314e-22
+    },
+    {
+      "_source": "second-approach-data-5/worker-3/attempts.jsonl",
+      "attempt": 5587,
+      "binary_relation_rows": 15,
+      "candidate_id": "r010-j05-w3-a005587",
+      "closed": true,
+      "cost": 6.13739492901784e-11,
+      "elapsed_seconds": 0.14007282257080078,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1079165052125457e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.1079165064876645e-05,
+      "mixed_max": 1.1079165052125457e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998750657,
+          1.9091950242954016e-12
+        ],
+        [
+          0.9999999998803754,
+          1.1364797979239103e-12
+        ],
+        [
+          0.9999999998749668,
+          4.1032177655614575e-12
+        ]
+      ],
+      "mono_max_error": 1.2510051559212874e-10,
+      "nfev": 11,
+      "optimality": 1.9619062183560257e-09,
+      "parent_candidate_id": "r009-j07-w2-a004478",
+      "seed": 1705165782977229344,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "37fefbffea764366cc7ffdfddffed94f3a",
+      "support_size": 97,
+      "total_l2": 1.1079165066933375e-05,
+      "weight_max_abs": 8.678711118407376,
+      "weight_min_abs": 6.0021891334889185e-21
+    },
+    {
+      "_source": "second-approach-data-3/worker-3/attempts.jsonl",
+      "attempt": 2509,
+      "binary_relation_rows": 65,
+      "candidate_id": "r010-j03-w3-a002509",
+      "closed": true,
+      "cost": 6.285352286211585e-11,
+      "elapsed_seconds": 0.1627349853515625,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1211915342617071e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.1211915343804869e-05,
+      "mixed_max": 1.1211915342617071e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998743432,
+          9.592326932761353e-14
+        ],
+        [
+          0.9999999998743282,
+          -6.526723605817733e-14
+        ],
+        [
+          0.9999999998735027,
+          -3.175237800351512e-14
+        ]
+      ],
+      "mono_max_error": 1.2649726109867581e-10,
+      "nfev": 10,
+      "optimality": 1.5504948078786887e-09,
+      "parent_candidate_id": "r009-j13-w2-a000986",
+      "seed": 1655653977544417771,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "3a9df3f623667fb7fffe36dbfbeb83f7f9",
+      "support_size": 95,
+      "total_l2": 1.1211915345926922e-05,
+      "weight_max_abs": 7.97109772760626,
+      "weight_min_abs": 6.635911761582412e-21
+    },
+    {
+      "_source": "second-approach-data-9/worker-1/attempts.jsonl",
+      "attempt": 4825,
+      "binary_relation_rows": 90,
+      "candidate_id": "r010-j09-w1-a004825",
+      "closed": true,
+      "cost": 6.371689310169303e-11,
+      "elapsed_seconds": 0.16942858695983887,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1288657409252869e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.1288657411552523e-05,
+      "mixed_max": 1.1288657409252869e-05,
+      "mono_amplitudes": [
+        [
+          0.999999999874184,
+          -1.967093155031043e-12
+        ],
+        [
+          0.9999999998734914,
+          2.078726080156879e-12
+        ],
+        [
+          0.9999999998729405,
+          -3.896882816434299e-14
+        ]
+      ],
+      "mono_max_error": 1.270594800290478e-10,
+      "nfev": 10,
+      "optimality": 1.8956456984977044e-09,
+      "parent_candidate_id": "r009-j04-w1-a001952",
+      "seed": 1589680108309009008,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "35fee3ffe87241668c7ffdfddfded94f3a",
+      "support_size": 89,
+      "total_l2": 1.1288657413677947e-05,
+      "weight_max_abs": 8.539049511171111,
+      "weight_min_abs": 1.776223679737463e-20
+    },
+    {
+      "_source": "second-approach-data-5/worker-2/attempts.jsonl",
+      "attempt": 3457,
+      "binary_relation_rows": 47,
+      "candidate_id": "r010-j05-w2-a003457",
+      "closed": true,
+      "cost": 6.433238408919369e-11,
+      "elapsed_seconds": 0.15169024467468262,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1343049331090993e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.1343049331145549e-05,
+      "mixed_max": 1.1343049331090993e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998723167,
+          -1.1198264537875405e-12
+        ],
+        [
+          0.9999999998726075,
+          6.544764730116393e-14
+        ],
+        [
+          0.9999999998694156,
+          -6.747935543631434e-13
+        ]
+      ],
+      "mono_max_error": 1.3058617563874552e-10,
+      "nfev": 10,
+      "optimality": 1.7081517131724572e-09,
+      "parent_candidate_id": "r009-j18-w3-a004076",
+      "seed": 4833545028662071078,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "35feebffa872417e8d7ffdfddfdedfcf3e",
+      "support_size": 96,
+      "total_l2": 1.1343049333331287e-05,
+      "weight_max_abs": 8.108680578387574,
+      "weight_min_abs": 1.0239588357700087e-19
+    },
+    {
+      "_source": "second-approach-data-17/worker-3/attempts.jsonl",
+      "attempt": 493,
+      "binary_relation_rows": 3,
+      "candidate_id": "r010-j17-w3-a000493",
+      "closed": true,
+      "cost": 6.500664829844349e-11,
+      "elapsed_seconds": 0.18825745582580566,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.140233727424795e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.140233732819369e-05,
+      "mixed_max": 1.140233727424795e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998709707,
+          8.22675260813557e-14
+        ],
+        [
+          0.9999999998694633,
+          -6.503131368131949e-13
+        ],
+        [
+          0.9999999998685594,
+          -1.5433210265404225e-12
+        ]
+      ],
+      "mono_max_error": 1.314496963560463e-10,
+      "nfev": 10,
+      "optimality": 6.091283998453539e-10,
+      "parent_candidate_id": "r009-j03-w3-a001268",
+      "seed": 9072251776014469116,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "37fefaffebfa5367de7fedffffffd9c77a",
+      "support_size": 105,
+      "total_l2": 1.1402337330428663e-05,
+      "weight_max_abs": 8.069905719423385,
+      "weight_min_abs": 8.842928423347407e-22
+    },
+    {
+      "_source": "second-approach-data-4/worker-1/attempts.jsonl",
+      "attempt": 2899,
+      "binary_relation_rows": 84,
+      "candidate_id": "r010-j04-w1-a002899",
+      "closed": true,
+      "cost": 6.509742132438015e-11,
+      "elapsed_seconds": 0.12086367607116699,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1410295462900353e-05,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 1.1410295464971956e-05,
+      "mixed_max": 1.1410295462900353e-05,
+      "mono_amplitudes": [
+        [
+          0.999999999870208,
+          -3.5904612615893073e-13
+        ],
+        [
+          0.999999999869296,
+          -1.0424994199887041e-13
+        ],
+        [
+          0.9999999998701115,
+          -1.6858736638974373e-13
+        ]
+      ],
+      "mono_max_error": 1.3070404475120442e-10,
+      "nfev": 9,
+      "optimality": 2.5681616758657835e-09,
+      "parent_candidate_id": "r009-j10-w3-a003428",
+      "seed": 6342895550980265814,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "success": false,
+      "support_mask_hex": "35fef3ffe8724366847ffdfddfded94f3a",
+      "support_size": 90,
+      "total_l2": 1.1410295467198045e-05,
+      "weight_max_abs": 8.101295987197183,
+      "weight_min_abs": 4.573657820552547e-21
+    },
+    {
+      "_source": "second-approach-data-14/worker-1/attempts.jsonl",
+      "attempt": 2053,
+      "binary_relation_rows": 7,
+      "candidate_id": "r010-j14-w1-a002053",
+      "closed": true,
+      "cost": 6.628156182430556e-11,
+      "elapsed_seconds": 0.14896488189697266,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1513605939589638e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.1513606020609195e-05,
+      "mixed_max": 1.1513605939589638e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998656401,
+          8.867351296161459e-13
+        ],
+        [
+          0.9999999998764704,
+          -5.747791132218271e-12
+        ],
+        [
+          0.9999999998678758,
+          -2.5934809850302464e-13
+        ]
+      ],
+      "mono_max_error": 1.3436278263627483e-10,
+      "nfev": 10,
+      "optimality": 4.17152446432151e-09,
+      "parent_candidate_id": "r009-j12-w0-a004622",
+      "seed": 5162549387486351142,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "35efefffe97a496f9e7ffefdfffed5ff3a",
+      "support_size": 103,
+      "total_l2": 1.1513606022815402e-05,
+      "weight_max_abs": 8.068264054177376,
+      "weight_min_abs": 2.9934082404939813e-22
+    },
+    {
+      "_source": "second-approach-data-12/worker-0/attempts.jsonl",
+      "attempt": 3481,
+      "binary_relation_rows": 57,
+      "candidate_id": "r010-j12-w0-a003481",
+      "closed": true,
+      "cost": 6.629527007013254e-11,
+      "elapsed_seconds": 0.16759824752807617,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1514796530489683e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.1514796571692026e-05,
+      "mixed_max": 1.1514796530489683e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998674938,
+          -5.0237591868593286e-14
+        ],
+        [
+          0.9999999998670297,
+          2.985944824801353e-13
+        ],
+        [
+          0.9999999998674272,
+          -2.275957200480952e-15
+        ]
+      ],
+      "mono_max_error": 1.3297063669372095e-10,
+      "nfev": 9,
+      "optimality": 1.4630475395820379e-09,
+      "parent_candidate_id": "r009-j09-w2-a002414",
+      "seed": 2262575184310917264,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "35feebffe87641668cfffdfddfded94f3a",
+      "support_size": 92,
+      "total_l2": 1.1514796573985362e-05,
+      "weight_max_abs": 8.122471015293746,
+      "weight_min_abs": 1.655048357651318e-20
+    },
+    {
+      "_source": "second-approach-data-16/worker-0/attempts.jsonl",
+      "attempt": 565,
+      "binary_relation_rows": 39,
+      "candidate_id": "r010-j16-w0-a000565",
+      "closed": true,
+      "cost": 6.728542756246475e-11,
+      "elapsed_seconds": 0.14859724044799805,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.160046787777305e-05,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 1.1600467881538549e-05,
+      "mixed_max": 1.160046787777305e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998660228,
+          -2.400857290751901e-13
+        ],
+        [
+          0.9999999998649297,
+          8.61810622864914e-15
+        ],
+        [
+          0.9999999998653596,
+          2.3125945602951255e-13
+        ]
+      ],
+      "mono_max_error": 1.350702885623463e-10,
+      "nfev": 9,
+      "optimality": 8.157127443722878e-10,
+      "parent_candidate_id": "r009-j08-w2-a002282",
+      "seed": 2380759260564670903,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "success": false,
+      "support_mask_hex": "3a9dfbf623767ff7fff636da7bef83f7ff",
+      "support_size": 98,
+      "total_l2": 1.1600467883879924e-05,
+      "weight_max_abs": 7.99582038732811,
+      "weight_min_abs": 5.858953902149082e-22
+    },
+    {
+      "_source": "second-approach-data-8/worker-3/attempts.jsonl",
+      "attempt": 4861,
+      "binary_relation_rows": 97,
+      "candidate_id": "r010-j08-w3-a004861",
+      "closed": true,
+      "cost": 6.864856875599584e-11,
+      "elapsed_seconds": 0.15175652503967285,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1717386118641309e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.1717386118682864e-05,
+      "mixed_max": 1.1717386118641309e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998603923,
+          1.3268830478804297e-12
+        ],
+        [
+          0.9999999998630185,
+          6.97775171043563e-14
+        ],
+        [
+          0.9999999998606073,
+          1.860400722364278e-12
+        ]
+      ],
+      "mono_max_error": 1.3961396421904183e-10,
+      "nfev": 10,
+      "optimality": 9.534787316828434e-10,
+      "parent_candidate_id": "r008-j18-w0-a000963",
+      "seed": 2173897612787009372,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "35fee3fff87241668c7fddfddfdef94f3a",
+      "support_size": 90,
+      "total_l2": 1.1717386121144579e-05,
+      "weight_max_abs": 8.10405461810806,
+      "weight_min_abs": 2.9114509022251972e-21
+    },
+    {
+      "_source": "second-approach-data-12/worker-3/attempts.jsonl",
+      "attempt": 4393,
+      "binary_relation_rows": 58,
+      "candidate_id": "r010-j12-w3-a004393",
+      "closed": true,
+      "cost": 6.945127745492875e-11,
+      "elapsed_seconds": 0.16541481018066406,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1785692798254074e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.1785692802857839e-05,
+      "mixed_max": 1.1785692798254074e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998646295,
+          3.147482274861545e-13
+        ],
+        [
+          0.9999999998739313,
+          -6.3589689070385845e-12
+        ],
+        [
+          0.9999999998243794,
+          3.769318190904745e-11
+        ]
+      ],
+      "mono_max_error": 1.7962010284371408e-10,
+      "nfev": 10,
+      "optimality": 1.444682955417291e-08,
+      "parent_candidate_id": "r009-j16-w1-a002312",
+      "seed": 6289216407561137695,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "35fee3ffe8724966ad7ffdfddfded94f3a",
+      "support_size": 92,
+      "total_l2": 1.1785692805680007e-05,
+      "weight_max_abs": 8.072311694252042,
+      "weight_min_abs": 1.2673395665156955e-20
+    },
+    {
+      "_source": "second-approach-data-15/worker-3/attempts.jsonl",
+      "attempt": 223,
+      "binary_relation_rows": 18,
+      "candidate_id": "r010-j15-w3-a000223",
+      "closed": true,
+      "cost": 6.97071207746263e-11,
+      "elapsed_seconds": 0.15122485160827637,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1807380805595177e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.1807380805759813e-05,
+      "mixed_max": 1.1807380805595177e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998623397,
+          -3.1765701180576445e-12
+        ],
+        [
+          0.999999999862995,
+          -7.025491299886738e-13
+        ],
+        [
+          0.9999999998610903,
+          -3.5899061501254735e-13
+        ]
+      ],
+      "mono_max_error": 1.3891012542835597e-10,
+      "nfev": 9,
+      "optimality": 1.4622383590132154e-08,
+      "parent_candidate_id": "r009-j17-w3-a000122",
+      "seed": 8381345828026667293,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "37fee3ffe87645279c7ffdffdffe9d6e3a",
+      "support_size": 95,
+      "total_l2": 1.1807380808174716e-05,
+      "weight_max_abs": 8.096279543542847,
+      "weight_min_abs": 9.09153441744356e-22
+    },
+    {
+      "_source": "second-approach-data-10/worker-2/attempts.jsonl",
+      "attempt": 4705,
+      "binary_relation_rows": 30,
+      "candidate_id": "r010-j10-w2-a004705",
+      "closed": true,
+      "cost": 7.059094828355847e-11,
+      "elapsed_seconds": 0.3004326820373535,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1881998836979002e-05,
+      "message": "Both `ftol` and `xtol` termination conditions are satisfied.",
+      "mixed_l2": 1.1881998843089799e-05,
+      "mixed_max": 1.1881998836979002e-05,
+      "mono_amplitudes": [
+        [
+          0.999999999858322,
+          1.6320278462035757e-13
+        ],
+        [
+          0.9999999998589255,
+          -2.7278179715040096e-13
+        ],
+        [
+          0.9999999998587414,
+          9.295897385185404e-13
+        ]
+      ],
+      "mono_max_error": 1.4167809666192547e-10,
+      "nfev": 18,
+      "optimality": 8.997348830560807e-10,
+      "parent_candidate_id": "r009-j15-w0-a003068",
+      "seed": 4366810838997012097,
+      "skipped_known_obstruction": false,
+      "status": 4,
+      "success": false,
+      "support_mask_hex": "35fee3bfe97851679e7fecfdfffeebcf3a",
+      "support_size": 95,
+      "total_l2": 1.1881998845611667e-05,
+      "weight_max_abs": 11.19868590743833,
+      "weight_min_abs": 1.2091217152264892e-21
+    },
+    {
+      "_source": "second-approach-data-2/worker-0/attempts.jsonl",
+      "attempt": 1507,
+      "binary_relation_rows": 45,
+      "candidate_id": "r010-j02-w0-a001507",
+      "closed": true,
+      "cost": 7.08720499591803e-11,
+      "elapsed_seconds": 0.15588164329528809,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.1905633111137672e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.1905633114560132e-05,
+      "mixed_max": 1.1905633111137672e-05,
+      "mono_amplitudes": [
+        [
+          0.9999999998584235,
+          -3.241851232097172e-14
+        ],
+        [
+          0.9999999998591391,
+          -5.204725539441722e-13
+        ],
+        [
+          0.9999999998587069,
+          -2.8604896228843956e-13
+        ]
+      ],
+      "mono_max_error": 1.4157653199025158e-10,
+      "nfev": 9,
+      "optimality": 2.478983478297617e-09,
+      "parent_candidate_id": "r009-j07-w2-a004478",
+      "seed": 8834354530110941121,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "35fee3fff872456f8c7ffdfddfdedb4f3e",
+      "support_size": 95,
+      "total_l2": 1.1905633117073638e-05,
+      "weight_max_abs": 8.65099196785435,
+      "weight_min_abs": 6.812711074524685e-21
+    },
+    {
+      "_source": "second-approach-data-13/worker-3/attempts.jsonl",
+      "attempt": 3229,
+      "binary_relation_rows": 65,
+      "candidate_id": "r010-j13-w3-a003229",
+      "closed": true,
+      "cost": 7.291500837360242e-11,
+      "elapsed_seconds": 0.18394136428833008,
+      "exact_obstruction": "not_checked_dense",
+      "family": "seed_bank_mutation",
+      "max_error": 1.2076009881060767e-05,
+      "message": "`xtol` termination condition is satisfied.",
+      "mixed_l2": 1.2076009965342612e-05,
+      "mixed_max": 1.2076009881060767e-05,
+      "mono_amplitudes": [
+        [
+          0.999999999854697,
+          -5.155875726359227e-13
+        ],
+        [
+          0.9999999998541717,
+          4.93095148119371e-14
+        ],
+        [
+          0.9999999998524487,
+          -5.150324611242493e-13
+        ]
+      ],
+      "mono_max_error": 1.4755220337369265e-10,
+      "nfev": 11,
+      "optimality": 1.18951482241926e-09,
+      "parent_candidate_id": "r009-j03-w0-a002336",
+      "seed": 8518993400614064746,
+      "skipped_known_obstruction": false,
+      "status": 3,
+      "success": false,
+      "support_mask_hex": "3a9df3f623667fb7fffe36dbfbeb83f7f9",
+      "support_size": 95,
+      "total_l2": 1.2076009967998738e-05,
+      "weight_max_abs": 7.911840401742672,
+      "weight_min_abs": 1.1379256285781899e-23
+    }
+  ],
+  "created_at_unix": 1785200295.5881445,
+  "exact_obstruction_statuses": {
+    "not_checked_dense": 236645,
+    "unknown": 28849,
+    "unresolved_no_binary_relations": 146529
+  },
+  "families": {
+    "closure_growth_low_seed": 68650,
+    "closure_growth_medium_seed": 68637,
+    "dense_random": 66457,
+    "full": 68680,
+    "near_full": 68663,
+    "seed_bank_mutation": 42087,
+    "unknown": 28849
+  },
+  "jobs_expected": 20,
+  "jobs_missing": [],
+  "jobs_present": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "manifests": 20,
+  "minimum_jobs_for_acceptance": 16,
+  "numerical_successes": 0,
+  "optimized_attempts": 383174,
+  "run_id": 30297474476,
+  "run_index": 10,
+  "schema_version": 1,
+  "skipped_known_obstruction": 0,
+  "support_sizes": {
+    "100": 4056,
+    "101": 3916,
+    "102": 3545,
+    "103": 2952,
+    "104": 2682,
+    "105": 2544,
+    "106": 2412,
+    "107": 2299,
+    "108": 2339,
+    "109": 2353,
+    "110": 5591,
+    "111": 5429,
+    "112": 5543,
+    "113": 5479,
+    "114": 5465,
+    "115": 5601,
+    "116": 5557,
+    "117": 5490,
+    "118": 5558,
+    "119": 5492,
+    "120": 5589,
+    "121": 5555,
+    "122": 5627,
+    "123": 5626,
+    "124": 5603,
+    "125": 5636,
+    "126": 3168,
+    "127": 3263,
+    "128": 3294,
+    "129": 3289,
+    "130": 3243,
+    "135": 68680,
+    "45": 1,
+    "55": 4,
+    "56": 2,
+    "57": 4,
+    "58": 4,
+    "59": 6,
+    "60": 15,
+    "61": 16,
+    "62": 40,
+    "63": 25,
+    "64": 45,
+    "65": 88,
+    "66": 113,
+    "67": 162,
+    "68": 268,
+    "69": 406,
+    "70": 598,
+    "71": 867,
+    "72": 1358,
+    "73": 2070,
+    "74": 3127,
+    "75": 4787,
+    "76": 6953,
+    "77": 10089,
+    "78": 13801,
+    "79": 17680,
+    "80": 20662,
+    "81": 19029,
+    "82": 16085,
+    "83": 10707,
+    "84": 5553,
+    "85": 2023,
+    "86": 577,
+    "87": 115,
+    "88": 102,
+    "89": 5647,
+    "90": 1580,
+    "91": 1586,
+    "92": 3569,
+    "93": 2490,
+    "94": 2561,
+    "95": 6158,
+    "96": 4691,
+    "97": 5384,
+    "98": 5238,
+    "99": 4012
+  },
+  "worker_errors": 28849,
+  "workflow_conclusion": "success"
+}

@@ -1,0 +1,20 @@
+{
+  "contract_sha256": "8000eb9b81ac8b2bc4f7d3367beec11a6fe3bfb91e1b64ac177479f5f8c36a6b",
+  "evidence_level": "exact survivor replay; all negative statuses diagnostic",
+  "expected_searches": 80,
+  "independent_single_thread_workers_per_job": 4,
+  "minimum_survivor_support": 24,
+  "physical_jobs": 20,
+  "received_searches": 80,
+  "schema": "run-070-boundary-support-collection-v1",
+  "scientific_status": "support_survivors_found",
+  "scope_warning": "Support survivors only satisfy a necessary cancellation condition and still require exact coefficient analysis.",
+  "source_sha": "d2f3b1c4f7db4cd5dd281d590b94e98027e4cc3d",
+  "spec_sha256": "ad3d81c54521cb8c78bc260a6ff693ec4f357231013b7a79da7227b4ab3d6747",
+  "status_histogram": {
+    "SURVIVOR": 2,
+    "TIME_LIMIT": 78
+  },
+  "unique_survivors": 2,
+  "workflow_run": "31495809251"
+}

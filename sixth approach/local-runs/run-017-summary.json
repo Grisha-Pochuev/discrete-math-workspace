@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "series": "run-017",
+  "elapsed_seconds": 6.817,
+  "completion_counts": [
+    33,
+    33,
+    33
+  ],
+  "completion_triples": 35937,
+  "simple_systems": 31744,
+  "connected_systems": 31744,
+  "minimum_mixed_singletons": 12,
+  "zero_record_found": false,
+  "first_zero_record": null
+}

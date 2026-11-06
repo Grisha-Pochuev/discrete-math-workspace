@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "run_id": "run-021",
+  "mode": "exact_rectangular_boundary",
+  "engine": "node",
+  "support_shape": [3, 2],
+  "output": "local-runs/run-021-summary.json"
+}

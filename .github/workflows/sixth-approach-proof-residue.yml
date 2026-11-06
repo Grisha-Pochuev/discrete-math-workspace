@@ -1,0 +1,196 @@
+name: Sixth Approach Proof Residue
+run-name: ${{ inputs.run_id }} proof residue
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prove:
+    name: prove-${{ inputs.run_id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify contract and install pinned tools
+        shell: bash
+        env:
+          CALC_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          test "$CALC_RUN_ID" = 'run-077'
+          python 'sixth approach/run077_contract.py' \
+            --spec 'sixth approach/specs/run-077-residue.json'
+          PYTHONPATH='sixth approach' python 'sixth approach/tests/test_run077_contract.py'
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends cadical=1.7.4-1 build-essential ca-certificates
+          git clone --filter=blob:none --no-checkout \
+            https://github.com/marijnheule/drat-trim.git checker-source
+          git -C checker-source checkout --detach 2e3b2dc0ecf938addbd779d42877b6ed69d9a985
+          git -C checker-source rev-parse HEAD | grep -Fx \
+            '2e3b2dc0ecf938addbd779d42877b6ed69d9a985'
+          cc -O2 -DLONGTYPE checker-source/lrat-check.c -o lrat-check
+      - name: Emit immutable formula twice
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p result reference
+          python 'sixth approach/run077_formula.py' emit \
+            --spec 'sixth approach/specs/run-077-residue.json' \
+            --cnf reference/input.cnf --metadata reference/metadata.json
+          test "$(sha256sum reference/input.cnf | cut -d' ' -f1)" = \
+            '75a424598feac97f9eead14f5de24268853822aa65546eac53cab75e85e04b82'
+          python 'sixth approach/run077_formula.py' emit \
+            --spec 'sixth approach/specs/run-077-residue.json' \
+            --cnf result/input.cnf --metadata result/metadata.json
+          cmp reference/input.cnf result/input.cnf
+          cmp reference/metadata.json result/metadata.json
+          rm -rf reference
+      - name: Solve with exact certificate
+        id: solve
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p result/workers
+          trap 'rm -f result/input.cnf result/workers/proof-*.lrat result/workers/proof-*.lrat.gz' EXIT
+          pids=()
+          for seed in 1 2 3 4; do
+            (
+              set +e
+              timeout --signal=TERM --kill-after=30s 3600s \
+                cadical --seed="$seed" --check --checkproof --checkprooflrat \
+                  --lrat --no-binary result/input.cnf \
+                  "result/workers/proof-${seed}.lrat" \
+                  > "result/workers/solver-${seed}.log" 2>&1
+              code=$?
+              set -e
+              echo "$code" > "result/workers/solver-${seed}.exit"
+              if test "$code" = 10; then
+                python 'sixth approach/run077_formula.py' replay \
+                  --spec 'sixth approach/specs/run-077-residue.json' \
+                  --model "result/workers/solver-${seed}.log" \
+                  --output "result/workers/positive-${seed}.json"
+                rm -f "result/workers/proof-${seed}.lrat"
+              elif test "$code" = 20; then
+                test -s "result/workers/proof-${seed}.lrat"
+                if ./lrat-check result/input.cnf \
+                    "result/workers/proof-${seed}.lrat" \
+                    > "result/workers/checker-${seed}.log" 2>&1 \
+                    && grep -Fx 'c VERIFIED' \
+                      "result/workers/checker-${seed}.log"; then
+                  gzip -9 "result/workers/proof-${seed}.lrat"
+                else
+                  rm -f "result/workers/proof-${seed}.lrat"
+                  exit 21
+                fi
+              else
+                rm -f "result/workers/proof-${seed}.lrat"
+              fi
+            ) &
+            pids+=("$!")
+          done
+          worker_failure=0
+          for pid in "${pids[@]}"; do
+            wait "$pid" || worker_failure=1
+          done
+          python - <<'PY'
+          import json,pathlib,shutil
+          root=pathlib.Path('result')
+          workers=root/'workers'
+          records=[]
+          for seed in (1,2,3,4):
+              exit_path=workers/f'solver-{seed}.exit'
+              code=int(exit_path.read_text()) if exit_path.is_file() else None
+              record={'seed':seed,'solver_exit':code}
+              checker=workers/f'checker-{seed}.log'
+              positive=workers/f'positive-{seed}.json'
+              proof=workers/f'proof-{seed}.lrat.gz'
+              record['checker_verified']=checker.is_file() and 'c VERIFIED' in checker.read_text(errors='replace')
+              record['positive_replayed']=positive.is_file()
+              record['proof_present']=proof.is_file()
+              records.append(record)
+          exact=[r for r in records if (r['solver_exit']==10 and r['positive_replayed']) or (r['solver_exit']==20 and r['checker_verified'] and r['proof_present'])]
+          (root/'workers.json').write_text(json.dumps(records,indent=2,sort_keys=True)+'\n',newline='\n')
+          if not exact:
+              raise SystemExit('no independently classified exact worker outcome')
+          if len({r['solver_exit'] for r in exact}) != 1:
+              raise SystemExit('conflicting independently classified worker outcomes')
+          chosen=min(exact,key=lambda r:r['seed'])
+          seed=chosen['seed']
+          (root/'selected-seed').write_text(f'{seed}\n')
+          (root/'solver.exit').write_text(f"{chosen['solver_exit']}\n")
+          shutil.copyfile(workers/f'solver-{seed}.log',root/'solver.log')
+          if chosen['solver_exit']==10:
+              shutil.copyfile(workers/f'positive-{seed}.json',root/'positive.json')
+          else:
+              shutil.copyfile(workers/f'checker-{seed}.log',root/'checker.log')
+              shutil.copyfile(workers/f'proof-{seed}.lrat.gz',root/'proof.lrat.gz')
+          for path in workers.glob('proof-*.lrat.gz'):
+              path.unlink()
+          PY
+      - name: Record compact provenance
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import hashlib,json,pathlib,os
+          root=pathlib.Path('result')
+          def sha(p):
+              h=hashlib.sha256()
+              with p.open('rb') as f:
+                  while chunk:=f.read(1<<20): h.update(chunk)
+              return h.hexdigest()
+          meta=json.load(open(root/'metadata.json')) if (root/'metadata.json').is_file() else {}
+          record={
+            'schema':'neutral-proof-residue-result-v1',
+            'source_sha':os.environ['GITHUB_SHA'],
+            'github_run_id':os.environ['GITHUB_RUN_ID'],
+            'github_run_attempt':int(os.environ['GITHUB_RUN_ATTEMPT']),
+            'metadata':meta,
+            'solver_exit':int((root/'solver.exit').read_text()) if (root/'solver.exit').is_file() else None,
+            'files':{},
+          }
+          for p in sorted(root.iterdir()):
+              if p.is_file() and p.name!='result.json':
+                  record['files'][p.name]={'bytes':p.stat().st_size,'sha256':sha(p)}
+          (root/'result.json').write_text(json.dumps(record,indent=2,sort_keys=True)+'\n',newline='\n')
+          PY
+      - name: Upload bounded proof package
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-proof-residue
+          path: result/
+          if-no-files-found: error
+          retention-days: 30
+      - name: Require a classified exact outcome
+        if: always()
+        shell: bash
+        run: |
+          code="$(cat result/solver.exit 2>/dev/null || echo 2)"
+          if test "$code" = 20; then
+            test -s result/proof.lrat.gz
+            grep -Fx 'c VERIFIED' result/checker.log
+          elif test "$code" = 10; then
+            test -s result/positive.json
+          else
+            echo "unclassified or incomplete solver exit: $code" >&2
+            exit 2
+          fi
+

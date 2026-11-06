@@ -1,0 +1,2 @@
+# Fourth approach run 000 intentionally uses only the Python standard library.
+# Add pinned dependencies only when a later stage genuinely requires them.

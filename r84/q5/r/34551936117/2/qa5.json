@@ -1,0 +1,9 @@
+{
+  "n": 2079471,
+  "layouts": 4,
+  "tasks": 6144,
+  "all_vertices_per_layout": true,
+  "scales_per_worker": true,
+  "handoff_roundtrip": true,
+  "corruption_rejected": true
+}
