@@ -1,0 +1,137 @@
+name: Sixth Approach Run 036 Native Representative
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  exact-layer:
+    name: exact-layer
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python collector
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Fetch verified native toolkit
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/or-tools.tar.gz"
+          root="$RUNNER_TEMP/or-tools"
+          curl --fail --location --retry 3 \
+            'https://github.com/google/or-tools/releases/download/v9.15/or-tools_amd64_ubuntu-24.04_cpp_v9.15.6755.tar.gz' \
+            --output "$archive"
+          echo '6f389320672cee00b78aacefb2bde33fef0bb988c3b2735573b9fffd1047fbda  '"$archive" | sha256sum --check
+          mkdir -p "$root"
+          tar -xzf "$archive" -C "$root" --strip-components=1
+
+      - name: Compile the native worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake \
+            -S "$GITHUB_WORKSPACE/sixth approach/run033_native" \
+            -B "$RUNNER_TEMP/run036-build" \
+            -DCMAKE_PREFIX_PATH="$RUNNER_TEMP/or-tools" \
+            -Dortools_DIR="$RUNNER_TEMP/or-tools/lib/cmake/ortools" \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$RUNNER_TEMP/run036-build" --parallel 2
+          test -x "$RUNNER_TEMP/run036-build/run033_boundary_worker"
+
+      - name: Record machine diagnostics
+        shell: bash
+        run: |
+          mkdir -p out
+          {
+            date -u +%FT%TZ
+            uname -a
+            nproc
+            lscpu
+            free -h
+            swapon --show
+            df -h .
+            ulimit -a
+            g++ --version
+            echo "GITHUB_SHA=$GITHUB_SHA"
+            sha256sum "$RUNNER_TEMP/run036-build/run033_boundary_worker"
+          } > out/diagnostics.log
+
+      - name: Run four exact native shards
+        id: compute
+        shell: bash
+        run: |
+          export LD_LIBRARY_PATH="$RUNNER_TEMP/or-tools/lib:${LD_LIBRARY_PATH:-}"
+          set +e
+          pids=()
+          for shard in 0 1 2 3; do
+            (
+              ulimit -v $((2500*1024))
+              timeout --signal=TERM --kill-after=30s 960 \
+                "$RUNNER_TEMP/run036-build/run033_boundary_worker" \
+                  --run-id run-036 \
+                  --symmetry-break 1 \
+                  --case 3 \
+                  --support 55 \
+                  --shard-id "$shard" \
+                  --shard-count 4 \
+                  --seconds 900 \
+                  --cap 500000 \
+                  --checkpoint-every 25000 \
+                  --checkpoint-seconds 120 \
+                  --output "out/shard-${shard}.json" \
+                > "out/shard-${shard}.log" 2>&1
+              echo $? > "out/shard-${shard}.exit"
+            ) &
+            pids+=("$!")
+          done
+          for pid in "${pids[@]}"; do
+            wait "$pid"
+          done
+          exit 0
+
+      - name: Validate exact coverage
+        if: always()
+        shell: bash
+        run: |
+          python 'sixth approach/run033_collect.py' \
+            --run-id run-036 \
+            --case 3 \
+            --orbit 8 \
+            --support 55 \
+            --expected-stabilizer 4 \
+            --expected-term-variables 27428 \
+            --expected-escape-variables 162 \
+            --expected-symmetry-breaking 1 \
+            --input-dir out \
+            --require-exit-files \
+            --output out/layer-55-merged.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          result = json.loads(Path('out/layer-55-merged.json').read_text())
+          assert result['complete_exact_coverage']
+          assert result['raw_supports'] == 7272
+          assert result['support_orbits'] == 1855
+          PY
+
+      - name: Upload complete diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: run-036-native-representative
+          path: out/
+          if-no-files-found: error
+          retention-days: 14

@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "series": "run-022",
+  "mode": "exact_intersection_boundary",
+  "support_shape": [
+    2,
+    2
+  ],
+  "support_intersection": 1,
+  "stages": {
+    "degree_candidates": 1119,
+    "four_connected": 969,
+    "active_minor_screen": 753,
+    "zero_minor_screen": 177,
+    "diagonal_minor_screen": 147,
+    "pure_support_screen": 135,
+    "local_screen": 135
+  },
+  "orbit_count": 14,
+  "orbit_sizes": [
+    3,
+    6,
+    6,
+    6,
+    6,
+    12,
+    12,
+    12,
+    12,
+    12,
+    12,
+    12,
+    12,
+    12
+  ],
+  "branch_orbits": {
+    "higher_rank": [
+      5,
+      13
+    ],
+    "rank_one": [
+      1,
+      5
+    ],
+    "union": [
+      1,
+      5,
+      13
+    ]
+  },
+  "residues": [
+    {
+      "orbit_id": 1,
+      "multiplicity": 6,
+      "right": [
+        2,
+        0,
+        3
+      ],
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "high_rank_branch": false,
+      "rank_one_branch": true
+    },
+    {
+      "orbit_id": 5,
+      "multiplicity": 3,
+      "right": [
+        2,
+        0,
+        3
+      ],
+      "edges": [
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ]
+      ],
+      "high_rank_branch": true,
+      "rank_one_branch": true
+    },
+    {
+      "orbit_id": 13,
+      "multiplicity": 6,
+      "right": [
+        3,
+        4,
+        5
+      ],
+      "edges": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ]
+      ],
+      "high_rank_branch": true,
+      "rank_one_branch": false
+    }
+  ]
+}

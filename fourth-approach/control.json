@@ -1,0 +1,347 @@
+{
+  "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+  "automation_mode": "manual_single_run",
+  "completed_runs": 10,
+  "current_stage": 4,
+  "current_stage_name": "fixed_support_minimization_failed",
+  "full_run_auto_launch_allowed": false,
+  "large_matrix_concurrency_guard": true,
+  "last_run_accepted": false,
+  "last_run_id": 31344143041,
+  "last_run_index": 4,
+  "minimum_free_concurrency_slots": 0,
+  "next_run_index": 4,
+  "next_spec_path": "fourth-approach/run-specs/run-004-stage4-fixed-support-minimization.json",
+  "next_task": "stage4_fixed_support_certificate_minimization",
+  "recommended_next_action": "inspect_run_004_failure",
+  "run_history": [
+    {
+      "accepted": true,
+      "run_id": 30954702268,
+      "run_index": 0,
+      "task": "stage0_source_inventory"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "canonical_support_classes": 2594,
+        "completed_jobs": 20,
+        "independently_verified_certificates": 2594,
+        "rejected_certificates": 0
+      },
+      "run_id": 30957731562,
+      "run_index": 1,
+      "task": "stage1_canonicalize_verify"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "certificate_terms_removed": 15377,
+        "classes_minimized": 2594,
+        "completed_jobs": 20,
+        "independently_reverified": 2594,
+        "optimization_attempts": 42719580,
+        "support_variables_removed": 66893
+      },
+      "run_id": 30960392864,
+      "run_index": 2,
+      "task": "stage2_minimize_certificates"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "canonical_deletion_child_classes": 1,
+        "canonical_minimized_parent_classes": 1,
+        "independently_reverified_children": 7782,
+        "raw_deletion_children": 7782,
+        "source_minimized_records": 2594,
+        "target_zero_children": 7782
+      },
+      "run_id": 31001850059,
+      "run_index": 3,
+      "task": "stage3_deletion_contrasts"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "certificate_terms_removed": 12783,
+        "certificates_improved": 2560,
+        "complete_shards": 20,
+        "completed_jobs": 20,
+        "independently_reverified": 2594,
+        "minimized_nonzero_terms": 7782,
+        "original_nonzero_terms": 20565,
+        "source_support_classes": 2594,
+        "supports_changed": 0,
+        "supports_missing_monochromatic_target": 0,
+        "term_count_distribution": {
+          "3": 2594
+        },
+        "total_optimization_attempts": 109430425
+      },
+      "run_id": 31003259020,
+      "run_index": 4,
+      "task": "stage4_fixed_support_certificate_minimization"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "candidate_records": 1300,
+        "canonical_mechanism_classes": 2594,
+        "exact_support_classes": 2594,
+        "exactly_covered_candidates": 0,
+        "full_candidate_coverage": true,
+        "global_candidate_count": 1300,
+        "groups": {
+          "independent_2_0": {
+            "best_covered_max_error": null,
+            "best_hard_survivor_max_error": 1.3253445736421331e-05,
+            "best_max_error": 1.3253445736421331e-05,
+            "candidates": 1034,
+            "coverage_fraction": 0.0,
+            "exactly_covered": 0,
+            "hard_survivors": 1034,
+            "orbit_scans_complete": 1034,
+            "radius1_exact_hits": 0,
+            "radius1_scans_complete": 1034,
+            "radius2_exact_hits": 0,
+            "radius2_samples": 16020897
+          },
+          "legacy_2_0": {
+            "best_covered_max_error": null,
+            "best_hard_survivor_max_error": 8.528761437887434e-07,
+            "best_max_error": 8.528761437887434e-07,
+            "candidates": 166,
+            "coverage_fraction": 0.0,
+            "exactly_covered": 0,
+            "hard_survivors": 166,
+            "orbit_scans_complete": 166,
+            "radius1_exact_hits": 0,
+            "radius1_scans_complete": 166,
+            "radius2_exact_hits": 0,
+            "radius2_samples": 2661497
+          },
+          "old_pool": {
+            "best_covered_max_error": null,
+            "best_hard_survivor_max_error": 9.462588877284424e-06,
+            "best_max_error": 9.462588877284424e-06,
+            "candidates": 100,
+            "coverage_fraction": 0.0,
+            "exactly_covered": 0,
+            "hard_survivors": 100,
+            "orbit_scans_complete": 100,
+            "radius1_exact_hits": 0,
+            "radius1_scans_complete": 100,
+            "radius2_exact_hits": 0,
+            "radius2_samples": 1462032
+          }
+        },
+        "hard_survivors": 1300,
+        "orbit_scans_complete": 1300,
+        "radius1_exact_hits": 0,
+        "radius1_scans_complete": 1300,
+        "radius2_exact_hits": 0,
+        "radius2_samples": 20144426,
+        "workers_present": 80
+      },
+      "run_id": 31034878944,
+      "run_index": 5,
+      "task": "stage5_bridge_second_approach"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "exactly_closed": 0,
+        "groups": {
+          "independent_2_0": {
+            "best_input_max_error": 1.3253445736421331e-05,
+            "best_survivor_max_error": 1.3253445736421331e-05,
+            "exactly_closed": 0,
+            "profiles": {
+              "degree3_expanded": 7,
+              "degree4_sparse": 7,
+              "degree4_wide": 8,
+              "degree5_sparse": 8
+            },
+            "selected": 30,
+            "survivors": 30
+          },
+          "legacy_2_0": {
+            "best_input_max_error": 8.528761437887434e-07,
+            "best_survivor_max_error": 8.528761437887434e-07,
+            "exactly_closed": 0,
+            "profiles": {
+              "degree3_expanded": 5,
+              "degree4_sparse": 5,
+              "degree4_wide": 5,
+              "degree5_sparse": 5
+            },
+            "selected": 20,
+            "survivors": 20
+          },
+          "old_pool": {
+            "best_input_max_error": 9.462588877284424e-06,
+            "best_survivor_max_error": 9.462588877284424e-06,
+            "exactly_closed": 0,
+            "profiles": {
+              "degree3_expanded": 3,
+              "degree4_sparse": 3,
+              "degree4_wide": 2,
+              "degree5_sparse": 2
+            },
+            "selected": 10,
+            "survivors": 10
+          }
+        },
+        "invalid_or_missing_workers": 0,
+        "jobs_configured": 15,
+        "maximum_tested_multiplier_degree": 5,
+        "selected_candidates": 60,
+        "survivors": 60,
+        "total_attempts": 3629620,
+        "workers_expected": 60,
+        "workers_present": 60
+      },
+      "run_id": 31130093117,
+      "run_index": 6,
+      "task": "stage6_targeted_hard_survivors"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "lemma_falsification_prompts": 4,
+        "source_exact_closures": 0,
+        "source_survivors": 60,
+        "source_workers": 60
+      },
+      "run_id": 31182852208,
+      "run_index": 7,
+      "task": "stage7_gpt_sol_handoff"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "candidate_count": 60,
+        "duplicate_tasks": 20,
+        "exact_candidate_closures": 0,
+        "exact_task_closures": 0,
+        "groups": {
+          "independent_2_0": {
+            "best_input_max_error": 1.3253445736421331e-05,
+            "candidates": 30,
+            "duplicate_covered": 10,
+            "exactly_closed": 0,
+            "survivors": 30
+          },
+          "legacy_2_0": {
+            "best_input_max_error": 8.528761437887434e-07,
+            "candidates": 20,
+            "duplicate_covered": 6,
+            "exactly_closed": 0,
+            "survivors": 20
+          },
+          "old_pool": {
+            "best_input_max_error": 9.462588877284424e-06,
+            "candidates": 10,
+            "duplicate_covered": 4,
+            "exactly_closed": 0,
+            "survivors": 10
+          }
+        },
+        "jobs_configured": 20,
+        "successful_attempts": 6866009,
+        "survivor_candidates": 60,
+        "total_attempts": 6866009,
+        "worker_error_count": 0,
+        "workers_expected": 80,
+        "workers_present": 80
+      },
+      "run_id": 31183347151,
+      "run_index": 8,
+      "task": "stage8_adaptive_exact_lemma_cycle"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "lemma_falsification_prompts": 4,
+        "source_exact_closures": 0,
+        "source_survivors": 60,
+        "source_workers": 60
+      },
+      "run_id": 31344143027,
+      "run_index": 7,
+      "task": "stage7_gpt_sol_handoff"
+    },
+    {
+      "accepted": false,
+      "metrics": {
+        "candidate_count": 8,
+        "duplicate_tasks": 20,
+        "exact_candidate_closures": 0,
+        "exact_task_closures": 0,
+        "groups": {
+          "independent_2_0": {
+            "best_input_max_error": null,
+            "candidates": 0,
+            "duplicate_covered": 0,
+            "exactly_closed": 0,
+            "survivors": 0
+          },
+          "legacy_2_0": {
+            "best_input_max_error": 8.528761437887434e-07,
+            "candidates": 6,
+            "duplicate_covered": 0,
+            "exactly_closed": 0,
+            "survivors": 6
+          },
+          "old_pool": {
+            "best_input_max_error": 1.0810214319412947e-05,
+            "candidates": 2,
+            "duplicate_covered": 0,
+            "exactly_closed": 0,
+            "survivors": 2
+          }
+        },
+        "jobs_configured": 20,
+        "successful_attempts": 330,
+        "survivor_candidates": 8,
+        "total_attempts": 330,
+        "worker_error_count": 1,
+        "workers_expected": 80,
+        "workers_present": 8
+      },
+      "run_id": 31344143030,
+      "run_index": 8,
+      "task": "stage8_adaptive_exact_lemma_cycle"
+    },
+    {
+      "accepted": false,
+      "metrics": {
+        "certificate_terms_removed": 0,
+        "certificates_improved": 0,
+        "complete_shards": 0,
+        "completed_jobs": 0,
+        "independently_reverified": 0,
+        "minimized_nonzero_terms": 0,
+        "original_nonzero_terms": 0,
+        "source_support_classes": 0,
+        "supports_changed": 0,
+        "supports_missing_monochromatic_target": 0,
+        "term_count_distribution": {},
+        "total_optimization_attempts": 0
+      },
+      "run_id": 31344143041,
+      "run_index": 4,
+      "task": "stage4_fixed_support_certificate_minimization"
+    }
+  ],
+  "schema_version": 1,
+  "scientific_stopping_rule": "do not infer the full conjecture from support-restricted n=6 certificates",
+  "smoke_required": false,
+  "smoke_verified_for_code_sha": null,
+  "source_frontier": {
+    "third_approach_2_0_last_accepted_commit": "ae97833ea31d9aa359939b2a540aeac3d391cad8",
+    "third_approach_2_0_last_accepted_run_id": 30911346279
+  },
+  "tracking_enabled": false
+}

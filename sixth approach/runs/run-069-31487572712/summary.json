@@ -1,0 +1,18 @@
+{
+  "branches_sha256": "efb79bfa3f62042d24b9ba4ab26fe2a9dc0cd28df503c740aa9a227d7f25b302",
+  "dimacs_sha256": "3d89df32670e44f898c1063d71c5861cbdf7bb2b8bac960f5b62373c54fc651c",
+  "evidence_level": "exact survivor replay; negative statuses remain diagnostic",
+  "expected_jobs": 20,
+  "manifest_sha256": "a2f1b8a50a0c8795d54c53a9acc9251d5554601be84a11c8db13749aadea8c9f",
+  "received_jobs": 20,
+  "schema": "run-069-support-collection-v1",
+  "scientific_status": "no_survivor_found_without_portable_refutation",
+  "scope_warning": "A Boolean support survivor still requires the exact multiplicative-character audit and solution of the complex six-term equations.  INFEASIBLE without a portable proof is not a no-go theorem.",
+  "source_sha": "fd915d90e182b027ab9ea87ba2f6659be4f971ca",
+  "status_histogram": {
+    "INFEASIBLE": 20
+  },
+  "survivor_count": 0,
+  "survivors": [],
+  "workflow_run": "31487572712"
+}

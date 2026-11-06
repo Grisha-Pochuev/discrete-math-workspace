@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "active_series": "run-000",
+  "enabled": false,
+  "status": "implementation",
+  "completed_runs": 0,
+  "last_run_id": null,
+  "last_archive": null,
+  "notes": "Enable only after the same-path smoke workflow is accepted."
+}
+

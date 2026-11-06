@@ -1,0 +1,166 @@
+name: Second approach collect
+
+on:
+  workflow_run:
+    workflows: ["Second approach compute"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Compute workflow run ID to recover
+        required: true
+      source_conclusion:
+        description: Recorded compute conclusion
+        required: false
+        default: "manual-recovery"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: second-approach-collector
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SOURCE_RUN_ID: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || inputs.source_run_id }}
+      SOURCE_CONCLUSION: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion || inputs.source_conclusion }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Synchronize with main before aggregation
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          git checkout main
+          git reset --hard origin/main
+          mkdir -p work/artifacts
+
+      - name: Download every available compute artifact
+        id: download
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          pattern: second-approach-data-*
+          path: work/artifacts
+          merge-multiple: false
+
+      - name: Resolve run index from artifacts or control state
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' | tee work/resolved.env
+          import json
+          from pathlib import Path
+
+          manifests = []
+          for path in Path("work/artifacts").rglob("manifest.json"):
+              try:
+                  item = json.loads(path.read_text())
+              except Exception:
+                  continue
+              if "run_index" in item and "job_id" in item:
+                  manifests.append(item)
+          state = json.loads(Path("second-approach/control.json").read_text())
+          indices = sorted({int(item["run_index"]) for item in manifests})
+          if len(indices) > 1:
+              raise SystemExit(f"mixed run indices in artifacts: {indices}")
+          run_index = indices[0] if indices else int(state["next_run_index"])
+          print(f"RUN_INDEX={run_index}")
+          print(f"ARTIFACT_MANIFESTS={len(manifests)}")
+          PY
+          cat work/resolved.env >> "$GITHUB_ENV"
+
+      - name: Aggregate, preserve, and update the seed bank
+        run: |
+          set -euo pipefail
+          python second-approach/collect.py \
+            --artifacts work/artifacts \
+            --repo . \
+            --run-id "$SOURCE_RUN_ID" \
+            --run-index "$RUN_INDEX" \
+            --conclusion "$SOURCE_CONCLUSION" \
+            --expected-jobs 20 \
+            --min-jobs 16 \
+            | tee work/collector.log
+          run_dir="second-approach/runs/run-$(printf '%03d' "$RUN_INDEX")-${SOURCE_RUN_ID}"
+          python second-approach/verify_run.py "$run_dir" | tee work/verifier.log
+
+      - name: Commit the complete verified archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            second-approach/runs \
+            second-approach/control.json \
+            second-approach/candidates/seed-bank.json.gz
+          if git diff --cached --quiet; then
+            echo "archive already committed"
+          else
+            git commit -m "save second-approach run ${RUN_INDEX} from ${SOURCE_RUN_ID}"
+            for attempt in 1 2 3; do
+              if git push origin HEAD:main; then
+                break
+              fi
+              if [ "$attempt" = 3 ]; then
+                echo "failed to push verified archive after three attempts" >&2
+                exit 1
+              fi
+              git pull --rebase origin main
+            done
+          fi
+
+      - name: Dispatch the next research run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY' > work/next.env
+          import json
+          from pathlib import Path
+          state = json.loads(Path("second-approach/control.json").read_text())
+          print(f"ENABLED={str(bool(state['enabled'])).lower()}")
+          print(f"COMPLETED={int(state['completed_runs'])}")
+          print(f"TARGET={int(state['target_runs'])}")
+          print(f"NEXT_INDEX={int(state['next_run_index'])}")
+          print(f"NEXT_SEED={int(state['next_seed'])}")
+          PY
+          cat work/next.env
+          source work/next.env
+          if [ "$ENABLED" = true ] && [ "$COMPLETED" -lt "$TARGET" ]; then
+            gh workflow run second-approach-compute.yml \
+              --ref main \
+              -f run_index="$NEXT_INDEX" \
+              -f base_seed="$NEXT_SEED" \
+              -f runtime_seconds=21000 \
+              -f max_nfev=350
+            echo "dispatched second-approach run index $NEXT_INDEX"
+          else
+            echo "automatic chain stopped by control state"
+          fi
+
+      - name: Upload collection diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: second-approach-collection-${{ env.SOURCE_RUN_ID }}
+          path: work/
+          if-no-files-found: warn
+          retention-days: 14

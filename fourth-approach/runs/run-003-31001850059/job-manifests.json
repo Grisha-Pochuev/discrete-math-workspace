@@ -1,0 +1,45 @@
+{
+  "errors": [],
+  "manifests": [
+    {
+      "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+      "result_file": "records.json.gz",
+      "run_index": 3,
+      "schema_version": 1,
+      "shard_count": 4,
+      "shard_id": 0,
+      "status": "SUCCESS",
+      "task": "stage3_deletion_contrasts"
+    },
+    {
+      "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+      "result_file": "records.json.gz",
+      "run_index": 3,
+      "schema_version": 1,
+      "shard_count": 4,
+      "shard_id": 1,
+      "status": "SUCCESS",
+      "task": "stage3_deletion_contrasts"
+    },
+    {
+      "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+      "result_file": "records.json.gz",
+      "run_index": 3,
+      "schema_version": 1,
+      "shard_count": 4,
+      "shard_id": 2,
+      "status": "SUCCESS",
+      "task": "stage3_deletion_contrasts"
+    },
+    {
+      "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+      "result_file": "records.json.gz",
+      "run_index": 3,
+      "schema_version": 1,
+      "shard_count": 4,
+      "shard_id": 3,
+      "status": "SUCCESS",
+      "task": "stage3_deletion_contrasts"
+    }
+  ]
+}

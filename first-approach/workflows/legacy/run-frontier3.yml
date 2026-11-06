@@ -1,0 +1,131 @@
+name: batch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".runs3/**"
+  workflow_dispatch:
+    inputs:
+      runtime_seconds:
+        description: useful runtime per task host
+        required: true
+        default: "21000"
+      max_seen:
+        description: state-table cap for tasks without an explicit cap
+        required: true
+        default: "32000000"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: batch-frontier3-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  compute:
+    name: task-${{ matrix.id }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: system
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          {
+            uname -a
+            nproc
+            lscpu
+            free -h
+            swapon --show
+            df -h .
+            ulimit -a
+            grep -E "MemTotal|MemAvailable|SwapTotal|SwapFree" /proc/meminfo
+          } > out/system.txt
+
+      - name: compile
+        run: g++ -O3 -DNDEBUG -std=c++20 -march=native -o search search.cpp
+
+      - name: preflight
+        run: |
+          set -euo pipefail
+          ./search --orbit 0 --limit 12 --split-size 12 \
+            --time-limit 60 --max-seen 100000 \
+            --output out/smoke.txt \
+            2>&1 | tee out/preflight.log
+          grep -q "status complete" out/smoke.txt
+
+          python - <<'PY' | tee out/frontier-preflight.json
+          import json
+          import frontier3
+
+          tasks = frontier3.load_frontier3_tasks()
+          counts = [
+              sum(1 for index in range(len(tasks)) if index % 20 == job)
+              for job in range(20)
+          ]
+          assert max(counts) - min(counts) <= 1
+          names = [task.name for task in tasks]
+          assert len(names) == len(set(names))
+          boundary = max(tasks, key=lambda task: (task.shards, task.shard))
+          assert 0 <= boundary.shard < boundary.shards
+          by_limit = {
+              str(limit): sum(1 for task in tasks if task.limit == limit)
+              for limit in sorted({task.limit for task in tasks})
+          }
+          print(json.dumps({
+              "total": len(tasks),
+              "per_job": counts,
+              "by_limit": by_limit,
+              "max_shards": boundary.shards,
+              "max_shard": boundary.shard,
+              "boundary_task": boundary.name,
+          }, sort_keys=True))
+          PY
+
+          read -r BOUNDARY_SHARDS BOUNDARY_SHARD < <(
+            python - <<'PY'
+          import json
+          with open('out/frontier-preflight.json', encoding='utf-8') as source:
+              data = json.load(source)
+          print(data['max_shards'], data['max_shard'])
+          PY
+          )
+          printf 'testing actual frontier boundary: shards=%s shard=%s\n' \
+            "$BOUNDARY_SHARDS" "$BOUNDARY_SHARD" | tee -a out/preflight.log
+          ./search --orbit 0 --limit 12 --split-size 12 \
+            --shard-count "$BOUNDARY_SHARDS" --shard-index "$BOUNDARY_SHARD" \
+            --time-limit 60 --max-seen 100000 \
+            --output out/smoke-frontier-boundary.txt \
+            2>&1 | tee -a out/preflight.log
+          grep -q "status complete" out/smoke-frontier-boundary.txt
+
+      - name: execute
+        env:
+          RUNTIME_SECONDS: ${{ inputs.runtime_seconds || '21000' }}
+          MAX_SEEN: ${{ inputs.max_seen || '32000000' }}
+        run: |
+          set -euo pipefail
+          ulimit -c 0
+          python frontier3.py \
+            --job-id "${{ matrix.id }}" --job-count 20 --workers 4 \
+            --stage frontier2 --runtime-seconds "$RUNTIME_SECONDS" \
+            --task-seconds 3600 --max-seen "$MAX_SEEN" --output out \
+            2>&1 | tee out/driver.log
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: data-${{ matrix.id }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 6
