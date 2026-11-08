@@ -64,7 +64,20 @@ jobs:
             sleep $(( 20 + RANDOM % 40 ))
           done
           ls -la p q || true
-      - run: PERT=${{ inputs.pert }} MT=${{ inputs.mt }} Q=${{ inputs.q }} TLX=${{ inputs.tl }} W=4 python3 r85/${{ inputs.f }} ${{ matrix.i }} ${{ inputs.t }} 2>&1 | tee o.log
+      - run: |
+          mkdir -p wd
+          ok() { [ -f wd/$1 ] && echo "$2  wd/$1" | sha256sum -c --quiet; }
+          for k in a b; do
+            if [ $k = a ]; then h=0a613505e22d15f67372824568bce53255b088d677889bc9990299afea5735b4; else h=ab3c6fa0ff96eae12b9b63c8f8654b839e90621f2acc866c18cdf54720b4e852; fi
+            for t in 1 2 3 4; do
+              ok $k $h && break
+              curl -sfL --retry 3 -m 300 -o wd/$k "https://raw.githubusercontent.com/${{ github.repository }}/inp/w_$k.bin" || true
+              ok $k $h && break
+              rm -f wd/$k; sleep $(( 10 + RANDOM % 20 ))
+            done
+            ok $k $h && echo "in $k ok" || echo "in $k miss"
+          done
+      - run: set -o pipefail; PERT=${{ inputs.pert }} MT=${{ inputs.mt }} Q=${{ inputs.q }} TLX=${{ inputs.tl }} W=4 python3 r85/${{ inputs.f }} ${{ matrix.i }} ${{ inputs.t }} 2>&1 | tee o.log
       - if: always()
         run: mkdir -p o && cp o.log o/ || true
       - if: always()
