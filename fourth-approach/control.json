@@ -1,19 +1,19 @@
 {
   "approach": "fourth-approach-obstruction-guided-exact-synthesis",
   "automation_mode": "manual_single_run",
-  "completed_runs": 10,
-  "current_stage": 4,
-  "current_stage_name": "fixed_support_minimization_failed",
+  "completed_runs": 11,
+  "current_stage": 8,
+  "current_stage_name": "adaptive_exact_lemma_cycle",
   "full_run_auto_launch_allowed": false,
   "large_matrix_concurrency_guard": true,
-  "last_run_accepted": false,
-  "last_run_id": 31344143041,
-  "last_run_index": 4,
+  "last_run_accepted": true,
+  "last_run_id": 42479178950,
+  "last_run_index": 7,
   "minimum_free_concurrency_slots": 0,
-  "next_run_index": 4,
-  "next_spec_path": "fourth-approach/run-specs/run-004-stage4-fixed-support-minimization.json",
-  "next_task": "stage4_fixed_support_certificate_minimization",
-  "recommended_next_action": "inspect_run_004_failure",
+  "next_run_index": 8,
+  "next_spec_path": "fourth-approach/run-specs/run-008-stage8-adaptive-exact-lemma-cycle.json",
+  "next_task": "stage8_adaptive_exact_lemma_cycle",
+  "recommended_next_action": "launch_run_008_on_20_github_machines",
   "run_history": [
     {
       "accepted": true,
@@ -333,10 +333,22 @@
       "run_id": 31344143041,
       "run_index": 4,
       "task": "stage4_fixed_support_certificate_minimization"
+    },
+    {
+      "accepted": true,
+      "metrics": {
+        "lemma_falsification_prompts": 4,
+        "source_exact_closures": 0,
+        "source_survivors": 60,
+        "source_workers": 60
+      },
+      "run_id": 42479178950,
+      "run_index": 7,
+      "task": "stage7_gpt_sol_handoff"
     }
   ],
   "schema_version": 1,
-  "scientific_stopping_rule": "do not infer the full conjecture from support-restricted n=6 certificates",
+  "scientific_stopping_rule": "review Run 008 exact closures/survivors before any n=8 transfer",
   "smoke_required": false,
   "smoke_verified_for_code_sha": null,
   "source_frontier": {
