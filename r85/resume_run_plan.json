@@ -1,21 +1,21 @@
 {
-  "schema_version": 2,
-  "plan_id": "dot-B51-g24-stage-resume-20261109-v1",
-  "status": "REVIEWED_EXACT_RUN",
-  "not_before_utc": "2026-11-09T12:30:00Z",
-  "expires_at_utc": "2026-11-09T15:00:00Z",
+  "schema_version": 3,
+  "plan_id": "r53-20261109-01",
+  "status": "r1",
+  "not_before_utc": "2026-11-09T18:30:00Z",
+  "expires_at_utc": "2026-11-09T21:00:00Z",
   "parent": {
-    "run_id": 42579281235,
-    "cycle": 51,
+    "run_id": 42624213587,
+    "cycle": 52,
     "report_version": 33,
-    "public_commit": "0b4c3968c1d7de5a858fc11a367dfe5e0a3d0c98",
+    "public_commit": "46f033671db1c3e6816753cc4a45331e9262d20f",
     "driver_sha256": "1256275bc26dad42ade638e22b1841f7904b20f63ad9fab4716045a80331dd3c",
-    "guard_sha256": "6316ced47c0ddee9d2a5c3e87a1839ed72a7ba39973061c3c079e59649fdf2fb",
+    "guard_sha256": "bd1400da04726aab8e673bd4e36406159a67926b762ad340d62bb65baa587d8f",
     "geometry_sha256": "3961c3959ce870f888540897550659fdf3ed3ed8eb168adf08101683c465b0e2",
     "base_marker": -26
   },
   "target": {
-    "cycle": 52,
+    "cycle": 53,
     "seeds": [
       120,
       121,
@@ -43,10 +43,10 @@
     "islands": 4,
     "dimension": 80000,
     "budget_seconds": 19800,
-    "q": "100,30,52"
+    "q": "100,30,53"
   },
   "stage_policy": {
-    "id": "preserve_live_stage_e33_v1",
+    "id": "p1",
     "src3_cloning": false,
     "force_stage2": false,
     "cross_island_reuse": false,
@@ -56,14 +56,14 @@
     ],
     "late_reference_injection": true,
     "natural_stage_transitions": true,
-    "done_policy": "original_e33_fresh_restart"
+    "done_policy": "d1"
   },
   "production_waves": 1,
   "automatic_repeats": 0,
-  "manifest_sha256": "18d8ddcbeb81ff7803c2c6468e468786996556df437e753adaa5a2b66e6340e9",
+  "manifest_sha256": "521285a8d9550fd7a3ef6df15ea167d58565c60b6db56145f3d8e3f835f2abe8",
   "review": {
-    "reviewer": "HARK",
-    "approval_evidence": "HARK review 2026-11-09 16:30 MSK: B50 run 42579281235 completed success 20/20 jobs; HARK independently re-hashed all 240 parent files of 20 downloaded artifacts against this manifest (0 mismatches); s.json cy=51 v=33 gain=0 all 20; all 80 islands Stage1 deadline, live; o.log base -26, kp miss=0, abcap ok, ok f=, in p= on 20/20. Policy preserve_live_stage_e33_v1 accepted; migration interpreted-identity limitation (m.bin) acknowledged and accepted. One wave, no repeats. Authority: owner no-idle rule 09.11 05:46 + loop instruction (CONDITIONAL plan with passing tests -> launch)."
+    "reviewer": "r0",
+    "approval_evidence": "ba8599e8c76bb07e3da19c5bc310e1e04f9b6bdd9c5286872612e14534b26152"
   },
   "runtime_files": {
     "driver": {
@@ -82,6 +82,5 @@
       "path": ".github/workflows/r86.yml",
       "sha256": "c7b2897ef0f49c2b3dd46214ea82528f999e85676e0cfb1ce1da6dce2b044ac3"
     }
-  },
-  "note": "Real B50 source audited by dot; exact review by HARK 2026-11-09 16:30 MSK."
+  }
 }

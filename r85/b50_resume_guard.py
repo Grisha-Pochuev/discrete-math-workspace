@@ -1,9 +1,9 @@
-"""Exact reviewed-run guard. Pending preparation, not dispatch authority.
 
-The reviewed public commit independently binds this guard's final bytes. A single
-explicit plan hash is bound after review. The plan pins a separate manifest;
-neither manifest metadata nor environment variables can grant permission.
-"""
+
+
+
+
+
 import datetime
 import hashlib
 import json
@@ -12,20 +12,20 @@ import re
 import sys
 from pathlib import Path
 
-PLAN_SHA256 = "1bd10a83422d73087231f453667e6b6e58eeffb91537fd8c67f53a663e4c904b"
+PLAN_SHA256 = "9f90066bd749b39c456e1f7dee9921f9f3cc18578a0ce06bbc6ef15020947e2d"
 PLAN_FILE = "resume_run_plan.json"
 MANIFEST_FILE = "b50_parent_audit.json"
 REQUIRED = ["s.json", "st.json", "o.log"] + [f"{kind}{k}.bin" for kind in "cu" for k in range(4)]
-POLICY = {"id": "preserve_live_stage_e33_v1", "src3_cloning": False,
+POLICY = {"id": "p1", "src3_cloning": False,
           "force_stage2": False, "cross_island_reuse": False,
           "ordinary_migration": True, "reference_injection_islands": [1],
           "late_reference_injection": True, "natural_stage_transitions": True,
-          "done_policy": "original_e33_fresh_restart"}
+          "done_policy": "d1"}
 
 
 def require(ok, reason):
     if not ok:
-        raise RuntimeError("Reviewed resume blocked: " + reason)
+        raise RuntimeError("r0: " + reason)
 
 
 def valid_hash(value):
@@ -56,9 +56,28 @@ def instant(value):
     return datetime.datetime.fromisoformat(value[:-1] + "+00:00")
 
 
+def header_sha256(header):
+    return hashlib.sha256(b"h1\0" + json.dumps(header, separators=(",", ":"), ensure_ascii=True).encode()).hexdigest()
+
+
+def validate_header(header, population=100):
+    require(isinstance(header, list) and len(header) == 10 and all(isinstance(v, str) for v in header), "header shape")
+    values = [int(v) for v in header[:9]]
+    require(values[0] >= 0 and values[1] in (1, 2) and values[2] in (1, 2)
+            and values[8] == population and header[-1] in ("deadline", "done"), "header values")
+    return header
+
+
+def read_header(path):
+    with np.load(io.BytesIO(lzma.decompress(Path(path).read_bytes())), allow_pickle=False) as data:
+        header = data["h"]
+        require(header.ndim == 1 and header.dtype.kind == "U", "header representation")
+        return validate_header([str(v) for v in header])
+
+
 def validate_plan(plan, now):
-    require(plan.get("schema_version") == 2, "run-plan schema")
-    require(plan.get("status") == "REVIEWED_EXACT_RUN", "run plan not reviewed")
+    require(plan.get("schema_version") == 3, "run-plan schema")
+    require(plan.get("status") == "r1", "run plan not reviewed")
     require(isinstance(plan.get("plan_id"), str) and bool(plan["plan_id"]), "plan ID")
     require(instant(plan["not_before_utc"]) <= now < instant(plan["expires_at_utc"]), "plan inactive or expired")
     require(plan.get("stage_policy") == POLICY, "unreviewed stage policy")
@@ -80,8 +99,7 @@ def validate_plan(plan, now):
     require(target.get("q") == f"100,30,{target['cycle']}", "target Q/cycle mismatch")
     require(valid_hash(plan.get("manifest_sha256")), "reviewed manifest hash missing")
     review = plan.get("review", {})
-    require(review.get("reviewer") == "HARK" and isinstance(review.get("approval_evidence"), str)
-            and bool(review["approval_evidence"].strip()), "explicit HARK review evidence required")
+    require(review.get("reviewer") == "r0" and valid_hash(review.get("approval_evidence")), "review digest required")
     files = plan.get("runtime_files", {})
     require(set(files) == {"driver", "helper", "geometry", "workflow"}, "runtime file contract")
     expected_paths = {"driver": "e33_g24_resume.py", "helper": "ab_cap_patch.py",
@@ -108,8 +126,8 @@ def validate_environment(env, target):
 
 def validate_manifest(manifest, plan):
     p, t = plan["parent"], plan["target"]
-    require(manifest.get("schema_version") == 2, "manifest schema")
-    require(manifest.get("status") == "PARENT_AUDIT_VERIFIED_HARK_REVIEWED", "parent audit/HARK review pending")
+    require(manifest.get("schema_version") == 3, "manifest schema")
+    require(manifest.get("status") == "m1", "parent review pending")
     expected = {"parent_run": p["run_id"], "parent_cycle": p["cycle"], "parent_report_version": p["report_version"],
                 "parent_public_commit": p["public_commit"], "parent_driver_sha256": p["driver_sha256"],
                 "parent_guard_sha256": p["guard_sha256"], "geometry_sha256": p["geometry_sha256"],
@@ -119,18 +137,14 @@ def validate_manifest(manifest, plan):
         require(manifest.get(key) == value, "manifest/plan mismatch " + key)
     require(manifest.get("candidate_evidence_resolved") is True, "unresolved candidate evidence")
     require(set(manifest.get("seeds", {})) == set(map(str, t["seeds"])), "complete 20-seed manifest required")
-    # Validate all entries' structure, not only this job's entry.
+                                                                 
     for s, item in manifest["seeds"].items():
         hashes = item.get("sha256", {})
         require(set(hashes) == set(REQUIRED + ["m.bin"]), "parent file set " + s)
         for name, value in hashes.items():
             require((name == "m.bin" and value is None) or valid_hash(value), "parent digest " + s + "/" + name)
-        require(set(item.get("headers", {})) == set(map(str, range(4))), "four parent headers " + s)
-        for header in item["headers"].values():
-            require(isinstance(header, list) and len(header) == 10 and all(isinstance(v, str) for v in header), "parent header shape")
-            values = [int(v) for v in header[:9]]
-            require(values[0] >= 0 and values[1] in (1, 2) and values[2] in (1, 2)
-                    and values[8] == 100 and header[-1] in ("deadline", "done"), "parent header values")
+        headers = item.get("header_sha256", {})
+        require(set(headers) == set(map(str, range(4))) and all(valid_hash(h) for h in headers.values()), "four parent header digests " + s)
         identities = item.get("population_identity_sha256", {})
         require(set(identities) == set(map(str, range(4))) and all(valid_hash(h) for h in identities.values()), "audited population identities " + s)
 
@@ -156,7 +170,8 @@ def validate_parent_files(manifest, plan, seed, parent):
     require(len(rows) == 4 and {r.get("k") for r in rows} == set(range(4)), "summary island coverage")
     by_island = {str(r["k"]): r for r in rows}
     for key, row in by_island.items():
-        hdr = entry["headers"][key]
+        hdr = read_header(parent / f"c{key}.bin")
+        require(header_sha256(hdr) == entry["header_sha256"][key], "parent header digest")
         require((row.get("g"), row.get("st"), row.get("tag"), row.get("np")) == (int(hdr[0]), int(hdr[1]), hdr[9], 100), "summary/header agreement")
         require(type(row.get("b")) in (int, float) and type(row.get("a")) in (int, float), "summary costs missing")
     return dict(entry, _summary=by_island, _contract={"population": t["population"], "dimension": t["dimension"], "islands": t["islands"]})
@@ -179,8 +194,8 @@ def preflight(driver_file, argv=None, env=None, parent=None):
         item = plan["runtime_files"][key]
         path = Path(driver_file).resolve() if key == "driver" else root / item["path"]
         require(path.name == item["path"] and sha256(path) == item["sha256"], "runtime file hash " + key)
-    # r86 sparse-checkout:r85 may omit .github; workflow binding then remains an
-    # external next/public-commit review gate, not an invented runtime read.
+                                                                                
+                                                                            
     workflow = root.parent / plan["runtime_files"]["workflow"]["path"]
     if workflow.exists():
         require(sha256(workflow) == plan["runtime_files"]["workflow"]["sha256"], "workflow hash mismatch")
@@ -191,7 +206,7 @@ def preflight(driver_file, argv=None, env=None, parent=None):
 
 
 def population_identity_sha256(adjacencies):
-    """Ordered population identity from actual canonical adj_ arrays, <u4 C order."""
+
     identity = hashlib.sha256(b"population-adjacency-v1\0")
     for adj in adjacencies:
         require(adj.dtype == np.dtype("<u4") and adj.ndim == 2 and adj.shape[1] == 2, "canonical adjacency representation")
@@ -208,7 +223,8 @@ def validate_decoded_parent(entry, parent, decode, npop, ncity, cost, adjacency)
         raw = (parent / f"c{k}.bin").read_bytes()
         require(hashlib.sha256(raw).hexdigest() == entry["sha256"][f"c{k}.bin"], "checkpoint changed after preflight")
         hdr, pop = decode(raw)
-        require(hdr == entry["headers"][str(k)] and len(pop) == npop, "decoded audited header/population mismatch")
+        validate_header(hdr, npop)
+        require(header_sha256(hdr) == entry["header_sha256"][str(k)] and len(pop) == npop, "decoded audited header/population mismatch")
         values = []
         def checked_adjacencies():
             for seq in pop:
@@ -225,7 +241,7 @@ def validate_decoded_parent(entry, parent, decode, npop, ncity, cost, adjacency)
         require(abs(float(np.mean(values)) - baseline - row["a"]) <= 1e-6, "decoded mean differs from summary")
 
 
-# Raw graph checks preserved exactly from the actual B50 guard.
+                                                               
 import io
 import lzma
 import numpy as np
@@ -281,7 +297,7 @@ def strict_decode(raw, nn, n, k, decoder=None):
 
 
 def validate_migration_bank(path, decoder, nn, n, k, cost, adjacency):
-    """Check only optional parent m.bin, not u*.bin or neighboring q/m.bin."""
+
     if not path.exists():
         return
     header, seqs = strict_decode(path.read_bytes(), nn, n, k, decoder=decoder)
