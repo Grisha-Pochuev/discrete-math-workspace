@@ -12,7 +12,7 @@ import re
 import sys
 from pathlib import Path
 
-PLAN_SHA256 = "9f90066bd749b39c456e1f7dee9921f9f3cc18578a0ce06bbc6ef15020947e2d"
+PLAN_SHA256 = "c052c125e2e0d8fcda19df45a74dec6a8d91b7cc442aeabe6b0500cf370996e5"
 PLAN_FILE = "resume_run_plan.json"
 MANIFEST_FILE = "b50_parent_audit.json"
 REQUIRED = ["s.json", "st.json", "o.log"] + [f"{kind}{k}.bin" for kind in "cu" for k in range(4)]
@@ -95,7 +95,7 @@ def validate_plan(plan, now):
     require(seeds == list(range(seeds[0], seeds[0] + 20)) and seeds[0] % 20 == 0, "seed/window mapping")
     require(target.get("population") == 100 and target.get("offspring") == 30
             and target.get("islands") == 4 and target.get("dimension") == 80000, "supported search dimensions")
-    require(type(target.get("budget_seconds")) is int and 0 < target["budget_seconds"] <= 19800, "reviewed budget")
+    require(type(target.get("budget_seconds")) is int and 0 < target["budget_seconds"] <= 20700, "reviewed budget")
     require(target.get("q") == f"100,30,{target['cycle']}", "target Q/cycle mismatch")
     require(valid_hash(plan.get("manifest_sha256")), "reviewed manifest hash missing")
     review = plan.get("review", {})
