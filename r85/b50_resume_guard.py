@@ -12,7 +12,7 @@ import re
 import sys
 from pathlib import Path
 
-PLAN_SHA256 = "f57fa7fa7f82e3eca2024380aec060b0836c8edf53b54cf67e25178b006473d9"
+PLAN_SHA256 = "6a9c00939897c6ef30cb9824dc0e58857676c59c521df9575924318a4d0ccb73"
 PLAN_FILE = "resume_run_plan.json"
 MANIFEST_FILE = "b50_parent_audit.json"
 REQUIRED = ["s.json", "st.json", "o.log"] + [f"{kind}{k}.bin" for kind in "cu" for k in range(4)]
