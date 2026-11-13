@@ -1,21 +1,21 @@
 {
   "schema_version": 3,
-  "plan_id": "r62",
+  "plan_id": "r63",
   "status": "r1",
-  "not_before_utc": "2026-11-12T12:20:00Z",
-  "expires_at_utc": "2026-11-12T13:20:00Z",
+  "not_before_utc": "2026-11-13T03:45:00Z",
+  "expires_at_utc": "2026-11-13T04:45:00Z",
   "parent": {
-    "run_id": 43166392598,
-    "cycle": 61,
+    "run_id": 43218200330,
+    "cycle": 62,
     "report_version": 33,
-    "public_commit": "b627607bda81915d0eee3f9af38c4d421589cbc5",
+    "public_commit": "1f5c8a36496bd1a25400dee68e44a7b70ede33d7",
     "driver_sha256": "1256275bc26dad42ade638e22b1841f7904b20f63ad9fab4716045a80331dd3c",
-    "guard_sha256": "0ef42aeec35948fd229188cc47521b2a25340a503372f95bc9986d98d74ecc66",
+    "guard_sha256": "1c610cc6957545fdac238f1755be87ab813cc791ddf483ef2a24ac6f581fe84f",
     "geometry_sha256": "3961c3959ce870f888540897550659fdf3ed3ed8eb168adf08101683c465b0e2",
     "base_marker": -26
   },
   "target": {
-    "cycle": 62,
+    "cycle": 63,
     "seeds": [
       120,
       121,
@@ -43,7 +43,7 @@
     "islands": 4,
     "dimension": 80000,
     "budget_seconds": 20700,
-    "q": "100,30,62"
+    "q": "100,30,63"
   },
   "stage_policy": {
     "id": "p1",
@@ -60,10 +60,10 @@
   },
   "production_waves": 1,
   "automatic_repeats": 0,
-  "manifest_sha256": "ecd27534602a12179daa93a79460e8e64e81a020bd26d5e8ed6e0cb5dc877b1d",
+  "manifest_sha256": "8f52377487cc1564580a0142893a18790b6ec90262a78b5e0589b1b63eb6c357",
   "review": {
     "reviewer": "r0",
-    "approval_evidence": "20cca56a48a43718e6af6e304740ab8e996a2a6021541ca7f54466053a197f66"
+    "approval_evidence": "2ea6b9ff8fed0ad48aa791a6691dc8f2c3c27c6e29149608bf686566cc197aa1"
   },
   "runtime_files": {
     "driver": {
