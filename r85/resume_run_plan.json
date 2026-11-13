@@ -1,9 +1,9 @@
 {
   "schema_version": 3,
-  "plan_id": "r63",
+  "plan_id": "r63-admission-20261113-1410",
   "status": "r1",
-  "not_before_utc": "2026-11-13T03:45:00Z",
-  "expires_at_utc": "2026-11-13T04:45:00Z",
+  "not_before_utc": "2026-11-13T14:10:00Z",
+  "expires_at_utc": "2026-11-13T15:10:00Z",
   "parent": {
     "run_id": 43218200330,
     "cycle": 62,
@@ -63,7 +63,7 @@
   "manifest_sha256": "8f52377487cc1564580a0142893a18790b6ec90262a78b5e0589b1b63eb6c357",
   "review": {
     "reviewer": "r0",
-    "approval_evidence": "2ea6b9ff8fed0ad48aa791a6691dc8f2c3c27c6e29149608bf686566cc197aa1"
+    "approval_evidence": "e876eb069c990cb27c5e5b2ea9f40da372c6813aefd8315dadd2b78c1e9189dd"
   },
   "runtime_files": {
     "driver": {
