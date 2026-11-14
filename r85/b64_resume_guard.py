@@ -1,4 +1,4 @@
-"""Fail-closed source-bound B63 population continuation.
+"""Fail-closed source-bound B64 population continuation.
 Preflight verifies immutable inputs, then builds pinned geometry locally.
 No network, solver launch, parent rewrite or migration occurs in this module.
 """
@@ -29,8 +29,8 @@ def check_plan(plan, env, argv, now):
     require(set(plan)==allowed,'plan field allowlist')
     require(plan.get('schema') == 'gaia-paired-resume-minimal-v1', 'schema')
     require(hexstr(plan['admission_id'],32) and hexstr(plan['private_audit_sha256'],64),'audit reference format')
-    require(plan['parent_attempt']==1 and plan['parent_head']=='d9ef83e86e7cd3694dee61a5a0f20a7a7063962f','parent identity')
-    require(type(plan['cycle']) is int and plan['cycle']>64,'new cycle')
+    require(plan['parent_attempt']==1 and plan['parent_head']=='0235d3a232cb6913e96f879ed7d0f1dc5f2b9618','parent identity')
+    require(type(plan['cycle']) is int and plan['cycle']==66,'new cycle')
     require(all(hexstr(plan[k],64) for k in ('baseline_tour_sha256','geometry_sha256')),'geometry digest format')
     require(set(plan['source_files'])=={'e37_paired_resume.py','b64_resume_guard.py','build_g25.py','g24.bin','ab_cap_patch.py'} and all(hexstr(v,64) for v in plan['source_files'].values()),'source allowlist')
     require(plan.get('status') == 'APPROVED_ONE_SHOT', 'inactive plan')
@@ -41,7 +41,7 @@ def check_plan(plan, env, argv, now):
     nj,seconds=(20,20700) if mode=='production' else (1,1200)
     require(plan.get('timing') == {'export_reserve':360,'min_search':600,'hardstop_grace':30}, 'timing')
     require(plan.get('budget') == {'jobs':nj,'islands_per_job':4,'np':100,'nk':30,'seconds':seconds,'automatic_repeats':0}, 'budget')
-    require(plan.get('parent_run') == 43520356668, 'exact B63 parent')
+    require(plan.get('parent_run') == 43592577008, 'exact B64 parent')
     require(plan.get('rng_semantics') == 'new-stream-population-continuation', 'RNG semantics')
     require(plan.get('baseline_price') == 288843498, 'baseline')
     require(plan.get('policy') == {'geometry':'paired80k','initialization':'same-ordered-parent-stage-counters-k123-native-late-injection','exchange':'none','restart':'none','operator':'natural','abcap':'single'}, 'policy')
@@ -244,8 +244,9 @@ def validate_parent_files(folder,admitted):
     read=lambda name:bound_read(folder,name,records)
     s=json.loads(read('s.json'));st=json.loads(read('st.json'));comp=json.loads(read('completion.json'))
     require(s['runtime_identity']=={'GITHUB_RUN_ID':str(admitted['parent_run']),'GITHUB_RUN_ATTEMPT':str(admitted['parent_attempt']),'GITHUB_SHA':admitted['parent_head']},'parent runtime identity')
-    require(s['s']==job['seed'] and s['ri']==job['geometry_index'] and s['cy']==64,'parent mapping')
-    require(s['source_kind']=='fresh' and s['job_binding']['pair']==job['pair'] and s['job_binding']['arm']==job['arm'],'parent policy pair/arm')
+    require(s['s']==job['seed'] and s['ri']==job['geometry_index'] and s['cy']==65,'parent mapping')
+    require(s['source_kind']=='rng-population-continuation' and s['job_binding']['pair']==job['pair'] and s['job_binding']['arm']==job['arm'],'parent policy pair/arm')
+    require(s['parent_run']==43520356668 and hexstr(s['parent_root'],64),'exact B63 ancestry')
     require(not s['runtime_errors'] and s['harvest_allowed'],'parent incomplete')
     exits=s['child_exits']
     require(comp['status']=='COMPLETE_PENDING_INDEPENDENT_AUDIT' and exits==comp['child_exits']==json.loads(read('child_exits.json')),'parent completion')
@@ -256,6 +257,7 @@ def validate_parent_files(folder,admitted):
     require(not(set(current)&set(parentseeds)) and not({x&65535 for x in current}&{x&65535 for x in parentseeds}),'authenticated parent seed collision')
     for k in range(4):
         require(st['isl'][str(k)]['mode']==('a' if k==0 else 'b') and st['isl'][str(k)]['tr']==0,'parent native initialization')
+        require(st['isl'][str(k)]['rng_continuation'] is True,'parent continuation semantics')
         txt=gzip.decompress(read(f'l{k}_0.txt.gz')).decode()
         require(not any(line.startswith('inject ') for line in txt.splitlines()),'parent consumed injection')
     return records
