@@ -1,4 +1,4 @@
-from b64_resume_guard import preflight, validate_geometry, finalize, supervise, validate_parents
+from b64_resume_guard import preflight, validate_geometry, finalize, supervise, validate_parents, recheck_parent
 ADMISSION = preflight(__file__)
 import resource
 import shutil
@@ -298,7 +298,7 @@ st = {"isl": {}}
 PARENTS = validate_parents(ADMISSION, P, NN, n, fkey, fl, REF, Lc)
 M_in = []; AP = []; AV = False
 log("source-bound RNG continuation: preserved population/stage/counters; no donors, exchanges or restart")
-rep = {"s": S, "ri": RI, "cy": CY, "v": 62, "abp": "single", "sm": 1, "hd": 0, "gain": 0, "isl": [], "imp": [], "design": ADMISSION["design_id"], "source_kind": "rng-population-continuation", "parent_run": ADMISSION["parent_run"], "parent_identity": ADMISSION["parent"]["identity"], "job_binding": ADMISSION["job"], "child_exits": []}
+rep = {"s": S, "ri": RI, "cy": CY, "v": 62, "abp": "single", "sm": 1, "hd": 0, "gain": 0, "isl": [], "imp": [], "design": ADMISSION["admission_id"], "source_kind": "rng-population-continuation", "parent_run": ADMISSION["parent_run"], "parent_root": ADMISSION["parent_roots"][str(S)], "job_binding": ADMISSION["job"], "child_exits": []}
 BHK = tkey(np.arange(n))
 
 
@@ -342,7 +342,6 @@ def setup(k):
     if read_h != hdr or len(read_ps) != len(ps) or any(not np.array_equal(a,b) for a,b in zip(read_ps,ps)):
         raise ValueError("native input readback mismatch")
     pf = str(d / "in.txt")
-    e["parent"] = evidence
     e["rng_continuation"] = True
     env = dict(os.environ, GA_CKSEC="1800", GA_FIXM=str(FIXM))
     for key in list(env):
@@ -411,6 +410,7 @@ def chk_imp(k):
 # No inter-island or cross-job exchanges and no automatic new trials.
 require_budget = GD - time.time()
 if require_budget < 600: raise SystemExit("insufficient search admission margin")
+recheck_parent(ADMISSION, P)
 cpu0 = resource.getrusage(resource.RUSAGE_CHILDREN)
 rep["prepared_seconds"] = time.time()-t0
 search_started=time.time()
