@@ -25,8 +25,17 @@ FORBIDDEN = ('LOCAL HF NW DRP RO SMS SGF NM NG EXP EXL EXN EK ESEED IX S2 S2R AG
 
 
 def check_plan(plan, env, argv, now):
-    require(plan.get('schema') == 'gaia-paired-resume-v1', 'schema')
+    allowed={'schema','status','mode','admission_id','activation_epoch','expiry_epoch','parent_run','parent_attempt','parent_head','cycle','rng_semantics','baseline_price','baseline_tour_sha256','geometry_sha256','source_files','budget','timing','policy','jobs','parent_roots','private_audit_sha256'}
+    require(set(plan)==allowed,'plan field allowlist')
+    require(plan.get('schema') == 'gaia-paired-resume-minimal-v1', 'schema')
+    require(hexstr(plan['admission_id'],32) and hexstr(plan['private_audit_sha256'],64),'audit reference format')
+    require(plan['parent_attempt']==1 and plan['parent_head']=='d9ef83e86e7cd3694dee61a5a0f20a7a7063962f','parent identity')
+    require(type(plan['cycle']) is int and plan['cycle']>64,'new cycle')
+    require(all(hexstr(plan[k],64) for k in ('baseline_tour_sha256','geometry_sha256')),'geometry digest format')
+    require(set(plan['source_files'])=={'e37_paired_resume.py','b64_resume_guard.py','build_g25.py','g24.bin','ab_cap_patch.py'} and all(hexstr(v,64) for v in plan['source_files'].values()),'source allowlist')
     require(plan.get('status') == 'APPROVED_ONE_SHOT', 'inactive plan')
+    require(all(type(plan[k]) is int for k in ('activation_epoch','expiry_epoch','parent_run','parent_attempt','baseline_price')),'integer admission fields')
+    require(all(type(v) is int for v in plan['budget'].values()) and all(type(v) is int for v in plan['timing'].values()),'integer budget timing')
     mode=plan.get('mode')
     require(mode in ('production','smoke'), 'explicit mode')
     nj,seconds=(20,20700) if mode=='production' else (1,1200)
@@ -49,7 +58,9 @@ def check_plan(plan, env, argv, now):
     require(len(env.get('GITHUB_SHA',''))==40 and all(c in '0123456789abcdef' for c in env['GITHUB_SHA']), 'public head identity')
     require(plan['activation_epoch'] <= now <= plan['expiry_epoch'], 'admission window')
     require(0 < plan['expiry_epoch']-plan['activation_epoch'] <= 3600, 'admission window length')
-    jobs=plan['jobs']; require(len(jobs)==nj, 'job count')
+    require(isinstance(plan['jobs'],list) and len(plan['jobs'])==nj,'job count')
+    require(all(set(j)=={'seed','seeds'} and type(j['seed']) is int and isinstance(j['seeds'],list) for j in plan['jobs']),'job field allowlist')
+    jobs=[dict(j,geometry_index=j['seed']%20,pair=(j['seed']%20)//2,arm='shift' if j['seed']%2 else 'control') for j in plan['jobs']]
     ids=[j['seed'] for j in jobs]; require(len(set(ids))==nj and all(type(j['geometry_index']) is int and 0<=j['geometry_index']<20 for j in jobs), 'job mapping')
     if mode=='production':
         require(sorted(j['geometry_index'] for j in jobs)==list(range(20)), 'full geometry coverage')
@@ -60,14 +71,15 @@ def check_plan(plan, env, argv, now):
     seeds=[s for j in jobs for s in j['seeds']]
     require(all(type(s) is int and 0<s<2**31 for s in seeds), 'seed range')
     require(len(set(seeds))==nj*4 and len({s&65535 for s in seeds})==nj*4, 'seed collisions')
-    historical=plan['excluded_seeds']; require(not(set(seeds)&set(historical)) and not({s&65535 for s in seeds}&{s&65535 for s in historical}), 'historical seed collision')
+    # Full historical collision audit is private prelaunch, NOT proved by its public SHA reference.
     pairs={}
     for j in jobs:
         require(j['pair']==j['geometry_index']//2 and j['arm']==('shift' if j['geometry_index']%2 else 'control'), 'geometry pair/arm binding')
         pairs.setdefault(j['pair'],[]).append(j['arm'])
     if mode=='production': require(len(pairs)==10 and all(sorted(v)==['control','shift'] for v in pairs.values()), 'pairs')
-    require(set(plan['parents'])=={str(x) for x in (range(140,160) if mode=='production' else ids)}, 'parent bank mapping for mode')
+    require(set(plan['parent_roots'])=={str(x) for x in (range(140,160) if mode=='production' else ids)}, 'parent bank mapping for mode')
     require(all(j['seed'] in range(140,160) for j in jobs), 'same parent job mapping')
+    require(all(hexstr(v,64) for v in plan['parent_roots'].values()),'root digest format')
     require(seed in ids, 'unlisted job')
     return dict(plan, job=jobs[ids.index(seed)])
 
@@ -75,14 +87,12 @@ def check_plan(plan, env, argv, now):
 def preflight(driver):
     started=time.time()
     root=Path(driver).resolve().parent
-    plan=json.loads((root/'b64_resume_plan.json').read_text())
+    plan=strict_json((root/'b64_resume_plan.json').read_text())
     admitted=check_plan(plan,os.environ,sys.argv,time.time())
     require(set(plan['source_files'])=={Path(driver).name,'b64_resume_guard.py','build_g25.py','g24.bin','ab_cap_patch.py'}, 'source inventory')
     for name,h in plan['source_files'].items():
         require(digest(root/name)==h, 'source SHA '+name)
-    parent=plan['parents'][str(admitted['job']['seed'])]
-    validate_parent_files(Path('p'),parent,admitted['job'])
-    admitted['parent']=parent
+    admitted['_parent_records']=validate_parent_files(Path('p'),admitted)
     # r86 also extracts neighbor q; it is deliberately unused, never a donor.
     require(not Path('o').exists(), 'output exists')
     wd=Path('wd')
@@ -188,33 +198,72 @@ def supervise(setup, islands, inspect, report, hardstop, on_exit=lambda: None,
 
 
 
-def validate_parent_files(folder,parent,job):
+def hexstr(value,n):
+    return isinstance(value,str) and len(value)==n and all(c in '0123456789abcdef' for c in value)
+
+
+def read_regular(path):
+    import stat
+    fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+    with os.fdopen(fd,'rb') as f:
+        st=os.fstat(f.fileno())
+        require(stat.S_ISREG(st.st_mode) and st.st_size<=128*1024*1024,'regular bounded parent file')
+        data=f.read(128*1024*1024+1)
+        end=os.fstat(f.fileno())
+        require(len(data)==st.st_size and (st.st_size,st.st_mtime_ns,st.st_ino)==(end.st_size,end.st_mtime_ns,end.st_ino),'parent file changed')
+        return data
+
+
+def directory_root(folder):
+    import re,stat
     folder=Path(folder)
-    require(folder.is_dir() and not folder.is_symlink(),'missing parent')
-    require(parent['identity']=={'run_id':43520356668,'attempt':1,'head':'d9ef83e86e7cd3694dee61a5a0f20a7a7063962f'},'parent identity')
-    require(parent['artifact']['name']==f"o{job['seed']}" and type(parent['artifact']['id']) is int and parent['artifact']['id']>0,'artifact binding')
-    require(parent['geometry_index']==job['geometry_index'],'parent geometry binding')
-    require({p.name for p in folder.iterdir()}==set(parent['files']),'parent full inventory')
-    for name,meta in parent['files'].items():
-        path=folder/name
-        require(path.name==name and not path.is_symlink() and path.is_file(),'parent file type')
-        require(path.stat().st_size==meta['bytes'] and digest(path)==meta['sha256'],'parent file SHA '+name)
-    s=json.loads((folder/'s.json').read_text())
-    require(s['runtime_identity']=={'GITHUB_RUN_ID':'43520356668','GITHUB_RUN_ATTEMPT':'1','GITHUB_SHA':parent['identity']['head']},'parent runtime identity')
-    require(s['s']==job['seed'] and s['ri']==job['geometry_index'] and s['cy']==64,'parent mapping')
-    require(s['job_binding']['pair']==job['pair'] and s['job_binding']['arm']==job['arm'],'parent pair/arm')
-    require(not s['runtime_errors'] and s['harvest_allowed'],'parent incomplete')
-    comp=json.loads((folder/'completion.json').read_text())
-    exits=s['child_exits']
-    require(comp['status']=='COMPLETE_PENDING_INDEPENDENT_AUDIT' and exits==comp['child_exits'],'parent completion')
-    require(len(exits)==4 and {e['k'] for e in exits}==set(range(4)) and all(e['rc']==0 and e['trial']==0 for e in exits),'parent exits')
-    require(parent['injection_evidence']=='stage1-no-native-injection-v1','injection evidence')
-    # Exact pinned logs independently show no consumed late injection.
+    require(folder.is_dir() and not folder.is_symlink(),'parent directory')
+    records=[]
+    for p in sorted(folder.iterdir(),key=lambda p:p.name):
+        require(re.fullmatch(r'[A-Za-z0-9_.-]{1,128}',p.name) is not None and p.name not in ('.','..'),'parent basename')
+        require(len(records)<128,'parent file count')
+        data=read_regular(p);records.append([p.name,len(data),hashlib.sha256(data).hexdigest()])
+        require(sum(x[1] for x in records)<=512*1024*1024,'parent directory bounds')
+    payload=json.dumps(records,ensure_ascii=True,separators=(',',':')).encode('utf-8')
+    return hashlib.sha256(b'GAIA_PARENT_DIRECTORY_V1\0'+payload).hexdigest(),{x[0]:(x[1],x[2]) for x in records}
+
+
+def bound_read(folder,name,records):
+    require(name in records,'required parent file')
+    raw=read_regular(Path(folder)/name)
+    require((len(raw),hashlib.sha256(raw).hexdigest())==records[name],'changed parent member')
+    return raw
+
+
+def validate_parent_files(folder,admitted):
     import gzip
+    job=admitted['job'];root,records=directory_root(folder)
+    require(root==admitted['parent_roots'][str(job['seed'])],'parent root mismatch')
+    required={*(f'c{k}.bin' for k in range(4)),*(f'l{k}_0.txt.gz' for k in range(4)),'s.json','st.json','completion.json','child_exits.json'}
+    require(required<=set(records),'required parent files')
+    read=lambda name:bound_read(folder,name,records)
+    s=json.loads(read('s.json'));st=json.loads(read('st.json'));comp=json.loads(read('completion.json'))
+    require(s['runtime_identity']=={'GITHUB_RUN_ID':str(admitted['parent_run']),'GITHUB_RUN_ATTEMPT':str(admitted['parent_attempt']),'GITHUB_SHA':admitted['parent_head']},'parent runtime identity')
+    require(s['s']==job['seed'] and s['ri']==job['geometry_index'] and s['cy']==64,'parent mapping')
+    require(s['source_kind']=='fresh' and s['job_binding']['pair']==job['pair'] and s['job_binding']['arm']==job['arm'],'parent policy pair/arm')
+    require(not s['runtime_errors'] and s['harvest_allowed'],'parent incomplete')
+    exits=s['child_exits']
+    require(comp['status']=='COMPLETE_PENDING_INDEPENDENT_AUDIT' and exits==comp['child_exits']==json.loads(read('child_exits.json')),'parent completion')
+    require(len(exits)==4 and {e['k'] for e in exits}==set(range(4)) and all(e['rc']==0 and e['trial']==0 for e in exits),'parent exits')
+    parentseeds=[st['isl'][str(k)]['seed'] for k in range(4)]
+    require(parentseeds==s['job_binding']['seeds'],'parent seed binding')
+    current=[x for j in admitted['jobs'] for x in j['seeds']]
+    require(not(set(current)&set(parentseeds)) and not({x&65535 for x in current}&{x&65535 for x in parentseeds}),'authenticated parent seed collision')
     for k in range(4):
-        txt=gzip.decompress((folder/f'l{k}_0.txt.gz').read_bytes()).decode()
+        require(st['isl'][str(k)]['mode']==('a' if k==0 else 'b') and st['isl'][str(k)]['tr']==0,'parent native initialization')
+        txt=gzip.decompress(read(f'l{k}_0.txt.gz')).decode()
         require(not any(line.startswith('inject ') for line in txt.splitlines()),'parent consumed injection')
-    return s
+    return records
+
+
+def recheck_parent(admitted,folder):
+    root,records=directory_root(folder)
+    require(root==admitted['parent_roots'][str(admitted['job']['seed'])] and records==admitted['_parent_records'],'parent changed before launch')
 
 
 def strict_checkpoint(raw,NN,n,npop=100):
@@ -242,18 +291,26 @@ def strict_checkpoint(raw,NN,n,npop=100):
 
 def validate_parents(admitted,folder,NN,n,fkey,cost,ref,local_to_global):
     import numpy as np
-    parent=admitted['parent']; require(n==80000,'same 80k only')
-    require(hashlib.sha256(np.asarray(local_to_global,dtype='<i8').tobytes()).hexdigest()==parent['local_to_global_sha256'],'local identity')
-    result=[]
+    require(n==80000,'same 80k only')
+    records=admitted['_parent_records'];result=[]
     for k in range(4):
-        meta=parent['checkpoints'][k];raw=(Path(folder)/f'c{k}.bin').read_bytes()
-        require(hashlib.sha256(raw).hexdigest()==meta['sha256'],'checkpoint immutable')
+        raw=bound_read(folder,f'c{k}.bin',records)
         h,ps,ordered=strict_checkpoint(raw,NN,n)
-        require(h==meta['header'] and ordered==meta['ordered_sha256'],'ordered checkpoint identity')
         vals=[cost(t) for t in ps]
-        require(all(v is not None for v in vals),'fixed edge loss')
-        require([int(v) for v in vals]==meta['costs'],'ordered costs')
-        # Historical tBest may be stale. Preserve it and all counters verbatim.
-        evidence={'file':f'c{k}.bin','sha256':meta['sha256'],'header':h,'ordered_sha256':ordered,'decoded_min':min(vals),'native_tBest':int(h[7]),'reference_offset':ref}
-        result.append((h,ps,evidence))
+        require(all(v is not None and np.isfinite(v) for v in vals),'fixed edge loss')
+        # Root-authenticated exact bytes preserve ordered population and ALL header fields.
+        # Historical ordered costs/identities remain in private prelaunch audit only.
+        result.append((h,ps,None))
     return result
+
+
+def strict_json(raw):
+    def unique(pairs):
+        obj={}
+        for key,value in pairs:
+            require(key not in obj,'duplicate JSON field')
+            obj[key]=value
+        return obj
+    def bad(value):
+        raise ValueError('nonfinite JSON')
+    return json.loads(raw,object_pairs_hook=unique,parse_constant=bad)
