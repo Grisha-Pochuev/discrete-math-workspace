@@ -27,7 +27,7 @@ FORBIDDEN = ('LOCAL HF NW DRP RO SMS SGF NM NG EXP EXL EXN EK ESEED IX S2 S2R AG
 def check_plan(plan, env, argv, now):
     allowed={'schema','status','mode','admission_id','activation_epoch','expiry_epoch','parent_run','parent_attempt','parent_head','cycle','rng_semantics','baseline_price','baseline_tour_sha256','geometry_sha256','source_files','budget','timing','policy','jobs','parent_roots','private_audit_sha256'}
     require(set(plan)==allowed,'plan field allowlist')
-    require(plan.get('schema') == 'gaia-paired-resume-minimal-v1', 'schema')
+    require(plan.get('schema') == 'paired-resume-minimal-v1', 'schema')
     require(hexstr(plan['admission_id'],32) and hexstr(plan['private_audit_sha256'],64),'audit reference format')
     require(plan['parent_attempt']==1 and plan['parent_head']=='f5c2b02b1bd41fca524a94e5b877718fa5caa3dc','parent identity')
     require(type(plan['cycle']) is int and plan['cycle']==67,'new cycle')
