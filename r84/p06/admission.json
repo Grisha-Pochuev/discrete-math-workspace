@@ -1,0 +1,19 @@
+{
+  "activation_epoch": 1794795641,
+  "artifact_bytes": 1225560,
+  "artifact_id": 14175641404,
+  "automatic_repeats": 0,
+  "bundle_index": 0,
+  "excluded_full_count": 49353,
+  "excluded_low16_count": 49265,
+  "expiry_epoch": 1794799241,
+  "history_sha256": "54da8f846dcd07d7110f9e690e3fb00f06e5e460ff42f5809b6287ad0c5a122d",
+  "nonce": "a571330694593b1d07f1793a5265d3a2",
+  "operators": "1,2",
+  "parent_attempt": 1,
+  "parent_head": "4e73af395a2c8f073d0f4e0cef6fbc963b6188c8",
+  "parent_run": 43717921710,
+  "seconds_per_operator": 180,
+  "seed": 1923298155,
+  "status": "APPROVED_ONE_SHOT"
+}
