@@ -1,0 +1,9 @@
+{
+  "status": "APPROVED_ONE_SHOT",
+  "activation_epoch": 1794837907,
+  "expiry_epoch": 1794845107,
+  "seconds": 180,
+  "operator": 2,
+  "seed": 192729001,
+  "nonce": "5fdfb6b0e740a4b1a6f3be1292243893"
+}
