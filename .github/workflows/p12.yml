@@ -1,0 +1,149 @@
+name: p12
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: p12
+  cancel-in-progress: false
+jobs:
+  r:
+    name: r-${{ matrix.i }}
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        i: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            r84/p01
+            r84/p12
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: limits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_JOB_NAME: r-${{ matrix.i }}
+        run: |
+          set -euo pipefail
+          mkdir -p o
+          : > o/runs.jsonl
+          for state in in_progress queued waiting requested pending; do
+            gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs?status=$state&per_page=100" --jq '.workflow_runs[] | {id,status}' >> o/runs.jsonl
+          done
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=100" > o/head-runs.json
+          python - <<'PY'
+          import json,os,datetime
+          if os.environ['GITHUB_RUN_ATTEMPT']!='1': raise SystemExit('one attempt only')
+          history=json.load(open('o/head-runs.json'))
+          if history['total_count']>100: raise SystemExit('run history truncated')
+          prior=[r for r in history['workflow_runs'] if r['path']=='.github/workflows/p12.yml' and r['id']!=int(os.environ['GITHUB_RUN_ID'])]
+          if prior: raise SystemExit('one dispatch per head only')
+          rows=[json.loads(x) for x in open('o/runs.jsonl')]
+          busy=[r for r in rows if r['id']!=int(os.environ['GITHUB_RUN_ID']) and r['status'] in ('in_progress','queued','waiting','requested','pending')]
+          if busy: raise SystemExit('other work is active')
+          """Bounded read-only timing observation."""
+          import datetime
+          import json
+          import os
+          import pathlib
+          import subprocess
+          import time
+          
+          
+          def inspect(payload, name, run_id, attempt, head, now):
+              jobs = payload['jobs']
+              if payload['total_count'] != len(jobs):
+                  raise ValueError('jobs inventory truncated')
+              matches = [j for j in jobs if j['name'] == name]
+              if len(matches) > 1:
+                  raise ValueError('ambiguous job identity')
+              if not matches:
+                  return None
+              j = matches[0]
+              if (j['run_id'], j['run_attempt'], j['head_sha']) != (run_id, attempt, head):
+                  raise ValueError('job binding mismatch')
+              if j['status'] == 'queued':
+                  return None
+              if j['status'] != 'in_progress':
+                  raise ValueError('self job is terminal or unexpected')
+              if j['started_at'] is None:
+                  return None
+              start = datetime.datetime.fromisoformat(j['started_at'].replace('Z', '+00:00'))
+              if start.tzinfo is None or start.timestamp() > now + 5:
+                  raise ValueError('invalid actual start')
+              deadline = start.timestamp() + 360 * 60 - 60
+              if deadline - now < 19800 + 1500:
+                  raise ValueError('insufficient remaining job budget')
+              return deadline
+          
+          
+          def main():
+              if os.environ['GITHUB_RUN_ATTEMPT'] != '1':
+                  raise SystemExit('one attempt only')
+              until = time.monotonic() + 90
+              endpoint = ('repos/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/'
+                          + os.environ['GITHUB_RUN_ID'] + '/attempts/1/jobs?per_page=100')
+              index = 0
+              while True:
+                  remaining = until - time.monotonic()
+                  if remaining <= 0:
+                      raise SystemExit('job timing unavailable after bounded observation')
+                  response = subprocess.run(['gh', 'api', endpoint], check=True,
+                                            capture_output=True, timeout=min(20, remaining))
+                  pathlib.Path(f'o/jobs-observation-{index}.json').write_bytes(response.stdout)
+                  payload = json.loads(response.stdout)
+                  deadline = inspect(payload, os.environ['EXPECTED_JOB_NAME'],
+                                     int(os.environ['GITHUB_RUN_ID']), 1,
+                                     os.environ['GITHUB_SHA'], time.time())
+                  if deadline is not None:
+                      with open(os.environ['GITHUB_ENV'], 'a') as stream:
+                          stream.write(f'JOB_DEADLINE={deadline}\n')
+                      return
+                  index += 1
+                  time.sleep(max(0, min(3, until - time.monotonic())))
+          
+          
+          if __name__ == '__main__':
+              main()
+          PY
+      - name: inputs
+        env:
+          JOB_INDEX: ${{ matrix.i }}
+          GH_TOKEN: ${{ github.token }}
+        run: python r84/p12/fetch_inputs.py
+      - name: prepare
+        run: |
+          set -euo pipefail
+          python -m pip install 'numpy==2.3.5' 'scipy==1.17.0'
+          python r84/p12/bootstrap.py --archive r84/p01/s.bin --output "$PWD/wd/s"
+          sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/smoke_memory_guard_checked.py > o/g-check.log 2>&1
+          timeout --signal=TERM --kill-after=30s 1200s sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/memory_guard.py --output "$PWD/o/prep-guard" -- "$(command -v python)" r84/p12/prepare.py --source-root "$PWD/wd/s" --inputs "$PWD/inputs" --output "$PWD/wd/prepared" --index ${{ matrix.i }} > o/preparation.log 2>&1
+          cp wd/prepared/PREPARATION.json o/
+          python r84/p12/check_guard.py o/prep-guard/memory_result.json
+      - name: compute
+        run: |
+          set -euo pipefail
+          sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/memory_guard.py --output "$PWD/o/guard" -- "$(command -v python)" r84/p12/m.py --source "$PWD/wd/s" --build "$PWD/wd/prepared/k" --assignments "$PWD/r84/p12/assignments.json" --output "$PWD/o/run" --index ${{ matrix.i }} --seconds 19800 --deadline "$JOB_DEADLINE" --admission "$PWD/r84/p12/admission.json" > o/run.log 2>&1
+          python r84/p12/check_guard.py o/guard/memory_result.json
+          python r84/p12/check_complete.py o/run
+      - name: collect
+        if: always()
+        run: |
+          mkdir -p o
+          tar -cJf result.bin o
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p12-${{ github.run_id }}-${{ matrix.i }}
+          path: result.bin
+          retention-days: 14
+          if-no-files-found: error
+
