@@ -1,0 +1,220 @@
+{
+  "status": "APPROVED_ONE_SHOT",
+  "activation_epoch": 1794838870,
+  "expiry_epoch": 1794846070,
+  "jobs": [
+    {
+      "center": 0,
+      "effective_seed16": 52960,
+      "i": 0,
+      "operator": 2,
+      "replica": 0,
+      "seconds": 19800,
+      "seed": 127061728,
+      "vertices": 80000
+    },
+    {
+      "center": 0,
+      "effective_seed16": 52960,
+      "i": 1,
+      "operator": 2,
+      "replica": 0,
+      "seconds": 19800,
+      "seed": 127061728,
+      "vertices": 150000
+    },
+    {
+      "center": 0,
+      "effective_seed16": 40597,
+      "i": 2,
+      "operator": 2,
+      "replica": 1,
+      "seconds": 19800,
+      "seed": 2039324309,
+      "vertices": 80000
+    },
+    {
+      "center": 0,
+      "effective_seed16": 40597,
+      "i": 3,
+      "operator": 2,
+      "replica": 1,
+      "seconds": 19800,
+      "seed": 2039324309,
+      "vertices": 150000
+    },
+    {
+      "center": 1,
+      "effective_seed16": 63250,
+      "i": 4,
+      "operator": 2,
+      "replica": 0,
+      "seconds": 19800,
+      "seed": 291239698,
+      "vertices": 80000
+    },
+    {
+      "center": 1,
+      "effective_seed16": 63250,
+      "i": 5,
+      "operator": 2,
+      "replica": 0,
+      "seconds": 19800,
+      "seed": 291239698,
+      "vertices": 150000
+    },
+    {
+      "center": 1,
+      "effective_seed16": 12104,
+      "i": 6,
+      "operator": 2,
+      "replica": 1,
+      "seconds": 19800,
+      "seed": 1447505736,
+      "vertices": 80000
+    },
+    {
+      "center": 1,
+      "effective_seed16": 12104,
+      "i": 7,
+      "operator": 2,
+      "replica": 1,
+      "seconds": 19800,
+      "seed": 1447505736,
+      "vertices": 150000
+    },
+    {
+      "center": 2,
+      "effective_seed16": 4293,
+      "i": 8,
+      "operator": 2,
+      "replica": 0,
+      "seconds": 19800,
+      "seed": 372248773,
+      "vertices": 80000
+    },
+    {
+      "center": 2,
+      "effective_seed16": 4293,
+      "i": 9,
+      "operator": 2,
+      "replica": 0,
+      "seconds": 19800,
+      "seed": 372248773,
+      "vertices": 150000
+    },
+    {
+      "center": 2,
+      "effective_seed16": 5691,
+      "i": 10,
+      "operator": 2,
+      "replica": 1,
+      "seconds": 19800,
+      "seed": 1051924027,
+      "vertices": 80000
+    },
+    {
+      "center": 2,
+      "effective_seed16": 5691,
+      "i": 11,
+      "operator": 2,
+      "replica": 1,
+      "seconds": 19800,
+      "seed": 1051924027,
+      "vertices": 150000
+    },
+    {
+      "center": 3,
+      "effective_seed16": 20140,
+      "i": 12,
+      "operator": 2,
+      "replica": 0,
+      "seconds": 19800,
+      "seed": 336023212,
+      "vertices": 80000
+    },
+    {
+      "center": 3,
+      "effective_seed16": 20140,
+      "i": 13,
+      "operator": 2,
+      "replica": 0,
+      "seconds": 19800,
+      "seed": 336023212,
+      "vertices": 150000
+    },
+    {
+      "center": 3,
+      "effective_seed16": 52671,
+      "i": 14,
+      "operator": 2,
+      "replica": 1,
+      "seconds": 19800,
+      "seed": 164023743,
+      "vertices": 80000
+    },
+    {
+      "center": 3,
+      "effective_seed16": 52671,
+      "i": 15,
+      "operator": 2,
+      "replica": 1,
+      "seconds": 19800,
+      "seed": 164023743,
+      "vertices": 150000
+    },
+    {
+      "center": 4,
+      "effective_seed16": 6973,
+      "i": 16,
+      "operator": 2,
+      "replica": 0,
+      "seconds": 19800,
+      "seed": 1903041341,
+      "vertices": 80000
+    },
+    {
+      "center": 4,
+      "effective_seed16": 6973,
+      "i": 17,
+      "operator": 2,
+      "replica": 0,
+      "seconds": 19800,
+      "seed": 1903041341,
+      "vertices": 150000
+    },
+    {
+      "center": 4,
+      "effective_seed16": 26318,
+      "i": 18,
+      "operator": 2,
+      "replica": 1,
+      "seconds": 19800,
+      "seed": 890136270,
+      "vertices": 80000
+    },
+    {
+      "center": 4,
+      "effective_seed16": 26318,
+      "i": 19,
+      "operator": 2,
+      "replica": 1,
+      "seconds": 19800,
+      "seed": 890136270,
+      "vertices": 150000
+    }
+  ],
+  "production_review": {
+    "status": "APPROVED",
+    "seconds": 19800,
+    "operator": 2,
+    "vertices": [
+      80000,
+      150000
+    ],
+    "fire_run": 43882564637,
+    "fire_audit_sha256": "9a96717fefa8775c4e7dce3add86cea779ff9aa54ac6f18afe575c997b5ce1ea",
+    "independent_review_sha256": "7d135d0ec7e6a5edb4a8f1f3cb107552c09dcc6467313d9fcb3ddbda5e479fdc"
+  },
+  "nonce": "5ef0818ec6de08c6f9a2629d62409845"
+}
