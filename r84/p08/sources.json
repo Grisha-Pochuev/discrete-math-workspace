@@ -1,0 +1,14 @@
+{
+  "original_runner_sha256": "d1c3588dc9306e0a11abfd5077f0e19193109eb647a5165e108c7fb70f4ae252",
+  "source_archive_sha256": "0050268936ee9e23df8a54aed9144725f938c96d1077abe74e3b2e684cce3ece",
+  "text_sources": {
+    "admission.json": "25ce085c6cdee775a4e5817bfd3a5991c5194b5368dd5e4aa571624063529ccf",
+    "bootstrap.py": "a4540b54acffda2f9ac1165c9831de4de10be23cff7181b6de72afb1577d3711",
+    "fetch_inputs.py": "2196a318365f61eccf8d1c2c85b05f278a793eec3be08fbc1096035c373bec55",
+    "guarded_prepare.sh": "b0aa0572bfe4d4c6c9cd6d3b16a1df499b885f710ba68beb5aae4f7984c469bc",
+    "pair.py": "883153d830b159a299762ab6cdf371c014ae9278d1cb80d44cda02115a0f2e5a",
+    "parents.json": "f18987eb75cedc6c451299e4e7ea8007276f254b397882060c6af4c75c581735",
+    "prepare.py": "9dc8b8ef3aea8065e07f87806f0389dd77efa7177bb49c95bc108d76dbb37dfb",
+    "run_experiment.py": "d1c3588dc9306e0a11abfd5077f0e19193109eb647a5165e108c7fb70f4ae252"
+  }
+}
