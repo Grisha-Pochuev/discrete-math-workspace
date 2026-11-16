@@ -1,0 +1,9 @@
+{
+  "status": "PROBE_ONE_SHOT",
+  "activation_epoch": 1794860549,
+  "expiry_epoch": 1794867809,
+  "seconds": 120,
+  "workers": 4,
+  "index": 0,
+  "note": "Single attempt; no production admission"
+}
