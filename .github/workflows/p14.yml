@@ -1,0 +1,162 @@
+name: p14
+'on':
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: p14
+  cancel-in-progress: false
+env:
+  GH_TOKEN: ${{ github.token }}
+  WORKFLOW_PATH: .github/workflows/p14.yml
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  prep:
+    name: p-${{ matrix.b }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        b:
+        - 0
+        - 1
+        - 2
+        - 3
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+        sparse-checkout: 'r84/p01
+
+          r84/p14'
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: setup
+      run: 'set -euo pipefail
+
+        mkdir -p o
+
+        python -m pip install ''numpy==2.3.5'' ''scipy==1.17.0''
+
+        python r84/p14/bootstrap.py --archive r84/p01/s.bin --output "$PWD/wd/s"
+
+        sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/smoke_memory_guard_checked.py
+        > o/g-check.log 2>&1'
+    - name: prepare
+      run: 'set -euo pipefail
+
+        sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/memory_guard.py
+        --output "$PWD/o/prep-guard" -- "$(command -v python)" r84/p14/prepare.py
+        --block ${{ matrix.b }} --source "$PWD/wd/s" --work "$PWD/wd/prep"
+
+        python r84/p14/check_guard.py o/prep-guard/memory_result.json'
+    - uses: actions/upload-artifact@v4
+      with:
+        name: q-${{ github.run_id }}-${{ matrix.b }}-a
+        path: o/archives/a/result.bin
+        retention-days: 14
+        if-no-files-found: error
+    - uses: actions/upload-artifact@v4
+      with:
+        name: q-${{ github.run_id }}-${{ matrix.b }}-b
+        path: o/archives/b/result.bin
+        retention-days: 14
+        if-no-files-found: error
+    - uses: actions/upload-artifact@v4
+      with:
+        name: q-${{ github.run_id }}-${{ matrix.b }}-c
+        path: o/archives/c/result.bin
+        retention-days: 14
+        if-no-files-found: error
+    - uses: actions/upload-artifact@v4
+      with:
+        name: q-${{ github.run_id }}-${{ matrix.b }}-d
+        path: o/archives/d/result.bin
+        retention-days: 14
+        if-no-files-found: error
+    - uses: actions/upload-artifact@v4
+      with:
+        name: q-${{ github.run_id }}-${{ matrix.b }}-e
+        path: o/archives/e/result.bin
+        retention-days: 14
+        if-no-files-found: error
+    - uses: actions/upload-artifact@v4
+      with:
+        name: t-${{ github.run_id }}-${{ matrix.b }}
+        path: 'o/prep-guard/
+
+          o/g-check.log
+
+          o/PREPARATION.json'
+        retention-days: 14
+        if-no-files-found: error
+      if: always()
+  fire:
+    name: f-0
+    needs: prep
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+        sparse-checkout: 'r84/p01
+
+          r84/p14'
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: timing
+      env:
+        EXPECTED_JOB_NAME: f-0
+        SECONDS_REQUESTED: '120'
+      run: python r84/p14/timing.py
+    - name: setup
+      run: 'set -euo pipefail
+
+        mkdir -p o
+
+        python -m pip install ''numpy==2.3.5'' ''scipy==1.17.0''
+
+        python r84/p14/bootstrap.py --archive r84/p01/s.bin --output "$PWD/wd/s"
+
+        sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/smoke_memory_guard_checked.py
+        > o/g-check.log 2>&1'
+    - name: inputs
+      run: python r84/p14/fetch_prepared.py --mode fire --index 0
+    - name: build
+      run: 'set -euo pipefail
+
+        sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/memory_guard.py
+        --output "$PWD/o/build-guard" -- "$(command -v python)" r84/p14/build.py
+
+        python r84/p14/check_guard.py o/build-guard/memory_result.json'
+    - name: compute
+      run: 'set -euo pipefail
+
+        sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/memory_guard.py
+        --output "$PWD/o/guard" -- "$(command -v python)" r84/p14/m.py --source "$PWD/wd/s"
+        --build "$PWD/wd/k" --assignments "$PWD/wd/assignments.json" --output "$PWD/o/run"
+        --index 0 --seconds 120 --deadline "$JOB_DEADLINE"
+
+        python r84/p14/check_guard.py o/guard/memory_result.json
+
+        python r84/p14/check_complete.py o/run 120'
+    - name: collect
+      if: always()
+      run: 'mkdir -p o
+
+        tar -cJf result.bin o'
+    - uses: actions/upload-artifact@v4
+      with:
+        name: p14-${{ github.run_id }}-0
+        path: result.bin
+        retention-days: 14
+        if-no-files-found: error
+      if: always()
