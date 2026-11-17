@@ -1,0 +1,35 @@
+{
+  "acceptance": {
+    "completed_workers": 4,
+    "empty_cgroup": true,
+    "four_search_overlap_seconds": 119.99655297799998,
+    "hard_limit_enforced": true,
+    "input_modes": [
+      "b",
+      "c",
+      "d",
+      "e"
+    ],
+    "oom_events": 0,
+    "peak_below_warning": true,
+    "seconds_per_worker": 120,
+    "status": "PASS",
+    "usable_cores": 4,
+    "validated_final_routes": 400,
+    "vertices_per_worker": [
+      80000,
+      80000,
+      80000,
+      80000
+    ]
+  },
+  "artifact_digest": "sha256:2f71871377a0157969f97f4db83500daba0d4170790750bb9a2bec4d5f73da94",
+  "artifact_id": 14298638456,
+  "attempt": 1,
+  "full_evidence_sha256": "5d3688adc378e814e03ee52da9f4c4c1090eb6b431687efe43abd7fbf68e442b",
+  "head_sha": "f64f6bee455b102d29a82de9ac30acf23a92caa2",
+  "run_id": 44015236802,
+  "runner_sha256": "3cc769666054c4b39032ebc0e0ed09732115a638c276f10937b6621eec3cc98c",
+  "setup_elapsed_seconds": 55.0,
+  "supervisor_sha256": "b714a3d09ab9a5bb4d1f7fd47d2dca554e13ac5c6eef33697bcffdfabce051fd"
+}
