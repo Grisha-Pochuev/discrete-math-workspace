@@ -1,0 +1,8 @@
+{
+  "activation_epoch": 1794888423,
+  "expiry_epoch": 1794893853,
+  "independent_review_sha256": "bf1a4b8a13ebb5a22e6dbfe31d1669ecc9aedcc65f827e4bbd1df938cae176ec",
+  "production_review": null,
+  "scope": "four input preparations then four workers for 120 seconds",
+  "status": "APPROVED_ONE_SHOT"
+}
