@@ -1,0 +1,44 @@
+{
+  "activation_epoch": 1794889307,
+  "assignments_sha256": "32edf5ea732db066a2be162778736a707d8b5a1d2836b2c587089c203ea162fb",
+  "expiry_epoch": 1794894737,
+  "production_review": {
+    "fire_acceptance": {
+      "completed_workers": 4,
+      "empty_cgroup": true,
+      "four_search_overlap_seconds": 119.99655297799998,
+      "hard_limit_enforced": true,
+      "input_modes": [
+        "b",
+        "c",
+        "d",
+        "e"
+      ],
+      "oom_events": 0,
+      "peak_below_warning": true,
+      "seconds_per_worker": 120,
+      "status": "PASS",
+      "usable_cores": 4,
+      "validated_final_routes": 400,
+      "vertices_per_worker": [
+        80000,
+        80000,
+        80000,
+        80000
+      ]
+    },
+    "fire_attempt": 1,
+    "fire_audit_sha256": "27c13734fd0fa45bd0bddd6d6856061f539c5a37369c537752f4bec41d5bb147",
+    "fire_run": 44015236802,
+    "independent_review_sha256": "54a20405ce6bbf8ff09ad736df9e803c0cbc78f8d2f4c93c493d14b9ac9b44a4",
+    "operator": 2,
+    "protocol": "four-worker-window-diversity-v1",
+    "seconds": 19800,
+    "status": "APPROVED",
+    "vertices": [
+      80000
+    ],
+    "workers_per_job": 4
+  },
+  "status": "APPROVED_ONE_SHOT"
+}
