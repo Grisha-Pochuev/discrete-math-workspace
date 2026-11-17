@@ -1,0 +1,779 @@
+{
+  "protocol": "four-worker-cshift-continuation-v1",
+  "blocks": [
+    12,
+    17
+  ],
+  "parent_run": 44016972185,
+  "parent_head": "c35aa35474983d26debe372608d397fc8fa8ce48",
+  "parent_attempt": 1,
+  "parents": {
+    "0": {
+      "job": 12,
+      "artifact": {
+        "id": 14316999905,
+        "node_id": "MDg6QXJ0aWZhY3QxNDMxNjk5OTkwNQ==",
+        "name": "p15-44016972185-12",
+        "size_in_bytes": 22345776,
+        "url": "https://api.github.com/repos/Grisha-Pochuev/discrete-math-workspace/actions/artifacts/14316999905",
+        "archive_download_url": "https://api.github.com/repos/Grisha-Pochuev/discrete-math-workspace/actions/artifacts/14316999905/zip",
+        "expired": false,
+        "digest": "sha256:146d393c731855271b5b29aa7dd231fc7da73d74b861c606b16d319a53f97a0b",
+        "created_at": "2026-11-17T10:00:36Z",
+        "updated_at": "2026-11-17T10:00:36Z",
+        "expires_at": "2026-12-01T10:00:34Z",
+        "workflow_run": {
+          "id": 44016972185,
+          "repository_id": 1309065952,
+          "head_repository_id": 1309065952,
+          "head_branch": "main",
+          "head_sha": "c35aa35474983d26debe372608d397fc8fa8ce48"
+        }
+      },
+      "members": {
+        "o/run/00/2/ck.txt": {
+          "bytes": 46891262,
+          "sha256": "43e93a8d45e9b2c2951cdcec9dcabcb990f87119ff8302406acb1e9ce55fd7da"
+        },
+        "o/run/00/2/input.txt": {
+          "bytes": 46891162,
+          "sha256": "17ab74b2b72ed13841ab7f11a4f71e9409e905b3907a832a08c0e27da7d94c6f"
+        },
+        "o/run/00/inputs/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "o/run/00/inputs/context.json": {
+          "bytes": 2037,
+          "sha256": "78605fd554ab457873ba2c40fc22e376a3d12a951936c6717172b0a87985dd9c"
+        },
+        "o/run/00/inputs/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "o/run/00/inputs/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "o/run/00/run.json": {
+          "bytes": 6710,
+          "sha256": "41a5028ac4f72f6e8528efce1ee468b46c3006157b0ac389e741dbdf42fda650"
+        },
+        "o/run/01/2/ck.txt": {
+          "bytes": 46891262,
+          "sha256": "b76e8d1cdf544d8b43403176d725aa6aff05e29b651019683e87fb7c9b5a4db0"
+        },
+        "o/run/01/2/input.txt": {
+          "bytes": 46891162,
+          "sha256": "4a958e1dbcd20c151342ee2464c61cd0f874caf0a3a107a85d06e34cadc6cb8c"
+        },
+        "o/run/01/inputs/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "o/run/01/inputs/context.json": {
+          "bytes": 2037,
+          "sha256": "d9b58fe132a3d66ac76c80c3e06a1631d49f5fa8ec298c5256bbbace95112d65"
+        },
+        "o/run/01/inputs/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "o/run/01/inputs/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "o/run/01/run.json": {
+          "bytes": 6711,
+          "sha256": "10dd6fe59f084133ebaeace677d31726d4c9dcde9ccc695ba1450202d89aceea"
+        },
+        "o/run/02/2/ck.txt": {
+          "bytes": 46891262,
+          "sha256": "30d6cad90f51d5734835ddb8f7b9057e6476253e979d8fb3eab276cd74761e2d"
+        },
+        "o/run/02/2/input.txt": {
+          "bytes": 46891162,
+          "sha256": "8a4a937a4e7611ae13e6049130f1e4d64889afb9776d0cf41710dfcff4fe01c4"
+        },
+        "o/run/02/inputs/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "o/run/02/inputs/context.json": {
+          "bytes": 2037,
+          "sha256": "a3327a0428d60b648c37ec2960bd130d03b7a5b4563bf2c0353412cf295b3d11"
+        },
+        "o/run/02/inputs/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "o/run/02/inputs/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "o/run/02/run.json": {
+          "bytes": 6711,
+          "sha256": "8ca38db2646e98a1e45cd686f9afbfbc30984d447adbb931e8808d5a282e835e"
+        },
+        "o/run/03/2/ck.txt": {
+          "bytes": 46891262,
+          "sha256": "50f3d1e93e963d9d5b441cc45d6bc6da51b9b998f54fbf08401eb84ac5e25f12"
+        },
+        "o/run/03/2/input.txt": {
+          "bytes": 46891162,
+          "sha256": "018b8a01a365d9aac1e25467b5f468529bf22c7feb0e2cf90f0a47a4b9f5b9e8"
+        },
+        "o/run/03/inputs/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "o/run/03/inputs/context.json": {
+          "bytes": 2037,
+          "sha256": "1ec0b945d86698fc40094c368f9ee60f0f02aa65675bac4ca7ea9d09ff910ac0"
+        },
+        "o/run/03/inputs/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "o/run/03/inputs/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "o/run/03/run.json": {
+          "bytes": 6714,
+          "sha256": "27c9184465f2da2748522a2211fde557d4451382a7d9825a88460f7a331a423c"
+        }
+      }
+    },
+    "1": {
+      "job": 17,
+      "artifact": {
+        "id": 14318071481,
+        "node_id": "MDg6QXJ0aWZhY3QxNDMxODA3MTQ4MQ==",
+        "name": "p15-44016972185-17",
+        "size_in_bytes": 22171353,
+        "url": "https://api.github.com/repos/Grisha-Pochuev/discrete-math-workspace/actions/artifacts/14318071481",
+        "archive_download_url": "https://api.github.com/repos/Grisha-Pochuev/discrete-math-workspace/actions/artifacts/14318071481/zip",
+        "expired": false,
+        "digest": "sha256:185fe67137bf3e100215a9a0cdbda7fff10ec33714e0602ba63173bd1850c374",
+        "created_at": "2026-11-17T10:00:37Z",
+        "updated_at": "2026-11-17T10:00:37Z",
+        "expires_at": "2026-12-01T10:00:35Z",
+        "workflow_run": {
+          "id": 44016972185,
+          "repository_id": 1309065952,
+          "head_repository_id": 1309065952,
+          "head_branch": "main",
+          "head_sha": "c35aa35474983d26debe372608d397fc8fa8ce48"
+        }
+      },
+      "members": {
+        "o/run/00/2/ck.txt": {
+          "bytes": 46891262,
+          "sha256": "566f19c66f5ddd7d9f3b48c41975149231854011c73861b73cf48af3ac4d53dc"
+        },
+        "o/run/00/2/input.txt": {
+          "bytes": 46891162,
+          "sha256": "9ab8562ac2ed673701b2aae7bd7cf1cfa19dbab6e4721a2e33f73022185ca02d"
+        },
+        "o/run/00/inputs/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "o/run/00/inputs/context.json": {
+          "bytes": 2037,
+          "sha256": "8c5d2dbccc3617e9d1361def1623f52301904b129357d6f8dd6a432015541dfc"
+        },
+        "o/run/00/inputs/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "o/run/00/inputs/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "o/run/00/run.json": {
+          "bytes": 6714,
+          "sha256": "1d0b691d74c5c13ec1df20c084650a649efb0b7fd92e6c17ef4a82142c039d64"
+        },
+        "o/run/01/2/ck.txt": {
+          "bytes": 46891262,
+          "sha256": "903f44e7a0a5f94966517f98704ce7017c87603272623015ecac0cc5357bd081"
+        },
+        "o/run/01/2/input.txt": {
+          "bytes": 46891162,
+          "sha256": "5426f0699cca41aa6f6df41b59f53406f3cba68aed1dd02f93b182977f06458b"
+        },
+        "o/run/01/inputs/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "o/run/01/inputs/context.json": {
+          "bytes": 2037,
+          "sha256": "ab4e53e64adb136ea6d68832c63de6eed25f2c515e3e7c69f9525485ab9aeb8c"
+        },
+        "o/run/01/inputs/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "o/run/01/inputs/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "o/run/01/run.json": {
+          "bytes": 6711,
+          "sha256": "712c4ef14d2d199208e2003f0a6693151b4a41f7ad5f9e07e855e839818e291a"
+        },
+        "o/run/02/2/ck.txt": {
+          "bytes": 46891262,
+          "sha256": "cc4b447fa5961fcf9b4948ceee3a7ae9cab25ba7b11bab796b08b3408eccc44e"
+        },
+        "o/run/02/2/input.txt": {
+          "bytes": 46891162,
+          "sha256": "c63d38658ee935219bd5f72691717be8fae9a4dc81637631eaf74ec02e8dbbbb"
+        },
+        "o/run/02/inputs/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "o/run/02/inputs/context.json": {
+          "bytes": 2037,
+          "sha256": "16047cb2d550c75c24dcf80338b51fd40a4c06f33ecc3744ac1b3e6b576bcaaa"
+        },
+        "o/run/02/inputs/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "o/run/02/inputs/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "o/run/02/run.json": {
+          "bytes": 6710,
+          "sha256": "6ad7b463dd34410cd6bf5505bb2efd78706a0a2c0047cf1873b0f132ff588fa9"
+        },
+        "o/run/03/2/ck.txt": {
+          "bytes": 46891261,
+          "sha256": "738255d9765ee6a65934c124ea9f1f30eb236ecde7b8caacb75a178a0ac9f7a9"
+        },
+        "o/run/03/2/input.txt": {
+          "bytes": 46891162,
+          "sha256": "813843d70e25ba770bb1b20fe59c9f3b5ac3c8e051235c79a19db746e45963b2"
+        },
+        "o/run/03/inputs/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "o/run/03/inputs/context.json": {
+          "bytes": 2037,
+          "sha256": "61c2c6b70b71630d8b8a6945b6d2be192673dc229735aad84d552c6d2339bf17"
+        },
+        "o/run/03/inputs/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "o/run/03/inputs/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "o/run/03/run.json": {
+          "bytes": 6720,
+          "sha256": "1e744b42a644f0f97fcdbabfbf2b7bd02c16a405ae6f93e2aaceebd577510e1e"
+        }
+      }
+    }
+  },
+  "expected": {
+    "0:initial": {
+      "members": {
+        "00/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "00/checkpoint.txt": {
+          "bytes": 46891162,
+          "sha256": "17ab74b2b72ed13841ab7f11a4f71e9409e905b3907a832a08c0e27da7d94c6f"
+        },
+        "00/context.json": {
+          "bytes": 1977,
+          "sha256": "859cd4eef9463e116cec97b0914a6491ab4dc00e0d2038f1692601e42eefff55"
+        },
+        "00/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "00/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "01/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "01/checkpoint.txt": {
+          "bytes": 46891162,
+          "sha256": "4a958e1dbcd20c151342ee2464c61cd0f874caf0a3a107a85d06e34cadc6cb8c"
+        },
+        "01/context.json": {
+          "bytes": 1977,
+          "sha256": "d8357ce390c5170bf4871eec8cc36a50fccfe3dda12b52ab42142701eeab1635"
+        },
+        "01/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "01/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "02/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "02/checkpoint.txt": {
+          "bytes": 46891162,
+          "sha256": "8a4a937a4e7611ae13e6049130f1e4d64889afb9776d0cf41710dfcff4fe01c4"
+        },
+        "02/context.json": {
+          "bytes": 1977,
+          "sha256": "e6cd4299aa591eecc4e505ecaceed98e9cf92ddd24018d8caf9fdba3ff994d68"
+        },
+        "02/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "02/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "03/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "03/checkpoint.txt": {
+          "bytes": 46891162,
+          "sha256": "018b8a01a365d9aac1e25467b5f468529bf22c7feb0e2cf90f0a47a4b9f5b9e8"
+        },
+        "03/context.json": {
+          "bytes": 1977,
+          "sha256": "423ee2145f1f24a1df498d1424bea26e1d8801b6d5230578a43b8fa7344bddba"
+        },
+        "03/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "03/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        }
+      },
+      "manifest_text": "{\n  \"protocol\": \"four-worker-cshift-continuation-v1\",\n  \"parent_run\": 44016972185,\n  \"parent_head\": \"c35aa35474983d26debe372608d397fc8fa8ce48\",\n  \"source_job\": 12,\n  \"arm\": \"initial\",\n  \"members\": {\n    \"00/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"00/checkpoint.txt\": {\n      \"bytes\": 46891162,\n      \"sha256\": \"17ab74b2b72ed13841ab7f11a4f71e9409e905b3907a832a08c0e27da7d94c6f\"\n    },\n    \"00/context.json\": {\n      \"bytes\": 1977,\n      \"sha256\": \"859cd4eef9463e116cec97b0914a6491ab4dc00e0d2038f1692601e42eefff55\"\n    },\n    \"00/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"00/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"01/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"01/checkpoint.txt\": {\n      \"bytes\": 46891162,\n      \"sha256\": \"4a958e1dbcd20c151342ee2464c61cd0f874caf0a3a107a85d06e34cadc6cb8c\"\n    },\n    \"01/context.json\": {\n      \"bytes\": 1977,\n      \"sha256\": \"d8357ce390c5170bf4871eec8cc36a50fccfe3dda12b52ab42142701eeab1635\"\n    },\n    \"01/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"01/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"02/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"02/checkpoint.txt\": {\n      \"bytes\": 46891162,\n      \"sha256\": \"8a4a937a4e7611ae13e6049130f1e4d64889afb9776d0cf41710dfcff4fe01c4\"\n    },\n    \"02/context.json\": {\n      \"bytes\": 1977,\n      \"sha256\": \"e6cd4299aa591eecc4e505ecaceed98e9cf92ddd24018d8caf9fdba3ff994d68\"\n    },\n    \"02/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"02/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"03/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"03/checkpoint.txt\": {\n      \"bytes\": 46891162,\n      \"sha256\": \"018b8a01a365d9aac1e25467b5f468529bf22c7feb0e2cf90f0a47a4b9f5b9e8\"\n    },\n    \"03/context.json\": {\n      \"bytes\": 1977,\n      \"sha256\": \"423ee2145f1f24a1df498d1424bea26e1d8801b6d5230578a43b8fa7344bddba\"\n    },\n    \"03/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"03/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    }\n  }\n}\n"
+    },
+    "0:final": {
+      "members": {
+        "00/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "00/checkpoint.txt": {
+          "bytes": 46891262,
+          "sha256": "43e93a8d45e9b2c2951cdcec9dcabcb990f87119ff8302406acb1e9ce55fd7da"
+        },
+        "00/context.json": {
+          "bytes": 1971,
+          "sha256": "c20134c3b562c560d719687803b7b9193bb1cc2e09f23ebc97ead171d0f5910e"
+        },
+        "00/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "00/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "01/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "01/checkpoint.txt": {
+          "bytes": 46891262,
+          "sha256": "b76e8d1cdf544d8b43403176d725aa6aff05e29b651019683e87fb7c9b5a4db0"
+        },
+        "01/context.json": {
+          "bytes": 1971,
+          "sha256": "062f354d11b709c78f8918f1412c4862fc599529df9cfad10dbadf5da9313473"
+        },
+        "01/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "01/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "02/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "02/checkpoint.txt": {
+          "bytes": 46891262,
+          "sha256": "30d6cad90f51d5734835ddb8f7b9057e6476253e979d8fb3eab276cd74761e2d"
+        },
+        "02/context.json": {
+          "bytes": 1971,
+          "sha256": "2e43621d0632716a1e1aabded12e2194d4c5723a8a93e90b5af2ecdfbf5aee18"
+        },
+        "02/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "02/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "03/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "03/checkpoint.txt": {
+          "bytes": 46891262,
+          "sha256": "50f3d1e93e963d9d5b441cc45d6bc6da51b9b998f54fbf08401eb84ac5e25f12"
+        },
+        "03/context.json": {
+          "bytes": 1971,
+          "sha256": "bd0cd8ecdd8a46318c2dfeb384ce7e98aa207af855b29334dcbb7db873395b72"
+        },
+        "03/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "03/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        }
+      },
+      "manifest_text": "{\n  \"protocol\": \"four-worker-cshift-continuation-v1\",\n  \"parent_run\": 44016972185,\n  \"parent_head\": \"c35aa35474983d26debe372608d397fc8fa8ce48\",\n  \"source_job\": 12,\n  \"arm\": \"final\",\n  \"members\": {\n    \"00/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"00/checkpoint.txt\": {\n      \"bytes\": 46891262,\n      \"sha256\": \"43e93a8d45e9b2c2951cdcec9dcabcb990f87119ff8302406acb1e9ce55fd7da\"\n    },\n    \"00/context.json\": {\n      \"bytes\": 1971,\n      \"sha256\": \"c20134c3b562c560d719687803b7b9193bb1cc2e09f23ebc97ead171d0f5910e\"\n    },\n    \"00/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"00/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"01/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"01/checkpoint.txt\": {\n      \"bytes\": 46891262,\n      \"sha256\": \"b76e8d1cdf544d8b43403176d725aa6aff05e29b651019683e87fb7c9b5a4db0\"\n    },\n    \"01/context.json\": {\n      \"bytes\": 1971,\n      \"sha256\": \"062f354d11b709c78f8918f1412c4862fc599529df9cfad10dbadf5da9313473\"\n    },\n    \"01/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"01/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"02/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"02/checkpoint.txt\": {\n      \"bytes\": 46891262,\n      \"sha256\": \"30d6cad90f51d5734835ddb8f7b9057e6476253e979d8fb3eab276cd74761e2d\"\n    },\n    \"02/context.json\": {\n      \"bytes\": 1971,\n      \"sha256\": \"2e43621d0632716a1e1aabded12e2194d4c5723a8a93e90b5af2ecdfbf5aee18\"\n    },\n    \"02/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"02/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"03/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"03/checkpoint.txt\": {\n      \"bytes\": 46891262,\n      \"sha256\": \"50f3d1e93e963d9d5b441cc45d6bc6da51b9b998f54fbf08401eb84ac5e25f12\"\n    },\n    \"03/context.json\": {\n      \"bytes\": 1971,\n      \"sha256\": \"bd0cd8ecdd8a46318c2dfeb384ce7e98aa207af855b29334dcbb7db873395b72\"\n    },\n    \"03/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"03/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    }\n  }\n}\n"
+    },
+    "1:initial": {
+      "members": {
+        "00/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "00/checkpoint.txt": {
+          "bytes": 46891162,
+          "sha256": "9ab8562ac2ed673701b2aae7bd7cf1cfa19dbab6e4721a2e33f73022185ca02d"
+        },
+        "00/context.json": {
+          "bytes": 1977,
+          "sha256": "1b9782d1d32fdaba76cabe3435d4db1304520e2856ee238e0d3e8029681d8478"
+        },
+        "00/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "00/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "01/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "01/checkpoint.txt": {
+          "bytes": 46891162,
+          "sha256": "5426f0699cca41aa6f6df41b59f53406f3cba68aed1dd02f93b182977f06458b"
+        },
+        "01/context.json": {
+          "bytes": 1977,
+          "sha256": "8898b15f2b994ef76493557a687bfa393adc0b94ad772a8824d8f1c20eb6e882"
+        },
+        "01/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "01/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "02/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "02/checkpoint.txt": {
+          "bytes": 46891162,
+          "sha256": "c63d38658ee935219bd5f72691717be8fae9a4dc81637631eaf74ec02e8dbbbb"
+        },
+        "02/context.json": {
+          "bytes": 1977,
+          "sha256": "350a4f012988817cdb960ef5e68bad8db0083230a002d4d2cd6ed98e23543987"
+        },
+        "02/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "02/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "03/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "03/checkpoint.txt": {
+          "bytes": 46891162,
+          "sha256": "813843d70e25ba770bb1b20fe59c9f3b5ac3c8e051235c79a19db746e45963b2"
+        },
+        "03/context.json": {
+          "bytes": 1977,
+          "sha256": "9e64f28d7ede0983a1614033cd762fcad4561e9e6899bce579049c33e9569be7"
+        },
+        "03/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "03/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        }
+      },
+      "manifest_text": "{\n  \"protocol\": \"four-worker-cshift-continuation-v1\",\n  \"parent_run\": 44016972185,\n  \"parent_head\": \"c35aa35474983d26debe372608d397fc8fa8ce48\",\n  \"source_job\": 17,\n  \"arm\": \"initial\",\n  \"members\": {\n    \"00/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"00/checkpoint.txt\": {\n      \"bytes\": 46891162,\n      \"sha256\": \"9ab8562ac2ed673701b2aae7bd7cf1cfa19dbab6e4721a2e33f73022185ca02d\"\n    },\n    \"00/context.json\": {\n      \"bytes\": 1977,\n      \"sha256\": \"1b9782d1d32fdaba76cabe3435d4db1304520e2856ee238e0d3e8029681d8478\"\n    },\n    \"00/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"00/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"01/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"01/checkpoint.txt\": {\n      \"bytes\": 46891162,\n      \"sha256\": \"5426f0699cca41aa6f6df41b59f53406f3cba68aed1dd02f93b182977f06458b\"\n    },\n    \"01/context.json\": {\n      \"bytes\": 1977,\n      \"sha256\": \"8898b15f2b994ef76493557a687bfa393adc0b94ad772a8824d8f1c20eb6e882\"\n    },\n    \"01/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"01/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"02/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"02/checkpoint.txt\": {\n      \"bytes\": 46891162,\n      \"sha256\": \"c63d38658ee935219bd5f72691717be8fae9a4dc81637631eaf74ec02e8dbbbb\"\n    },\n    \"02/context.json\": {\n      \"bytes\": 1977,\n      \"sha256\": \"350a4f012988817cdb960ef5e68bad8db0083230a002d4d2cd6ed98e23543987\"\n    },\n    \"02/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"02/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"03/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"03/checkpoint.txt\": {\n      \"bytes\": 46891162,\n      \"sha256\": \"813843d70e25ba770bb1b20fe59c9f3b5ac3c8e051235c79a19db746e45963b2\"\n    },\n    \"03/context.json\": {\n      \"bytes\": 1977,\n      \"sha256\": \"9e64f28d7ede0983a1614033cd762fcad4561e9e6899bce579049c33e9569be7\"\n    },\n    \"03/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"03/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    }\n  }\n}\n"
+    },
+    "1:final": {
+      "members": {
+        "00/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "00/checkpoint.txt": {
+          "bytes": 46891262,
+          "sha256": "566f19c66f5ddd7d9f3b48c41975149231854011c73861b73cf48af3ac4d53dc"
+        },
+        "00/context.json": {
+          "bytes": 1971,
+          "sha256": "dc82565d11503d019a3f8f3bad1edc15414b9ea112a89e0437e78987f28330d6"
+        },
+        "00/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "00/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "01/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "01/checkpoint.txt": {
+          "bytes": 46891262,
+          "sha256": "903f44e7a0a5f94966517f98704ce7017c87603272623015ecac0cc5357bd081"
+        },
+        "01/context.json": {
+          "bytes": 1971,
+          "sha256": "5015ba5b9400970d7523618c559fe7a395bdbb3578c55dc5d42c11c090b89707"
+        },
+        "01/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "01/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "02/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "02/checkpoint.txt": {
+          "bytes": 46891262,
+          "sha256": "cc4b447fa5961fcf9b4948ceee3a7ae9cab25ba7b11bab796b08b3408eccc44e"
+        },
+        "02/context.json": {
+          "bytes": 1971,
+          "sha256": "55261265e72ea94dfdebc6992532abc76f11b05ec96080f6fc89f71eca1bea38"
+        },
+        "02/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "02/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        },
+        "03/base.txt": {
+          "bytes": 468902,
+          "sha256": "e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85"
+        },
+        "03/checkpoint.txt": {
+          "bytes": 46891261,
+          "sha256": "738255d9765ee6a65934c124ea9f1f30eb236ecde7b8caacb75a178a0ac9f7a9"
+        },
+        "03/context.json": {
+          "bytes": 1971,
+          "sha256": "590e1b93002427c80322dfebb154615cf48167d60335d04d89634bbe42673408"
+        },
+        "03/instance.bin": {
+          "bytes": 17928780,
+          "sha256": "349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe"
+        },
+        "03/vertices.npy": {
+          "bytes": 640128,
+          "sha256": "a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1"
+        }
+      },
+      "manifest_text": "{\n  \"protocol\": \"four-worker-cshift-continuation-v1\",\n  \"parent_run\": 44016972185,\n  \"parent_head\": \"c35aa35474983d26debe372608d397fc8fa8ce48\",\n  \"source_job\": 17,\n  \"arm\": \"final\",\n  \"members\": {\n    \"00/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"00/checkpoint.txt\": {\n      \"bytes\": 46891262,\n      \"sha256\": \"566f19c66f5ddd7d9f3b48c41975149231854011c73861b73cf48af3ac4d53dc\"\n    },\n    \"00/context.json\": {\n      \"bytes\": 1971,\n      \"sha256\": \"dc82565d11503d019a3f8f3bad1edc15414b9ea112a89e0437e78987f28330d6\"\n    },\n    \"00/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"00/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"01/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"01/checkpoint.txt\": {\n      \"bytes\": 46891262,\n      \"sha256\": \"903f44e7a0a5f94966517f98704ce7017c87603272623015ecac0cc5357bd081\"\n    },\n    \"01/context.json\": {\n      \"bytes\": 1971,\n      \"sha256\": \"5015ba5b9400970d7523618c559fe7a395bdbb3578c55dc5d42c11c090b89707\"\n    },\n    \"01/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"01/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"02/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"02/checkpoint.txt\": {\n      \"bytes\": 46891262,\n      \"sha256\": \"cc4b447fa5961fcf9b4948ceee3a7ae9cab25ba7b11bab796b08b3408eccc44e\"\n    },\n    \"02/context.json\": {\n      \"bytes\": 1971,\n      \"sha256\": \"55261265e72ea94dfdebc6992532abc76f11b05ec96080f6fc89f71eca1bea38\"\n    },\n    \"02/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"02/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    },\n    \"03/base.txt\": {\n      \"bytes\": 468902,\n      \"sha256\": \"e7bb0e6af636929d9b639877fcf8d7182e7023099cb3c795cf4cd6531843df85\"\n    },\n    \"03/checkpoint.txt\": {\n      \"bytes\": 46891261,\n      \"sha256\": \"738255d9765ee6a65934c124ea9f1f30eb236ecde7b8caacb75a178a0ac9f7a9\"\n    },\n    \"03/context.json\": {\n      \"bytes\": 1971,\n      \"sha256\": \"590e1b93002427c80322dfebb154615cf48167d60335d04d89634bbe42673408\"\n    },\n    \"03/instance.bin\": {\n      \"bytes\": 17928780,\n      \"sha256\": \"349cb9975b6a1147a2d8966feb98e6c4845700eba059caf5c834a5b94f9911fe\"\n    },\n    \"03/vertices.npy\": {\n      \"bytes\": 640128,\n      \"sha256\": \"a5dde513c1be31ea1d9b04dec4f40ce417a5a30dc976cd7f68c530e562973aa1\"\n    }\n  }\n}\n"
+    }
+  },
+  "fire_select": [
+    [
+      0,
+      "initial",
+      0
+    ],
+    [
+      0,
+      "final",
+      0
+    ],
+    [
+      1,
+      "initial",
+      1
+    ],
+    [
+      1,
+      "final",
+      1
+    ]
+  ],
+  "prepared_source": null,
+  "fire_seeds": [
+    834642890,
+    632683314,
+    373001221,
+    1611040984
+  ],
+  "seeds": [
+    [
+      119529716,
+      1071525548,
+      1656154002,
+      846667017
+    ],
+    [
+      119529716,
+      1071525548,
+      1656154002,
+      846667017
+    ],
+    [
+      1772589365,
+      620301558,
+      1642801271,
+      1321262588
+    ],
+    [
+      1772589365,
+      620301558,
+      1642801271,
+      1321262588
+    ],
+    [
+      812131448,
+      1797509438,
+      1762526925,
+      225987160
+    ],
+    [
+      812131448,
+      1797509438,
+      1762526925,
+      225987160
+    ],
+    [
+      2022697653,
+      1655799514,
+      152639163,
+      1996111224
+    ],
+    [
+      2022697653,
+      1655799514,
+      152639163,
+      1996111224
+    ],
+    [
+      288108174,
+      1247797389,
+      1572438767,
+      1878108265
+    ],
+    [
+      288108174,
+      1247797389,
+      1572438767,
+      1878108265
+    ],
+    [
+      2126979557,
+      427673592,
+      380965714,
+      51394726
+    ],
+    [
+      2126979557,
+      427673592,
+      380965714,
+      51394726
+    ],
+    [
+      1275374107,
+      35785649,
+      1085266797,
+      504878512
+    ],
+    [
+      1275374107,
+      35785649,
+      1085266797,
+      504878512
+    ],
+    [
+      1886040393,
+      1262314118,
+      1830233684,
+      55412445
+    ],
+    [
+      1886040393,
+      1262314118,
+      1830233684,
+      55412445
+    ],
+    [
+      1160862098,
+      1241923002,
+      283428884,
+      1243138843
+    ],
+    [
+      1160862098,
+      1241923002,
+      283428884,
+      1243138843
+    ],
+    [
+      1351598438,
+      200922928,
+      1727655599,
+      2139309933
+    ],
+    [
+      1351598438,
+      200922928,
+      1727655599,
+      2139309933
+    ]
+  ]
+}
