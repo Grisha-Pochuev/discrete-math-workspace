@@ -647,7 +647,37 @@
       1
     ]
   ],
-  "prepared_source": null,
+  "prepared_source": {
+    "run_id": 44455422621,
+    "head_sha": "18165f8cc676353c00a8613fa1a07def53c8d757",
+    "attempt": 1,
+    "artifacts": {
+      "0:initial": {
+        "id": 14496689125,
+        "name": "q-44455422621-0-initial",
+        "size_in_bytes": 21499890,
+        "digest": "sha256:4b899f8b3d823c4d3db0bae492320340874c415b8c022d96ac62511ac91429ed"
+      },
+      "0:final": {
+        "id": 14498040113,
+        "name": "q-44455422621-0-final",
+        "size_in_bytes": 21486154,
+        "digest": "sha256:4ee7fda13e2a3f6174900350fc58a05327dd17f43b61a1fa62a7c390da845a12"
+      },
+      "1:initial": {
+        "id": 14497487131,
+        "name": "q-44455422621-1-initial",
+        "size_in_bytes": 21425823,
+        "digest": "sha256:5a2ab4af0c8c24c89c762ad72228a4a29bb7b129e2e87ab1fcdd3fa1ac7d2153"
+      },
+      "1:final": {
+        "id": 14497547096,
+        "name": "q-44455422621-1-final",
+        "size_in_bytes": 21553281,
+        "digest": "sha256:320989754dbcd4be284e95a362a7d58bad544c8ccd372a710d835d0d4dd02d15"
+      }
+    }
+  },
   "fire_seeds": [
     834642890,
     632683314,
