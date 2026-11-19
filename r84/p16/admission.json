@@ -1,7 +1,7 @@
 {
   "status": "APPROVED_ONE_SHOT",
-  "activation_epoch": 1794911639,
-  "expiry_epoch": 1794933299,
+  "activation_epoch": 1795059942,
+  "expiry_epoch": 1795081662,
   "protocol": "four-worker-cshift-continuation-v1",
   "purpose": "PREP_AND_120S_FIRE_ONLY",
   "independent_review_sha256": "fa060a376940c17599779459fa40b621f717f77bb3ad422df6dcb36486987a2f"
