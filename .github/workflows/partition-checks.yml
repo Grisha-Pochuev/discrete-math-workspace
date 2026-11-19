@@ -1,0 +1,27 @@
+name: Partition checks
+
+on:
+  push:
+    branches:
+      - exp-partition-checks
+    paths:
+      - .github/workflows/partition-checks.yml
+      - other-experiments/partition-checks/**
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        seed: [7, 23, 51, 113]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          sparse-checkout: other-experiments/partition-checks
+      - run: python3 other-experiments/partition-checks/check.py --seed ${{ matrix.seed }}
