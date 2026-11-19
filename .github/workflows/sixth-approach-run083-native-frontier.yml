@@ -1,0 +1,267 @@
+name: Sixth Approach Run 083 Native Frontier
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/sixth-approach-run083-native-frontier.yml
+      - sixth approach/run083_frontier_worker.cpp
+      - sixth approach/run083_collect.py
+      - sixth approach/specs/run-083-native-frontier.json
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Native calibration first; full residue only after calibration acceptance
+        type: choice
+        required: true
+        default: calibration
+        options:
+          - calibration
+          - full
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sixth-approach-run083
+  cancel-in-progress: false
+
+env:
+  SPEC_PATH: sixth approach/specs/run-083-native-frontier.json
+  WORKER_PATH: sixth approach/run083_frontier_worker.cpp
+  COLLECTOR_PATH: sixth approach/run083_collect.py
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+
+jobs:
+  calibration:
+    if: github.event_name == 'pull_request' || inputs.mode == 'calibration'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out immutable source
+        uses: actions/checkout@v7
+
+      - name: Set up collector runtime
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install exact native dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libflint-dev
+
+      - name: Verify immutable sources and compile worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          spec = json.loads(Path(os.environ['SPEC_PATH']).read_text())
+          for path, expected in spec['source_files'].items():
+              actual = hashlib.sha256(Path(path).read_bytes()).hexdigest()
+              if actual != expected:
+                  raise SystemExit(f'source hash mismatch: {path}')
+          PY
+          mkdir -p "$RUNNER_TEMP/run083-build" out
+          g++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra \
+            "$WORKER_PATH" -o "$RUNNER_TEMP/run083-build/run083_frontier_worker" \
+            -lflint -lgmp -lmpfr
+          test -x "$RUNNER_TEMP/run083-build/run083_frontier_worker"
+
+      - name: Execute native target-19 regression
+        shell: bash
+        run: |
+          set -euo pipefail
+          spec_sha=$(sha256sum "$SPEC_PATH" | cut -d' ' -f1)
+          pids=()
+          for pattern in 111 21; do
+            (
+              ulimit -v $((2560000))
+              timeout --signal=TERM --kill-after=30s 1260 \
+                "$RUNNER_TEMP/run083-build/run083_frontier_worker" \
+                  --run-id run-083 \
+                  --spec-sha256 "$spec_sha" \
+                  --pattern "$pattern" \
+                  --target-size 19 \
+                  --shard-id 0 \
+                  --shard-count 1 \
+                  --seconds 1200 \
+                  --checkpoint-seconds 120 \
+                  --output "out/calibration-${pattern}.json" \
+                > "out/calibration-${pattern}.log" 2>&1
+              echo $? > "out/calibration-${pattern}.exit"
+            ) &
+            pids+=("$!")
+          done
+          for pid in "${pids[@]}"; do
+            wait "$pid"
+          done
+
+      - name: Strictly collect calibration
+        shell: bash
+        run: |
+          set -euo pipefail
+          for code in out/*.exit; do
+            test "$(cat "$code")" = 0
+          done
+          python "$COLLECTOR_PATH" \
+            --mode calibration \
+            --spec "$SPEC_PATH" \
+            --input-dir out \
+            --github-run "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA" \
+            --output out/accepted-calibration.json
+
+      - name: Upload calibration bundle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: run-083-native-calibration
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
+
+  compute:
+    if: inputs.mode == 'full'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 190
+    strategy:
+      fail-fast: false
+      max-parallel: 19
+      matrix:
+        group: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+    steps:
+      - name: Check out immutable source
+        uses: actions/checkout@v7
+
+      - name: Install exact native dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libflint-dev
+
+      - name: Verify immutable sources and compile worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          spec = json.loads(Path(os.environ['SPEC_PATH']).read_text())
+          for path, expected in spec['source_files'].items():
+              actual = hashlib.sha256(Path(path).read_bytes()).hexdigest()
+              if actual != expected:
+                  raise SystemExit(f'source hash mismatch: {path}')
+          PY
+          mkdir -p "$RUNNER_TEMP/run083-build" out
+          g++ -O3 -DNDEBUG -std=c++20 -Wall -Wextra \
+            "$WORKER_PATH" -o "$RUNNER_TEMP/run083-build/run083_frontier_worker" \
+            -lflint -lgmp -lmpfr
+          test -x "$RUNNER_TEMP/run083-build/run083_frontier_worker"
+
+      - name: Execute four independent native shards
+        shell: bash
+        run: |
+          set +e
+          spec_sha=$(sha256sum "$SPEC_PATH" | cut -d' ' -f1)
+          group='${{ matrix.group }}'
+          pids=()
+          for pattern in 111 21; do
+            for offset in 0 1; do
+              shard=$((2*group+offset))
+              stem="out/group-${group}-${pattern}-${shard}"
+              (
+                ulimit -v $((2560000))
+                timeout --signal=TERM --kill-after=30s 10440 \
+                  "$RUNNER_TEMP/run083-build/run083_frontier_worker" \
+                    --run-id run-083 \
+                    --spec-sha256 "$spec_sha" \
+                    --pattern "$pattern" \
+                    --target-size 20 \
+                    --shard-id "$shard" \
+                    --shard-count 38 \
+                    --seconds 10080 \
+                    --checkpoint-seconds 120 \
+                    --output "${stem}.json" \
+                  > "${stem}.log" 2>&1
+                echo $? > "${stem}.exit"
+              ) &
+              pids+=("$!")
+            done
+          done
+          for pid in "${pids[@]}"; do
+            wait "$pid"
+          done
+          exit 0
+
+      - name: Validate grouped process exits
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(find out -name '*.exit' | wc -l)" = 4
+          for code in out/*.exit; do
+            test "$(cat "$code")" = 0
+          done
+          test "$(find out -name '*.json' | wc -l)" = 4
+
+      - name: Upload grouped records
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: run-083-native-group-${{ matrix.group }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
+
+  collect:
+    if: always() && inputs.mode == 'full'
+    needs: compute
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out immutable collector
+        uses: actions/checkout@v7
+
+      - name: Set up collector runtime
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Download grouped records
+        uses: actions/download-artifact@v8
+        with:
+          pattern: run-083-native-group-*
+          path: transport
+          merge-multiple: true
+
+      - name: Strictly collect full residue
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p accepted
+          python "$COLLECTOR_PATH" \
+            --mode full \
+            --spec "$SPEC_PATH" \
+            --input-dir transport \
+            --github-run "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA" \
+            --output accepted/accepted-frontier.json
+          cp "$SPEC_PATH" accepted/spec.json
+          (cd accepted && sha256sum accepted-frontier.json spec.json > SHA256SUMS)
+
+      - name: Upload compact accepted bundle
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: run-083-native-accepted
+          path: accepted/
+          if-no-files-found: error
+          retention-days: 30
