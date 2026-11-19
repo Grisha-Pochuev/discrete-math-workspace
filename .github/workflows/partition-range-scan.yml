@@ -1,0 +1,30 @@
+name: Partition range scan
+
+on:
+  push:
+    branches:
+      - exp-partition-checks
+    paths:
+      - .github/workflows/partition-range-scan.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      SCAN_SHARD: ${{ matrix.shard }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          sparse-checkout: other-experiments/partition-checks
+      - run: python3 other-experiments/partition-checks/range_scan.py --shard "$SCAN_SHARD" --workers 4
