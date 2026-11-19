@@ -27,7 +27,7 @@ permissions:
   actions: read
 jobs:
   m:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       x: ${{ steps.s.outputs.x }}
     steps:
@@ -35,7 +35,7 @@ jobs:
         run: python3 -c "import json;n=int('${{ inputs.n }}');o=int('${{ inputs.o }}');print('x='+json.dumps(list(range(o,o+n))))" >> "$GITHUB_OUTPUT"
   r:
     needs: m
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 350
     strategy:
       fail-fast: false
