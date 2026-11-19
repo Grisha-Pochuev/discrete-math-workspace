@@ -1,0 +1,22 @@
+name: Partition smoke
+
+on:
+  push:
+    branches:
+      - exp-partition-checks
+    paths:
+      - .github/workflows/partition-smoke.yml
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-slim
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+          sparse-checkout: other-experiments/partition-checks
+      - run: python3 other-experiments/partition-checks/check.py --seed 149
