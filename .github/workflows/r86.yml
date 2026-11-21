@@ -36,7 +36,7 @@ jobs:
   r:
     needs: m
     runs-on: ubuntu-24.04
-    timeout-minutes: 350
+    timeout-minutes: 358
     strategy:
       fail-fast: false
       matrix:
@@ -93,3 +93,4 @@ jobs:
           name: o${{ matrix.i }}
           path: o
           retention-days: 14
+
