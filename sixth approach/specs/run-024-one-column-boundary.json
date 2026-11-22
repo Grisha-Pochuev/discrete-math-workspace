@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "run_id": "run-024",
+  "mode": "exact_one_column_boundary",
+  "engine": "node",
+  "support_shapes": [[3, 1], [2, 1]],
+  "output": "local-runs/run-024-summary.json"
+}

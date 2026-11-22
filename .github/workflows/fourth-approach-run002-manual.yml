@@ -1,0 +1,224 @@
+name: Fourth approach Run 002 manual
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-run002-manual.yml'
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: fourth-approach-run-002-manual-only
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Checkout exact launch commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach third-approach-2.0/runs
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Validate manual Run 002
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile fourth-approach/schema.py fourth-approach/minimize.py fourth-approach/runner.py fourth-approach/collect.py fourth-approach/verify_run.py
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python -m unittest discover -s fourth-approach/tests -p 'test_*.py' -v
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python - <<'PY'
+          from schema import read_json, validate_launch, validate_spec
+          launch = validate_launch(read_json('fourth-approach/launch.json'))
+          validate_spec(read_json(launch['spec_path']), launch, require_ready=True)
+          assert launch['enabled'] is True
+          assert launch['run_index'] == 2
+          assert launch['jobs'] == 20
+          assert launch['minimum_jobs'] == 18
+          assert launch['runtime_seconds'] == 20700
+          PY
+
+  compute:
+    needs: validate
+    name: fourth-2-${{ matrix.id }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      PYTHONUNBUFFERED: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Checkout exact launch commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=1 --filter=blob:none origin "$GITHUB_SHA"
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach third-approach-2.0/runs
+          git checkout --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Create diagnostics first
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          date -u +%FT%TZ > out/started-at.txt
+          printf '%s\n' "$GITHUB_SHA" > out/source-sha.txt
+          printf '%s\n' '20 jobs x 20700 seconds; Run 002 exact certificate minimization' > out/command.txt
+          { uname -a; nproc; lscpu; free -h; cat /proc/meminfo; swapon --show || true; df -h .; python --version; } > out/machine.txt
+      - name: Run exact minimization for 20700 seconds
+        shell: bash
+        run: |
+          set -uo pipefail
+          bash fourth-approach/tools/monitor_resources.sh out/resource-monitor.log 30 &
+          monitor_pid=$!
+          set +e
+          timeout --signal=TERM --kill-after=30s 20790s \
+            env PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python fourth-approach/runner.py \
+              --repo . \
+              --spec fourth-approach/run-specs/run-002-stage2-minimize-certificates.json \
+              --task stage2_minimize_certificates \
+              --run-index 2 \
+              --shard-id '${{ matrix.id }}' \
+              --shard-count 20 \
+              --seconds 20700 \
+              --max-attempts 0 \
+              --source-ref HEAD \
+              --output out \
+              > out/driver.log 2>&1
+          code=$?
+          set -e
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          printf '%s\n' "$code" > out/runner-exit-code.txt
+          date -u +%FT%TZ > out/finished-at.txt
+          exit 0
+      - name: Validate shard output
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in started-at.txt source-sha.txt command.txt machine.txt resource-monitor.log driver.log runner-exit-code.txt launch-status.json manifest.json records.json.gz; do test -f "out/$f"; done
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python - <<'PY'
+          import json
+          m = json.load(open('out/manifest.json'))
+          assert m['run_index'] == 2
+          assert m['shard_id'] == int('${{ matrix.id }}')
+          assert m['shard_count'] == 20
+          assert m['status'] in {'SUCCESS', 'BOUNDED_INCOMPLETE'}, m
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-run002-data-${{ matrix.id }}
+          path: out/
+          if-no-files-found: warn
+          retention-days: 21
+          compression-level: 6
+
+  collect:
+    needs: [validate, compute]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout current main
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
+      - name: Download shard artifacts
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: fourth-approach-run002-data-*
+          path: work/artifacts
+          merge-multiple: false
+      - name: Aggregate and independently verify
+        id: aggregate
+        shell: bash
+        run: |
+          set -uo pipefail
+          mkdir -p work
+          set +e
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python fourth-approach/collect.py \
+            --artifacts work/artifacts \
+            --repo . \
+            --run-id "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA" \
+            --expected-jobs 20 \
+            --minimum-jobs 18 \
+            --spec fourth-approach/run-specs/run-002-stage2-minimize-certificates.json \
+            > work/collector.log 2>&1
+          code=$?
+          set -e
+          printf '%s\n' "$code" > work/collector-exit-code.txt
+          run_dir="fourth-approach/runs/run-002-${GITHUB_RUN_ID}"
+          if [ -d "$run_dir" ]; then
+            PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python fourth-approach/verify_run.py "$run_dir" > work/verifier.log 2>&1 || code=4
+          else
+            echo 'collector did not create run directory' > work/verifier.log
+            code=5
+          fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+      - name: Commit archive and disable launch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach/runs fourth-approach/control.json fourth-approach/launch.json
+          if ! git diff --cached --quiet; then
+            git commit -m "save manual Fourth approach run 002 from ${GITHUB_RUN_ID}"
+            for attempt in 1 2 3 4; do
+              if git push origin HEAD:main; then break; fi
+              if [ "$attempt" = 4 ]; then exit 1; fi
+              git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+              git rebase origin/main
+            done
+          fi
+      - name: Fail after preservation if rejected
+        shell: bash
+        run: |
+          set -euo pipefail
+          code='${{ steps.aggregate.outputs.code }}'
+          if [ "$code" != '0' ]; then exit "$code"; fi
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python fourth-approach/verify_run.py "fourth-approach/runs/run-002-${GITHUB_RUN_ID}" --require-accepted
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fourth-approach-run002-collection-${{ github.run_id }}
+          path: work/
+          if-no-files-found: warn
+          retention-days: 21

@@ -1,0 +1,28 @@
+{
+  "schema": "neutral-exhaustive-cube-scan-v1",
+  "run_id": "run-079",
+  "scope": "bounded exhaustive scan of an immutable finite residue",
+  "physical_jobs": 19,
+  "max_parallel": 19,
+  "logical_workers_per_job": 4,
+  "lane_count": 76,
+  "single_threaded_solver_per_worker": true,
+  "cube_depth": 12,
+  "cube_count": 4096,
+  "cube_variables": [127, 128, 129, 130, 131, 132, 133, 134, 135, 1, 2, 3],
+  "variable_count": 30053,
+  "clause_count": 132727,
+  "input_file": "run-079-input.cnf",
+  "input_sha256": "564abcadb9eb164a6a75bef84fddaefc46dbb25076277a693884696b2df55cce",
+  "script_sha256": "f4c5b9471d6f4b75ee1703ad72ad7dda21c4508ec9c9a253ccd92912c21d68b9",
+  "solver_package": "cadical=1.7.4-1",
+  "solver_seconds_per_cube": 55,
+  "job_timeout_minutes": 70,
+  "outcome_contract": {
+    "SAT_REPLAYED": "retain full assignment in provider artifact and independently replay every source clause",
+    "UNSAT_UNCERTIFIED": "bounded diagnostic only; not a proof of an individual cube",
+    "TIMEOUT": "open bounded residue requiring refinement or a longer exact run",
+    "TECHNICAL_ERROR": "technical incompleteness requiring diagnosis before reuse"
+  },
+  "artifact_policy": "provider artifact only; download compact collection first; no automatic Git commit"
+}

@@ -1,0 +1,29 @@
+{
+  "accepted": true,
+  "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+  "artifact_directories_found": 4,
+  "completed_jobs": 4,
+  "expected_jobs": 4,
+  "metrics": {
+    "accepted_run_summaries": 1,
+    "bytes_referenced": 0,
+    "duplicate_content_ids": 2,
+    "exact_certificate_archives": 19,
+    "files_inventoried": 13689,
+    "parsed_run_summaries": 1,
+    "required_third_2_0_run_found": true,
+    "second_approach_candidate_archives": 13425,
+    "summary_files_inventoried": 39,
+    "unreadable_files": 0
+  },
+  "minimum_jobs": 4,
+  "next_decision": "Review the inventory, then implement canonicalization and independent certificate verification for run 001.",
+  "rescue": false,
+  "run_id": 30954702268,
+  "run_index": 0,
+  "schema_version": 1,
+  "scientific_interpretation": "This run freezes the source frontier; it does not prove or refute the Krenn--Gu conjecture.",
+  "source_sha": "d05db26f57dbcfb40c37e2d2cbb006c5a89cda31",
+  "task": "stage0_source_inventory",
+  "worker_error_count": 0
+}

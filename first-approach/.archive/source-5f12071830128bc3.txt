@@ -1,0 +1,8 @@
+source_sha=5f12071830128bc3a8e5a403ae04f8464d935656
+source_tasks=runs/2026-07-23-d/next_tasks.json
+source_lane=frontier3
+manifest_stage=frontier2
+output_dir=runs/2026-07-24-a
+reserve_limit=33
+reserve_shards=32768
+reserve_split=20

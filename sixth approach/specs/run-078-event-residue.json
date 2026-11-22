@@ -1,0 +1,26 @@
+{
+    "schema":  "neutral-event-residue-spec-v1",
+    "run_id":  "run-078",
+    "scope":  "bounded independent exact-event residue search",
+    "physical_jobs":  19,
+    "max_parallel":  19,
+    "logical_workers_per_job":  4,
+    "single_threaded_solver_per_worker":  true,
+    "seed_base":  78000001,
+    "seed_stride":  7919,
+    "seconds_per_search":  9900,
+    "seconds_per_round":  150,
+    "max_events":  240,
+    "memory_mib_per_search":  3200,
+    "entry_count":  108,
+    "optional_entry_count":  96,
+    "matching_count":  5,
+    "script_sha256":  "693b702a120992b094009c21ce35d3743ada044987cae1ccd0eb19606559b619",
+    "outcome_contract":  {
+                             "ALGEBRA_FRONTIER":  "retain full support and require exact algebra replay",
+                             "EXACT_EVENT":  "retain certificate and require dependency-independent replay",
+                             "BOUNDED_OR_SOLVER_NEGATIVE":  "diagnostic only; never branch closure",
+                             "MISSING_OR_DUPLICATE":  "technical incompleteness"
+                         },
+    "retention":  "provider artifacts only; compact collection and exact frontiers downloaded selectively"
+}

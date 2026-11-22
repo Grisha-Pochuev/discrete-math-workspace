@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "implementation_status": "ready",
+  "run_index": 3,
+  "stage_name": "one_edit_deletion_contrasts",
+  "task": "stage3_deletion_contrasts",
+  "title": "Canonical one-variable deletions of the Run-002 exact minima",
+  "research_question": "How many genuine symmetry classes remain after minimizing the exact certificates, and what exact obstruction survives after deleting each support variable?",
+  "source_minimized_certificates": "fourth-approach/runs/run-002-30960392864/minimized-certificates.json.gz",
+  "source_run_id": 30960392864,
+  "execution": {
+    "jobs": 4,
+    "minimum_jobs": 4,
+    "runtime_seconds": 900,
+    "max_attempts": 0
+  },
+  "scientific_output": "An independently verified canonical taxonomy of every one-variable deletion, with exact child certificates and a clear decision whether a long deletion run has any value.",
+  "acceptance_criteria": {
+    "expected_parent_records": 2594,
+    "expected_raw_deletions": 7782,
+    "require_independent_exact_reverification": true,
+    "require_complete_coverage": true
+  },
+  "next_decision": "If the family collapses to target_zero, stop spending long-run compute on it and require all three monochromatic perfect matchings in the next search."
+}

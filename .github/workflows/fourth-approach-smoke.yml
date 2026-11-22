@@ -1,0 +1,13 @@
+name: Fourth approach real-path smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  disabled:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo 'Automatic smoke/continuation is disabled. Run 002 is being launched manually.'

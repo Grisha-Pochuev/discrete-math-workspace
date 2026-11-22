@@ -1,0 +1,23 @@
+{
+  "schema": "neutral-proof-residue-v1",
+  "run_id": "run-077",
+  "lower_bound": 5,
+  "lower_bound_acceptance_sha256": "f18359704ea08325011656bb1fae73b6192422fd7d8caa3139ed40c6db0f71a2",
+  "pair_condition_assertion_count": 24,
+  "expected_variable_count": 217801,
+  "expected_clause_count": 1268249,
+  "expected_cnf_sha256": "75a424598feac97f9eead14f5de24268853822aa65546eac53cab75e85e04b82",
+  "expected_variable_names_sha256": "42d009c2822b937732a9dca2af86d95a71963b89aa903caf21da351274461ec9",
+  "expected_clauses_sha256": "6dac06ee63a49c180b436c6388e3bea65c79d2b24ed90d316f5c6426c02f92c3",
+  "solver_package": "cadical=1.7.4-1",
+  "worker_count": 4,
+  "worker_seeds": [1, 2, 3, 4],
+  "solver_seconds": 3600,
+  "job_timeout_minutes": 75,
+  "certificate": "text LRAT checked internally and by pinned lrat-check; SAT requires direct semantic replay",
+  "checker_repository": "marijnheule/drat-trim",
+  "checker_commit": "2e3b2dc0ecf938addbd779d42877b6ed69d9a985",
+  "outcome_policy": "UNSAT is accepted only with a replayed LRAT; SAT only with a directly replayed model; timeout, signal, cap, checker failure, missing file, or identity mismatch is technical incompleteness",
+  "artifact_policy": "retain compressed proof or compact positive support plus metadata and logs; discard incomplete proof payloads"
+}
+

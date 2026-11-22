@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "run_id": "run-018",
+  "mode": "exact_boundary_incidence",
+  "engine": "node",
+  "external_vertex_count": 5,
+  "active_masks": [1, 2, 3],
+  "expected_assignment_count": 480000,
+  "output": "local-runs/run-018-summary.json"
+}

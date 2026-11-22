@@ -1,0 +1,123 @@
+name: p03
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: p03
+  cancel-in-progress: false
+jobs:
+  r:
+    name: r-${{ matrix.i }}
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        include:
+          - i: 0
+            s: 683622718
+          - i: 1
+            s: 210900089
+          - i: 2
+            s: 804901780
+          - i: 3
+            s: 322207663
+          - i: 4
+            s: 1712221710
+          - i: 5
+            s: 1677162433
+          - i: 6
+            s: 1046985250
+          - i: 7
+            s: 1984124633
+          - i: 8
+            s: 1188894776
+          - i: 9
+            s: 1814467333
+          - i: 10
+            s: 1170276996
+          - i: 11
+            s: 983941615
+          - i: 12
+            s: 2138667990
+          - i: 13
+            s: 187518711
+          - i: 14
+            s: 1099025802
+          - i: 15
+            s: 802738069
+          - i: 16
+            s: 585260160
+          - i: 17
+            s: 499799167
+          - i: 18
+            s: 576652484
+          - i: 19
+            s: 1502028823
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: r84/p01
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: limits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_JOB_NAME: r-${{ matrix.i }}
+        run: |
+          set -euo pipefail
+          mkdir -p o
+          : > o/runs.jsonl
+          for state in in_progress queued waiting requested pending; do
+            gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs?status=$state&per_page=100" --jq '.workflow_runs[] | {id,status}' >> o/runs.jsonl
+          done
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT/jobs" > o/jobs.json
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=100" > o/head-runs.json
+          python - <<'PY'
+          import json,os,datetime
+          if os.environ['GITHUB_RUN_ATTEMPT']!='1': raise SystemExit('one attempt only')
+          history=json.load(open('o/head-runs.json'))
+          if history['total_count']>100: raise SystemExit('run history truncated')
+          prior=[r for r in history['workflow_runs'] if r['path']=='.github/workflows/p03.yml' and r['id']!=int(os.environ['GITHUB_RUN_ID'])]
+          if prior: raise SystemExit('one dispatch per head only')
+          rows=[json.loads(x) for x in open('o/runs.jsonl')]
+          busy=[r for r in rows if r['id']!=int(os.environ['GITHUB_RUN_ID']) and r['status'] in ('in_progress','queued','waiting','requested','pending')]
+          if busy: raise SystemExit('other work is active')
+          jobs=json.load(open('o/jobs.json'))['jobs']
+          selected=[j for j in jobs if j['name']==os.environ['EXPECTED_JOB_NAME'] and j['status']=='in_progress']
+          if len(selected)!=1: raise SystemExit('job timing unavailable')
+          start=datetime.datetime.fromisoformat(selected[0]['started_at'].replace('Z','+00:00')).timestamp()
+          with open(os.environ['GITHUB_ENV'],'a') as f: f.write(f'JOB_DEADLINE={start+350*60-60}\n')
+          PY
+      - name: prepare
+        run: |
+          set -euo pipefail
+          python -m pip install 'numpy==2.3.5' 'scipy==1.17.0'
+          python r84/p01/r.py --output "$PWD/wd"
+          sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/smoke_memory_guard_checked.py > o/g-check.log 2>&1
+      - name: compute
+        env:
+          T: '9000'
+          S: ${{ matrix.s }}
+          A: '1,2'
+        run: |
+          set -euo pipefail
+          sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/memory_guard.py --output "$PWD/o/guard" -- \
+            "$(command -v python)" wd/s/run_experiment.py --bundle "$PWD/wd/b" --build "$PWD/wd/k" \
+            --output "$PWD/o/run" --seconds "$T" --seed "$S" --operators "$A" --maxab 6000 --job-deadline "$JOB_DEADLINE" > o/run.log 2>&1
+      - name: collect
+        if: always()
+        run: |
+          mkdir -p o
+          tar -cJf result.bin o
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p03-${{ github.run_id }}-${{ matrix.i }}
+          path: result.bin
+          retention-days: 14
+          if-no-files-found: error

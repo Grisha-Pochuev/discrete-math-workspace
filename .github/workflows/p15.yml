@@ -1,0 +1,128 @@
+name: p15
+'on':
+  workflow_dispatch: null
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: p15
+  cancel-in-progress: false
+env:
+  GH_TOKEN: ${{ github.token }}
+  WORKFLOW_PATH: .github/workflows/p15.yml
+  OPENBLAS_NUM_THREADS: '1'
+  OMP_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+        sparse-checkout: 'r84/p01
+
+          r84/p15'
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: validate
+      run: python r84/p15/fetch_prepared.py --mode barrier
+    - uses: actions/upload-artifact@v4
+      with:
+        name: v-${{ github.run_id }}
+        path: o/VALIDATION.json
+        retention-days: 14
+        if-no-files-found: error
+  compute:
+    name: r-${{ matrix.i }}
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+        sparse-checkout: 'r84/p01
+
+          r84/p15'
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: timing
+      env:
+        EXPECTED_JOB_NAME: r-${{ matrix.i }}
+        SECONDS_REQUESTED: '19800'
+      run: python r84/p15/timing.py
+    - name: setup
+      run: 'set -euo pipefail
+
+        mkdir -p o
+
+        python -m pip install ''numpy==2.3.5'' ''scipy==1.17.0''
+
+        python r84/p15/bootstrap.py --archive r84/p01/s.bin --output "$PWD/wd/s"
+
+        sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/smoke_memory_guard_checked.py
+        > o/g-check.log 2>&1'
+    - name: inputs
+      run: python r84/p15/fetch_prepared.py --mode production --index ${{ matrix.i
+        }}
+    - name: build
+      run: 'set -euo pipefail
+
+        sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/memory_guard.py
+        --output "$PWD/o/build-guard" -- "$(command -v python)" r84/p15/build.py
+
+        python r84/p15/check_guard.py o/build-guard/memory_result.json'
+    - name: compute
+      run: 'set -euo pipefail
+
+        sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/memory_guard.py
+        --output "$PWD/o/guard" -- "$(command -v python)" r84/p15/m.py --source "$PWD/wd/s"
+        --build "$PWD/wd/k" --assignments "$PWD/wd/assignments.json" --output "$PWD/o/run"
+        --index ${{ matrix.i }} --seconds 19800 --deadline "$JOB_DEADLINE" --admission
+        "$PWD/r84/p15/admission.json"
+
+        python r84/p15/check_guard.py o/guard/memory_result.json
+
+        python r84/p15/check_complete.py o/run 19800'
+    - name: collect
+      if: always()
+      run: 'mkdir -p o
+
+        tar -cJf result.bin o'
+    - uses: actions/upload-artifact@v4
+      with:
+        name: p15-${{ github.run_id }}-${{ matrix.i }}
+        path: result.bin
+        retention-days: 14
+        if-no-files-found: error
+      if: always()
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        i:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+        - 10
+        - 11
+        - 12
+        - 13
+        - 14
+        - 15
+        - 16
+        - 17
+        - 18
+        - 19

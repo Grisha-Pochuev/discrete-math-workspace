@@ -1,0 +1,985 @@
+{
+  "candidates": [
+    {
+      "best_coefficient_max": 0.5864771226160086,
+      "best_profile": "degree7_sparse",
+      "candidate_id": "r012-j00-w0-a002237",
+      "candidate_key": "old_seed_bank::r012-j00-w0-a002237",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 9.462588877284424e-06,
+      "support_size": 97,
+      "task_ids": [
+        0,
+        60
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6429325003620114,
+      "best_profile": "degree6_wide",
+      "candidate_id": "r009-j16-w3-a000428",
+      "candidate_key": "old_seed_bank::r009-j16-w3-a000428",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 1.0282842865686299e-05,
+      "support_size": 97,
+      "task_ids": [
+        1,
+        61
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6130483689538807,
+      "best_profile": "degree6_wide",
+      "candidate_id": "r009-j01-w3-a004424",
+      "candidate_key": "old_seed_bank::r009-j01-w3-a004424",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 1.0320024965137367e-05,
+      "support_size": 95,
+      "task_ids": [
+        2,
+        62
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5855855855855854,
+      "best_profile": "degree6_sparse",
+      "candidate_id": "r010-j15-w0-a001627",
+      "candidate_key": "old_seed_bank::r010-j15-w0-a001627",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 1.0352350329016593e-05,
+      "support_size": 89,
+      "task_ids": [
+        3,
+        63
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6669528478301293,
+      "best_profile": "degree5_dense",
+      "candidate_id": "r009-j13-w1-a001202",
+      "candidate_key": "old_seed_bank::r009-j13-w1-a001202",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 1.0513059331762731e-05,
+      "support_size": 102,
+      "task_ids": [
+        4
+      ]
+    },
+    {
+      "best_coefficient_max": 0.7097240301350447,
+      "best_profile": "degree6_sparse",
+      "candidate_id": "r012-j06-w0-a002291",
+      "candidate_key": "old_seed_bank::r012-j06-w0-a002291",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 1.0529540029652114e-05,
+      "support_size": 108,
+      "task_ids": [
+        5
+      ]
+    },
+    {
+      "best_coefficient_max": 0.596192384769539,
+      "best_profile": "degree6_wide",
+      "candidate_id": "r012-j18-w1-a001691",
+      "candidate_key": "old_seed_bank::r012-j18-w1-a001691",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 1.0602536948237156e-05,
+      "support_size": 93,
+      "task_ids": [
+        6
+      ]
+    },
+    {
+      "best_coefficient_max": 0.627608333310328,
+      "best_profile": "degree5_dense",
+      "candidate_id": "r010-j07-w2-a003181",
+      "candidate_key": "old_seed_bank::r010-j07-w2-a003181",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 1.0737513968510624e-05,
+      "support_size": 96,
+      "task_ids": [
+        7
+      ]
+    },
+    {
+      "best_coefficient_max": 0.64457509353287,
+      "best_profile": "degree6_wide",
+      "candidate_id": "r011-j00-w1-a001074",
+      "candidate_key": "old_seed_bank::r011-j00-w1-a001074",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 1.0810214319412947e-05,
+      "support_size": 92,
+      "task_ids": [
+        8
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6418499305910719,
+      "best_profile": "degree6_wide",
+      "candidate_id": "r011-j09-w0-a004104",
+      "candidate_key": "old_seed_bank::r011-j09-w0-a004104",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "old_pool",
+      "lane": null,
+      "lineage_root": null,
+      "max_error": 1.0815265238587564e-05,
+      "support_size": 93,
+      "task_ids": [
+        9
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5816072908036453,
+      "best_profile": "degree6_sparse",
+      "candidate_id": "sa20-r011-j19-w3-a036048",
+      "candidate_key": "second_approach_2_0::sa20-r011-j19-w3-a036048",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_precision",
+      "lineage_root": "r012-j09-w2-a003125",
+      "max_error": 8.528761437887434e-07,
+      "support_size": 97,
+      "task_ids": [
+        10,
+        64
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6640168556145791,
+      "best_profile": "degree7_sparse",
+      "candidate_id": "sa20-r011-j16-w1-a000892",
+      "candidate_key": "second_approach_2_0::sa20-r011-j16-w1-a000892",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_adaptive",
+      "lineage_root": "r010-j09-w1-a003685",
+      "max_error": 1.2886339790403551e-06,
+      "support_size": 105,
+      "task_ids": [
+        11,
+        65
+      ]
+    },
+    {
+      "best_coefficient_max": 0.7290077402408695,
+      "best_profile": "degree7_sparse",
+      "candidate_id": "sa20-r011-j16-w1-a012962",
+      "candidate_key": "second_approach_2_0::sa20-r011-j16-w1-a012962",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_adaptive",
+      "lineage_root": "r012-j06-w0-a002291",
+      "max_error": 1.5287944310471517e-06,
+      "support_size": 114,
+      "task_ids": [
+        12,
+        66
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6252903035407807,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r011-j17-w2-a013665",
+      "candidate_key": "second_approach_2_0::sa20-r011-j17-w2-a013665",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_adaptive",
+      "lineage_root": "r012-j11-w0-a002069",
+      "max_error": 1.6035222084986338e-06,
+      "support_size": 101,
+      "task_ids": [
+        13,
+        67
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5941644562334215,
+      "best_profile": "degree6_sparse",
+      "candidate_id": "sa20-r003-j19-w1-a002993",
+      "candidate_key": "second_approach_2_0::sa20-r003-j19-w1-a002993",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "precision_audit",
+      "lineage_root": "r010-j15-w0-a001627",
+      "max_error": 2.9786632748678635e-06,
+      "support_size": 89,
+      "task_ids": [
+        14,
+        68
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5908165748695782,
+      "best_profile": "degree7_sparse",
+      "candidate_id": "sa20-r002-j18-w2-a004606",
+      "candidate_key": "second_approach_2_0::sa20-r002-j18-w2-a004606",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "precision_audit",
+      "lineage_root": "r012-j18-w1-a001691",
+      "max_error": 4.6308879063320665e-06,
+      "support_size": 93,
+      "task_ids": [
+        15,
+        69
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6178537138867068,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r005-j18-w1-a009400",
+      "candidate_key": "second_approach_2_0::sa20-r005-j18-w1-a009400",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r010-j17-w3-a000493",
+      "max_error": 5.559575654590322e-06,
+      "support_size": 108,
+      "task_ids": [
+        16
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5901338588027452,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r008-j17-w2-a022832",
+      "candidate_key": "second_approach_2_0::sa20-r008-j17-w2-a022832",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r009-j17-w3-a000122",
+      "max_error": 5.65826024339871e-06,
+      "support_size": 96,
+      "task_ids": [
+        17
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6179594603364604,
+      "best_profile": "degree6_sparse",
+      "candidate_id": "sa20-r005-j18-w1-a016154",
+      "candidate_key": "second_approach_2_0::sa20-r005-j18-w1-a016154",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r010-j03-w3-a002509",
+      "max_error": 6.021321224296873e-06,
+      "support_size": 100,
+      "task_ids": [
+        18
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6312505907930807,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r001-j18-w2-a001210",
+      "candidate_key": "second_approach_2_0::sa20-r001-j18-w2-a001210",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "precision_audit",
+      "lineage_root": "r012-j14-w1-a001529",
+      "max_error": 6.462557786820673e-06,
+      "support_size": 98,
+      "task_ids": [
+        19
+      ]
+    },
+    {
+      "best_coefficient_max": 0.590717299578059,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r006-j17-w2-a008886",
+      "candidate_key": "second_approach_2_0::sa20-r006-j17-w2-a008886",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r010-j05-w0-a004177",
+      "max_error": 7.04476426321392e-06,
+      "support_size": 102,
+      "task_ids": [
+        20
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5795139956936326,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r002-j16-w2-a005498",
+      "candidate_key": "second_approach_2_0::sa20-r002-j16-w2-a005498",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r012-j08-w0-a003449",
+      "max_error": 7.345584968579234e-06,
+      "support_size": 101,
+      "task_ids": [
+        21
+      ]
+    },
+    {
+      "best_coefficient_max": 0.596192384769539,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r000-j19-w3-a004212",
+      "candidate_key": "second_approach_2_0::sa20-r000-j19-w3-a004212",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "precision_audit",
+      "lineage_root": "r011-j10-w0-a000588",
+      "max_error": 7.3685793788178616e-06,
+      "support_size": 90,
+      "task_ids": [
+        22
+      ]
+    },
+    {
+      "best_coefficient_max": 0.627608333310328,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r005-j16-w3-a014543",
+      "candidate_key": "second_approach_2_0::sa20-r005-j16-w3-a014543",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r012-j00-w0-a002237",
+      "max_error": 7.370519323342464e-06,
+      "support_size": 105,
+      "task_ids": [
+        23
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6216216216216216,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r004-j17-w0-a007061",
+      "candidate_key": "second_approach_2_0::sa20-r004-j17-w0-a007061",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r012-j02-w3-a000455",
+      "max_error": 7.674175641844125e-06,
+      "support_size": 101,
+      "task_ids": [
+        24
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6151821856559951,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r000-j19-w1-a016811",
+      "candidate_key": "second_approach_2_0::sa20-r000-j19-w1-a016811",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "precision_audit",
+      "lineage_root": "r009-j11-w2-a003944",
+      "max_error": 7.678705882850171e-06,
+      "support_size": 92,
+      "task_ids": [
+        25
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6717761817986923,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r000-j19-w0-a011135",
+      "candidate_key": "second_approach_2_0::sa20-r000-j19-w0-a011135",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "precision_audit",
+      "lineage_root": "r010-j14-w1-a002053",
+      "max_error": 7.717478198168721e-06,
+      "support_size": 103,
+      "task_ids": [
+        26
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6249573582588525,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r000-j17-w0-a006938",
+      "candidate_key": "second_approach_2_0::sa20-r000-j17-w0-a006938",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r010-j05-w3-a005587",
+      "max_error": 7.721983563346323e-06,
+      "support_size": 98,
+      "task_ids": [
+        27
+      ]
+    },
+    {
+      "best_coefficient_max": 0.643309027160243,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r000-j19-w0-a014723",
+      "candidate_key": "second_approach_2_0::sa20-r000-j19-w0-a014723",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "precision_audit",
+      "lineage_root": "r010-j05-w2-a003457",
+      "max_error": 7.857967009888749e-06,
+      "support_size": 96,
+      "task_ids": [
+        28
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6320061847700038,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r006-j16-w3-a027353",
+      "candidate_key": "second_approach_2_0::sa20-r006-j16-w3-a027353",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "legacy_2_0",
+      "lane": "legacy_control",
+      "lineage_root": "r009-j16-w3-a003686",
+      "max_error": 8.08062759488347e-06,
+      "support_size": 97,
+      "task_ids": [
+        29
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5671682779683428,
+      "best_profile": "degree6_sparse",
+      "candidate_id": "sa20-r011-j14-w3-a001430",
+      "candidate_key": "second_approach_2_0::sa20-r011-j14-w3-a001430",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r008-j13-w0-a000291",
+      "max_error": 1.3253445736421331e-05,
+      "support_size": 88,
+      "task_ids": [
+        30,
+        70
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5656622788975728,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r011-j13-w2-a000173",
+      "candidate_key": "second_approach_2_0::sa20-r011-j13-w2-a000173",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r004-j00-w3-a000114",
+      "max_error": 1.4272628943766083e-05,
+      "support_size": 82,
+      "task_ids": [
+        31,
+        71
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6640168556145791,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r011-j13-w2-a002257",
+      "candidate_key": "second_approach_2_0::sa20-r011-j13-w2-a002257",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r007-j15-w2-a001851",
+      "max_error": 1.4389266895308262e-05,
+      "support_size": 97,
+      "task_ids": [
+        32,
+        72
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6578599735799207,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r011-j07-w2-a001572",
+      "candidate_key": "second_approach_2_0::sa20-r011-j07-w2-a001572",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_precision",
+      "lineage_root": "sa20-r004-j00-w0-a005159",
+      "max_error": 1.620866337149925e-05,
+      "support_size": 96,
+      "task_ids": [
+        33,
+        73
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5704407951598961,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r011-j08-w0-a001376",
+      "candidate_key": "second_approach_2_0::sa20-r011-j08-w0-a001376",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_precision",
+      "lineage_root": "sa20-r003-j08-w3-a001106",
+      "max_error": 1.7403139624948192e-05,
+      "support_size": 93,
+      "task_ids": [
+        34,
+        74
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6675031367628607,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r011-j13-w2-a003629",
+      "candidate_key": "second_approach_2_0::sa20-r011-j13-w2-a003629",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r004-j04-w1-a003950",
+      "max_error": 1.808647484647935e-05,
+      "support_size": 119,
+      "task_ids": [
+        35,
+        75
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6577109081139172,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r011-j15-w2-a000898",
+      "candidate_key": "second_approach_2_0::sa20-r011-j15-w2-a000898",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r000-j07-w0-a003614",
+      "max_error": 2.0590610889475237e-05,
+      "support_size": 101,
+      "task_ids": [
+        36,
+        76
+      ]
+    },
+    {
+      "best_coefficient_max": 0.8323125439808179,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r011-j09-w2-a001613",
+      "candidate_key": "second_approach_2_0::sa20-r011-j09-w2-a001613",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_precision",
+      "lineage_root": "sa20-r006-j00-w1-a002495",
+      "max_error": 2.149753221834235e-05,
+      "support_size": 135,
+      "task_ids": [
+        37,
+        77
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6549532962098077,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r010-j10-w2-a001586",
+      "candidate_key": "second_approach_2_0::sa20-r010-j10-w2-a001586",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_precision",
+      "lineage_root": "sa20-r001-j02-w2-a002636",
+      "max_error": 2.8338738373661545e-05,
+      "support_size": 114,
+      "task_ids": [
+        38,
+        78
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5283018867924527,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r010-j12-w0-a003697",
+      "candidate_key": "second_approach_2_0::sa20-r010-j12-w0-a003697",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r001-j13-w1-a000867",
+      "max_error": 2.9000380792922432e-05,
+      "support_size": 91,
+      "task_ids": [
+        39,
+        79
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6686729443743324,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r010-j10-w3-a002524",
+      "candidate_key": "second_approach_2_0::sa20-r010-j10-w3-a002524",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_precision",
+      "lineage_root": "sa20-r006-j03-w3-a004626",
+      "max_error": 2.904269511737348e-05,
+      "support_size": 84,
+      "task_ids": [
+        40
+      ]
+    },
+    {
+      "best_coefficient_max": 0.699649756352245,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r010-j10-w3-a002642",
+      "candidate_key": "second_approach_2_0::sa20-r010-j10-w3-a002642",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_precision",
+      "lineage_root": "sa20-r006-j03-w2-a003396",
+      "max_error": 2.972405364065901e-05,
+      "support_size": 115,
+      "task_ids": [
+        41
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6816307254687799,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r010-j09-w1-a000660",
+      "candidate_key": "second_approach_2_0::sa20-r010-j09-w1-a000660",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_precision",
+      "lineage_root": "sa20-r006-j06-w1-a004455",
+      "max_error": 2.982761251764893e-05,
+      "support_size": 107,
+      "task_ids": [
+        42
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6032714775534967,
+      "best_profile": "degree7_sparse",
+      "candidate_id": "sa20-r010-j13-w3-a003348",
+      "candidate_key": "second_approach_2_0::sa20-r010-j13-w3-a003348",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r001-j14-w2-a004507",
+      "max_error": 3.0275298741673276e-05,
+      "support_size": 90,
+      "task_ids": [
+        43
+      ]
+    },
+    {
+      "best_coefficient_max": 0.7305553549505307,
+      "best_profile": "degree6_sparse",
+      "candidate_id": "sa20-r010-j08-w2-a001773",
+      "candidate_key": "second_approach_2_0::sa20-r010-j08-w2-a001773",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_precision",
+      "lineage_root": "sa20-r002-j06-w3-a001785",
+      "max_error": 3.039231338415931e-05,
+      "support_size": 115,
+      "task_ids": [
+        44
+      ]
+    },
+    {
+      "best_coefficient_max": 0.596192384769539,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r010-j14-w2-a003100",
+      "candidate_key": "second_approach_2_0::sa20-r010-j14-w2-a003100",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r000-j15-w2-a007803",
+      "max_error": 3.230845510065748e-05,
+      "support_size": 99,
+      "task_ids": [
+        45
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5864771226160086,
+      "best_profile": "degree6_sparse",
+      "candidate_id": "sa20-r010-j14-w3-a000720",
+      "candidate_key": "second_approach_2_0::sa20-r010-j14-w3-a000720",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r006-j07-w2-a002671",
+      "max_error": 3.257036451299147e-05,
+      "support_size": 80,
+      "task_ids": [
+        46
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6841125670041692,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r010-j14-w1-a000582",
+      "candidate_key": "second_approach_2_0::sa20-r010-j14-w1-a000582",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r000-j12-w3-a005233",
+      "max_error": 3.2927678649736585e-05,
+      "support_size": 94,
+      "task_ids": [
+        47
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5025899321752566,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r010-j14-w2-a002671",
+      "candidate_key": "second_approach_2_0::sa20-r010-j14-w2-a002671",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r002-j05-w2-a004174",
+      "max_error": 3.49832431202688e-05,
+      "support_size": 87,
+      "task_ids": [
+        48
+      ]
+    },
+    {
+      "best_coefficient_max": 0.7403742689080497,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r009-j14-w1-a002913",
+      "candidate_key": "second_approach_2_0::sa20-r009-j14-w1-a002913",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r006-j12-w0-a002718",
+      "max_error": 3.5858461928140196e-05,
+      "support_size": 94,
+      "task_ids": [
+        49
+      ]
+    },
+    {
+      "best_coefficient_max": 0.4433004693127658,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r009-j13-w0-a000688",
+      "candidate_key": "second_approach_2_0::sa20-r009-j13-w0-a000688",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_mutation",
+      "lineage_root": "sa20-r001-j13-w1-a006115",
+      "max_error": 3.7995091715760954e-05,
+      "support_size": 82,
+      "task_ids": [
+        50
+      ]
+    },
+    {
+      "best_coefficient_max": 0.425373134328358,
+      "best_profile": "degree6_sparse",
+      "candidate_id": "sa20-r009-j10-w3-a000305",
+      "candidate_key": "second_approach_2_0::sa20-r009-j10-w3-a000305",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "independent_precision",
+      "lineage_root": "sa20-r007-j09-w3-a002619",
+      "max_error": 3.967842775833749e-05,
+      "support_size": 81,
+      "task_ids": [
+        51
+      ]
+    },
+    {
+      "best_coefficient_max": 0.6438197920677704,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r011-j04-w1-a003745",
+      "candidate_key": "second_approach_2_0::sa20-r011-j04-w1-a003745",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "obstruction_boundary",
+      "lineage_root": "sa20-r011-j04-w1-a003745",
+      "max_error": 6.614754709226895e-05,
+      "support_size": 78,
+      "task_ids": [
+        52
+      ]
+    },
+    {
+      "best_coefficient_max": 0.41540223303750357,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r003-j15-w3-a002785",
+      "candidate_key": "second_approach_2_0::sa20-r003-j15-w3-a002785",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "novelty_far",
+      "lineage_root": "sa20-r003-j15-w3-a002785",
+      "max_error": 6.639951303992874e-05,
+      "support_size": 77,
+      "task_ids": [
+        53
+      ]
+    },
+    {
+      "best_coefficient_max": 0.5140087070323976,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r002-j04-w1-a001910",
+      "candidate_key": "second_approach_2_0::sa20-r002-j04-w1-a001910",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "fresh_independent",
+      "lineage_root": "sa20-r002-j04-w1-a001910",
+      "max_error": 6.898408447787168e-05,
+      "support_size": 76,
+      "task_ids": [
+        54
+      ]
+    },
+    {
+      "best_coefficient_max": 0.4150340899283681,
+      "best_profile": "degree6_sparse",
+      "candidate_id": "sa20-r008-j14-w0-a003827",
+      "candidate_key": "second_approach_2_0::sa20-r008-j14-w0-a003827",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "novelty_far",
+      "lineage_root": "sa20-r008-j14-w0-a003827",
+      "max_error": 6.980129773716593e-05,
+      "support_size": 82,
+      "task_ids": [
+        55
+      ]
+    },
+    {
+      "best_coefficient_max": 0.4039789997236807,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r002-j14-w1-a001088",
+      "candidate_key": "second_approach_2_0::sa20-r002-j14-w1-a001088",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "novelty_far",
+      "lineage_root": "sa20-r002-j14-w1-a001088",
+      "max_error": 6.980917820365586e-05,
+      "support_size": 77,
+      "task_ids": [
+        56
+      ]
+    },
+    {
+      "best_coefficient_max": 0.4370378669056689,
+      "best_profile": "degree7_sparse",
+      "candidate_id": "sa20-r003-j02-w1-a000457",
+      "candidate_key": "second_approach_2_0::sa20-r003-j02-w1-a000457",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "fresh_independent",
+      "lineage_root": "sa20-r003-j02-w1-a000457",
+      "max_error": 7.008385375958712e-05,
+      "support_size": 82,
+      "task_ids": [
+        57
+      ]
+    },
+    {
+      "best_coefficient_max": 0.44267198404785635,
+      "best_profile": "degree6_wide",
+      "candidate_id": "sa20-r000-j01-w2-a000199",
+      "candidate_key": "second_approach_2_0::sa20-r000-j01-w2-a000199",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "fresh_independent",
+      "lineage_root": "sa20-r000-j01-w2-a000199",
+      "max_error": 7.052650971625557e-05,
+      "support_size": 107,
+      "task_ids": [
+        58
+      ]
+    },
+    {
+      "best_coefficient_max": 0.4502600463603248,
+      "best_profile": "degree5_dense",
+      "candidate_id": "sa20-r009-j05-w3-a000634",
+      "candidate_key": "second_approach_2_0::sa20-r009-j05-w3-a000634",
+      "exact_closed": false,
+      "exact_tasks": [],
+      "group": "independent_2_0",
+      "lane": "novelty_far",
+      "lineage_root": "sa20-r009-j05-w3-a000634",
+      "max_error": 7.055056289729587e-05,
+      "support_size": 80,
+      "task_ids": [
+        59
+      ]
+    }
+  ],
+  "schema_version": 1
+}

@@ -1,0 +1,19 @@
+{
+  "original_runner_sha256": "d1c3588dc9306e0a11abfd5077f0e19193109eb647a5165e108c7fb70f4ae252",
+  "source_archive_sha256": "0050268936ee9e23df8a54aed9144725f938c96d1077abe74e3b2e684cce3ece",
+  "text_sources": {
+    "bootstrap.py": "288c27e45fbffe570af37dcfd2d1365da563e3c211fe60fbcf049a6dadcda3d2",
+    "check_guard.py": "367c158b1f3b862d9900c8d0a15fcfa0d03f72a2b99408a02281a04cf474f36b",
+    "check_complete.py": "80bf207ba5dac399b19c54ba2ea09fd6302aee71d3808a295f76f906ff3653ce",
+    "fetch_inputs.py": "671ebe6b87cb390a3a7e7fcf8cf224c97ffed1425a6e58649ef9baa89af7b38e",
+    "prepare.py": "1ad21e4e5883f671fbf9587b023580040d406c3c5a7a6b2de7ab1d41e228c9b0",
+    "parents.json": "6258506fcf804d715a21c8a043163bb70a56cec7a175f77c0369746aab9eaeff",
+    "assignments.json": "ba1bb53144d8ea9939bb407e98a75c0d1fe0b65bc7eb8a09ecd8181ed4c83fde",
+    "run_experiment.py": "d2025e53599c11acffb618e8a7670dd521361707f626b1f7b19fc03d571f9bd7",
+    "m.py": "7782764a16562d6b092af14abbfda1f858dc12b1db2f7ed017da700c2ca245c4",
+    "w.py": "8596728457edd2f4dbee03b7829cc3973c152de95984754311be2c9eb0b67776",
+    "r.py": "02b4f7f720d170813f50e9703e99228cde42a49a345e26acfcbb635826bd58f7",
+    "admission.json": "e5e7c601d0eb7f8616e77c52033efe105dbc7d6bf7c047a2373a07b8dc4031a8",
+    "fire_evidence.json": "39c230453bffb12bb31770d11b598c9092b5b15807ab7700560821e25a440b24"
+  }
+}

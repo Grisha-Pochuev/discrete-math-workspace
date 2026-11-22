@@ -1,0 +1,31 @@
+{
+  "accepted": true,
+  "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+  "completed_jobs": 20,
+  "expected_jobs": 20,
+  "metrics": {
+    "certificate_terms_removed": 12783,
+    "certificates_improved": 2560,
+    "complete_shards": 20,
+    "completed_jobs": 20,
+    "independently_reverified": 2594,
+    "minimized_nonzero_terms": 7782,
+    "original_nonzero_terms": 20565,
+    "source_support_classes": 2594,
+    "supports_changed": 0,
+    "supports_missing_monochromatic_target": 0,
+    "term_count_distribution": {
+      "3": 2594
+    },
+    "total_optimization_attempts": 109430425
+  },
+  "minimum_jobs": 18,
+  "next_decision": "Canonicalize the fixed-support certificate mechanisms and bridge them to the strongest old-basin and independent Second approach candidates.",
+  "run_id": 31003259020,
+  "run_index": 4,
+  "schema_version": 1,
+  "scientific_interpretation": "Every certificate is minimized on its unchanged original support, with all three monochromatic target matchings still present. These compact exact identities therefore describe the same support-restricted systems rather than unrelated target-zero sub-supports.",
+  "source_sha": "213ba69014e9c52a34c452cd81df7a0a351b1b1b",
+  "task": "stage4_fixed_support_certificate_minimization",
+  "worker_error_count": 0
+}

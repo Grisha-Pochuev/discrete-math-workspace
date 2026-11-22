@@ -1,0 +1,300 @@
+{
+  "allowed_independent_strategies": [
+    "balanced",
+    "precision_heavy",
+    "mutation_heavy",
+    "escape_heavy"
+  ],
+  "allowed_legacy_strategies": [
+    "micro_polish",
+    "support_mutation",
+    "wide_restart",
+    "bound_expansion",
+    "residual_escape"
+  ],
+  "approach": "second-approach-2.0-independent-basin-counterexample-search",
+  "base_seed": 20260730,
+  "best_score_history": [
+    {
+      "best_independent_max_error": 6.979595629530765e-05,
+      "best_max_error": 6.334816573806088e-06,
+      "distinct_residual_basin_fingerprints": 606,
+      "distinct_support_fingerprints": 497,
+      "lane_best_max_error": {
+        "fresh_independent": 7.03028631759042e-05,
+        "legacy_control": 7.286178788449756e-06,
+        "novelty_far": 6.979595629530765e-05,
+        "obstruction_boundary": 7.165204215983739e-05,
+        "precision_audit": 6.334816573806088e-06
+      },
+      "legacy_rooted_promoted_fraction": 0.13157894736842105,
+      "run_id": 30574850630,
+      "run_index": 0
+    },
+    {
+      "best_independent_max_error": 6.645746479372506e-05,
+      "best_max_error": 4.076750575714696e-06,
+      "distinct_residual_basin_fingerprints": 640,
+      "distinct_support_fingerprints": 532,
+      "lane_best_max_error": {
+        "fresh_independent": 6.814365097050674e-05,
+        "legacy_control": 5.119434994963739e-06,
+        "novelty_far": 6.645746479372506e-05,
+        "obstruction_boundary": 7.40605434026432e-05,
+        "precision_audit": 4.076750575714696e-06
+      },
+      "legacy_rooted_promoted_fraction": 0.175,
+      "run_id": 30596518561,
+      "run_index": 1
+    },
+    {
+      "best_independent_max_error": 6.696939577156636e-05,
+      "best_max_error": 2.984844795105317e-06,
+      "distinct_residual_basin_fingerprints": 640,
+      "distinct_support_fingerprints": 507,
+      "lane_best_max_error": {
+        "fresh_independent": 6.696939577156636e-05,
+        "legacy_control": 6.562805127528293e-06,
+        "novelty_far": 6.980917820365586e-05,
+        "obstruction_boundary": 7.225132424010059e-05,
+        "precision_audit": 2.984844795105317e-06
+      },
+      "legacy_rooted_promoted_fraction": 0.175,
+      "run_id": 30613224955,
+      "run_index": 2
+    },
+    {
+      "best_independent_max_error": 6.639951303992874e-05,
+      "best_max_error": 2.1482705835786886e-06,
+      "distinct_residual_basin_fingerprints": 638,
+      "distinct_support_fingerprints": 505,
+      "lane_best_max_error": {
+        "fresh_independent": 7.008385375958712e-05,
+        "legacy_control": 7.058405601613929e-06,
+        "novelty_far": 6.639951303992874e-05,
+        "obstruction_boundary": 6.986063715522628e-05,
+        "precision_audit": 2.1482705835786886e-06
+      },
+      "legacy_rooted_promoted_fraction": 0.175,
+      "run_id": 30634993262,
+      "run_index": 3
+    },
+    {
+      "best_independent_max_error": 6.571214830709872e-05,
+      "best_max_error": 1.6407588291047804e-06,
+      "distinct_residual_basin_fingerprints": 637,
+      "distinct_support_fingerprints": 514,
+      "lane_best_max_error": {
+        "fresh_independent": 6.571214830709872e-05,
+        "legacy_control": 6.600804282686078e-06,
+        "novelty_far": 7.397458263814293e-05,
+        "obstruction_boundary": 7.194419485991641e-05,
+        "precision_audit": 1.6407588291047804e-06
+      },
+      "legacy_rooted_promoted_fraction": 0.175,
+      "run_id": 30659739127,
+      "run_index": 4
+    },
+    {
+      "best_independent_max_error": 7.110974064188716e-05,
+      "best_max_error": 1.5964500019892683e-06,
+      "distinct_residual_basin_fingerprints": 638,
+      "distinct_support_fingerprints": 499,
+      "lane_best_max_error": {
+        "fresh_independent": 7.148388104104419e-05,
+        "legacy_control": 5.559575654590322e-06,
+        "novelty_far": 7.110974064188716e-05,
+        "obstruction_boundary": 7.188130158288642e-05,
+        "precision_audit": 1.5964500019892683e-06
+      },
+      "legacy_rooted_promoted_fraction": 0.175,
+      "run_id": 30678416326,
+      "run_index": 5
+    },
+    {
+      "best_independent_max_error": 6.743350433123254e-05,
+      "best_max_error": 1.5784151952036582e-06,
+      "distinct_residual_basin_fingerprints": 633,
+      "distinct_support_fingerprints": 501,
+      "lane_best_max_error": {
+        "fresh_independent": 6.822750998804849e-05,
+        "legacy_control": 7.042415161154626e-06,
+        "novelty_far": 7.245970479889338e-05,
+        "obstruction_boundary": 6.743350433123254e-05,
+        "precision_audit": 1.5784151952036582e-06
+      },
+      "legacy_rooted_promoted_fraction": 0.175,
+      "run_id": 30689984406,
+      "run_index": 6
+    },
+    {
+      "best_independent_max_error": 6.90612633531086e-05,
+      "best_max_error": 1.2877995019708488e-06,
+      "distinct_residual_basin_fingerprints": 634,
+      "distinct_support_fingerprints": 500,
+      "lane_best_max_error": {
+        "fresh_independent": 7.221061030561807e-05,
+        "legacy_control": 7.084363242362853e-06,
+        "novelty_far": 6.90612633531086e-05,
+        "obstruction_boundary": 7.093145643283578e-05,
+        "precision_audit": 1.2877995019708488e-06
+      },
+      "legacy_rooted_promoted_fraction": 0.175,
+      "run_id": 30702060939,
+      "run_index": 7
+    },
+    {
+      "best_fresh_independent_max_error": 6.980129773716593e-05,
+      "best_independent_max_error": 6.980129773716593e-05,
+      "best_inherited_independent_max_error": null,
+      "best_max_error": 1.2783446473685002e-06,
+      "distinct_independent_lineage_roots": 528,
+      "distinct_residual_basin_fingerprints": 636,
+      "distinct_support_fingerprints": 506,
+      "independent_parent_improvement_fraction": 0.0,
+      "independent_strategy": "fresh_only_v1",
+      "lane_best_max_error": {
+        "fresh_independent": 7.331913130370159e-05,
+        "legacy_control": 5.65826024339871e-06,
+        "novelty_far": 6.980129773716593e-05,
+        "obstruction_boundary": 7.190497353193472e-05,
+        "precision_audit": 1.2783446473685002e-06
+      },
+      "lane_plan_version": 1,
+      "legacy_parent_improvement_fraction": 0.7142857142857143,
+      "legacy_rooted_promoted_fraction": 0.175,
+      "legacy_strategy": "legacy_v1",
+      "run_id": 30717068208,
+      "run_index": 8
+    },
+    {
+      "best_fresh_independent_max_error": 7.055056289729587e-05,
+      "best_independent_max_error": 3.23898413310841e-05,
+      "best_inherited_independent_max_error": 3.23898413310841e-05,
+      "best_max_error": 1.0426901910539692e-06,
+      "distinct_independent_lineage_roots": 248,
+      "distinct_residual_basin_fingerprints": 632,
+      "distinct_support_fingerprints": 363,
+      "independent_parent_improvement_fraction": 1.0,
+      "independent_strategy": "balanced",
+      "lane_best_max_error": {
+        "fresh_independent": 7.507574158325195e-05,
+        "independent_mutation": 3.456525039342225e-05,
+        "independent_precision": 3.23898413310841e-05,
+        "legacy_adaptive": 1.39155064961704e-06,
+        "legacy_escape": 4.1746980658670124e-05,
+        "legacy_precision": 1.0426901910539692e-06,
+        "novelty_far": 7.055056289729587e-05,
+        "obstruction_boundary": 7.252148838944106e-05
+      },
+      "lane_plan_version": 2,
+      "legacy_parent_improvement_fraction": 0.25,
+      "legacy_rooted_promoted_fraction": 0.2,
+      "legacy_strategy": "support_mutation",
+      "run_id": 30729358815,
+      "run_index": 9
+    },
+    {
+      "best_fresh_independent_max_error": 7.123473446129039e-05,
+      "best_independent_max_error": 1.7178206828595002e-05,
+      "best_inherited_independent_max_error": 1.7178206828595002e-05,
+      "best_max_error": 9.422934777109079e-07,
+      "distinct_independent_lineage_roots": 245,
+      "distinct_residual_basin_fingerprints": 638,
+      "distinct_support_fingerprints": 363,
+      "independent_parent_improvement_fraction": 0.9305555555555556,
+      "independent_strategy": "balanced",
+      "lane_best_max_error": {
+        "fresh_independent": 7.123473446129039e-05,
+        "independent_mutation": 1.7178206828595002e-05,
+        "independent_precision": 2.104547624235327e-05,
+        "legacy_adaptive": 1.1335877966847586e-06,
+        "legacy_escape": 4.27895370532034e-05,
+        "legacy_precision": 9.422934777109079e-07,
+        "novelty_far": 7.231049012279695e-05,
+        "obstruction_boundary": 7.386038154697178e-05
+      },
+      "lane_plan_version": 2,
+      "legacy_parent_improvement_fraction": 0.2109375,
+      "legacy_rooted_promoted_fraction": 0.2,
+      "legacy_strategy": "support_mutation",
+      "run_id": 30742039790,
+      "run_index": 10
+    },
+    {
+      "best_fresh_independent_max_error": 6.614754709226895e-05,
+      "best_independent_max_error": 1.3253445736421331e-05,
+      "best_inherited_independent_max_error": 1.3253445736421331e-05,
+      "best_max_error": 8.528761437887434e-07,
+      "distinct_independent_lineage_roots": 232,
+      "distinct_residual_basin_fingerprints": 612,
+      "distinct_support_fingerprints": 348,
+      "independent_parent_improvement_fraction": 0.4479166666666667,
+      "independent_strategy": "balanced",
+      "lane_best_max_error": {
+        "fresh_independent": 7.18693260988117e-05,
+        "independent_mutation": 1.3253445736421331e-05,
+        "independent_precision": 1.443718778972913e-05,
+        "legacy_adaptive": 1.2685677132131843e-06,
+        "legacy_escape": 4.331834679858077e-05,
+        "legacy_precision": 8.528761437887434e-07,
+        "novelty_far": 7.304220532160122e-05,
+        "obstruction_boundary": 6.614754709226895e-05
+      },
+      "lane_plan_version": 2,
+      "legacy_parent_improvement_fraction": 0.203125,
+      "legacy_rooted_promoted_fraction": 0.2,
+      "legacy_strategy": "support_mutation",
+      "run_id": 30756680528,
+      "run_index": 11
+    }
+  ],
+  "candidate_bank_independent_size": 1034,
+  "candidate_bank_legacy_size": 166,
+  "candidate_bank_size": 1200,
+  "completed_runs": 12,
+  "default_next_independent_strategy": "balanced",
+  "default_next_legacy_strategy": "support_mutation",
+  "enabled": true,
+  "global_best_candidate_id": "sa20-r011-j19-w3-a036048",
+  "global_best_fresh_independent_candidate_id": "sa20-r011-j04-w1-a003745",
+  "global_best_fresh_independent_max_error": 6.614754709226895e-05,
+  "global_best_independent_candidate_id": "sa20-r011-j14-w3-a001430",
+  "global_best_independent_max_error": 1.3253445736421331e-05,
+  "global_best_inherited_independent_candidate_id": "sa20-r011-j14-w3-a001430",
+  "global_best_inherited_independent_max_error": 1.3253445736421331e-05,
+  "global_best_max_error": 8.528761437887434e-07,
+  "jobs": 20,
+  "lane_plan": {
+    "fresh_independent": 12,
+    "independent_mutation": 16,
+    "independent_precision": 20,
+    "legacy_adaptive": 8,
+    "legacy_escape": 4,
+    "legacy_precision": 4,
+    "novelty_far": 8,
+    "obstruction_boundary": 8
+  },
+  "lane_plan_version": 2,
+  "last_conclusion": "success",
+  "last_independent_strategy": "balanced",
+  "last_lane_plan_version": 2,
+  "last_legacy_strategy": "support_mutation",
+  "last_run_accepted": true,
+  "last_run_id": 30756680528,
+  "last_run_index": 11,
+  "max_attempts_per_worker": 0,
+  "minimum_jobs_for_acceptance": 16,
+  "next_run_index": 12,
+  "next_seed": 32260766,
+  "old_second_approach_record": 9.46e-06,
+  "run_limit": null,
+  "runtime_seconds": 21000,
+  "schema_version": 2,
+  "stopping_policy": "time_only_and_scientific_value",
+  "strategy_change_policy": {
+    "independent": "develop several distinct independent lineages; rotate tactic after three runs below 2% inherited-frontier gain or a falling parent-improvement fraction; keep fresh exploration as a guardrail",
+    "legacy": "keep a tactic only while it gives material frontier progress; rotate after a three-run gain below 2%, two runs without a global record, or clear lineage concentration"
+  },
+  "workers_per_job": 4
+}

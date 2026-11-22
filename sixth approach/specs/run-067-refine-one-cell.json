@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "run_id": "run-067",
+  "mode": "adaptive_refined_rescue",
+  "trigger": "workflow_dispatch",
+  "workflow": "sixth-approach-adaptive-refine.yml",
+  "runner": "ubuntu-24.04",
+  "parent": {
+    "run_id": "run-066",
+    "workflow_run": 31430989911,
+    "source_sha": "f64e4a14ce4b9c13a5a72a7899dc64ca0c7f129e",
+    "spec_path": "sixth approach/specs/run-066-adaptive-exact-cuts.json",
+    "spec_sha256": "f00078eeaefd284a11ce97105e0e34fb9899e7f53be93cd0a155a1820cc4ef0a",
+    "graph_id": "c5c3",
+    "graph_type": "C5+C3",
+    "shard": 23,
+    "shard_count": 64
+  },
+  "refinement": {
+    "shard_count": 256,
+    "partition": "first-edge-prefix-bits-v1",
+    "partition_bits": 8,
+    "child_shards": [23, 87, 151, 215]
+  },
+  "expected_leaf_shards": 195,
+  "compute_jobs": 1,
+  "workers_per_job": 4,
+  "workers_per_shard": 1,
+  "worker_language": "C++20",
+  "solver": "OR-Tools CP-SAT v9.15.6755",
+  "seconds_per_round": 180,
+  "exchange_rounds": 40,
+  "worker_seconds": 7800,
+  "worker_memory_mib": 2800,
+  "job_timeout_minutes": 150,
+  "exact_cut_version": 6,
+  "exact_event_cuts": 209,
+  "exact_event_cut_literals": 2196,
+  "cut_bundle_path": "sixth approach/specs/run-066-exact-event-cuts.json",
+  "cut_bundle_sha256": "7fe026aa77b2f306262f4ca6cb0f63f541927363bcea90a0b7b9335386b4fc0f",
+  "source_identities": [
+    {"path": "sixth approach/run052_adaptive/exact_event_cuts.h", "sha256": "7ba01f2ef81044d56b0cc693becb6357e261a74138be0545484d40140107044b"},
+    {"path": "sixth approach/run052_adaptive/exact_event_cuts_v2.h", "sha256": "c39dba75d3debdfa1c969467424d30d196596d4de14b2feff0f1487d62f1b10f"},
+    {"path": "sixth approach/run052_adaptive/exact_event_cuts_v3.h", "sha256": "db417c3bd9ea9c1c02d9aa3e6743ab2884dd96175666e65d01c42a1fb2a741cd"},
+    {"path": "sixth approach/run052_adaptive/exact_event_cuts_v4.h", "sha256": "99f2547e61194bd907ba65fa4e3b7e4923a01b6a6444e4d9988f13ab5b0055bb"},
+    {"path": "sixth approach/run052_adaptive/exact_event_cuts_v5.h", "sha256": "bf46445eaf85ae7731e925a0e70cf67fd18da608a6b331ba8a7b41622fffdcb6"},
+    {"path": "sixth approach/run052_adaptive/exact_event_cuts_v6.h", "sha256": "fe44137ae654a01488143098addd5e0639f569109dbad77d035c899250a1555e"},
+    {"path": "sixth approach/run052_adaptive/main.cpp", "sha256": "0a3067ccc59d9ab3e4cd2f9f53ed66d533375945a91f7ca65b16d87c62b9766d"}
+  ],
+  "acceptance": {
+    "parent_has_exactly_one_unknown": true,
+    "all_other_parent_shards_complete": true,
+    "all_four_children_complete": true,
+    "strict_refinement_coverage": true,
+    "four_independent_single_threaded_workers": true,
+    "scientific_survivors_are_data": true,
+    "compact_archive_on_acceptance": true
+  }
+}

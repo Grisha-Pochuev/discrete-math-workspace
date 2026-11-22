@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "run_id": "run-056",
+  "mode": "native_exact_support_layers",
+  "trigger": "workflow_dispatch",
+  "workflow": "sixth-approach-native-frontier-batch.yml",
+  "runner": "ubuntu-24.04",
+  "cases": [
+    {"case": 3, "orbit": 8, "stabilizer_size": 4, "term_variables": 27428},
+    {"case": 9, "orbit": 51, "stabilizer_size": 4, "term_variables": 27286},
+    {"case": 10, "orbit": 52, "stabilizer_size": 8, "term_variables": 27272},
+    {"case": 11, "orbit": 53, "stabilizer_size": 16, "term_variables": 27264}
+  ],
+  "supports": [67, 68, 69],
+  "jobs": 12,
+  "max_parallel": 12,
+  "shards_per_job": 4,
+  "partition": "parity2-v1",
+  "single_threaded_workers": true,
+  "symmetry_breaking": "full_coloured_stabilizer_lex_leader",
+  "worker_language": "C++20",
+  "worker_seconds": 3300,
+  "worker_cap": 2000000,
+  "worker_memory_mib": 2500,
+  "checkpoint_every": 100000,
+  "checkpoint_seconds": 300,
+  "expected_escape_variables": 162,
+  "acceptance": {
+    "all_shards_complete": true,
+    "all_layers_complete": true,
+    "reject_caps_deadlines_signals": true,
+    "replay_support_sizes": true,
+    "verify_multiplicities": true
+  }
+}

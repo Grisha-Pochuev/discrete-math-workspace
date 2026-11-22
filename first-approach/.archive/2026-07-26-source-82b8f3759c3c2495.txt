@@ -1,0 +1,10 @@
+source_sha=82b8f3759c3c2495a0f7fb9120cee4c44c89f9c4
+source_tasks=runs/2026-07-25-c/next_tasks.json.gz
+source_lane=frontier3
+manifest_stage=frontier2
+output_dir=runs/2026-07-26-a
+reserve_limit=38
+reserve_shards=1048576
+reserve_split=24
+run_id=30169857105
+reason=archive the unique completed successful 20-job batch, verify all original artifacts and exact source coverage, preserve objective outcomes, refine only bounded incomplete tasks, carry any technical failures and unstarted work exactly, exclude complete tasks, and add the explicit layer-38 reserve

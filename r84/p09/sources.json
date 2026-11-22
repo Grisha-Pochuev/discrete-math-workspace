@@ -1,0 +1,16 @@
+{
+  "original_runner_sha256": "d1c3588dc9306e0a11abfd5077f0e19193109eb647a5165e108c7fb70f4ae252",
+  "source_archive_sha256": "0050268936ee9e23df8a54aed9144725f938c96d1077abe74e3b2e684cce3ece",
+  "text_sources": {
+    "admission.json": "a3bbede707ae9a80e9d3a1190124795c05e830a40a4efb3caeef60ca5994b01e",
+    "bootstrap.py": "50b01ff359f03e9d193b12534c4c24c9cd7741c9b49bce8b21a445b03066fc49",
+    "check_guard.py": "28c0780b46402c43a06cf16d04983b28c84a52d002b478d90585bcef06642b2e",
+    "delta.json": "71a20c83d7f53930e441f1c929df86c65a293031215004055aee508c78a69c14",
+    "fetch_inputs.py": "855b3f16445efb729bd889841509b155a89f4256196aff7c74b7ab55bdf3a098",
+    "fire.py": "a66522681ad0a5e317141b998fadb5aaed8bcc8b90136b6e2aa7fcceaef7a8a8",
+    "parent.json": "141c1a21b4e777ee04c0a9c15264e35e3321c80a35b95ddb439b903448678a63",
+    "prepare.py": "0b0a58c3505be9b4cc9a06a192faa6f20805a9f7caff47321bd0eaa2cab0d011",
+    "region_tools.py": "9b6809d2509678b41c55a7df0a522eade9ea8922a7a10fb09726e74a152bda3a",
+    "run_experiment.py": "d1c3588dc9306e0a11abfd5077f0e19193109eb647a5165e108c7fb70f4ae252"
+  }
+}

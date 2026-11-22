@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "source": "latest local exact regressions supplied for fifth-approach preparation",
+  "n6": {
+    "ordered_factor_triples_with_fixed_remainder": 48,
+    "duplicated_colour_assignments_checked": 34992,
+    "mixed_trap_cases": 1344,
+    "h_only_safe_exchange_failures": 48,
+    "corrected_full_graph_safe_failures": 0
+  },
+  "n8": {
+    "connected_labelled_factor_triples_with_fixed_remainder": 27456,
+    "factor_triple_orbits": 39,
+    "duplicated_colour_assignments_checked_on_orbit_representatives": 255879,
+    "mixed_trap_cases": 6668,
+    "corrected_full_graph_safe_failures": 0
+  },
+  "run000_target": "extend the corrected full-graph audit exactly through n=10 and search substantially beyond it"
+}

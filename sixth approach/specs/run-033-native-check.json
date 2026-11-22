@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "run_id": "run-033",
+  "mode": "native_exact_regression",
+  "trigger": "workflow_dispatch",
+  "runner": "ubuntu-24.04",
+  "case": 3,
+  "orbit": 8,
+  "support": 52,
+  "shards": 4,
+  "partition": "parity2-v1",
+  "single_threaded_workers": true,
+  "worker_language": "C++20",
+  "worker_seconds": 300,
+  "worker_cap": 200000,
+  "worker_memory_mib": 2500,
+  "toolkit": {
+    "version": "9.15.6755",
+    "archive": "or-tools_amd64_ubuntu-24.04_cpp_v9.15.6755.tar.gz",
+    "sha256": "6f389320672cee00b78aacefb2bde33fef0bb988c3b2735573b9fffd1047fbda"
+  },
+  "acceptance": {
+    "all_shards_complete": true,
+    "raw_supports": 32,
+    "support_orbits": 10,
+    "compare_with_independent_local_enumeration": true
+  }
+}

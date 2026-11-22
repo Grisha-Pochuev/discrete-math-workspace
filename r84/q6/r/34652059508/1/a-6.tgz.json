@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "bytes": 227760845,
+  "parts": [
+    {
+      "file": "a-6.tgz.000",
+      "sha256": "d26c6f7310e8704a658b7d3a663f222e61f8f05f810b8ff01701d4136ae8c280",
+      "bytes": 41943040
+    },
+    {
+      "file": "a-6.tgz.001",
+      "sha256": "11f02a8e56c85c264862a2d309b6e39c9bd0794151ba7a920aad967dc821fc26",
+      "bytes": 41943040
+    },
+    {
+      "file": "a-6.tgz.002",
+      "sha256": "0d06d4dc1f09e4e3c8028193b993f5c1dad78ea7a7d12c9ee45a594cdb6107be",
+      "bytes": 41943040
+    },
+    {
+      "file": "a-6.tgz.003",
+      "sha256": "37d1057b5517a018a9c7bfd7385203a2c304bc4f159130e6bafbd72f937aadcb",
+      "bytes": 41943040
+    },
+    {
+      "file": "a-6.tgz.004",
+      "sha256": "3b8d8fc6c78b0c4d588da66fd4c6815f6c1fb2cd572f56585b1a8144be262613",
+      "bytes": 41943040
+    },
+    {
+      "file": "a-6.tgz.005",
+      "sha256": "bee387639ad52eb35221e8452ea50e3530ee81a73a0e443a5ef8cf8c7469c9ce",
+      "bytes": 18045645
+    }
+  ],
+  "sha256": "08a7bf831e5172062e3aa12615ed0d9850b1ab80e5ade5c04c8cd69d59857936"
+}

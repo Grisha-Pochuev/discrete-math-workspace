@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "run_id": "run-032",
+  "mode": "exact_support_layer_enumeration",
+  "engine": "ortools_cp_sat_9.15.6755",
+  "order": 8,
+  "support_layers": [56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71],
+  "jobs": 16,
+  "workers_per_job": 4,
+  "worker_threads": 1,
+  "partition": "parity2-v1",
+  "seconds_per_worker": 3240,
+  "solution_cap_per_worker": 2000000,
+  "checkpoint_seconds": 60,
+  "outputs": [
+    "four shard JSON files per support layer",
+    "one validated merged JSON file per support layer",
+    "one resource monitor log per support layer"
+  ]
+}

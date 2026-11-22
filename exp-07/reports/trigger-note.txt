@@ -1,0 +1,1 @@
+CircleCI VCS and API trigger tests completed; external authentication/reconnect required.

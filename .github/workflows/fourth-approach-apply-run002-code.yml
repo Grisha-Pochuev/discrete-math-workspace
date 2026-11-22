@@ -1,0 +1,102 @@
+name: Apply manual Fourth approach run 002
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/fourth-approach-apply-run002-code.yml'
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: apply-manual-fourth-run-002
+  cancel-in-progress: false
+
+jobs:
+  publish-and-launch:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Clone ordinary project files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+          git sparse-checkout init --cone
+          git sparse-checkout set fourth-approach
+          git checkout -B main FETCH_HEAD
+
+      - name: Extract verified run 002 package
+        shell: bash
+        run: |
+          set -euo pipefail
+          package=fourth-approach/tools/manual-run002.tar.gz
+          test -s "$package"
+          tar -tzf "$package" > /tmp/files.txt
+          test -s /tmp/files.txt
+          if grep -E '(^/|(^|/)\.\.(/|$)|^\.github/|__pycache__|\.pyc$)' /tmp/files.txt; then
+            echo 'unsafe package path' >&2
+            exit 2
+          fi
+          if grep -v '^fourth-approach/' /tmp/files.txt; then
+            echo 'package contains path outside fourth-approach' >&2
+            exit 2
+          fi
+          tar -xzf "$package" -C .
+
+      - name: Validate manual 20 x 20700 run
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf fourth-approach/__pycache__ fourth-approach/tests/__pycache__
+          python -m py_compile \
+            fourth-approach/schema.py \
+            fourth-approach/minimize.py \
+            fourth-approach/runner.py \
+            fourth-approach/collect.py \
+            fourth-approach/verify_run.py
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python -m unittest discover \
+            -s fourth-approach/tests -p 'test_*.py' -v
+          PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=fourth-approach python - <<'PY'
+          from schema import read_json, validate_launch, validate_spec
+          launch = validate_launch(read_json('fourth-approach/launch.json'))
+          validate_spec(read_json(launch['spec_path']), launch, require_ready=True)
+          assert launch['enabled'] is True
+          assert launch['run_index'] == 2
+          assert launch['jobs'] == 20
+          assert launch['runtime_seconds'] == 20700
+          PY
+
+      - name: Publish ordinary code and launch state
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rm -f fourth-approach/tools/manual-run002.tar.gz
+          git rm -f fourth-approach/tools/run002-code.part00 fourth-approach/tools/run002-code.part01 fourth-approach/tools/run002-code.part02 2>/dev/null || true
+          rm -rf fourth-approach/__pycache__ fourth-approach/tests/__pycache__
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add fourth-approach
+          git commit -m 'publish manual six-hour Fourth approach run 002'
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
+            git -c protocol.version=2 fetch --no-tags --depth=100 --filter=blob:none origin main
+            git rebase origin/main
+          done
+
+      - name: Dispatch exactly one big compute run
+        shell: bash
+        run: |
+          set -euo pipefail
+          active="$(gh run list --repo "$GH_REPO" --workflow fourth-approach-compute.yml --limit 20 --json status --jq '[.[] | select(.status != "completed")] | length')"
+          test "$active" -eq 0
+          gh workflow run fourth-approach-compute.yml --repo "$GH_REPO" --ref main
+          echo 'Dispatched exactly one manual Fourth approach run 002.' >> "$GITHUB_STEP_SUMMARY"

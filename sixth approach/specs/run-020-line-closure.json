@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "run_id": "run-020",
+  "mode": "exact_line_closure",
+  "engine": "node",
+  "external_vertex_count": 6,
+  "boundary_assignments": 6,
+  "output": "local-runs/run-020-summary.json"
+}

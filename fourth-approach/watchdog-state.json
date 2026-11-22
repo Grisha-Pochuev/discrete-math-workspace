@@ -1,0 +1,10 @@
+{
+  "consecutive_technical_failures": 0,
+  "current_gate": "await_next_stage_implementation",
+  "last_action": "accepted_run_and_prepared_next_disabled",
+  "last_action_commit": "facfbcd54918841042d3549d07104d3cf2e0c7b1",
+  "last_checked_at": null,
+  "last_observed_active_runs": [],
+  "notes": "Accepted run 000 is archived. Launch is aligned to run 001 and disabled until a green smoke for the current code.",
+  "schema_version": 1
+}

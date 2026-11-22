@@ -1,0 +1,25 @@
+{
+  "contract_sha256": "8000eb9b81ac8b2bc4f7d3367beec11a6fe3bfb91e1b64ac177479f5f8c36a6b",
+  "event_cut_outcome_sha256": "4e037887da1e1f40ce21947c6ad2606757458d24be40aefb0db44d2435ad32fa",
+  "event_cut_sha256": "27ac519bd4f378c002ffc9145b1a05e8b16f5dfe1877662db8824524a1d5540b",
+  "evidence_level": "exact survivor replay; all negative statuses diagnostic",
+  "exact_event_cuts": 2,
+  "expected_searches": 72,
+  "independent_single_thread_workers_per_job": 4,
+  "minimum_survivor_support": 24,
+  "physical_jobs": 18,
+  "received_searches": 72,
+  "reserved_runner_slots": 2,
+  "schema": "run-071-boundary-event-collection-v1",
+  "scientific_status": "support_survivors_found",
+  "scope_warning": "Support survivors still require exact coefficient analysis; bounded negative statuses are not infeasibility certificates.",
+  "source_sha": "0b5d07d8573ccce3b0e1515f00b488aba5015793",
+  "spec_sha256": "18f53fa8125382ffbf7bdeb7cecde7aaae8f0a6f3637e14648dd19e6e9c904f5",
+  "status_histogram": {
+    "SURVIVOR": 4,
+    "TIME_LIMIT": 68
+  },
+  "unique_survivors": 4,
+  "worker_sha256": "bc34a9b3ed08b6752a9e24c4d11e8a98d378cd0594ae63b3f3981bc639bb546f",
+  "workflow_run": "31542339004"
+}

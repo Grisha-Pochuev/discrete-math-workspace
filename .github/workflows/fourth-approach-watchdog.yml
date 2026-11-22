@@ -1,0 +1,13 @@
+name: Fourth approach watchdog
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  disabled:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo 'Fourth approach tracking is disabled by user request.'

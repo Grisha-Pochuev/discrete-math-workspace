@@ -1,0 +1,20 @@
+[
+  {
+    "mode": "n",
+    "gain": 21551,
+    "n": 160,
+    "closed": true
+  },
+  {
+    "mode": "d",
+    "gain": 17133,
+    "n": 160,
+    "closed": true
+  },
+  {
+    "mode": "a",
+    "gain": 18930,
+    "n": 160,
+    "closed": true
+  }
+]

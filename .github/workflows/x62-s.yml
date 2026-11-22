@@ -1,0 +1,119 @@
+name: x62-s
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/x62-s.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  p:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: x62
+          sparse-checkout-cone-mode: true
+          fetch-depth: 1
+      - name: p
+        shell: bash
+        run: |
+          set -euo pipefail
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends libboost-dev
+          python3 - <<'PY'
+          p='x62/c.cpp'; s=open(p).read()
+          reps=[
+          ('struct CNT { unsigned long long tri=0, s[10]{}, t[10]{}; };','struct CNT { unsigned long long tri=0, s[16]{}, t[16]{}; };'),
+          ('if(K!=11 && K!=13) return 3;','if(K!=11 && K!=13 && K!=15) return 3;'),
+          ('static bool crtState(const CTX& C,const ST* st,int ns,const U& B,U& x,U& M){','static bool first_feasible(const U&x,const U&M,const U&L,const U&B,U&y){if(x>=L)y=x;else{if(M==0)return false;U d=L-x;y=x+((d+M-1)/M)*M;}return y<=B;}\nstatic bool inherited_interval(const U&x,const U&M,const uint128_t&q,const U&L,const U&B,U&z){if(L>B)return false;uint128_t xm=(x%q).convert_to<uint128_t>(),mm=(M%q).convert_to<uint128_t>();U qq=q,z0,step;if(mm==0){if(xm!=0)return false;z0=x/qq;step=M/qq;}else{uint128_t iv=invmod128(mm,q);if(iv==0)return false;uint128_t d=xm?q-xm:0,k=(uint256_t(d)*iv%q).convert_to<uint128_t>();z0=(x+M*k)/qq;step=M;}return first_feasible(z0,step,L,B,z);}\nstatic bool crtState(const CTX& C,const ST* st,int ns,const U& B,U& x,U& M){'),
+          ('    const vector<vector<U>>& below;\n    CNT& ct;','    const vector<vector<U>>& below;\n    const vector<U>& gmin;\n    CNT& ct;'),
+          ('        if(rem<=4) return;\n        int lo=rem-1;\n        int q0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+smallest,xH)-mx[rem].begin()));','        if(rem<=4) return;\n        U y0; if(!first_feasible(xH,MH,gmin[rem],mx[rem][smallest-1],y0)) return;\n        int lo=rem-1;\n        int q0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+smallest,y0)-mx[rem].begin()));'),
+          ('        for(int q=q0;q<smallest;q++){\n            if(!inherited_ok(xH,MH,C.P[q],below[rem-1][q])) continue;','        for(int q=q0;q<smallest;q++){\n            U iq; if(!inherited_interval(xH,MH,C.P[q],gmin[rem-1],below[rem-1][q],iq)) continue;'),
+          ('    vector<TASK> tasks;','    vector<U> gmin(K+1,1); for(int k=1;k<=K;k++) gmin[k]=gmin[k-1]*C.P[k-1];\n\n    vector<TASK> tasks;'),
+          ('            int rem=K-3,lo=rem-1;\n            int v0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+u,x3)-mx[rem].begin()));','            int rem=K-3,lo=rem-1;\n            U y3; if(!first_feasible(x3,M3,gmin[rem],B0,y3)) continue;\n            int v0=max(lo,(int)(lower_bound(mx[rem].begin()+lo,mx[rem].begin()+u,y3)-mx[rem].begin()));'),
+          ('            for(int v=v0;v<u;v++){\n                if(!inherited_ok(x3,M3,C.P[v],below[rem-1][v])) continue;','            for(int v=v0;v<u;v++){\n                U iv; if(!inherited_interval(x3,M3,C.P[v],gmin[rem-1],below[rem-1][v],iv)) continue;'),
+          ('                Searcher S{C,K,mx,below,ct};','                Searcher S{C,K,mx,below,gmin,ct};'),
+          ('        for(int h=3;h<10;h++){ Z.s[h]+=c.s[h]; Z.t[h]+=c.t[h]; }','        for(int h=3;h<16;h++){ Z.s[h]+=c.s[h]; Z.t[h]+=c.t[h]; }')]
+          for a,b in reps:
+              if a not in s: raise SystemExit('patch miss')
+              s=s.replace(a,b)
+          open(p,'w').write(s)
+          PY
+          g++ -O3 -DNDEBUG -std=c++17 -fopenmp x62/c.cpp -o x62/x
+      - uses: actions/upload-artifact@v4
+        with:
+          name: x62-s-bin
+          path: |
+            x62/x
+            x62/d
+          retention-days: 1
+          compression-level: 0
+
+  r:
+    needs: p
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        id: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: x62-s-bin
+          path: x62
+      - name: r
+        shell: bash
+        run: |
+          chmod +x x62/x
+          set +e
+          timeout 10m ./x62/x x62/d 120 4 ${{ matrix.id }} 20 15 1 >out 2>&1
+          rc=$?
+          set -e
+          tail -1 out
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then exit "$rc"; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: x62-s-${{ matrix.id }}
+          path: out
+          retention-days: 1
+
+  a:
+    needs: r
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: x62-s-*
+          path: z
+          merge-multiple: false
+      - name: a
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import glob
+          agg={}; sec=0.0; n=0
+          for p in glob.glob('z/x62-s-[0-9]*/out'):
+              ds=[x for x in open(p).read().splitlines() if x.startswith('DONE ')]
+              if len(ds)!=1: raise SystemExit((p,len(ds)))
+              n+=1
+              for t in ds[0].split()[1:]:
+                  if '=' not in t: continue
+                  k,v=t.split('=',1)
+                  if k=='sec': sec+=float(v)
+                  else: agg[k]=agg.get(k,0)+int(v)
+          if n!=20: raise SystemExit(('files',n))
+          if agg.get('triples')!=204156: raise SystemExit(('triples',agg.get('triples')))
+          print('parts',n,'sumsec',round(sec,3))
+          for k in ['triples','s3','t4','s4','t5','s5','t6','s6','t7','s7','t8','s8','t9','s9','t10','s10','t11','s11']:
+              print(k,agg.get(k,0))
+          PY

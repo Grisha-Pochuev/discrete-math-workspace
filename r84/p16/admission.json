@@ -1,0 +1,44 @@
+{
+  "activation_epoch": 1795061926,
+  "assignments_sha256": "59ebc8462f2f18c7fae7571f879e44b7143155bf601ef5cdd4b1f1346c22c1b9",
+  "expiry_epoch": 1795083586,
+  "production_review": {
+    "fire_acceptance": {
+      "completed_workers": 4,
+      "empty_cgroup": true,
+      "four_search_overlap_seconds": 119.97936244200001,
+      "hard_limit_enforced": true,
+      "input_modes": [
+        "initial",
+        "final",
+        "initial",
+        "final"
+      ],
+      "oom_events": 0,
+      "peak_below_warning": true,
+      "seconds_per_worker": 120,
+      "status": "PASS",
+      "usable_cores": 4,
+      "validated_final_routes": 400,
+      "vertices_per_worker": [
+        80000,
+        80000,
+        80000,
+        80000
+      ]
+    },
+    "fire_attempt": 1,
+    "fire_audit_sha256": "9a9cb8c93b9c694d80cd798ccdd4caf3b7ba54426cbf701b42f0416aff14b54d",
+    "fire_run": 44455422621,
+    "independent_review_sha256": "fa060a376940c17599779459fa40b621f717f77bb3ad422df6dcb36486987a2f",
+    "operator": 2,
+    "protocol": "four-worker-cshift-continuation-v1",
+    "seconds": 19800,
+    "status": "APPROVED",
+    "vertices": [
+      80000
+    ],
+    "workers_per_job": 4
+  },
+  "status": "APPROVED_ONE_SHOT"
+}

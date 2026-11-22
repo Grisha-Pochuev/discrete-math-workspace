@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "series": "run-016",
+  "mode": "local_diagnostic",
+  "size": 12,
+  "seed": 2026080901,
+  "sample_limit": 1000000,
+  "component": "three_fixed_blocks",
+  "acceptance": {
+    "wall_seconds_max": 840,
+    "preserve_first_zero_record": true
+  }
+}

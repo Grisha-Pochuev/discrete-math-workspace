@@ -1,0 +1,20 @@
+{
+  "builder_sha256": "104ffc1ab2253e066e6ac36e9e9979066f9dd13e534c59153fa080befbc4b216",
+  "coordinates_url": "https://www.math.uwaterloo.ca/tsp/star/data/gaia2079471.xyz.txt.gz",
+  "g24_sha256": "3961c3959ce870f888540897550659fdf3ed3ed8eb168adf08101683c465b0e2",
+  "numpy": "2.3.5",
+  "reference_url": "https://www.math.uwaterloo.ca/tsp/star/data/gaia2079471_tour.txt.gz",
+  "scipy": "1.17.0",
+  "source_archive_sha256": "0050268936ee9e23df8a54aed9144725f938c96d1077abe74e3b2e684cce3ece",
+  "text_sources": {
+    "admission.json": "1d582e7e6d18a7613fc65b583be945f01bed9b72971b0232279d0ec6f0d02bd4",
+    "bootstrap.py": "a4540b54acffda2f9ac1165c9831de4de10be23cff7181b6de72afb1577d3711",
+    "exact.cpp": "7c89b20a7467125816a21ab6c85b3a8f7ebe4db4c13ee5812892244ccc84fcb6",
+    "fetch_inputs.py": "e3d98f7d792ef81d20bd392b0cd9330096a80eff79d3cb6a3b8cb97219a1b0dd",
+    "guarded_prepare.sh": "b0aa0572bfe4d4c6c9cd6d3b16a1df499b885f710ba68beb5aae4f7984c469bc",
+    "materialize.py": "dac524288f9724bf0d231e55ee419850c77cb82dbfc8c75d74bff7fbbafc897f",
+    "parents.json": "d6f59dde6791660349fa06f120fc455107ef08353bffb9ff0fbf9b971fa7c566",
+    "prepare.py": "9d14f9f366842aa46815e099f6347ffd854d03476bed0a5932b2fcb128b3e797",
+    "region_tools.py": "17614ab99377a7095ea864ad8d713e481f7a533368b532d15070b2ff2270e279"
+  }
+}

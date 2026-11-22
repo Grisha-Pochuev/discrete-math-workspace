@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "bytes": 199842933,
+  "parts": [
+    {
+      "file": "a-13.tgz.000",
+      "sha256": "76d0b3b01c6bbcdb14a976abcf185c602ac4e6e8d0f71427a0e400641a09268a",
+      "bytes": 41943040
+    },
+    {
+      "file": "a-13.tgz.001",
+      "sha256": "5bfde5297a150ddbcccdba8396386553d630a6a6823d037eb58c734eb845af8f",
+      "bytes": 41943040
+    },
+    {
+      "file": "a-13.tgz.002",
+      "sha256": "997ddc05555067ebf0cfa090f863c9ab98fc89b8e3c6088ac09c47e253cfa99d",
+      "bytes": 41943040
+    },
+    {
+      "file": "a-13.tgz.003",
+      "sha256": "f2230d37c0a82446972f45004b1f71645ee63d44a257e584828ce2ba2ce71239",
+      "bytes": 41943040
+    },
+    {
+      "file": "a-13.tgz.004",
+      "sha256": "9cd668e32ab2152900ce2d9c36a4fae86909068142f39781c4fed9ffd7ec8d85",
+      "bytes": 32070773
+    }
+  ],
+  "sha256": "7b5d909258bb9b69c52fbf245293a250afa9b56343d7e41788bf7b9c3909ee54"
+}

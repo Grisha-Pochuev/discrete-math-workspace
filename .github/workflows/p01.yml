@@ -1,0 +1,83 @@
+name: p01
+on:
+  workflow_dispatch:
+    inputs:
+      t:
+        description: Seconds per branch
+        default: '180'
+        required: true
+      s:
+        description: Integer seed
+        required: true
+      a:
+        type: choice
+        options: ['1,2', '1', '2']
+        default: '1,2'
+        required: true
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: p01
+  cancel-in-progress: false
+jobs:
+  r:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: r84/p01
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: limits
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p o
+          : > o/runs.jsonl
+          for state in in_progress queued waiting requested pending; do
+            gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs?status=$state&per_page=100" --jq '.workflow_runs[] | {id,status}' >> o/runs.jsonl
+          done
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/attempts/$GITHUB_RUN_ATTEMPT/jobs" > o/jobs.json
+          python - <<'PY'
+          import json,os,datetime
+          rows=[json.loads(x) for x in open('o/runs.jsonl')]
+          busy=[r for r in rows if r['id']!=int(os.environ['GITHUB_RUN_ID']) and r['status'] in ('in_progress','queued','waiting','requested','pending')]
+          if busy: raise SystemExit('other work is active')
+          jobs=json.load(open('o/jobs.json'))['jobs']
+          selected=[j for j in jobs if j['name']=='r' and j['status']=='in_progress']
+          if len(selected)!=1: raise SystemExit('job timing unavailable')
+          start=datetime.datetime.fromisoformat(selected[0]['started_at'].replace('Z','+00:00')).timestamp()
+          with open(os.environ['GITHUB_ENV'],'a') as f: f.write(f'JOB_DEADLINE={start+350*60-60}\n')
+          PY
+      - name: prepare
+        run: |
+          set -euo pipefail
+          python -m pip install 'numpy==2.3.5' 'scipy==1.17.0'
+          python r84/p01/r.py --output "$PWD/wd"
+          sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/smoke_memory_guard_checked.py > o/g-check.log 2>&1
+      - name: compute
+        env:
+          T: ${{ inputs.t }}
+          S: ${{ inputs.s }}
+          A: ${{ inputs.a }}
+        run: |
+          set -euo pipefail
+          sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/memory_guard.py --output "$PWD/o/guard" -- \
+            "$(command -v python)" wd/s/run_experiment.py --bundle "$PWD/wd/b" --build "$PWD/wd/k" \
+            --output "$PWD/o/run" --seconds "$T" --seed "$S" --operators "$A" --maxab 6000 --job-deadline "$JOB_DEADLINE" > o/run.log 2>&1
+      - name: collect
+        if: always()
+        run: |
+          mkdir -p o
+          tar -cJf result.bin o
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p01-${{ github.run_id }}
+          path: result.bin
+          retention-days: 14
+          if-no-files-found: error

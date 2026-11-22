@@ -1,0 +1,71 @@
+{
+  "accepted": true,
+  "approach": "fourth-approach-obstruction-guided-exact-synthesis",
+  "metrics": {
+    "candidate_records": 1300,
+    "canonical_mechanism_classes": 2594,
+    "exact_support_classes": 2594,
+    "exactly_covered_candidates": 0,
+    "full_candidate_coverage": true,
+    "global_candidate_count": 1300,
+    "groups": {
+      "independent_2_0": {
+        "best_covered_max_error": null,
+        "best_hard_survivor_max_error": 1.3253445736421331e-05,
+        "best_max_error": 1.3253445736421331e-05,
+        "candidates": 1034,
+        "coverage_fraction": 0.0,
+        "exactly_covered": 0,
+        "hard_survivors": 1034,
+        "orbit_scans_complete": 1034,
+        "radius1_exact_hits": 0,
+        "radius1_scans_complete": 1034,
+        "radius2_exact_hits": 0,
+        "radius2_samples": 16020897
+      },
+      "legacy_2_0": {
+        "best_covered_max_error": null,
+        "best_hard_survivor_max_error": 8.528761437887434e-07,
+        "best_max_error": 8.528761437887434e-07,
+        "candidates": 166,
+        "coverage_fraction": 0.0,
+        "exactly_covered": 0,
+        "hard_survivors": 166,
+        "orbit_scans_complete": 166,
+        "radius1_exact_hits": 0,
+        "radius1_scans_complete": 166,
+        "radius2_exact_hits": 0,
+        "radius2_samples": 2661497
+      },
+      "old_pool": {
+        "best_covered_max_error": null,
+        "best_hard_survivor_max_error": 9.462588877284424e-06,
+        "best_max_error": 9.462588877284424e-06,
+        "candidates": 100,
+        "coverage_fraction": 0.0,
+        "exactly_covered": 0,
+        "hard_survivors": 100,
+        "orbit_scans_complete": 100,
+        "radius1_exact_hits": 0,
+        "radius1_scans_complete": 100,
+        "radius2_exact_hits": 0,
+        "radius2_samples": 1462032
+      }
+    },
+    "hard_survivors": 1300,
+    "orbit_scans_complete": 1300,
+    "radius1_exact_hits": 0,
+    "radius1_scans_complete": 1300,
+    "radius2_exact_hits": 0,
+    "radius2_samples": 20144426,
+    "workers_present": 80
+  },
+  "next_decision": "Use the strongest separately reported old-pool and independent hard survivors for targeted higher-degree exact tests and a compact GPT-5.6 Sol handoff.",
+  "run_id": 31034878944,
+  "run_index": 5,
+  "schema_version": 1,
+  "scientific_interpretation": "Coverage means an exact rational Run-004 certificate was re-verified on the numerical candidate support, possibly after an explicit S6 x S3 alignment. Uncovered candidates are hard survivors only relative to the tested certificate library and explored support neighborhoods; they are not counterexamples.",
+  "source_sha": "d2d2d6e7fb9681a2b42d67d55a9829f9b774c32c",
+  "task": "stage5_bridge_second_approach",
+  "worker_error_count": 0
+}

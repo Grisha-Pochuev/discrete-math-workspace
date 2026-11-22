@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "series": "run-015",
+  "seed": 2026080901,
+  "elapsed_seconds": 9.572,
+  "connected_graph_trials": 10000,
+  "packings": 10000,
+  "type_counts": {
+    "star1": 7769,
+    "star2": 6290,
+    "double": 7634
+  },
+  "local_colourings": 221379,
+  "support_cases": 221379,
+  "minimum_mixed_singletons": 8,
+  "zero_record_found": false,
+  "first_zero_record": null
+}

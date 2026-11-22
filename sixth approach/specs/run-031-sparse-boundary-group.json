@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "run_id": "run-031",
+  "mode": "exact_sparse_boundary_group",
+  "engine": "compiled_cp_sat_plus_integer_hnf",
+  "execution_site": "local_cpu",
+  "order": 8,
+  "catalogue_indices": [1, 4, 5, 6, 12, 16],
+  "support_layers": [68, 69, 70, 71],
+  "outputs": [
+    "local-runs/run-031-summary.json"
+  ]
+}

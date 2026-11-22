@@ -1,0 +1,210 @@
+name: p08
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: p08
+  cancel-in-progress: false
+jobs:
+  r:
+    name: r-${{ matrix.i }}
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        include:
+          - i: 0
+            s: 1541628999
+          - i: 1
+            s: 829295703
+          - i: 2
+            s: 1562667054
+          - i: 3
+            s: 1417201114
+          - i: 4
+            s: 1499036070
+          - i: 5
+            s: 40994625
+          - i: 6
+            s: 373479310
+          - i: 7
+            s: 1463119847
+          - i: 8
+            s: 724224567
+          - i: 9
+            s: 1785638053
+          - i: 10
+            s: 490912287
+          - i: 11
+            s: 805487684
+          - i: 12
+            s: 404620496
+          - i: 13
+            s: 1740917016
+          - i: 14
+            s: 364130721
+          - i: 15
+            s: 510123342
+          - i: 16
+            s: 26669860
+          - i: 17
+            s: 1999767160
+          - i: 18
+            s: 631900254
+          - i: 19
+            s: 958778899
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            r84/p01
+            r84/p08
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: limits
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_JOB_NAME: r-${{ matrix.i }}
+        run: |
+          set -euo pipefail
+          mkdir -p o
+          : > o/runs.jsonl
+          for state in in_progress queued waiting requested pending; do
+            gh api --paginate "repos/$GITHUB_REPOSITORY/actions/runs?status=$state&per_page=100" --jq '.workflow_runs[] | {id,status}' >> o/runs.jsonl
+          done
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=100" > o/head-runs.json
+          python - <<'PY'
+          import json,os,datetime
+          if os.environ['GITHUB_RUN_ATTEMPT']!='1': raise SystemExit('one attempt only')
+          history=json.load(open('o/head-runs.json'))
+          if history['total_count']>100: raise SystemExit('run history truncated')
+          prior=[r for r in history['workflow_runs'] if r['path']=='.github/workflows/p08.yml' and r['id']!=int(os.environ['GITHUB_RUN_ID'])]
+          if prior: raise SystemExit('one dispatch per head only')
+          rows=[json.loads(x) for x in open('o/runs.jsonl')]
+          busy=[r for r in rows if r['id']!=int(os.environ['GITHUB_RUN_ID']) and r['status'] in ('in_progress','queued','waiting','requested','pending')]
+          if busy: raise SystemExit('other work is active')
+          """Bounded read-only timing observation."""
+          import datetime
+          import json
+          import os
+          import pathlib
+          import subprocess
+          import time
+          
+          
+          def inspect(payload, name, run_id, attempt, head, now):
+              jobs = payload['jobs']
+              if payload['total_count'] != len(jobs):
+                  raise ValueError('jobs inventory truncated')
+              matches = [j for j in jobs if j['name'] == name]
+              if len(matches) > 1:
+                  raise ValueError('ambiguous job identity')
+              if not matches:
+                  return None
+              j = matches[0]
+              if (j['run_id'], j['run_attempt'], j['head_sha']) != (run_id, attempt, head):
+                  raise ValueError('job binding mismatch')
+              if j['status'] == 'queued':
+                  return None
+              if j['status'] != 'in_progress':
+                  raise ValueError('self job is terminal or unexpected')
+              if j['started_at'] is None:
+                  return None
+              start = datetime.datetime.fromisoformat(j['started_at'].replace('Z', '+00:00'))
+              if start.tzinfo is None or start.timestamp() > now + 5:
+                  raise ValueError('invalid actual start')
+              deadline = start.timestamp() + 350 * 60 - 60
+              if deadline - now < 18000 + 1800:
+                  raise ValueError('insufficient remaining job budget')
+              return deadline
+          
+          
+          def main():
+              if os.environ['GITHUB_RUN_ATTEMPT'] != '1':
+                  raise SystemExit('one attempt only')
+              until = time.monotonic() + 90
+              endpoint = ('repos/' + os.environ['GITHUB_REPOSITORY'] + '/actions/runs/'
+                          + os.environ['GITHUB_RUN_ID'] + '/attempts/1/jobs?per_page=100')
+              index = 0
+              while True:
+                  remaining = until - time.monotonic()
+                  if remaining <= 0:
+                      raise SystemExit('job timing unavailable after bounded observation')
+                  response = subprocess.run(['gh', 'api', endpoint], check=True,
+                                            capture_output=True, timeout=min(20, remaining))
+                  pathlib.Path(f'o/jobs-observation-{index}.json').write_bytes(response.stdout)
+                  payload = json.loads(response.stdout)
+                  deadline = inspect(payload, os.environ['EXPECTED_JOB_NAME'],
+                                     int(os.environ['GITHUB_RUN_ID']), 1,
+                                     os.environ['GITHUB_SHA'], time.time())
+                  if deadline is not None:
+                      with open(os.environ['GITHUB_ENV'], 'a') as stream:
+                          stream.write(f'JOB_DEADLINE={deadline}\n')
+                      return
+                  index += 1
+                  time.sleep(max(0, min(3, until - time.monotonic())))
+          
+          
+          if __name__ == '__main__':
+              main()
+          PY
+      - name: inputs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          python r84/p08/fetch_inputs.py --job-index ${{ matrix.i }} --output "$PWD/inputs"
+      - name: prepare
+        run: |
+          set -euo pipefail
+          python -m pip install 'numpy==2.3.5' 'scipy==1.17.0'
+          python r84/p08/bootstrap.py --archive r84/p01/s.bin --output "$PWD/wd/s"
+          sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/smoke_memory_guard_checked.py > o/g-check.log 2>&1
+          bash r84/p08/guarded_prepare.sh "$PWD/wd/s" "$PWD/o/prep-guard" --parent "$PWD/inputs/parent.zip" --index ${{ matrix.i }} --output "$PWD/wd/prepared" > o/preparation.log 2>&1
+          cp wd/prepared/PREPARATION.json o/
+      - name: compute
+        env:
+          S: ${{ matrix.s }}
+          I: ${{ matrix.i }}
+        run: |
+          set -euo pipefail
+          python - <<'PYGATE'
+          import json,time,os
+          a=json.load(open('r84/p08/admission.json')); i=int(os.environ['I'])
+          if not 0<=i<20 or a['jobs'][i]!={'i':i,'s':int(os.environ['S'])}: raise SystemExit('matrix binding')
+          if a['status']!='APPROVED_ONE_SHOT' or not a['activation_epoch']<=time.time()<a['expiry_epoch']: raise SystemExit('admission')
+          if a['seconds']!=9000 or a['operator']!=2: raise SystemExit('protocol')
+          g=json.load(open('o/prep-guard/memory_result.json'))
+          if g['status']!='completed' or g['child_returncode']!=0 or not g['hard_limit_enforced'] or g['last']['populated'] or g['reason'] is not None: raise SystemExit('prepare guard')
+          if any(g['last']['events'].get(k,0) for k in ('oom','oom_kill','oom_group_kill')): raise SystemExit('prepare OOM')
+          p=json.load(open('o/PREPARATION.json'));r=json.load(open('r84/p08/parents.json'))['parents'][i]
+          if p['status']!='AUDITED100_CHECKPOINT_IMPORT_PASS' or p['routes']!=100 or p['retained']!=99 or p['context_sha256']!=r['context_sha256']: raise SystemExit('import')
+          if float(os.environ['JOB_DEADLINE'])-time.time()<19800: raise SystemExit('search/save budget')
+          PYGATE
+          sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/memory_guard.py --output "$PWD/o/fire-guard" -- \
+            "$(command -v python)" r84/p08/pair.py --source "$PWD/wd/s" --prepared "$PWD/wd/prepared" --output "$PWD/o/fire" --seconds 60 --seed "$S" --index "$I" --deadline "$JOB_DEADLINE" > o/fire.log 2>&1
+          python - <<'PYFIRE'
+          import json
+          g=json.load(open('o/fire-guard/memory_result.json'));p=json.load(open('o/fire/pair.json'))
+          if g['status']!='completed' or g['child_returncode']!=0 or g['reason'] is not None or not g['hard_limit_enforced'] or g['last']['populated'] or not p['complete']: raise SystemExit('fire failed')
+          if any(g['last']['events'].get(k,0) for k in ('oom','oom_kill','oom_group_kill')): raise SystemExit('fire OOM')
+          PYFIRE
+          sudo -n --preserve-env "$(command -v python)" wd/s/engine/vendor/memory_guard.py --output "$PWD/o/guard" -- \
+            "$(command -v python)" r84/p08/pair.py --source "$PWD/wd/s" --prepared "$PWD/wd/prepared" --output "$PWD/o/run" --seconds 9000 --seed "$S" --index "$I" --deadline "$JOB_DEADLINE" > o/run.log 2>&1
+      - name: collect
+        if: always()
+        run: |
+          mkdir -p o
+          tar -cJf result.bin o
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p08-${{ github.run_id }}-${{ matrix.i }}
+          path: result.bin
+          retention-days: 14
+          if-no-files-found: error

@@ -1,0 +1,20 @@
+{
+  "schema": "neutral-proof-class-input-v1",
+  "source_catalogue_sha256": "176cd4a21438208280b9482587a59d5aa67567945e24cf7e5f72687349ec4f09",
+  "source_catalogue_canonical_sha256": "677cad83a0cb0b32bfce9ff658e91b0c44d24b9d72d3f87179e1b618754c1d37",
+  "independent_acceptance_canonical_sha256": "fb1fb3ea6540df7a4732508801aeb832bb357e2f9c8d0adf437a87dda4a7c688",
+  "total_support_orbits": 179,
+  "total_support_placements": 42504,
+  "classes": [
+    {"class_id": 0, "counts": [0, 0, 0, 5], "support_orbits": 1, "support_placements": 24, "already_certified": true},
+    {"class_id": 1, "counts": [0, 0, 1, 4], "support_orbits": 6, "support_placements": 360, "already_certified": false},
+    {"class_id": 2, "counts": [0, 0, 2, 3], "support_orbits": 18, "support_placements": 1200, "already_certified": false},
+    {"class_id": 3, "counts": [0, 1, 0, 4], "support_orbits": 6, "support_placements": 720, "already_certified": false},
+    {"class_id": 4, "counts": [0, 1, 1, 3], "support_orbits": 16, "support_placements": 5760, "already_certified": false},
+    {"class_id": 5, "counts": [0, 1, 2, 2], "support_orbits": 27, "support_placements": 5400, "already_certified": false},
+    {"class_id": 6, "counts": [0, 2, 0, 3], "support_orbits": 18, "support_placements": 2400, "already_certified": false},
+    {"class_id": 7, "counts": [0, 2, 1, 2], "support_orbits": 45, "support_placements": 10800, "already_certified": false},
+    {"class_id": 8, "counts": [0, 3, 1, 1], "support_orbits": 12, "support_placements": 2880, "already_certified": false},
+    {"class_id": 9, "counts": [1, 1, 1, 2], "support_orbits": 30, "support_placements": 12960, "already_certified": false}
+  ]
+}

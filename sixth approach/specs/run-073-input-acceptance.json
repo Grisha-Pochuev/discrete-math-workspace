@@ -1,0 +1,19 @@
+{
+  "accepted": true,
+  "all_pair_records": 786960,
+  "all_ratio_classes": 381348,
+  "group_conflicts": 27216,
+  "group_indicator_variables": 54432,
+  "manifest_sha256": "271cfea6d6aa6d64d03ef82802fba15c92947d167b18210c85497c95fe5992cd",
+  "method": "dependency-free perfect-matching generation and complete ratio-class reconstruction",
+  "mixed_rows": 6558,
+  "pair_to_group_implications": 865656,
+  "retained_catalogue_sha256": "f4448d75452a12be4db5fb2435d913e9bf12d45409fc0934d78f4d588f8a38f1",
+  "retained_pair_records": 432828,
+  "retained_ratio_classes": 27216,
+  "retained_ratio_state_records": 314784,
+  "schema": "run-073-input-acceptance-v1",
+  "source_manifest_sha256": "e4dc245d7ad19466b20b0ab1b4752b7931a411a4de0ed59b9cd181b57efed9e6",
+  "source_types_sha256": "cb9a1b5ce7d1bc494474927f32bd44815c5c5f61571f7b7645c76265d41c139d",
+  "types_sha256": "a99f3974946f7cbb4ba6f7d59d150ac5efd3c85f7958d87fba5a20696e36c0a6"
+}

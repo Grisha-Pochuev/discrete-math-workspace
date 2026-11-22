@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "version": 1,
+  "semantics": "exact-event-conjunction-nogood-v1",
+  "source_run": "run-055",
+  "private_certificate_bundle_sha256": "dee015a6c79ddf933a5b11bb7fad21e2e343f3cfd21b7270c024020e84e3a58a",
+  "cuts": [
+    {
+      "id": "exact-cut-0",
+      "graph": "C4+C4",
+      "source_shard": 2,
+      "source_sha256": "d59e2709ece26c575834c2f31e227b3c7bcd7a02270af3e5d34a45ba19d7e00b",
+      "binomial_events": [
+        {"state": 1000, "left": 1, "right": 30},
+        {"state": 1026, "left": 7, "right": 30},
+        {"state": 1027, "left": 1, "right": 30}
+      ],
+      "target_event": {"state": 999, "supported_matchings": [6, 7, 30]}
+    },
+    {
+      "id": "exact-cut-1",
+      "graph": "C4+C4",
+      "source_shard": 3,
+      "source_sha256": "5802c9b457bd48871fbec6528676dc36411f7bd3b5b6c2ffba70582a3e03ee03",
+      "binomial_events": [
+        {"state": 2247, "left": 15, "right": 31},
+        {"state": 2248, "left": 8, "right": 9},
+        {"state": 2352, "left": 16, "right": 32}
+      ],
+      "target_event": null
+    },
+    {
+      "id": "exact-cut-2",
+      "graph": "C5+C3",
+      "source_shard": 2,
+      "source_sha256": "fa1f506ed84e6c11f7f2d73ef41d7b65286128157300ec2a4eb62db2d59c87d4",
+      "binomial_events": [
+        {"state": 63, "left": 14, "right": 27},
+        {"state": 792, "left": 13, "right": 21},
+        {"state": 1026, "left": 20, "right": 24}
+      ],
+      "target_event": null
+    },
+    {
+      "id": "exact-cut-3",
+      "graph": "C5+C3",
+      "source_shard": 3,
+      "source_sha256": "f75f318c9f000355513ebc43092a75e5925bae9e9ece0e6abde4c0055205e04e",
+      "binomial_events": [
+        {"state": 139, "left": 1, "right": 17},
+        {"state": 300, "left": 1, "right": 17},
+        {"state": 381, "left": 1, "right": 17}
+      ],
+      "target_event": {"state": 58, "supported_matchings": [1, 5, 17]}
+    }
+  ]
+}

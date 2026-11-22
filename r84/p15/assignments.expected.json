@@ -1,0 +1,442 @@
+[
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/0/0",
+      "seed": 813170291,
+      "context_sha256": "92eb8de231e05b0d3b1a00f620d7658b6f6436767fdecc8acf048b889411ea57"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/0/1",
+      "seed": 450628013,
+      "context_sha256": "cb8d4ae29e9f6c64cb58e8db09eb67943f61030a5f97bbe7f76b5e2ac3c526cf"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/0/2",
+      "seed": 235684223,
+      "context_sha256": "58f1bdcd8d527080a0fbdd94f42d41bb33512ea37c022ac534af896888cca3e5"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/0/3",
+      "seed": 1649742203,
+      "context_sha256": "e12a4a31545a288c12818805fecf38bffe1a0cc1d94d41fc7975bb14306a7cb5"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/1/0",
+      "seed": 1751078619,
+      "context_sha256": "c961658e184e6b59c0e2872e40880d1b0e59a72f25f9c7b31f0550dccd66046b"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/1/1",
+      "seed": 1018046997,
+      "context_sha256": "07f68530ddfd2430a2bee24ab77a1fb3e93478f89fdce06175a0aafad213921b"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/1/2",
+      "seed": 1447501633,
+      "context_sha256": "faaf684dbbe812c28b79f47c84c48581197a80f4f7ad19d80b3b928748ac89f3"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/1/3",
+      "seed": 1650891909,
+      "context_sha256": "b320876f304a88ff61d5271f1f276e48ba42c49fe0aa96ff2a37e0b3078fee0a"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/2/0",
+      "seed": 937150921,
+      "context_sha256": "97339c19e63c4806af2ac8015dd0e48dbe832d07bc23352ce66284fdb0130f48"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/2/1",
+      "seed": 686474483,
+      "context_sha256": "9f7653cc3f1390f4966b993effca2cc54786f3d0640126c71383da27a62e0f46"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/2/2",
+      "seed": 1058193654,
+      "context_sha256": "c067b47e091496872ae93e429556a0f1d5295b32d02414e2ce03f2359fa4766c"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/2/3",
+      "seed": 1133807259,
+      "context_sha256": "ef41e8ca1a067993cee0aa239bc70d893638417ddb5fbf523422a956571a8f12"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/3/0",
+      "seed": 792635291,
+      "context_sha256": "67d07afae56402ec7b3bf0833e41f1299d76dfa93d3021ce7c903420a0bea8a3"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/3/1",
+      "seed": 700395866,
+      "context_sha256": "e7f66468a815becfea541a9579dd1dc0cfa6fab047e522f74c408a88de9ce33d"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/3/2",
+      "seed": 1360129275,
+      "context_sha256": "fe08f4fc3860c3b118f96828947a560d9f4545e93424b9191c66d93b985e9d38"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/3/3",
+      "seed": 1725661834,
+      "context_sha256": "f444d6b90b769d371fd92b9a612fe4822a29916bd2f7c876b3c9c61c9bfd33ab"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/4/0",
+      "seed": 1921165772,
+      "context_sha256": "12693276e9faaf4e6b5724d4acb8175a9b8e39d56d4e2d967227bd6bd38d1802"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/4/1",
+      "seed": 392308748,
+      "context_sha256": "a7bd6c06d3a75d2cd7c1fd5a5c8a75bacd5f9e5886ccb1ba434080031e126f73"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/4/2",
+      "seed": 1047413294,
+      "context_sha256": "53f0e819071d016ae674892482fcff5377833fe2df217f2471bcc45f08470a79"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/4/3",
+      "seed": 1173286031,
+      "context_sha256": "60ab4eec8f7328aeb56e1d3f295f23a537a27130336e787633faa2c4f87f4fae"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/5/0",
+      "seed": 835415895,
+      "context_sha256": "9cbb9be2d822ef07ed3aeb64049bbef102f242385b8f21abcddb94c825695f25"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/5/1",
+      "seed": 334395688,
+      "context_sha256": "d6d3c7c8aa735d12c217a4c9e206708745199dde1b385d429b9bcf4888197204"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/5/2",
+      "seed": 1304097518,
+      "context_sha256": "adcf34c261960ac2d4c19c3106f2780e2cffcef35e5832a9dd88ea60f826161a"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/5/3",
+      "seed": 765162883,
+      "context_sha256": "349725d1db30869775be38f9d72858dba88a0f548d06628ca921beac571f6fd5"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/6/0",
+      "seed": 1944374780,
+      "context_sha256": "a6ef326f0d802704ca28faf1f3a68bcc2fb7866ed4d5c54caaf9d7b7b3405930"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/6/1",
+      "seed": 115179080,
+      "context_sha256": "1fe5b94ab2da60e0759f9c198a111da9cedcce9334407aadc065ed1a1d72cf8e"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/6/2",
+      "seed": 2065879472,
+      "context_sha256": "b8ca35aba7f41e68e8bee5ecb00f6efa40972070eba9de6264045cd87f525f21"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/6/3",
+      "seed": 1123639834,
+      "context_sha256": "5d98cf795bb1f84559fa27d2b78fd371e8dcf354cfe03801631de53f738d310f"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/7/0",
+      "seed": 1634173896,
+      "context_sha256": "938418c78261e9f2b4d1827fb908c62038eaaf2bc0d8b1933b5577a96ca984d5"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/7/1",
+      "seed": 235164410,
+      "context_sha256": "4be9ab2c420bfa4f7082d0d4da31c1d238d7ee30a6302491c7db31e8fa69f03c"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/7/2",
+      "seed": 1191311756,
+      "context_sha256": "21e5f74a6061343b0b4a29c3c8102a83e7412f39c1fc8ae7c437c7cddbf1c826"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/7/3",
+      "seed": 1624650234,
+      "context_sha256": "ba5aa4c8fb36f58909ec56fd3d574119982e82a6d9e2fef8cb695b4a4325db41"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/8/0",
+      "seed": 1268792002,
+      "context_sha256": "a6ee6c02e3fca4d10ef4630af36e5c7266a766fac2940ffe4f86d00d82fd406f"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/8/1",
+      "seed": 836119057,
+      "context_sha256": "ea06af026dce8a52a583fa66966e0cd63a55fabd9fe8956c6c5c34bac072a9e6"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/8/2",
+      "seed": 1505852423,
+      "context_sha256": "186c29e285ac3a5a661c7cab29acd62fedfddcdcb1928f02cadf054c497b5c84"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/8/3",
+      "seed": 1938412220,
+      "context_sha256": "9115efc98154132f55aa71a326f2eccd6f8210418e86f1f195697d185fe4b40c"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/9/0",
+      "seed": 490443616,
+      "context_sha256": "3707d503af664928ad976cdd621ac2ba670c211c87721b7cc50bdbc0dcd4f2d1"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/9/1",
+      "seed": 1483243294,
+      "context_sha256": "fdf228e0a5780b52a5997da9861037ac7a7f0646dc0d1991fd49e005d773b191"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/9/2",
+      "seed": 297806765,
+      "context_sha256": "e5a7a8f73f044072bfb95f021c88a951b8258bcabf87ff71181e4cc250d3b6b2"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/9/3",
+      "seed": 1600598436,
+      "context_sha256": "f1e7a2adad91f8e4ed7017670cc96e694fca1f5edd3fa419273d64d51de890e7"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/10/0",
+      "seed": 2008611561,
+      "context_sha256": "978f31fde05f58814fcb13cd213f50aae3634e729ef10dcba2e83ce08cee4d72"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/10/1",
+      "seed": 1721289056,
+      "context_sha256": "aa2979d80ccd175b89f0368c3fb623c646d038ca506bbbbc6ee8db46550b60b7"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/10/2",
+      "seed": 498837915,
+      "context_sha256": "4c4f41fccb09b39ce08428f5b51d44b32957e5e05abee8ff6a26421a8a0b5553"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/10/3",
+      "seed": 1135720743,
+      "context_sha256": "90efbcc1e26703d22e6939f81ca2737aee23dee02e7a952e531c9c2aa66d95ac"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/11/0",
+      "seed": 1678082597,
+      "context_sha256": "afacf5528e3250b3113d11aae544ce7c59496f69f547b81e96577501566771bf"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/11/1",
+      "seed": 580278049,
+      "context_sha256": "2b962ea8123e1b5983c162e0ebe1bf82cc9a03defc37ac657645d755cb573547"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/11/2",
+      "seed": 2138636194,
+      "context_sha256": "9a6855a171846a134d521a39fcbbf77e1856e7403f3d272bad58ca7118d60187"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/11/3",
+      "seed": 287916291,
+      "context_sha256": "ae2004aaef2eeca16be9644a791c745a1573764df82085fc2d58523c3b05d638"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/12/0",
+      "seed": 494916805,
+      "context_sha256": "78605fd554ab457873ba2c40fc22e376a3d12a951936c6717172b0a87985dd9c"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/12/1",
+      "seed": 1396004025,
+      "context_sha256": "d9b58fe132a3d66ac76c80c3e06a1631d49f5fa8ec298c5256bbbace95112d65"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/12/2",
+      "seed": 1868933559,
+      "context_sha256": "a3327a0428d60b648c37ec2960bd130d03b7a5b4563bf2c0353412cf295b3d11"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/12/3",
+      "seed": 1750609967,
+      "context_sha256": "1ec0b945d86698fc40094c368f9ee60f0f02aa65675bac4ca7ea9d09ff910ac0"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/13/0",
+      "seed": 843544748,
+      "context_sha256": "21cea10f3db047cf68272f6a892ee4dc034b15cc2e845828f018d9e459d31794"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/13/1",
+      "seed": 1720480102,
+      "context_sha256": "feab997550a7a5dbefb229d862a905e4d2e0a551abc560441e9f40577e819f20"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/13/2",
+      "seed": 928928980,
+      "context_sha256": "56945e15110a9c92233817d45fa6070e7c96b5ef1771b4826b770f90efa77ace"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/13/3",
+      "seed": 54844025,
+      "context_sha256": "ae1e5fe5a5ea3a43f5c24d6414198b63cbd3ebaee7b48189b7cfc45c217a8021"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/14/0",
+      "seed": 1823393121,
+      "context_sha256": "1e0a909bdd63cfff5b97f0b16681c99a07f55460920addc06f27b64ba470b311"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/14/1",
+      "seed": 172915009,
+      "context_sha256": "63642c5fd37f5d46dbd643de15009e6c47849c3da6609b08ab8fdf161a765c1c"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/14/2",
+      "seed": 956205383,
+      "context_sha256": "ac035ee4c0c18c876bbe8aefe7f95039f0677c4a747094575dc1f0c504a7f2c3"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/14/3",
+      "seed": 866746497,
+      "context_sha256": "46aba5d3c0ab9f24fb60a9994ae5cc648840237146c0528a0a762f0899e987d6"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/15/0",
+      "seed": 709512872,
+      "context_sha256": "66fa11139ef6ef640f15dc955956f159437691f1b35694b9c7b9774925097e6f"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/15/1",
+      "seed": 42617461,
+      "context_sha256": "80480ac1e8fb54fcb1cc3c09dbc3b7628331bdeabbe03d3fcba82f4339ea7b60"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/15/2",
+      "seed": 113063424,
+      "context_sha256": "f21b85c5dcc29aab265e45af26277c44e8d3356c9506f688e81872225efbe082"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/15/3",
+      "seed": 274561108,
+      "context_sha256": "12460978280d1ea6763eedf81d70eea247d43e0daee3e40e94bed0825046128c"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/16/0",
+      "seed": 1029386443,
+      "context_sha256": "34c32ce0582509a1dc84c87b7b50a7e61a35b3bc3e6d951032655e750bdf579c"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/16/1",
+      "seed": 2089066315,
+      "context_sha256": "bc3640a7cf465a94edd15bc40d95365446e876b3d1ebc7d2d636d34d903aa32b"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/16/2",
+      "seed": 1906801239,
+      "context_sha256": "9b0b8ed236fe1ebd3162c52225c82e3e48ad9d5af5dbea08803f7fd25f811ee3"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/16/3",
+      "seed": 1940920425,
+      "context_sha256": "1e9b4ebe94a56fa7cc6024d947d9085381273dc46f0c3e99f4169d6f5c58469d"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/17/0",
+      "seed": 1837632678,
+      "context_sha256": "8c5d2dbccc3617e9d1361def1623f52301904b129357d6f8dd6a432015541dfc"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/17/1",
+      "seed": 1401062049,
+      "context_sha256": "ab4e53e64adb136ea6d68832c63de6eed25f2c515e3e7c69f9525485ab9aeb8c"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/17/2",
+      "seed": 395463158,
+      "context_sha256": "16047cb2d550c75c24dcf80338b51fd40a4c06f33ecc3744ac1b3e6b576bcaaa"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/17/3",
+      "seed": 405954287,
+      "context_sha256": "61c2c6b70b71630d8b8a6945b6d2be192673dc229735aad84d552c6d2339bf17"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/18/0",
+      "seed": 355916874,
+      "context_sha256": "af4b767c2d05a84c084c0f3f7bb4964b61701cbeeb39a196d12d791b2be5a01d"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/18/1",
+      "seed": 1064540164,
+      "context_sha256": "52d3da9bd4e1fa505c0fc4d156898025e3caa80f1e7970c0e83b1c68bcda20bf"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/18/2",
+      "seed": 90790095,
+      "context_sha256": "62f1bcfbc580d04b0365fb9853529d84a43015edde4c66368c757f05cf05438c"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/18/3",
+      "seed": 1587871868,
+      "context_sha256": "fc5bbfa6c099542d7685983110cdb5bbeb661bc78c79416e2b8cc5bed2de7436"
+    }
+  ],
+  [
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/19/0",
+      "seed": 1331830661,
+      "context_sha256": "3b267d49d6d7b767ebba46f808cff36f587f2c0468ba632057ca357dd16700b7"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/19/1",
+      "seed": 1563913122,
+      "context_sha256": "98182fc2de5700314aa7b10e7e5aa42af43313896ac5a8e8d5d5dd2c109f5942"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/19/2",
+      "seed": 1823363071,
+      "context_sha256": "78efce639830c8431f6afc562d4f46aa9fe3bd7344ba68ad660171f647391a15"
+    },
+    {
+      "bundle": "/home/runner/work/discrete-math-workspace/discrete-math-workspace/wd/inputs/19/3",
+      "seed": 1734230226,
+      "context_sha256": "1764c4ac9d2207a24d94b5533a99a3403026e0555b93008ea7ae8e9643b46b3e"
+    }
+  ]
+]

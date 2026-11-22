@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "run_id": "run-027",
+  "mode": "exact_rank_two_boundary_stars",
+  "engine": "node",
+  "order": 8,
+  "output": "local-runs/run-027-summary.json"
+}

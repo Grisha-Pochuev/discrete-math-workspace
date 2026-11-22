@@ -1,0 +1,270 @@
+name: Sixth Approach Finite Events
+run-name: ${{ inputs.run_id }} finite events
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Neutral immutable run identifier
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare:
+    name: prepare-${{ inputs.run_id }}
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.contract.outputs.matrix }}
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install exact solver package
+        run: python -m pip install --disable-pip-version-check --no-cache-dir 'ortools==9.15.6755'
+
+      - name: Verify immutable contract and matrix
+        id: contract
+        shell: bash
+        env:
+          CALC_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          test "$CALC_RUN_ID" = 'run-072'
+          python -m py_compile \
+            'sixth approach/run072_contract.py' \
+            'sixth approach/run072_worker.py' \
+            'sixth approach/run072_collect.py' \
+            'sixth approach/tests/test_run072_contract.py' \
+            'sixth approach/tests/test_run072_collector.py' \
+            'sixth approach/tests/test_run072_worker_smoke.py'
+          python 'sixth approach/tests/test_run072_contract.py'
+          python 'sixth approach/tests/test_run072_collector.py'
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          spec = json.loads(Path('sixth approach/specs/run-072-finite-events.json').read_text(encoding='utf-8'))
+          assert spec['schema'] == 'run-072-finite-events-v1'
+          assert spec['physical_jobs'] == 20
+          assert spec['reserved_runner_slots'] == 0
+          assert spec['logical_workers_per_job'] == 4
+          assert len(spec['searches']) == 80
+          matrix = {'include': [{'group': group} for group in range(20)]}
+          with Path(os.environ['GITHUB_OUTPUT']).open('a', encoding='utf-8') as stream:
+              stream.write('matrix=' + json.dumps(matrix, separators=(',', ':')) + '\n')
+          PY
+
+      - name: Smoke the production worker and output path
+        shell: bash
+        run: python 'sixth approach/tests/test_run072_worker_smoke.py'
+
+  search-group:
+    name: group-${{ matrix.group }}
+    needs: prepare
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 330
+    env:
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install exact solver package
+        run: python -m pip install --disable-pip-version-check --no-cache-dir 'ortools==9.15.6755'
+
+      - name: Prepare four independent searches
+        shell: bash
+        env:
+          CALC_GROUP: ${{ matrix.group }}
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          group = int(os.environ['CALC_GROUP'])
+          spec = json.loads(Path('sixth approach/specs/run-072-finite-events.json').read_text(encoding='utf-8'))
+          searches = [item['id'] for item in spec['searches'] if item['group'] == group]
+          assert len(searches) == 4
+          Path('out/searches.txt').write_text(''.join(item + '\n' for item in searches), encoding='ascii')
+          PY
+          {
+            date -u +%FT%TZ
+            uname -a
+            nproc
+            lscpu
+            free -h
+            df -h .
+            ulimit -a
+            python --version
+            python -c "import ortools; print(ortools.__version__)"
+            echo "GITHUB_SHA=$GITHUB_SHA"
+            sha256sum \
+              'sixth approach/specs/run-072-finite-events.json' \
+              'sixth approach/specs/run-072-event-input.json.gz' \
+              'sixth approach/run072_contract.py' \
+              'sixth approach/run072_worker.py' \
+              'sixth approach/run072_collect.py'
+          } > out/diagnostics.log
+
+      - name: Run four independent single-threaded searches
+        shell: bash
+        run: |
+          set +e
+          pids=()
+          while IFS= read -r search_id; do
+            mkdir -p "out/$search_id"
+            (
+              timeout --signal=TERM --kill-after=60s 19000s \
+                python 'sixth approach/run072_worker.py' \
+                  --spec 'sixth approach/specs/run-072-finite-events.json' \
+                  --search-id "$search_id" \
+                  --output "out/$search_id/result.json" \
+                  --checkpoint "out/$search_id/checkpoint.json.gz" \
+                > "out/$search_id/worker.log" 2>&1
+              printf '%s\n' "$?" > "out/$search_id/worker.exit"
+            ) &
+            pids+=("$!")
+          done < out/searches.txt
+          status=0
+          for pid in "${pids[@]}"; do
+            wait "$pid" || status=1
+          done
+          exit "$status"
+
+      - name: Validate all four outputs
+        if: always()
+        shell: bash
+        run: |
+          python - <<'PY'
+          import gzip
+          import json
+          from pathlib import Path
+          searches = Path('out/searches.txt').read_text(encoding='ascii').split()
+          assert len(searches) == 4
+          for search_id in searches:
+              root = Path('out') / search_id
+              assert (root / 'worker.exit').read_text().strip() == '0'
+              result = json.loads((root / 'result.json').read_text(encoding='utf-8'))
+              with gzip.open(root / 'checkpoint.json.gz', 'rt', encoding='utf-8') as stream:
+                  checkpoint = json.load(stream)
+              assert result['schema'] == 'run-072-finite-events-result-v1'
+              assert result['search']['id'] == search_id
+              assert result['workers'] == 1
+              assert result['status'] in {'SURVIVOR', 'TIME_LIMIT', 'MODEL_INFEASIBLE'}
+              assert checkpoint['search'] == result['search']
+              assert checkpoint['last_status'] == result['status']
+              if result['status'] == 'SURVIVOR':
+                  survivor = json.loads((root / result['survivor_file']).read_text(encoding='utf-8'))
+                  assert survivor['accepted']
+          PY
+
+      - name: Upload compact group result
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-g${{ matrix.group }}
+          path: out/
+          if-no-files-found: error
+          retention-days: 14
+
+  collect:
+    name: collect-${{ inputs.run_id }}
+    needs: [prepare, search-group]
+    if: always()
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Check out exact source
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Download group results
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.run_id }}
+          pattern: ${{ inputs.run_id }}-g*
+          path: work/results
+
+      - name: Replay and build compact archive
+        id: collector
+        shell: bash
+        run: |
+          set +e
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          python 'sixth approach/run072_collect.py' \
+            --input-root work/results \
+            --spec 'sixth approach/specs/run-072-finite-events.json' \
+            --output-dir "$archive" \
+            --workflow-run "$GITHUB_RUN_ID" \
+            --source-sha "$GITHUB_SHA" \
+            > collector.log 2>&1
+          code=$?
+          printf '%s\n' "$code" > collector.exit
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Commit compact archive
+        if: steps.collector.outputs.code == '0'
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="sixth approach/runs/${{ inputs.run_id }}-${GITHUB_RUN_ID}"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$archive"
+          git commit -m "archive ${{ inputs.run_id }} from ${GITHUB_RUN_ID}"
+          for attempt in 1 2 3 4; do
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 4 ]; then exit 1; fi
+            git -c protocol.version=2 fetch --no-tags --depth=50 --filter=blob:none origin main
+            git rebase origin/main
+          done
+
+      - name: Upload collector diagnostics
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ inputs.run_id }}-collection
+          path: |
+            collector.log
+            collector.exit
+            sixth approach/runs/${{ inputs.run_id }}-${{ github.run_id }}/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Require complete collection
+        if: always()
+        shell: bash
+        run: exit "$(cat collector.exit 2>/dev/null || echo 2)"
