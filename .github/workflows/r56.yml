@@ -1,0 +1,44 @@
+name: r56
+run-name: r56 paired benchmark
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [r85/r56.py]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: r56-paired-benchmark
+  cancel-in-progress: false
+
+jobs:
+  comparison:
+    name: r56-${{ matrix.arm }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        arm: [c, t]
+    env:
+      R56_ARM: ${{ matrix.arm }}
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: r85
+          persist-credentials: false
+      - run: python3 -m pip install --quiet numpy scipy
+      - name: Run matched test
+        run: timeout --signal=TERM --kill-after=15s 20700s python3 r85/r56.py 129 20700
+      - uses: actions/upload-artifact@v4
+        with:
+          name: r56-${{ matrix.arm }}
+          path: summary.json
+          if-no-files-found: error
+          retention-days: 7
